@@ -72,7 +72,7 @@ class Board: # deve diventare un singleton
             for p in range(0, len(cls.tiles[tos].associatedPlaces)):
                 if((cls.tiles[tos].associatedPlaces[p] == p1) or (cls.tiles[tos].associatedPlaces[p] == p2)):
                     cls.places[cls.tiles[tos].associatedPlaces[p]].harbor = cls.harbors[i]
-                    #print("INSERITO HARBOR" , cls.harbors[i], "IN PLACE: ", cls.tiles[tos].associatedPlaces[p]) 
+                    #print("Debug in Board, inserted arbor: " , cls.harbors[i], ", Place: ", cls.tiles[tos].associatedPlaces[p]) 
             ahpe.append(p1)
             ahpe.append(p2)
             return ahpe
@@ -89,6 +89,9 @@ class Board: # deve diventare un singleton
         for p in cls.places: 
             s = s + "Place: "+ str(p) + "\n"
         return s
+
+    def actualEvaluation(self):
+        return 2
 
 
 b = Board()

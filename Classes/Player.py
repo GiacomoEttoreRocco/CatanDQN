@@ -1,4 +1,5 @@
-import Move, Bank
+import Move
+from Bank import Bank
 from Board import Board
 import random
 
@@ -22,10 +23,28 @@ class Player:
         self.justBoughtYearOfPlentyCard = 0
 
         # RESOURCES:
-        self.resources = {"wood" : 0, "clay" : 0, "crop": 0, "sheep": 0, "iron":0}
+        #self.resources = {"wood" : 0, "clay" : 0, "crop": 0, "sheep": 0, "iron": 0}
+        self.resources = {"wood" : 2, "clay" : 2, "crop": 2, "sheep": 2, "iron": 2} #DEBUG
+
 
         #HARBRS: 
         self.ownedHarbors = []
+
+    def __eq__(self, other):
+        return self.id == other.id
+
+    def __ne__(self, other):
+        return self.id != other.id
+
+    def __lt__(self, other):
+        return self.id < other.id
+
+    def __le__(self, other):
+        return self.id <= other.id
+
+    def printStats(self):
+        print("ID:  ", self.id," ", self.resources, ". Has ", self.victoryPoints, " points. Bank resources:", Bank().resources)
+        
 
     def availableMoves(self, turnCardUsed):
 
@@ -88,22 +107,22 @@ class Player:
             for p in Board().graph.listOfAdj[p1]:
                 if(p2 != p):
                     edge = tuple(sorted([p1, p]))
-                    if(edge.owner == 0):
-                        toRet.append()
+                    if(Board().edges[edge] == 0):
+                        toRet.append(edge)
 
         if(Board().places[p2].owner == 0 or Board().places[p2].owner == self.id):
             for p in Board().graph.listOfAdj[p2]:
                 if(p1 != p):
                     edge = tuple(sorted([p2, p]))
-                    if(edge.owner == 0):
-                        toRet.append()
+                    if(Board().edges[edge] == 0):
+                        toRet.append(edge)
         return toRet
 
     def calculatePossibleEdges(self):
         possibleEdges = []
         for edge in Board().edges.keys():
             if(Board().edges[edge] == self.id):
-                print(edge)
+                #print(edge)
                 possibleEdges.extend(self.connectedEmptyEdges(edge))
         return possibleEdges
 
@@ -167,9 +186,16 @@ class Player:
         return possibleTrades
     
     def evaluate(self, move):
-        ########
         if(move == Move.discardResource):
-            pass ###############################################################################################################################
+            possibleCards = [r for r in self.resources.keys() if self.resources[r] > 0]
+            candidateCard = None
+            max = 0
+            for card in possibleCards:
+                valutation = self.moveValue(move, card)
+                if(max < valutation):
+                    max = valutation
+                    candidateCard = card
+            return max, candidateCard
        
         if(move == Move.placeFreeStreet):
             possibleEdges = self.calculatePossibleInitialStreets()
@@ -191,7 +217,8 @@ class Player:
                 if(max < valutation):
                     max = valutation
                     candidateColony = colony
-            return max, candidateColony        
+            return max, candidateColony     
+
         if(move == Move.placeStreet):
             possibleEdges = self.calculatePossibleEdges()
             candidateEdge = None
@@ -226,25 +253,29 @@ class Player:
             return max, candidateCity            
 
         if(move == Move.buyDevCard):
-            possibleCard = {"knight" : 14 - self.game.totalKnightsUsed(), "victory_point" : 5, "road_building" : 2, "year_of_plenty" : 2 , "monopoly" : 2}
-            valutation = 0
-            total_cards = sum(possibleCard.items())
-            for card in possibleCard.keys():
-                valutation = valutation + Board().moveValue(move, card) * (possibleCard[card] / total_cards)
+            valutation = self.moveValue(move, None)
             return valutation, None
 
         if(move == Move.passTurn):
-            print("debug riga 233 player: ", move, "\n")
             return self.moveValue(move), None
 
         if(move == Move.useKnight):
             max = 0
-            for tilePos in Board().tiles.identificator: 
-                valutation = self.moveValue(move, tilePos)
+            for tile in Board().tiles: 
+                valutation = self.moveValue(move, tile.identificator)
                 if(max < valutation):
                     max = valutation
-                    candidatePos = tilePos
+                    candidatePos = tile.identificator
             return max, candidatePos
+
+        if(move == Move.useRobber):
+            max = 0
+            for tile in Board().tiles: 
+                valutation = self.moveValue(move, tile.identificator)
+                if(max < valutation):
+                    max = valutation
+                    candidatePos = tile.identificator
+            return max, candidatePos        
 
         if(move == Move.tradeBank):
             possibleTrades = self.calculatePossibleTrades()
@@ -259,7 +290,7 @@ class Player:
 
         if(move == Move.useMonopolyCard):
             max = 0
-            for res in Board().resources.keys():
+            for res in Bank().resources.keys():
                 valutation = self.moveValue(move, res)
                 if(max < valutation):
                     max = valutation
@@ -269,28 +300,68 @@ class Player:
         if(move == Move.useYearOfPlentyCard):
             candidateRes = ()
             max = 0
-            for res1 in Bank().resourse.key():
-                for res2 in Bank().resourse.key():
+            for res1 in Bank().resources.keys():
+                for res2 in Bank().resources.key():
                     valutation = self.moveValue(move, (res1, res2))
                     if(max < valutation):
                         max = valutation
                         candidateRes = (res1, res2)
             return max, candidateRes
 
+        if(move == Move.useRoadBuildingCard):
+            possibleEdges = self.calculatePossibleEdges()
+            candidateEdge1 = None
+            max1 = 0
+            for edge in possibleEdges: 
+                valutation = self.moveValue(Move.placeFreeStreet, edge)
+                if(max1 < valutation):
+                    max1 = valutation
+                    candidateEdge1 = edge
+
+            possibleEdges = self.calculatePossibleEdges()
+            candidateEdge2 = None
+            max2 = 0
+            for edge in possibleEdges: 
+                if(edge != candidateEdge1):
+                    valutation = self.moveValue(Move.placeFreeStreet, edge)
+                    if(max2 < valutation):
+                        max2 = valutation
+                        candidateEdge2 = edge
+            return max1+max2, [candidateEdge1, candidateEdge2]
+
+                    
+            return max, candidateEdge
+
+            return max, candidateRes
+
     def totalCards(self):
-        return sum(self.resources.items())
+        return sum(self.resources.values())
 
     def moveValue(self, move, thingNeeded = None):
-        print("Pre if, riga 278 in Player :, ", move)
+        #print("Pre if, riga 300 in Player :, ", move)
         if(move == Move.passTurn):
-            print("Debug linea 279 in Player, pass turn case.")
-            return 0.2 + random.randrange(0,2)
+            #print("Debug linea 301 in Player, pass turn case.")
+            return 0.2 + random.randrange(0, 1)
 
-        if(move == Move.useKnight or move == Move.useRobber):
+        if(move == Move.useKnight):
+            previousTilePos = move(self, thingNeeded, True, True)
+            toRet = 1.5
+            move(self, previousTilePos, True, True) # ATTUALMENTE è INUTILE SIA QUESTA RIGA CHE QUELLA SOPRA
+            return toRet + random.randrange(0,2)
+
+        if(move == Move.useRobber):
             previousTilePos = move(self, thingNeeded)
             toRet = 1.5
             move(self, previousTilePos, True) # ATTUALMENTE è INUTILE SIA QUESTA RIGA CHE QUELLA SOPRA
             return toRet + random.randrange(0,2)
+
+        if(move == Move.buyDevCard):
+            toRet = 1.5
+            return toRet + random.randrange(0,2)
+
+        if(move == Move.useMonopolyCard):
+            toRet = 100
+            return toRet
 
         move(self, thingNeeded)
         #toRet = 0
@@ -308,12 +379,12 @@ class Player:
             toRet = 0.6
         if(move == Move.tradeBank):
             toRet = 0.2
-        if(move == Move.useMonopolyCard):
-            toRet = 2
         if(move == Move.useRoadBuildingCard):
             toRet = 2
         if(move == Move.useYearOfPlentyCard):
             toRet = 2
+        if(move == Move.discardResource):
+            toRet = 1
         move(self, thingNeeded, undo=True)
         return toRet + random.randrange(0,2)
 

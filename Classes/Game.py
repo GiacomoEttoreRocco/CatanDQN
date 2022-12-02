@@ -3,24 +3,27 @@ from Board import Board
 from Bank import Bank
 import Move
 import random
+import time
 
 class Game:
     def __init__(self, num_players = 4):
 
         self.nplayer = num_players
-        self.players = [Player.Player(i, self) for i in range(1, num_players+2)]
-        self.largeArmyPlayer = 0
+        self.players = [Player.Player(i, self) for i in range(1, num_players+1)]
+        self.largestArmyPlayer = 0
 
     def dice_production(self, number):
         for tile in Board().tiles:
             if tile.number == number:
-                for p in tile.associated_places:
+                for p in tile.associatedPlaces:
                     if(Board().places[p].owner != 0):
                         if(Board().places[p].isColony):
-                            Bank().giveResource(self.players[Board().places[p].owner], tile.resource)
+                            print(self.players[Board().places[p].owner-1].id, "has taken a ", tile.resource, "\n")
+                            Bank().giveResource(self.players[Board().places[p].owner-1], tile.resource)
                         elif(Board().places[p].isCity):
-                            Bank().giveResource(self.players[Board().places[p].owner], tile.resource)
-                            Bank().giveResource(self.players[Board().places[p].owner], tile.resource)
+                            print(self.players[Board().places[p].owner-1].id, "has taken 2 ", tile.resource, "\n")
+                            Bank().giveResource(self.players[Board().places[p].owner-1], tile.resource)
+                            Bank().giveResource(self.players[Board().places[p].owner-1], tile.resource)
 
     def bestMove(self, player: Player, usedCard):
         moves = player.availableMoves(usedCard)
@@ -28,8 +31,7 @@ class Game:
         thingsNeeded = None
         bestMove = Move.passTurn
         for move in moves:
-            #print("Debug riga 30 in game, move: ", move)
-            #print("Debug riga 31 in game, evaluation: ", player.evaluate(move))
+            #print("Debug riga 34 in game best move just calculate (not done): ", move)
             evaluation, tempInput = player.evaluate(move)
             if(max <= evaluation):
                 max = evaluation
@@ -41,14 +43,20 @@ class Game:
         for pyr in self.players:
             if(pyr.totalCards() >= 7):
                 nCards = int(pyr.totalCards()/2)
-                while(pyr.totalCards <= nCards):
+                while(pyr.totalCards() <= nCards):
                     eval, card = player.evaluate(Move.discardResource)
                     Move.discardResource(player, card)
                 
         eval, tilePos = player.evaluate(Move.useRobber)
-        Move.placeRobber(player, tilePos)
+        Move.useRobber(player, tilePos)   
+
+    def rollDice(self): 
+        return random.randint(1,6) + random.randint(1,6)    
 
     def doTurn(self, player: Player):
+
+        player.printStats()
+
         turnCardUsed = False # SI PUò USARE UNA SOLA CARTA SVILUPPO A TURNO.
         player.unusedKnights = player.unusedKnights + player.justBoughtKnights
         player.justBoughtKnights = 0
@@ -63,18 +71,35 @@ class Game:
             actualEvaluation = Board().actualEvaluation()
             afterKnight, place = player.evaluate(Move.useKnight)
             if(afterKnight > actualEvaluation):
-                move(player, place)
+                Move.useKnight(player, place)
+                print("BEFORE roll dice: ", Move.useKnight, "\n")
                 turnCardUsed = True 
-        dicesValue = random.randint(1,6) + random.randint(1,6)
+
+        dicesValue = self.rollDice()
+        print("Dice value: ", dicesValue)
+        for tile in Board().tiles:
+            if(tile.number == dicesValue):
+                print(tile.resource)
+
+
         if(dicesValue == 7):
-            print("############# SEVEN! (riga 65, game) #############")
+            print("############# SEVEN! #############")
             self.sevenOnDices(player)
         else:
             self.dice_production(dicesValue)
 
         move, thingNeeded = self.bestMove(player, turnCardUsed)
+
+        #print("Player ", player.id, " debug riga 89 GAME, prima mossa: ", move, "\n")
+
         while(move != Move.passTurn): # move è una funzione 
+
+            #player.printStats()
             move(player, thingNeeded)
+            print("Player ", player.id, " mossa: ", move, " ")
+            player.printStats()
+
+
             move, thingNeeded = self.bestMove(player, turnCardUsed)
         
     def doInitialChoise(self, player: Player):
@@ -111,31 +136,30 @@ class Game:
         turn = 1 
         won = False
         # START INIZIALE
-        for i in range(0, self.nplayer):
-            self.doInitialChoise(self.players[i])
-            print("Debug riga 113 Game, End first initial choise of player: ", i)
-            #print(Board().places)
+        for p in self.players:
+            self.doInitialChoise(p)
+            #print("Debug riga 118 Game, End first initial choise of player: ", p.id)
 
+        for p in sorted(self.players, reverse=True):
+            self.doInitialChoise(p)
+            #print("Debug riga 122 Game, End second initial choise of player: ", p.id)
+            p.printStats()
+    
 
-        for i in range(self.nplayer-1, -1, -1):
-            self.doInitialChoise(self.players[i])
-            print("Debug riga 119 Game, End second initial choise of player: ", i)
-
-        print("---------------------------------------- debug: riga 118 player, fine initial choises. ----------------------------------------")
+        #print("---------------------------------------- debug: riga 124 player, fine initial choises. ----------------------------------------")
         # START INIZIALE FINITO
 
         while won == False:
             playerTurn = self.players[turn%self.nplayer]
             if(playerTurn.victoryPoints >= 10):
-                won == True
+                won = True
                 print("Il vincitore è il Player ", str(playerTurn.id), "!")
             self.doTurn(playerTurn)
-            print("----------------------------------- End turn player: ", playerTurn.id, "-------------------------------------------------------------------")
-
-            print("End turn of player, ", playerTurn)
+            #print("----------------------------------- End turn player: ", playerTurn.id, "-------------------------------------------------------------------")
+            time.sleep(5)
             turn += 1
             if(turn % 4 == 0):
-                print("=================================================================================== Start of turn: ", str(int(turn/4)), "===============================================================================")
+                print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
 
 g = Game()
 g.playGame()
