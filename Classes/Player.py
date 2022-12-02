@@ -169,21 +169,14 @@ class Player:
     def evaluate(self, move):
         ########
         if(move == Move.discardResource):
-        #
-        # 
-        # 
-        # 
-        # 
-        # 
-        # 
-        # 
-        # 
+            pass ###############################################################################################################################
+       
         if(move == Move.placeFreeStreet):
             possibleEdges = self.calculatePossibleInitialStreets()
             candidateEdge = None
             max = 0
             for edge in possibleEdges: 
-                valutation = self.evaluation(move, edge)
+                valutation = self.moveValue(move, edge)
                 if(max < valutation):
                     max = valutation
                     candidateEdge = edge
@@ -194,7 +187,7 @@ class Player:
             candidateColony = None
             max = 0
             for colony in possibleColony:
-                valutation = self.evaluation(move, colony)
+                valutation = self.moveValue(move, colony)
                 if(max < valutation):
                     max = valutation
                     candidateColony = colony
@@ -204,7 +197,7 @@ class Player:
             candidateEdge = None
             max = 0
             for edge in possibleEdges: 
-                valutation = self.evaluation(move, edge)
+                valutation = self.moveValue(move, edge)
                 if(max < valutation):
                     max = valutation
                     candidateEdge = edge
@@ -215,7 +208,7 @@ class Player:
             candidateColony = None
             max = 0
             for colony in possibleColony:
-                valutation = self.evaluation(move, colony)
+                valutation = self.moveValue(move, colony)
                 if(max < valutation):
                     max = valutation
                     candidateColony = colony
@@ -226,7 +219,7 @@ class Player:
             candidateCity = None
             max = 0
             for city in possibleCity:
-                valutation = self.evaluation(move, city)
+                valutation = self.moveValue(move, city)
                 if(max < valutation):
                     max = valutation
                     candidateCity = city
@@ -237,17 +230,17 @@ class Player:
             valutation = 0
             total_cards = sum(possibleCard.items())
             for card in possibleCard.keys():
-                valutation = valutation + Board().evaluation(move, card) * (possibleCard[card] / total_cards)
+                valutation = valutation + Board().moveValue(move, card) * (possibleCard[card] / total_cards)
             return valutation, None
 
         if(move == Move.passTurn):
             print("debug riga 233 player: ", move, "\n")
-            return self.evaluation(move), None
+            return self.moveValue(move), None
 
         if(move == Move.useKnight):
             max = 0
             for tilePos in Board().tiles.identificator: 
-                valutation = self.evaluation(move, tilePos)
+                valutation = self.moveValue(move, tilePos)
                 if(max < valutation):
                     max = valutation
                     candidatePos = tilePos
@@ -258,7 +251,7 @@ class Player:
             candidateTrade = None
             max = 0
             for trade in possibleTrades:
-                valutation = self.evaluation(move, trade)
+                valutation = self.moveValue(move, trade)
                 if(max < valutation):
                     max = valutation
                     candidateTrade = trade
@@ -267,7 +260,7 @@ class Player:
         if(move == Move.useMonopolyCard):
             max = 0
             for res in Board().resources.keys():
-                valutation = self.evaluation(move, res)
+                valutation = self.moveValue(move, res)
                 if(max < valutation):
                     max = valutation
                     candidateRes = res
@@ -278,7 +271,7 @@ class Player:
             max = 0
             for res1 in Bank().resourse.key():
                 for res2 in Bank().resourse.key():
-                    valutation = self.evaluation(move, (res1, res2))
+                    valutation = self.moveValue(move, (res1, res2))
                     if(max < valutation):
                         max = valutation
                         candidateRes = (res1, res2)
@@ -287,7 +280,7 @@ class Player:
     def totalCards(self):
         return sum(self.resources.items())
 
-    def evaluation(self, move, thingNeeded = None):
+    def moveValue(self, move, thingNeeded = None):
         print("Pre if, riga 278 in Player :, ", move)
         if(move == Move.passTurn):
             print("Debug linea 279 in Player, pass turn case.")

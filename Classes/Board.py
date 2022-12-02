@@ -53,10 +53,10 @@ class Board: # deve diventare un singleton
             alreadyHarborPlaceInEdge = cls.chooseTileHarbor(cls, alreadyHarborPlaceInEdge, i)
 
         for t in cls.tiles:
-            for p in t.associated_places:
+            for p in t.associatedPlaces:
                 cls.places[p].touchedResourses.append(t.resource)
 
-    def chooseTileHarbor(cls, ahpe, i):
+    def chooseTileHarbor(cls, ahpe: list, i: int):
         tos = cls.tilesOnTheSea[random.randint(0, len(cls.tilesOnTheSea)-1)]
         edges = []
         for e in cls.graph.CoupleOfPlaceOnTheSea[tos]: 
@@ -69,10 +69,10 @@ class Board: # deve diventare un singleton
             #print("p1:", p1)
             p2 = choosenEdge[1]
             #print("p2:", p2)
-            for p in range(0, len(cls.tiles[tos].associated_places)):
-                if((cls.tiles[tos].associated_places[p] == p1) or (cls.tiles[tos].associated_places[p] == p2)):
-                    cls.places[cls.tiles[tos].associated_places[p]].harbor = cls.harbors[i]
-                    #print("INSERITO HARBOR" , cls.harbors[i], "IN PLACE: ", cls.tiles[tos].associated_places[p]) 
+            for p in range(0, len(cls.tiles[tos].associatedPlaces)):
+                if((cls.tiles[tos].associatedPlaces[p] == p1) or (cls.tiles[tos].associatedPlaces[p] == p2)):
+                    cls.places[cls.tiles[tos].associatedPlaces[p]].harbor = cls.harbors[i]
+                    #print("INSERITO HARBOR" , cls.harbors[i], "IN PLACE: ", cls.tiles[tos].associatedPlaces[p]) 
             ahpe.append(p1)
             ahpe.append(p2)
             return ahpe

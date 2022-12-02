@@ -89,7 +89,7 @@ ListOfAdj = { #this is the adj of every places.
 #         ListOfEdges[ed] = 0
 # print(ListOfEdges)
 
-tile_places = {
+tilePlaces = {
     0: [0,1,2,8,9,10],
     1: [2,3,4,10,11,12],
     2: [4,5,6,12,13,14],
@@ -116,7 +116,7 @@ class Tile:
         self.resource = res
         self.number = num
         self.identificator = id
-        self.associated_places = tile_places[id]
+        self.associatedPlaces = tilePlaces[id]
 
     def __repr__(self):
         s = " Id: " + str(self.identificator) + ", Resoruce: " + self.resource + ", Dice number: " + str(self.number)
