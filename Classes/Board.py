@@ -12,10 +12,8 @@ class Board: # deve diventare un singleton
             cls.instance = super(Board, cls).__new__(cls)
             cls.robberTile = 7
             cls.deck = ["knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight",
-                        "victory_point","victory_point","victory_point","victory_point","victory_point",
-                        "road_building","road_building",
-                        "year_of_plenty","year_of_plenty",
-                        "monopoly","monopoly"]
+                        "victory_point","victory_point","victory_point","victory_point","victory_point"]
+                        #,"year_of_plenty","year_of_plenty","monopoly","monopoly", "road_building","road_building"]
             #   SHUFFLE DECK
             cls.deck = np.random.permutation(cls.deck)
 

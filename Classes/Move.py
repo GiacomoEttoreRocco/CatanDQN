@@ -6,97 +6,98 @@ from CatanGraph import Place
 def placeFreeStreet(player, edge, undo = False):
     if(not undo):
         Board().edges[edge] = player.id
+        player.nStreets+=1
     else:
         Board().edges[edge] = 0
+        player.nStreets-=1
+
 
 def placeFreeColony(player: Player, place: Place, undo = False):
     if(not undo):
         Board().places[place.id].owner = player.id
         Board().places[place.id].isColony = True
         player.victoryPoints+=1
-        print("Debug +1 punto, place free colony, riga 18, move")
+        player.nColonies+=1
 
     else:
         Board().places[place.id].owner = 0
         Board().places[place.id].isColony = False
         player.victoryPoints-=1
-        print("Debug -1 punto, place free colony, riga 18, move")
+        player.nColonies-=1
+
 
 
 def placeStreet(player, edge, undo = False):
     if(not undo):
-        player.resources["wood"] = player.resources["wood"] -1
-        player.resources["clay"] = player.resources["clay"] -1
-        Bank().resources["wood"] = Bank().resources["wood"] + 1
-        Bank().resources["clay"] = Bank().resources["clay"] + 1
+        player.useResource("wood")
+        player.useResource("clay")
         Board().edges[edge] = player.id
+        player.nStreets+=1
+
     else:
-        player.resources["wood"] = player.resources["wood"] +1
-        player.resources["clay"] = player.resources["clay"] +1
-        Bank().resources["wood"] = Bank().resources["wood"] - 1
-        Bank().resources["clay"] = Bank().resources["clay"] - 1
+        Bank().giveResource(player, "wood")   
+        Bank().giveResource(player, "clay")    
         Board().edges[edge] = 0
+        player.nStreets-=1
 
 def placeColony(player, place, undo = False):
     if(not undo):
-        player.resources["wood"] = player.resources["wood"] -1
-        player.resources["clay"] = player.resources["clay"] -1
-        player.resources["crop"] = player.resources["crop"] -1
-        player.resources["sheep"] = player.resources["sheep"] -1
-        Bank().resources["wood"] = Bank().resources["wood"] + 1
-        Bank().resources["clay"] = Bank().resources["clay"] + 1
-        Bank().resources["crop"] = Bank().resources["crop"] + 1
-        Bank().resources["sheep"] = Bank().resources["sheep"] + 1
+        player.useResource("wood")
+        player.useResource("clay")
+        player.useResource("crop")
+        player.useResource("sheep")
+
         Board().places[place].owner = player.id
         Board().places[place].isColony = True
-        player.victoryPoints+=1
-        #print("Debug +1 punto, place colony, riga 62, move")
 
+        player.victoryPoints+=1
+        player.nColonies+=1
+
+        if(Board().places[place].harbor != ""):
+            player.ownedHarbors.append(Board().places[place].harbor)
     else:
-        player.resources["wood"] = player.resources["wood"] +1
-        player.resources["clay"] = player.resources["clay"] +1
-        player.resources["crop"] = player.resources["crop"] +1
-        player.resources["sheep"] = player.resources["sheep"] +1
-        Bank().resources["wood"] = Bank().resources["wood"] - 1
-        Bank().resources["clay"] = Bank().resources["clay"] - 1
-        Bank().resources["crop"] = Bank().resources["crop"] - 1
-        Bank().resources["sheep"] = Bank().resources["sheep"] - 1
+        Bank().giveResource(player, "wood")   
+        Bank().giveResource(player, "clay")  
+        Bank().giveResource(player, "crop")   
+        Bank().giveResource(player, "sheep")  
+
         Board().places[place].owner = 0
         Board().places[place].isColony = False
         player.victoryPoints-=1
-        #print("Debug -1 punto, place colony, riga 62, move")
+        player.nColonies-=1
+        if(Board().places[place].harbor != ""):
+            del player.ownedHarbors[-1]
 
 
 def placeCity(player, place, undo = False):
     if(not undo):
-        player.resources["iron"] = player.resources["iron"] -3
-        player.resources["crop"] = player.resources["crop"] -2
-        Bank().resources["iron"] = Bank().resources["iron"] +3
-        Bank().resources["crop"] = Bank().resources["crop"] +2
+        player.useResource("iron")
+        player.useResource("iron")
+        player.useResource("iron")
+        player.useResource("crop")
+        player.useResource("crop")
+
         Board().places[place].isColony = False
         Board().places[place].isCity = True
         player.victoryPoints+=1
-        #print("Debug +1 punto, place city, riga 72, move")
-
+        player.nCities+=1
     else:
-        player.resources["iron"] = player.resources["iron"] +3
-        player.resources["crop"] = player.resources["crop"] +2
-        Bank().resources["iron"] = Bank().resources["iron"] -3
-        Bank().resources["crop"] = Bank().resources["crop"] -2
+        Bank().giveResource(player, "iron")
+        Bank().giveResource(player, "iron")
+        Bank().giveResource(player, "iron")
+        Bank().giveResource(player, "crop")
+        Bank().giveResource(player, "crop")
+
         Board().places[place].isColony = True
         Board().places[place].isCity = False
         player.victoryPoints-=1
-        #print("Debug -1 punto, place city, riga 82, move")
-
+        player.nCities-=1
 
 def buyDevCard(player, card, undo = False):
     if(not undo):
-        player.resources["iron"] = player.resources["iron"] -1
-        player.resources["crop"] = player.resources["crop"] -1
-        player.resources["sheep"] = player.resources["sheep"] -1
-        Bank().resources["iron"] = Bank().resources["iron"] +1
-        Bank().resources["crop"] = Bank().resources["crop"] +1
-        Bank().resources["sheep"] = Bank().resources["sheep"] +1
+        player.useResource("iron")
+        player.useResource("crop")
+        player.useResource("sheep")
         card = Board().deck[0]
         if(card == "knight"):
             player.justBoughtKnights = player.justBoughtKnights +1
@@ -108,29 +109,23 @@ def buyDevCard(player, card, undo = False):
             player.justBoughtYearOfPlentyCard = player.justBoughtYearOfPlentyCard +1
         if(card == "victory_point"):
             player.victoryPoints = player.victoryPoints + 1
-            print("Debug +1 punto, victory point card, riga 99, move")
-        return Board().deck[:1]
+        Board().deck = Board().deck[:1] 
     else:
         print("Debug: BUG wrong way. (riga 114 move")
-        player.resources["iron"] = player.resources["iron"] +1
-        player.resources["crop"] = player.resources["crop"] +1
-        player.resources["sheep"] = player.resources["sheep"] +1
-        Bank().resources["iron"] = Bank().resources["iron"] -1
-        Bank().resources["crop"] = Bank().resources["crop"] -1
-        Bank().resources["sheep"] = Bank().resources["sheep"] -1
+        Bank().giveResource(player, "iron")
+        Bank().giveResource(player, "crop")
+        Bank().giveResource(player, "sheep")
+
 
 def discardResource(player, resource, undo = False):
     if(not undo):
         print("debug riga 124 move")
-        player.resources[resource] -= 1
-        Bank().resources[resource] += 1
+        player.useResource(resource)
     else:
         print("debug riga 124 move, undo")
-        player.resources[resource] += 1
-        Bank().resources[resource] -= 1
+        Bank().giveResource(player, resource)
 
 def passTurn(player, temp):
-    #player.game.nextTurn(player)
     pass
 
 def useRobber(player, tilePosition, undo = False):
@@ -140,35 +135,33 @@ def useRobber(player, tilePosition, undo = False):
 
 def useKnight(player, tilePosition, undo = False, justCheck = False):
     largArmy = player.game.largestArmy(justCheck)
-
     previousPosition = Board().robberTile
     Board().robberTile = tilePosition
-
     if(not undo):
+        player.unusedKnights -= 1
         player.usedKnights += 1
     else:
+        player.unusedKnights += 1
         player.usedKnights -= 1
-
     postMoveLargArmy = player.game.largestArmy(justCheck)
-
     if(largArmy != postMoveLargArmy):
         postMoveLargArmy.victoryPoints += 2 
         print("Debug +2 punti, largest riga 153, move")
         largArmy.victoryPoints -= 2
         print("Debug -2 punti, largest riga 153, move")
-
-
     return previousPosition
 
 def tradeBank(player, coupleOfResources, undo = False):
+    toTake, toGive = coupleOfResources
     if(not undo):
-        toTake, toGive = coupleOfResources
-        player.resources[toTake] = player.resources[toTake] + 1
-        player.resources[toGive] = player.resources[toGive] - Bank.resourceToAsk(player, toGive)
+        player.resources[toTake] += 1
+        player.resources[toGive] -= Bank().resourceToAsk(player, toGive)
+        print("TAKEN 1", toTake, " GIVEN ", Bank().resourceToAsk(player, toGive), toGive)
     else:
-        toTake, toGive = coupleOfResources
-        player.resources[toTake] = player.resources[toTake] - 1
-        player.resources[toGive] = player.resources[toGive] + Bank.resourceToAsk(player, toGive)
+        player.resources[toTake] -= 1
+        player.resources[toGive] += Bank().resourceToAsk(player, toGive)
+        print("UNDO OF: TAKEN 1", toTake, " GIVEN ", Bank().resourceToAsk(player, toGive), toGive)
+
 
 def useMonopolyCard(player, resource):
     player.monopolyCard = player.monopolyCard - 1
@@ -185,11 +178,11 @@ def useRoadBuildingCard(player, edges, undo = False):
 
 def useYearOfPlentyCard(player, resources, undo = False):
     if not undo:
-        player.resources[resources[0]] +1
-        player.resources[resources[0]] +1
+        Bank().giveResource(player, resources[0])
+        Bank().giveResource(player, resources[1])
     else:
-        player.resources[resources[0]] -1
-        player.resources[resources[0]] -1
+        player.useResource(resources[0])
+        player.useResource(resources[1])
 
 def cardMoves():
     return [useMonopolyCard, useKnight, useYearOfPlentyCard, useRoadBuildingCard]

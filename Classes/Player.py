@@ -9,6 +9,10 @@ class Player:
         self.victoryPoints = 0
         self.game = game
 
+        self.nColonies = 0
+        self.nCities = 0
+        self.nStreets = 0
+
         self.usedKnights = 0
         self.unusedKnights = 0
         self.justBoughtKnights = 0
@@ -26,8 +30,7 @@ class Player:
         #self.resources = {"wood" : 0, "clay" : 0, "crop": 0, "sheep": 0, "iron": 0}
         self.resources = {"wood" : 2, "clay" : 2, "crop": 2, "sheep": 2, "iron": 2} #DEBUG
 
-
-        #HARBRS: 
+        #HARBORS: 
         self.ownedHarbors = []
 
     def __eq__(self, other):
@@ -41,16 +44,34 @@ class Player:
 
     def __le__(self, other):
         return self.id <= other.id
+        
+    def useResource(self, resource):
+        if(self.resources[resource] < 0):
+            "FATAL ERROR. You should not be able to use this method."
+        self.resources[resource] -= 1
+        Bank().resources[resource] += 1
+
 
     def printStats(self):
-        print("ID:  ", self.id," ", self.resources, ". Has ", self.victoryPoints, " points. Bank resources:", Bank().resources)
+        print("ID:  ", self.id," ", self.resources, ".",
+            "\nIt has :" ,self.victoryPoints, " points. \
+             \nNumber of cities: ", self.nCities, \
+            "\nNumber of colonies: ", self.nColonies, \
+            "\nNumber of streets: ", self.nStreets, \
+            "\nNumber of used knights: ", self.usedKnights, \
+            "\nNumber of unused knights: ", self.unusedKnights, \
+            "\nNumber of just bought knights: ", self.justBoughtKnights, \
+            "\nBank resources:", Bank().resources)
+
+    def printResources(self):
+         print("Print resources of player:  ", self.id," ", self.resources, "\n.")
         
 
     def availableMoves(self, turnCardUsed):
 
         availableMoves = [Move.passTurn]
 
-        if(self.resources["wood"] >= 2 and self.resources["clay"] >= 2): 
+        if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1): 
             availableMoves.append(Move.placeStreet)
 
         if(self.resources["wood"] >= 1  and self.resources["clay"] >= 1 and self.resources["sheep"] >= 1 and self.resources["crop"] >= 1):
@@ -59,30 +80,14 @@ class Player:
         if(self.resources["iron"] >= 3 and self.resources["crop"] >= 2):
             availableMoves.append(Move.placeCity)
 
-        if(self.resources["iron"] >= 1 and self.resources["crop"] >= 1 and self.resources["sheep"] >= 1):
-            availableMoves.append(Move.buyDevCard)
+        #if(self.resources["iron"] >= 1 and self.resources["crop"] >= 1 and self.resources["sheep"] >= 1 and len(Board().deck) > 0):
+        #    availableMoves.append(Move.buyDevCard)
 
-        if("3:1" in self.ownedHarbors):
-            if(self.resources["wood"] >= 3 or self.resources["clay"] >= 3 or self.resources["crop"] >= 3 or self.resources["iron"] >= 3 or self.resources["sheep"] >= 3):
-                availableMoves.append(Move.tradeBank)
-
-        if("2:1 clay" in self.ownedHarbors):
-            if(self.resources["clay"] >= 2):
-                availableMoves.append(Move.tradeBank)
-
-        if("2:1 iron" in self.ownedHarbors):
-            if(self.resources["iron"] >= 2):
-                availableMoves.append(Move.tradeBank)
-
-        if("2:1 crop" in self.ownedHarbors):
-            if(self.resources["crop"] >= 2):
-                availableMoves.append(Move.tradeBank)
-        if("2:1 wood" in self.ownedHarbors):
-            if(self.resources["wood"] >= 2):
-                availableMoves.append(Move.tradeBank)
-
-        if("2:1 sheep" in self.ownedHarbors):
-            if(self.resources["sheep"] >= 2):
+        canTrade = False
+        for resource in self.resources.keys():
+            if(Bank().resourceToAsk(self, resource) <= self.resources[resource]):
+                canTrade = True
+        if(canTrade):
                 availableMoves.append(Move.tradeBank)
 
         if(self.unusedKnights >= 1 and not turnCardUsed):
@@ -123,7 +128,8 @@ class Player:
         for edge in Board().edges.keys():
             if(Board().edges[edge] == self.id):
                 #print(edge)
-                possibleEdges.extend(self.connectedEmptyEdges(edge))
+                if(self.connectedEmptyEdges(edge) != None):
+                    possibleEdges.extend(self.connectedEmptyEdges(edge))
         return possibleEdges
 
     def calculatePossibleInitialColony(self):
@@ -180,9 +186,9 @@ class Player:
         possibleTrades = []
         for resource in self.resources.keys():
             if(self.resources[resource] >= Bank().resourceToAsk(self, resource)):
-                for resourceToAsk in self.resources.keys():
-                    #if(resourceToAsk != resource):
-                    possibleTrades.append((resource, resourceToAsk))
+                for resourceToTake in self.resources.keys():
+                    if(resourceToTake != resource):
+                        possibleTrades.append((resourceToTake, resource))
         return possibleTrades
     
     def evaluate(self, move):
@@ -329,11 +335,6 @@ class Player:
                         candidateEdge2 = edge
             return max1+max2, [candidateEdge1, candidateEdge2]
 
-                    
-            return max, candidateEdge
-
-            return max, candidateRes
-
     def totalCards(self):
         return sum(self.resources.values())
 
@@ -341,51 +342,57 @@ class Player:
         #print("Pre if, riga 300 in Player :, ", move)
         if(move == Move.passTurn):
             #print("Debug linea 301 in Player, pass turn case.")
-            return 0.2 + random.randrange(0, 1)
+            return 0.2 + random.uniform(0, 1)
 
         if(move == Move.useKnight):
-            previousTilePos = move(self, thingNeeded, True, True)
+            previousTilePos = move(self, thingNeeded, False, True)
             toRet = 1.5
             move(self, previousTilePos, True, True) # ATTUALMENTE è INUTILE SIA QUESTA RIGA CHE QUELLA SOPRA
-            return toRet + random.randrange(0,2)
+            return toRet + random.uniform(0,2)
 
         if(move == Move.useRobber):
             previousTilePos = move(self, thingNeeded)
             toRet = 1.5
             move(self, previousTilePos, True) # ATTUALMENTE è INUTILE SIA QUESTA RIGA CHE QUELLA SOPRA
-            return toRet + random.randrange(0,2)
+            return toRet + random.uniform(0,2)
 
         if(move == Move.buyDevCard):
-            toRet = 1.5
-            return toRet + random.randrange(0,2)
+            #toRet = 1.5
+            #return toRet + random.uniform(0,2)
+            return 0.0
 
         if(move == Move.useMonopolyCard):
-            toRet = 100
+            toRet = 100.0
             return toRet
 
         move(self, thingNeeded)
         #toRet = 0
         if(move == Move.placeFreeColony):
-            toRet = 10
+            toRet = 10.0
         if(move == Move.placeFreeStreet):
-            toRet = 10
+            toRet = 10.0
         if(move == Move.placeCity):
-            toRet = 1
+            toRet = 1.0
         if(move == Move.placeColony):
             toRet = 0.9
-        if(move == Move.placeStreet):
-            toRet = 0.7
+        if(move == Move.placeStreet and self.calculatePossibleColony() != None):
+            toRet = 0.0
+        if(move == Move.placeStreet and self.calculatePossibleColony() == None):
+            toRet = 1990
         if(move == Move.buyDevCard):
             toRet = 0.6
         if(move == Move.tradeBank):
-            toRet = 0.2
+            toRet = 20.0
         if(move == Move.useRoadBuildingCard):
-            toRet = 2
+            toRet = 2.0
         if(move == Move.useYearOfPlentyCard):
-            toRet = 2
+            toRet = 2.0
         if(move == Move.discardResource):
-            toRet = 1
+            toRet = 1.0 
+
+        print("VALUE OF THE BOARD: ", toRet)
+
         move(self, thingNeeded, undo=True)
-        return toRet + random.randrange(0,2)
+        return toRet + random.uniform(0,2)
 
 
