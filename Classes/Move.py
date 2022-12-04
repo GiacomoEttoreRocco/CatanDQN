@@ -25,8 +25,6 @@ def placeFreeColony(player: Player, place: Place, undo = False):
         player.victoryPoints-=1
         player.nColonies-=1
 
-
-
 def placeStreet(player, edge, undo = False):
     if(not undo):
         player.useResource("wood")
@@ -67,7 +65,6 @@ def placeColony(player, place, undo = False):
         player.nColonies-=1
         if(Board().places[place].harbor != ""):
             del player.ownedHarbors[-1]
-
 
 def placeCity(player, place, undo = False):
     if(not undo):
@@ -116,7 +113,6 @@ def buyDevCard(player, card, undo = False):
         Bank().giveResource(player, "crop")
         Bank().giveResource(player, "sheep")
 
-
 def discardResource(player, resource, undo = False):
     if(not undo):
         print("debug riga 124 move")
@@ -154,14 +150,17 @@ def useKnight(player, tilePosition, undo = False, justCheck = False):
 def tradeBank(player, coupleOfResources, undo = False):
     toTake, toGive = coupleOfResources
     if(not undo):
-        player.resources[toTake] += 1
-        player.resources[toGive] -= Bank().resourceToAsk(player, toGive)
+        Bank().giveResource(player, toTake)
+        for i in range(0, Bank().resourceToAsk(player, toGive)):
+            player.useResource(toGive)
+        # player.resources[toGive] -= Bank().resourceToAsk(player, toGive)
+        # Bank().resources[toGive] += Bank().resourceToAsk(player, toGive)
         print("TAKEN 1", toTake, " GIVEN ", Bank().resourceToAsk(player, toGive), toGive)
     else:
-        player.resources[toTake] -= 1
-        player.resources[toGive] += Bank().resourceToAsk(player, toGive)
+        player.useResource(toTake)
+        for i in range(0, Bank().resourceToAsk(player, toGive)):
+            Bank().giveResource(player, toGive)
         print("UNDO OF: TAKEN 1", toTake, " GIVEN ", Bank().resourceToAsk(player, toGive), toGive)
-
 
 def useMonopolyCard(player, resource):
     player.monopolyCard = player.monopolyCard - 1

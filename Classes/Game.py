@@ -82,7 +82,7 @@ class Game:
 
         if(dicesValue == 7):
             print("############# SEVEN! #############")
-            self.sevenOnDices(player)
+            #self.sevenOnDices(player)
         else:
             self.dice_production(dicesValue)
 
@@ -138,7 +138,7 @@ class Game:
                 won = True
                 print("Il vincitore è il Player ", str(playerTurn.id), "!")
             self.doTurn(playerTurn)
-            time.sleep(2)
+            #time.sleep(2)
             turn += 1
             if(turn % 4 == 0):
                 print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")

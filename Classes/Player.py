@@ -27,8 +27,8 @@ class Player:
         self.justBoughtYearOfPlentyCard = 0
 
         # RESOURCES:
-        #self.resources = {"wood" : 0, "clay" : 0, "crop": 0, "sheep": 0, "iron": 0}
-        self.resources = {"wood" : 2, "clay" : 2, "crop": 2, "sheep": 2, "iron": 2} #DEBUG
+        self.resources = {"wood" : 0, "clay" : 0, "crop": 0, "sheep": 0, "iron": 0}
+        #self.resources = {"wood" : 2, "clay" : 2, "crop": 2, "sheep": 2, "iron": 2} #DEBUG
 
         #HARBORS: 
         self.ownedHarbors = []
@@ -357,9 +357,8 @@ class Player:
             return toRet + random.uniform(0,2)
 
         if(move == Move.buyDevCard):
-            #toRet = 1.5
-            #return toRet + random.uniform(0,2)
-            return 0.0
+            toRet = 1.5
+            return toRet + random.uniform(0,2)
 
         if(move == Move.useMonopolyCard):
             toRet = 100.0
