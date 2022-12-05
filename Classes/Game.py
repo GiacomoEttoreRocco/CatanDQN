@@ -56,9 +56,7 @@ class Game:
         return random.randint(1,6) + random.randint(1,6)    
 
     def doTurn(self, player: Player):
-
         player.printStats()
-
         turnCardUsed = False # SI PUò USARE UNA SOLA CARTA SVILUPPO A TURNO.
         player.unusedKnights = player.unusedKnights + player.justBoughtKnights
         player.justBoughtKnights = 0
@@ -68,7 +66,6 @@ class Game:
         player.justBoughtRoadBuildingCard = 0
         player.yearOfPlentyCard += player.justBoughtYearOfPlentyCard
         player.justBoughtYearOfPlentyCard = 0
-
         if(player.unusedKnights > 0 and not turnCardUsed):
             actualEvaluation = Board().actualEvaluation()
             afterKnight, place = player.evaluate(Move.useKnight)
@@ -76,23 +73,27 @@ class Game:
                 Move.useKnight(player, place)
                 print("BEFORE ROLL DICE: ", Move.useKnight, "\n")
                 turnCardUsed = True 
-
         dicesValue = self.rollDice()
         print("Dice value: ", dicesValue)
-
         if(dicesValue == 7):
             print("############# SEVEN! #############")
-            #self.sevenOnDices(player)
         else:
             self.dice_production(dicesValue)
 
         move, thingNeeded = self.bestMove(player, turnCardUsed)
+        print("Player ", player.id, " mossa: ", move, " ")
 
-        while(move != Move.passTurn): # move è una funzione 
-            move(player, thingNeeded)
-            print("Player ", player.id, " mossa: ", move, " ")
-            player.printStats()
+        move(player, thingNeeded)
+        if(move in Move.cardMoves()):
+                turnCardUsed = True
+
+        while(move != Move.passTurn and player.victoryPoints < 10): # move è una funzione 
             move, thingNeeded = self.bestMove(player, turnCardUsed)
+            print("Player ", player.id, " mossa: ", move, " ")
+            move(player, thingNeeded)
+            if(move in Move.cardMoves()):
+                turnCardUsed = True
+            #player.printStats()
         
     def doInitialChoise(self, player: Player):
         evaluation, colonyChoosen = player.evaluate(Move.placeFreeColony)
@@ -134,15 +135,24 @@ class Game:
 
         while won == False:
             playerTurn = self.players[turn%self.nplayer]
+            #time.sleep(1)
+            turn += 1
             if(playerTurn.victoryPoints >= 10):
                 won = True
+                playerTurn.printStats()
                 print("Il vincitore è il Player ", str(playerTurn.id), "!")
-            self.doTurn(playerTurn)
-            #time.sleep(2)
-            turn += 1
+                return
+            else:
+                self.doTurn(playerTurn)
+
+            if(playerTurn.victoryPoints >= 10):
+                won = True
+                playerTurn.printStats()
+                print("Il vincitore è il Player ", str(playerTurn.id), "!")
+                return
+
             if(turn % 4 == 0):
                 print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
-
 g = Game()
 g.playGame()
 

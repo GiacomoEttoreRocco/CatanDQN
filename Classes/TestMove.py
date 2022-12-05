@@ -19,8 +19,5 @@ class TestMove(unittest.TestCase):
         self.assertEqual(previousWood+4, Bank().resources["wood"])
         self.assertEqual(previousCrop-1, Bank().resources["crop"])
 
-
-
-
 if __name__ == '__main__':
     unittest.main()

@@ -18,12 +18,13 @@ def placeFreeColony(player: Player, place: Place, undo = False):
         Board().places[place.id].isColony = True
         player.victoryPoints+=1
         player.nColonies+=1
-
+        player.debugColonies.append(place.id)
     else:
         Board().places[place.id].owner = 0
         Board().places[place.id].isColony = False
         player.victoryPoints-=1
         player.nColonies-=1
+        del player.debugColonies[-1]
 
 def placeStreet(player, edge, undo = False):
     if(not undo):
@@ -38,32 +39,35 @@ def placeStreet(player, edge, undo = False):
         Board().edges[edge] = 0
         player.nStreets-=1
 
-def placeColony(player, place, undo = False):
+def placeColony(player, place: Place, undo = False):
     if(not undo):
         player.useResource("wood")
         player.useResource("clay")
         player.useResource("crop")
         player.useResource("sheep")
 
-        Board().places[place].owner = player.id
-        Board().places[place].isColony = True
+        place.owner = player.id
+        place.isColony = True
 
         player.victoryPoints+=1
         player.nColonies+=1
+        player.debugColonies.append(place.id)
 
-        if(Board().places[place].harbor != ""):
-            player.ownedHarbors.append(Board().places[place].harbor)
+        if(place.harbor != ""):
+            player.ownedHarbors.append(place.harbor)
     else:
         Bank().giveResource(player, "wood")   
         Bank().giveResource(player, "clay")  
         Bank().giveResource(player, "crop")   
         Bank().giveResource(player, "sheep")  
 
-        Board().places[place].owner = 0
-        Board().places[place].isColony = False
+        place.owner = 0
+        place.isColony = False
         player.victoryPoints-=1
         player.nColonies-=1
-        if(Board().places[place].harbor != ""):
+        del player.debugColonies[-1]
+
+        if(place.harbor != ""):
             del player.ownedHarbors[-1]
 
 def placeCity(player, place, undo = False):
@@ -78,6 +82,8 @@ def placeCity(player, place, undo = False):
         Board().places[place].isCity = True
         player.victoryPoints+=1
         player.nCities+=1
+        player.nColonies-=1
+
     else:
         Bank().giveResource(player, "iron")
         Bank().giveResource(player, "iron")
@@ -89,24 +95,31 @@ def placeCity(player, place, undo = False):
         Board().places[place].isCity = False
         player.victoryPoints-=1
         player.nCities-=1
+        player.nColonies+=1
+
 
 def buyDevCard(player, card, undo = False):
     if(not undo):
         player.useResource("iron")
         player.useResource("crop")
         player.useResource("sheep")
-        card = Board().deck[0]
+
+        card = Board().deck[0] ##### IL DECK VIENE TOCCATO QUA
+
         if(card == "knight"):
-            player.justBoughtKnights = player.justBoughtKnights +1
+            player.justBoughtKnights += 1
         if(card == "monopoly"):
-            player.justBoughtMonopolyCard = player.justBoughtMonopolyCard +1
+            player.justBoughtMonopolyCard += 1
         if(card == "road_building"):
-            player.justBoughtRoadBuildingCard = player.justBoughtRoadBuildingCard +1
+            player.justBoughtRoadBuildingCard += 1
         if(card == "year_of_plenty"):
-            player.justBoughtYearOfPlentyCard = player.justBoughtYearOfPlentyCard +1
+            player.justBoughtYearOfPlentyCard += 1
         if(card == "victory_point"):
-            player.victoryPoints = player.victoryPoints + 1
+            player.victoryPoints += 1
+            player.victoryPointsCards += 1
+
         Board().deck = Board().deck[:1] 
+
     else:
         print("Debug: BUG wrong way. (riga 114 move")
         Bank().giveResource(player, "iron")
@@ -151,10 +164,8 @@ def tradeBank(player, coupleOfResources, undo = False):
     toTake, toGive = coupleOfResources
     if(not undo):
         Bank().giveResource(player, toTake)
-        for i in range(0, Bank().resourceToAsk(player, toGive)):
+        for _ in range(0, Bank().resourceToAsk(player, toGive)):
             player.useResource(toGive)
-        # player.resources[toGive] -= Bank().resourceToAsk(player, toGive)
-        # Bank().resources[toGive] += Bank().resourceToAsk(player, toGive)
         print("TAKEN 1", toTake, " GIVEN ", Bank().resourceToAsk(player, toGive), toGive)
     else:
         player.useResource(toTake)
@@ -172,6 +183,12 @@ def useMonopolyCard(player, resource):
     return
     
 def useRoadBuildingCard(player, edges, undo = False):
+
+    if(not undo):
+        player.roadBuildingCard -= 1
+    else:
+        player.roadBuildingCard += 1
+
     placeFreeStreet(player, edges[0], undo)
     placeFreeStreet(player, edges[1], undo)
 

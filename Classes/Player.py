@@ -5,8 +5,13 @@ import random
 
 class Player: 
     def __init__(self, id, game):
+
+        self.debugColonies = []
+
         self.id = id
         self.victoryPoints = 0
+        self.victoryPointsCards = 0
+
         self.game = game
 
         self.nColonies = 0
@@ -28,7 +33,6 @@ class Player:
 
         # RESOURCES:
         self.resources = {"wood" : 0, "clay" : 0, "crop": 0, "sheep": 0, "iron": 0}
-        #self.resources = {"wood" : 2, "clay" : 2, "crop": 2, "sheep": 2, "iron": 2} #DEBUG
 
         #HARBORS: 
         self.ownedHarbors = []
@@ -51,7 +55,6 @@ class Player:
         self.resources[resource] -= 1
         Bank().resources[resource] += 1
 
-
     def printStats(self):
         print("ID:  ", self.id," ", self.resources, ".",
             "\nIt has :" ,self.victoryPoints, " points. \
@@ -61,7 +64,10 @@ class Player:
             "\nNumber of used knights: ", self.usedKnights, \
             "\nNumber of unused knights: ", self.unusedKnights, \
             "\nNumber of just bought knights: ", self.justBoughtKnights, \
-            "\nBank resources:", Bank().resources)
+            "\nNumber of VP card: ", self.victoryPointsCards, \
+            "\nBank resources:", Bank().resources,
+            "\nOwned colonies: ", self.debugColonies)
+
 
     def printResources(self):
          print("Print resources of player:  ", self.id," ", self.resources, "\n.")
@@ -71,7 +77,10 @@ class Player:
 
         availableMoves = [Move.passTurn]
 
-        if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1): 
+        if(self.resources["crop"] >= 1 and self.resources["iron"] >= 1 and self.resources["sheep"] >= 1):
+            availableMoves.append(Move.buyDevCard)
+
+        if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.calculatePossibleColony() == []): # TEMPORANEAMENTE
             availableMoves.append(Move.placeStreet)
 
         if(self.resources["wood"] >= 1  and self.resources["clay"] >= 1 and self.resources["sheep"] >= 1 and self.resources["crop"] >= 1):
@@ -79,9 +88,6 @@ class Player:
 
         if(self.resources["iron"] >= 3 and self.resources["crop"] >= 2):
             availableMoves.append(Move.placeCity)
-
-        #if(self.resources["iron"] >= 1 and self.resources["crop"] >= 1 and self.resources["sheep"] >= 1 and len(Board().deck) > 0):
-        #    availableMoves.append(Move.buyDevCard)
 
         canTrade = False
         for resource in self.resources.keys():
@@ -166,13 +172,14 @@ class Player:
             if(p.owner == 0):
                 for p_adj in Board().graph.listOfAdj[p.id]:
                     edge = tuple(sorted([p.id, p_adj]))
-                    if(Board().edges[edge] == self.id): #controlliamo che l'arco appartenga al giocatore, edges è un dictionary che prende in input l'edge e torna il peso
+                    if(Board().edges[edge] == self.id): #controlliamo che l'arco appartenga al giocatore, edges è un dictionary che prende in input l'edge e torna l'owner (il peso)
                         available = True
                         for p_adj_adj in Board().graph.listOfAdj[p_adj]:
                             if(Board().places[p_adj_adj].owner != 0):
                                 available = False
-                        if(available):
-                            possibleColonies.append(p_adj)
+                        if(available and Board().places[p_adj].owner == 0): # soluzione temporanea
+                            possibleColonies.append(Board().places[p_adj])
+        print("POSSIBLE COLONIES: ", possibleColonies)
         return possibleColonies
 
     def calculatePossibleCity(self):
@@ -339,9 +346,7 @@ class Player:
         return sum(self.resources.values())
 
     def moveValue(self, move, thingNeeded = None):
-        #print("Pre if, riga 300 in Player :, ", move)
         if(move == Move.passTurn):
-            #print("Debug linea 301 in Player, pass turn case.")
             return 0.2 + random.uniform(0, 1)
 
         if(move == Move.useKnight):
@@ -358,7 +363,7 @@ class Player:
 
         if(move == Move.buyDevCard):
             toRet = 1.5
-            return toRet + random.uniform(0,2)
+            return toRet + random.uniform(0,5)
 
         if(move == Move.useMonopolyCard):
             toRet = 100.0
@@ -371,15 +376,15 @@ class Player:
         if(move == Move.placeFreeStreet):
             toRet = 10.0
         if(move == Move.placeCity):
-            toRet = 1.0
+            toRet = 1000
         if(move == Move.placeColony):
-            toRet = 0.9
+            toRet = 900
         if(move == Move.placeStreet and self.calculatePossibleColony() != None):
             toRet = 0.0
         if(move == Move.placeStreet and self.calculatePossibleColony() == None):
             toRet = 1990
         if(move == Move.buyDevCard):
-            toRet = 0.6
+            toRet = 1.0
         if(move == Move.tradeBank):
             toRet = 20.0
         if(move == Move.useRoadBuildingCard):
@@ -389,9 +394,10 @@ class Player:
         if(move == Move.discardResource):
             toRet = 1.0 
 
-        print("VALUE OF THE BOARD: ", toRet)
+        #print("VALUE OF THE BOARD: ", toRet)
 
         move(self, thingNeeded, undo=True)
+
         return toRet + random.uniform(0,2)
 
 
