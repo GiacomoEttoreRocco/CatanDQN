@@ -80,7 +80,7 @@ class Player:
         if(self.resources["crop"] >= 1 and self.resources["iron"] >= 1 and self.resources["sheep"] >= 1):
             availableMoves.append(Move.buyDevCard)
 
-        if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.calculatePossibleColony() == []): # TEMPORANEAMENTE
+        if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.calculatePossibleColony() == [] and self.nStreets < 15): # TEMPORANEAMENTE
             availableMoves.append(Move.placeStreet)
 
         if(self.resources["wood"] >= 1  and self.resources["clay"] >= 1 and self.resources["sheep"] >= 1 and self.resources["crop"] >= 1):
@@ -177,7 +177,7 @@ class Player:
                         for p_adj_adj in Board().graph.listOfAdj[p_adj]:
                             if(Board().places[p_adj_adj].owner != 0):
                                 available = False
-                        if(available and Board().places[p_adj].owner == 0): # soluzione temporanea
+                        if(available and Board().places[p_adj].owner == 0 and self.nColonies < 5): # soluzione temporanea
                             possibleColonies.append(Board().places[p_adj])
         print("POSSIBLE COLONIES: ", possibleColonies)
         return possibleColonies
@@ -185,7 +185,7 @@ class Player:
     def calculatePossibleCity(self):
         possibleCities = []
         for p in Board().places:
-            if(p.owner == self.id and p.isColony == 1):
+            if(p.owner == self.id and p.isColony == 1 and self.nCities < 4):
                 possibleCities.append(p.id)
         return possibleCities
 
