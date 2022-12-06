@@ -121,7 +121,7 @@ class Place:
 class CatanGraph:
     def __init__(self):
         self.tiles = []
-        self.edges = ListOfEdges
+        self.edges = dict.copy(ListOfEdges)
         self.listOfAdj = ListOfAdj
         self.places = [Place(x) for x in range(0, 54)] # vanno inseriti per fare in modo che le tiles li condividano.
         self.tilesOnTheSea = [0,1,2,6,11,15,18,17,16,12,7,3]

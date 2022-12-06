@@ -220,14 +220,14 @@ class Game:
 
 if __name__ == "__main__":
     whoWon = []
-    for i in range(0, 10):
+    for i in range(0, 50):
         g = Game()
         whoWon.append(g.playGame().id)
         Board().reset()
         Bank().reset()
-        print(Board().places)
-        print(Board().edges)
-        time.sleep(4043)
+        #print(Board().places)
+        #print(Board().edges)
+        #time.sleep(4043)
 
 
     print("Who won? ", whoWon)
