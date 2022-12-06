@@ -229,7 +229,6 @@ if __name__ == "__main__":
         #print(Board().edges)
         #time.sleep(4043)
 
-
     print("Who won? ", whoWon)
 
 
