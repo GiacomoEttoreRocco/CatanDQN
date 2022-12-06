@@ -35,7 +35,7 @@ class Board: # deve diventare un singleton
         return cls.instance
 
     def reset(cls):
-        cls.instance = None
+        Board.instance = None
 
     def tilesPlacement(cls):
         number_index = 0

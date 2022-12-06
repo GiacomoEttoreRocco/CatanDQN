@@ -25,4 +25,4 @@ class Bank:
             print("Bank does not have this resource anymore.")
 
     def reset(cls):
-        cls.instance = None
+        Bank.instance = None

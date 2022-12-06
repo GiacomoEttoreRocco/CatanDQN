@@ -225,8 +225,6 @@ if __name__ == "__main__":
         whoWon.append(g.playGame().id)
         Board().reset()
         Bank().reset()
-        Board()
-        Bank()
         print(Board().places)
         print(Board().edges)
         time.sleep(4043)
