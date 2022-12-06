@@ -5,7 +5,7 @@ from GraphicTile import *
 from GraphicPlace import *
 from CatanGraph import *
 from lib2 import *
-from Board import *
+from Board import Board
 
 pygame.init()
 
