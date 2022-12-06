@@ -2,11 +2,14 @@ import Move
 from Bank import Bank
 from Board import Board
 import random
+import time
 
 class Player: 
     def __init__(self, id, game):
 
-        self.debugColonies = []
+        self.ownedColonies = []
+        self.ownedStreets = []
+        self.ownedCities = []
 
         self.id = id
         self.victoryPoints = 0
@@ -66,18 +69,23 @@ class Player:
             "\nNumber of just bought knights: ", self.justBoughtKnights, \
             "\nNumber of VP card: ", self.victoryPointsCards, \
             "\nBank resources:", Bank().resources,
-            "\nOwned colonies: ", self.debugColonies)
+            "\nOwned colonies: ", self.ownedColonies,
+            "\nOwned cities: ", self.ownedCities,
+            "\nOwned streets: ", self.ownedStreets,
+
+            "\nCONTROLLER OF THE LARGEST ARMY:  ", self.game.largestArmyPlayer.id,
+            "\nCONTROLLER OF THE LONGEST STREET:  ", self.game.longestStreetOwner.id, " of length: ", self.game.longestStreetLength)
 
 
     def printResources(self):
-         print("Print resources of player:  ", self.id," ", self.resources, "\n.")
+         print("Print resources of player:  ", self.id," ", self.resources, "\n")
         
 
     def availableMoves(self, turnCardUsed):
 
         availableMoves = [Move.passTurn]
 
-        if(self.resources["crop"] >= 1 and self.resources["iron"] >= 1 and self.resources["sheep"] >= 1):
+        if(self.resources["crop"] >= 1 and self.resources["iron"] >= 1 and self.resources["sheep"] >= 1 and len(Board().deck) > 0):
             availableMoves.append(Move.buyDevCard)
 
         if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.calculatePossibleColony() == [] and self.nStreets < 15): # TEMPORANEAMENTE
@@ -133,7 +141,9 @@ class Player:
         possibleEdges = []
         for edge in Board().edges.keys():
             if(Board().edges[edge] == self.id):
-                #print(edge)
+                if(edge == None):
+                    time.sleep(10)
+                    print(Board().edges[edge])
                 if(self.connectedEmptyEdges(edge) != None):
                     possibleEdges.extend(self.connectedEmptyEdges(edge))
         return possibleEdges
@@ -179,14 +189,14 @@ class Player:
                                 available = False
                         if(available and Board().places[p_adj].owner == 0 and self.nColonies < 5): # soluzione temporanea
                             possibleColonies.append(Board().places[p_adj])
-        print("POSSIBLE COLONIES: ", possibleColonies)
+        #print("POSSIBLE COLONIES: ", possibleColonies)
         return possibleColonies
 
     def calculatePossibleCity(self):
         possibleCities = []
         for p in Board().places:
             if(p.owner == self.id and p.isColony == 1 and self.nCities < 4):
-                possibleCities.append(p.id)
+                possibleCities.append(p)
         return possibleCities
 
     def calculatePossibleTrades(self):
@@ -220,6 +230,7 @@ class Player:
                     max = valutation
                     candidateEdge = edge
             return max, candidateEdge
+
         if(move == Move.placeFreeColony):
             possibleColony = self.calculatePossibleInitialColony()
             #print(possibleColony)
@@ -314,7 +325,7 @@ class Player:
             candidateRes = ()
             max = 0
             for res1 in Bank().resources.keys():
-                for res2 in Bank().resources.key():
+                for res2 in Bank().resources.keys():
                     valutation = self.moveValue(move, (res1, res2))
                     if(max < valutation):
                         max = valutation
@@ -369,28 +380,28 @@ class Player:
             toRet = 100.0
             return toRet
 
+        if(move == Move.placeFreeStreet or move == Move.placeStreet):
+            move(self, thingNeeded, False, True)
+            toRet = 16
+            move(self, thingNeeded, True, True) 
+            return toRet + random.uniform(0,2)
+
         move(self, thingNeeded)
-        #toRet = 0
+
         if(move == Move.placeFreeColony):
             toRet = 10.0
         if(move == Move.placeFreeStreet):
             toRet = 10.0
         if(move == Move.placeCity):
-            toRet = 1000
+            toRet = 100.0
         if(move == Move.placeColony):
-            toRet = 900
-        if(move == Move.placeStreet and self.calculatePossibleColony() != None):
-            toRet = 0.0
-        if(move == Move.placeStreet and self.calculatePossibleColony() == None):
-            toRet = 1990
-        if(move == Move.buyDevCard):
-            toRet = 1.0
+            toRet = 90.0
         if(move == Move.tradeBank):
-            toRet = 20.0
+            toRet = 15.0
         if(move == Move.useRoadBuildingCard):
             toRet = 2.0
         if(move == Move.useYearOfPlentyCard):
-            toRet = 2.0
+            toRet = 2000.0
         if(move == Move.discardResource):
             toRet = 1.0 
 

@@ -3,14 +3,21 @@ from Board import Board
 from Bank import Bank
 from CatanGraph import Place
 
-def placeFreeStreet(player, edge, undo = False):
+def placeFreeStreet(player, edge, undo = False, justCheck = False):
+    previousLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
     if(not undo):
         Board().edges[edge] = player.id
         player.nStreets+=1
+        player.ownedStreets.append(edge)
     else:
         Board().edges[edge] = 0
         player.nStreets-=1
+        del player.ownedStreets[-1]
 
+    actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
+    if(previousLongestStreetOwner != actualLongestStreetOwner):
+        actualLongestStreetOwner.victoryPoints += 2
+        previousLongestStreetOwner.victoryPoints -= 2
 
 def placeFreeColony(player: Player, place: Place, undo = False):
     if(not undo):
@@ -18,26 +25,37 @@ def placeFreeColony(player: Player, place: Place, undo = False):
         Board().places[place.id].isColony = True
         player.victoryPoints+=1
         player.nColonies+=1
-        player.debugColonies.append(place.id)
+        player.ownedColonies.append(place.id)
     else:
         Board().places[place.id].owner = 0
         Board().places[place.id].isColony = False
         player.victoryPoints-=1
         player.nColonies-=1
-        del player.debugColonies[-1]
+        del player.ownedColonies[-1]
 
-def placeStreet(player, edge, undo = False):
+def placeStreet(player, edge, undo = False, justCheck = False):
+    previousLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
     if(not undo):
         player.useResource("wood")
         player.useResource("clay")
         Board().edges[edge] = player.id
         player.nStreets+=1
-
+        player.ownedStreets.append(edge)
+        # actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
+        # if(previousLongestStreetOwner != actualLongestStreetOwner):
+        #     actualLongestStreetOwner.victoryPoints += 2
+        #     previousLongestStreetOwner.victoryPoints -= 2
     else:
         Bank().giveResource(player, "wood")   
         Bank().giveResource(player, "clay")    
         Board().edges[edge] = 0
         player.nStreets-=1
+        del player.ownedStreets[-1]
+    actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
+    if(previousLongestStreetOwner != actualLongestStreetOwner):
+        actualLongestStreetOwner.victoryPoints += 2
+        previousLongestStreetOwner.victoryPoints -= 2
+
 
 def placeColony(player, place: Place, undo = False):
     if(not undo):
@@ -51,7 +69,7 @@ def placeColony(player, place: Place, undo = False):
 
         player.victoryPoints+=1
         player.nColonies+=1
-        player.debugColonies.append(place.id)
+        player.ownedColonies.append(place.id)
 
         if(place.harbor != ""):
             player.ownedHarbors.append(place.harbor)
@@ -65,12 +83,12 @@ def placeColony(player, place: Place, undo = False):
         place.isColony = False
         player.victoryPoints-=1
         player.nColonies-=1
-        del player.debugColonies[-1]
+        del player.ownedColonies[-1]
 
         if(place.harbor != ""):
             del player.ownedHarbors[-1]
 
-def placeCity(player, place, undo = False):
+def placeCity(player, place: Place, undo = False):
     if(not undo):
         player.useResource("iron")
         player.useResource("iron")
@@ -78,11 +96,13 @@ def placeCity(player, place, undo = False):
         player.useResource("crop")
         player.useResource("crop")
 
-        Board().places[place].isColony = False
-        Board().places[place].isCity = True
+        Board().places[place.id].isColony = False
+        Board().places[place.id].isCity = True
         player.victoryPoints+=1
         player.nCities+=1
         player.nColonies-=1
+        player.ownedCities.append(place.id)
+
 
     else:
         Bank().giveResource(player, "iron")
@@ -91,12 +111,12 @@ def placeCity(player, place, undo = False):
         Bank().giveResource(player, "crop")
         Bank().giveResource(player, "crop")
 
-        Board().places[place].isColony = True
-        Board().places[place].isCity = False
+        Board().places[place.id].isColony = True
+        Board().places[place.id].isCity = False
         player.victoryPoints-=1
         player.nCities-=1
         player.nColonies+=1
-
+        del player.ownedCities[-1]
 
 def buyDevCard(player, card, undo = False):
     if(not undo):
@@ -117,8 +137,7 @@ def buyDevCard(player, card, undo = False):
         if(card == "victory_point"):
             player.victoryPoints += 1
             player.victoryPointsCards += 1
-
-        Board().deck = Board().deck[:1] 
+        Board().deck = Board().deck[1:] 
 
     else:
         print("Debug: BUG wrong way. (riga 114 move")
@@ -155,9 +174,7 @@ def useKnight(player, tilePosition, undo = False, justCheck = False):
     postMoveLargArmy = player.game.largestArmy(justCheck)
     if(largArmy != postMoveLargArmy):
         postMoveLargArmy.victoryPoints += 2 
-        print("Debug +2 punti, largest riga 153, move")
         largArmy.victoryPoints -= 2
-        print("Debug -2 punti, largest riga 153, move")
     return previousPosition
 
 def tradeBank(player, coupleOfResources, undo = False):
@@ -166,12 +183,12 @@ def tradeBank(player, coupleOfResources, undo = False):
         Bank().giveResource(player, toTake)
         for _ in range(0, Bank().resourceToAsk(player, toGive)):
             player.useResource(toGive)
-        print("TAKEN 1", toTake, " GIVEN ", Bank().resourceToAsk(player, toGive), toGive)
+        #print("TAKEN 1", toTake, " GIVEN ", Bank().resourceToAsk(player, toGive), toGive)
     else:
         player.useResource(toTake)
         for i in range(0, Bank().resourceToAsk(player, toGive)):
             Bank().giveResource(player, toGive)
-        print("UNDO OF: TAKEN 1", toTake, " GIVEN ", Bank().resourceToAsk(player, toGive), toGive)
+        #print("UNDO OF: TAKEN 1", toTake, " GIVEN ", Bank().resourceToAsk(player, toGive), toGive)
 
 def useMonopolyCard(player, resource):
     player.monopolyCard = player.monopolyCard - 1

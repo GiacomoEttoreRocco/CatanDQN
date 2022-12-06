@@ -10,7 +10,12 @@ class Game:
 
         self.nplayer = num_players
         self.players = [Player.Player(i+1, self) for i in range(0, num_players)]
+
         self.largestArmyPlayer = Player.Player(0, self)
+        self.longestStreetOwner = Player.Player(0, self)
+        self.longestStreetLength = 0
+
+        self.tmpVisitedEdges = []
 
     def dice_production(self, number):
         for tile in Board().tiles:
@@ -73,7 +78,11 @@ class Game:
                 Move.useKnight(player, place)
                 print("BEFORE ROLL DICE: ", Move.useKnight, "\n")
                 turnCardUsed = True 
+        if(self.checkWon(player)):
+            return
+        ####################################################################### ROLL DICES #####################################################################   
         dicesValue = self.rollDice()
+        ########################################################################################################################################################  
         print("Dice value: ", dicesValue)
         if(dicesValue == 7):
             print("############# SEVEN! #############")
@@ -81,19 +90,30 @@ class Game:
             self.dice_production(dicesValue)
 
         move, thingNeeded = self.bestMove(player, turnCardUsed)
-        print("Player ", player.id, " mossa: ", move, " ")
-
         move(player, thingNeeded)
+
+        print("Player ", player.id, " mossa: ", move, " ")
+        if(self.checkWon(player)):
+            return
+
         if(move in Move.cardMoves()):
                 turnCardUsed = True
 
-        while(move != Move.passTurn and player.victoryPoints < 10): # move è una funzione 
+        while(move != Move.passTurn and not self.checkWon(player)): # move è una funzione 
+
             move, thingNeeded = self.bestMove(player, turnCardUsed)
-            print("Player ", player.id, " mossa: ", move, " ")
             move(player, thingNeeded)
+            print("Player ", player.id, " mossa: ", move, " ")
+
             if(move in Move.cardMoves()):
                 turnCardUsed = True
-            #player.printStats()
+
+    def checkWon(self, player):
+        if(player.victoryPoints >= 10):
+            player.printStats()
+            print("Il vincitore è il Player ", str(player.id), "!")
+            return True
+        return False
         
     def doInitialChoise(self, player: Player):
         evaluation, colonyChoosen = player.evaluate(Move.placeFreeColony)
@@ -121,7 +141,54 @@ class Game:
         if(not justCheck and belonger.id != 0):
             self.largestArmyPlayer = self.players[belonger.id-1]
         return belonger
-            
+
+    def longestStreetPlace(self, player, newPlace, oldPlace):
+
+        placesToVisit = list.copy(Board().graph.listOfAdj[newPlace])
+        placesToVisit.remove(oldPlace)
+        max = 0
+        for p in placesToVisit:
+            edge = tuple(sorted([p, newPlace]))
+            #print("Inside : ", edge)
+            if(Board().edges[edge] == player.id and edge not in self.tmpVisitedEdges):
+                self.tmpVisitedEdges.append(edge)
+                #print("Visited edges: ", self.tmpVisitedEdges)
+                actual = 1 + self.longestStreetPlace(player, p, newPlace)
+                if(max < actual):
+                    max = actual
+        return max
+              
+    def longestStreet(self, player, edge):
+        self.tmpVisitedEdges.append(edge)
+        toRet =  1 + self.longestStreetPlace(player, edge[0], edge[1]) + self.longestStreetPlace(player, edge[1], edge[0])
+        return toRet
+
+    def calculateLongestStreet(self, player):
+        self.tmpVisitedEdges = []
+        max = 0
+        for edge in player.ownedStreets:
+            if edge not in self.tmpVisitedEdges:
+                actual = self.longestStreet(player, edge)
+                #print(actual)
+                if(max < actual):
+                    max = actual
+        return max
+
+    def longestStreetPlayer(self, justCheck = False):
+        max = 4 ################################################################################################################################################################
+        belonger = self.longestStreetOwner
+        for p in self.players:
+            actual = self.calculateLongestStreet(p)
+            if(max < actual):
+                max = actual
+                belonger = p
+        if(not justCheck):
+            if(belonger != self.longestStreetOwner):
+                self.longestStreetOwner = belonger
+                self.longestStreetLength = max
+                print("riga 189 game: ", max)
+        return belonger
+
     def playGame(self):
         turn = 1 
         won = False
@@ -134,27 +201,24 @@ class Game:
             p.printStats()
 
         while won == False:
+
             playerTurn = self.players[turn%self.nplayer]
-            #time.sleep(1)
+            #time.sleep(5)
             turn += 1
-            if(playerTurn.victoryPoints >= 10):
-                won = True
-                playerTurn.printStats()
-                print("Il vincitore è il Player ", str(playerTurn.id), "!")
-                return
-            else:
-                self.doTurn(playerTurn)
+
+            playerTurn.printStats()
+
+            self.doTurn(playerTurn)
 
             if(playerTurn.victoryPoints >= 10):
-                won = True
-                playerTurn.printStats()
-                print("Il vincitore è il Player ", str(playerTurn.id), "!")
                 return
 
             if(turn % 4 == 0):
                 print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
-g = Game()
-g.playGame()
+
+if __name__ == "__main__":
+    g = Game()
+    g.playGame()
 
 
 
