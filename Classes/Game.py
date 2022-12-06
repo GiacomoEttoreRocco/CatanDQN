@@ -186,10 +186,12 @@ class Game:
             if(belonger != self.longestStreetOwner):
                 self.longestStreetOwner = belonger
                 self.longestStreetLength = max
-                print("riga 189 game: ", max)
+                #print("riga 189 game: ", max)
         return belonger
 
     def playGame(self):
+        Board().reset()
+        Bank().reset()
         turn = 1 
         won = False
         # START INIZIALE
@@ -211,14 +213,26 @@ class Game:
             self.doTurn(playerTurn)
 
             if(playerTurn.victoryPoints >= 10):
-                return
+                return playerTurn
 
             if(turn % 4 == 0):
                 print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
 
 if __name__ == "__main__":
-    g = Game()
-    g.playGame()
+    whoWon = []
+    for i in range(0, 10):
+        g = Game()
+        whoWon.append(g.playGame().id)
+        Board().reset()
+        Bank().reset()
+        Board()
+        Bank()
+        print(Board().places)
+        print(Board().edges)
+        time.sleep(4043)
+
+
+    print("Who won? ", whoWon)
 
 
 

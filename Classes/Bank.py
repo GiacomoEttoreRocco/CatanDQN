@@ -23,3 +23,6 @@ class Bank:
             cls.resources[resource] -= 1
         else:
             print("Bank does not have this resource anymore.")
+
+    def reset(cls):
+        cls.instance = None

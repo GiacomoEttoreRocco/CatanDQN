@@ -112,10 +112,6 @@ class Place:
 
     def __repr__(self):
         s = str(self.id) + " OWNER: " + str(self.owner) + " IsColony: " + str(self.isColony) + " IsCity: " + str(self.isCity)  #+ "Touched resources:"
-        #for r in self.touchedResourses:
-        #    s = s + " " + r
-        #if(self.harbor != ""):
-        #    s = s + ", Harbor: " + self.harbor
         s += "\n"
         return s
     
@@ -123,7 +119,7 @@ class Place:
         self.adj.append(n)
 
 class CatanGraph:
-    def __init__(self, doPlacement=True):
+    def __init__(self):
         self.tiles = []
         self.edges = ListOfEdges
         self.listOfAdj = ListOfAdj

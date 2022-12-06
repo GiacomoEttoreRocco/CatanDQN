@@ -18,21 +18,24 @@ class Board: # deve diventare un singleton
             cls.deck = np.random.permutation(cls.deck)
 
             cls.graph = cg.CatanGraph()
-            cls.tiles = cls.graph.tiles
-            cls.places = cls.graph.places
-            cls.edges = cls.graph.edges
+            cls.tiles = list.copy(cls.graph.tiles)
+            cls.places = list.copy(cls.graph.places)
+            cls.edges = dict.copy(cls.graph.edges)
 
             #   PERMUTATIONS: 
-            cls.numbers = np.random.permutation(cls.graph.numbers)
-            cls.resources = np.random.permutation(cls.graph.resources)
-            cls.harbors = np.random.permutation(cls.graph.harbors)
-            cls.tilesOnTheSea = np.random.permutation(cls.graph.tilesOnTheSea)
+            cls.numbers = np.random.permutation(list.copy(cls.graph.numbers))
+            cls.resources = np.random.permutation(list.copy(cls.graph.resources))
+            cls.harbors = np.random.permutation(list.copy(cls.graph.harbors))
+            cls.tilesOnTheSea = np.random.permutation(list.copy(cls.graph.tilesOnTheSea))
 
             if(doPlacement):
                 print("\n Tiles placement...\n")
                 cls.tilesPlacement(cls)
 
         return cls.instance
+
+    def reset(cls):
+        cls.instance = None
 
     def tilesPlacement(cls):
         number_index = 0

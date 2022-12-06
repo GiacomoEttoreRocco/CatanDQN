@@ -79,7 +79,6 @@ class Player:
 
     def printResources(self):
          print("Print resources of player:  ", self.id," ", self.resources, "\n")
-        
 
     def availableMoves(self, turnCardUsed):
 
@@ -88,7 +87,7 @@ class Player:
         if(self.resources["crop"] >= 1 and self.resources["iron"] >= 1 and self.resources["sheep"] >= 1 and len(Board().deck) > 0):
             availableMoves.append(Move.buyDevCard)
 
-        if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.calculatePossibleColony() == [] and self.nStreets < 15): # TEMPORANEAMENTE
+        if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.calculatePossibleColony() == [] and self.nStreets < 15 and self.calculatePossibleEdges() != None): # TEMPORANEAMENTE
             availableMoves.append(Move.placeStreet)
 
         if(self.resources["wood"] >= 1  and self.resources["clay"] >= 1 and self.resources["sheep"] >= 1 and self.resources["crop"] >= 1):
@@ -161,7 +160,6 @@ class Player:
         return toRet
 
     def calculatePossibleInitialStreets(self):
-        #toRet = []
         for p in Board().places:
             if(p.owner == self.id):
                 streetOccupied = False
