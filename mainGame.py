@@ -2,7 +2,7 @@ import Classes as c
 
 if __name__ == "__main__":
     whoWon = []
-    for i in range(0, 100):
+    for i in range(0, 1):
         g = c.Game.Game()
         whoWon.append(g.playGame().id)
         c.Board.Board().reset()

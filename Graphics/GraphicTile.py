@@ -1,7 +1,8 @@
-from geomlib import *
+import Graphics.geomlib as geomlib
+
 class GraphicTile():
     def __init__(self, axialCoords, tile):
-        self.hex = Axial_Hex(axialCoords)  # Hex representation of this tile
+        self.hex = geomlib.Axial_Hex(axialCoords)  # Hex representation of this tile
         self.resource = tile.resource
         self.coord = axialCoords
         self.pixelCenter = None  # Pixel coordinates of hex as Point(x, y)

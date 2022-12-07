@@ -1,5 +1,5 @@
-from GameView import *
+import Graphics.GameView as GameView
 
-view = GameView()
+view = GameView.GameView()
 
 view.displayGameScreen()
