@@ -5,7 +5,7 @@ import Graphics.geomlib as geomlib
 import Classes.CatanGraph  as cg
 import Classes.Board as Board
 import Graphics.PlaceCoordinates as pc
-
+import os
 
 pygame.init()
 
@@ -25,6 +25,7 @@ class GameView:
         # Dictionary to store RGB Color values
         colorDict_RGB = {"clay": (255, 51, 51), "iron": (128, 128, 128), "crop": (255, 255, 51), "wood": (0, 153, 0),
                          "sheep": (51, 255, 51), "desert": (255, 255, 204)}
+        imgDict = {"clay": "iron.jpg", "iron": "iron.jpg", "crop": "iron.jpg", "wood": "iron.jpg", "sheep": "iron.jpg", "desert": "iron.jpg"}
         pygame.draw.rect(self.screen, pygame.Color('white'),
                          (0, 0, 1000, 800))  # blue background
 
@@ -44,8 +45,16 @@ class GameView:
             graphicTile.pixelCenter = geomlib.hex_to_pixel(flat, graphicTile.hex)
             #resourceText = self.font_resource.render(str(boardtile.resource) + " " +str(boardtile.number), False, (0, 0, 0))
             resourceText = self.font_resource.render(str(boardtile.number), False, (0, 0, 0))
-            self.screen.blit(resourceText, (graphicTile.pixelCenter.x-25, graphicTile.pixelCenter.y-30))
+            sourceFileDir = os.path.dirname(os.path.abspath(__file__))
+            imgPath = os.path.join(sourceFileDir, imgDict[boardtile.resource])
+            image = pygame.image.load(imgPath).convert_alpha()
+            mask = image.copy()
+            mask = pygame.transform.scale(mask, (80, 80))
+            self.screen.blit(mask, (graphicTile.pixelCenter.x - 40, graphicTile.pixelCenter.y - 40))
+            self.screen.blit(resourceText, (graphicTile.pixelCenter.x - 25, graphicTile.pixelCenter.y - 30))
             hex_i += 1
+
+
         return None
 
     def setupInitialPlaces(self):
