@@ -53,8 +53,8 @@ class Board: # deve diventare un singleton
         #    print(harbor)
         i = 0
         for edge in cls.EdgesOnTheSea:
-            harbor = cls.harbors[i]
             if(cls.availableForHarbor(cls, edge) and i < len(cls.harbors)):
+                harbor = cls.harbors[i]
                 cls.places[edge[0]].harbor = harbor
                 cls.places[edge[1]].harbor = harbor
                 i += 1
