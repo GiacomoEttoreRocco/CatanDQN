@@ -1,7 +1,7 @@
-import Player
-from Board import Board
-from Bank import Bank
-import Move
+import Classes.Player as Player
+import Classes.Board as Board
+import Classes.Bank as Bank
+import Classes.Move as Move
 import random
 import time
 
@@ -18,17 +18,17 @@ class Game:
         self.tmpVisitedEdges = []
 
     def dice_production(self, number):
-        for tile in Board().tiles:
-            if tile.number == number and tile != Board().robberTile:
+        for tile in Board.Board().tiles:
+            if tile.number == number and tile != Board.Board().robberTile:
                 for p in tile.associatedPlaces:
-                    if(Board().places[p].owner != 0):
-                        if(Board().places[p].isColony):
-                            print(self.players[Board().places[p].owner-1].id, "TAKEN ", tile.resource, "\n")
-                            Bank().giveResource(self.players[Board().places[p].owner-1], tile.resource)
-                        elif(Board().places[p].isCity):
-                            print(self.players[Board().places[p].owner-1].id, "TAKEN 2 ", tile.resource, "\n")
-                            Bank().giveResource(self.players[Board().places[p].owner-1], tile.resource)
-                            Bank().giveResource(self.players[Board().places[p].owner-1], tile.resource)
+                    if(Board.Board().places[p].owner != 0):
+                        if(Board.Board().places[p].isColony):
+                            print(self.players[Board.Board().places[p].owner-1].id, "TAKEN ", tile.resource, "\n")
+                            Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
+                        elif(Board.Board().places[p].isCity):
+                            print(self.players[Board.Board().places[p].owner-1].id, "TAKEN 2 ", tile.resource, "\n")
+                            Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
+                            Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
 
     def bestMove(self, player: Player, usedCard):
         moves = player.availableMoves(usedCard)
@@ -72,7 +72,7 @@ class Game:
         player.yearOfPlentyCard += player.justBoughtYearOfPlentyCard
         player.justBoughtYearOfPlentyCard = 0
         if(player.unusedKnights > 0 and not turnCardUsed):
-            actualEvaluation = Board().actualEvaluation()
+            actualEvaluation = Board.Board().actualEvaluation()
             afterKnight, place = player.evaluate(Move.useKnight)
             if(afterKnight > actualEvaluation):
                 Move.useKnight(player, place)
@@ -123,7 +123,7 @@ class Game:
         evaluation, edgeChoosen = player.evaluate(Move.placeFreeStreet)
         Move.placeFreeStreet(player, edgeChoosen)
         print(" edge: ", edgeChoosen[0], " - ", edgeChoosen[1], "\n")
-        print("edge owner: ", str(Board().edges[edgeChoosen]), "\n")
+        print("edge owner: ", str(Board.Board().edges[edgeChoosen]), "\n")
 
     def totalKnightsUsed(self):
         totKnightUsed = 0
@@ -144,13 +144,13 @@ class Game:
 
     def longestStreetPlace(self, player, newPlace, oldPlace):
 
-        placesToVisit = list.copy(Board().graph.listOfAdj[newPlace])
+        placesToVisit = list.copy(Board.Board().graph.listOfAdj[newPlace])
         placesToVisit.remove(oldPlace)
         max = 0
         for p in placesToVisit:
             edge = tuple(sorted([p, newPlace]))
             #print("Inside : ", edge)
-            if(Board().edges[edge] == player.id and edge not in self.tmpVisitedEdges):
+            if(Board.Board().edges[edge] == player.id and edge not in self.tmpVisitedEdges):
                 self.tmpVisitedEdges.append(edge)
                 #print("Visited edges: ", self.tmpVisitedEdges)
                 actual = 1 + self.longestStreetPlace(player, p, newPlace)
@@ -190,8 +190,8 @@ class Game:
         return belonger
 
     def playGame(self):
-        Board().reset()
-        Bank().reset()
+        Board.Board().reset()
+        Bank.Bank().reset()
         turn = 1 
         won = False
         # START INIZIALE
@@ -218,18 +218,19 @@ class Game:
             if(turn % 4 == 0):
                 print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
 
-if __name__ == "__main__":
-    whoWon = []
-    for i in range(0, 50):
-        g = Game()
-        whoWon.append(g.playGame().id)
-        Board().reset()
-        Bank().reset()
-        #print(Board().places)
-        #print(Board().edges)
-        #time.sleep(4043)
+# if __name__ == "__main__":
+#     whoWon = []
+#     for i in range(0, 1):
+#         g = Game()
+#         whoWon.append(g.playGame().id)
+#         Board.Board().reset()
+#         Bank.Bank().reset()
+#         #print(Board.Board().places)
+#         #print(Board.Board().edges)
+#         #time.sleep(4043)
 
-    print("Who won? ", whoWon)
+#     print("Who won? ", whoWon)
+
 
 
 

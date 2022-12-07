@@ -1,6 +1,7 @@
-import Move
-from Bank import Bank
-from Board import Board
+
+import Classes.Move as Move
+import Classes.Bank as Bank
+import Classes.Board as Board
 import random
 import time
 
@@ -56,7 +57,7 @@ class Player:
         if(self.resources[resource] < 0):
             "FATAL ERROR. You should not be able to use this method."
         self.resources[resource] -= 1
-        Bank().resources[resource] += 1
+        Bank.Bank().resources[resource] += 1
 
     def printStats(self):
         print("ID:  ", self.id," ", self.resources, ".",
@@ -68,7 +69,7 @@ class Player:
             "\nNumber of unused knights: ", self.unusedKnights, \
             "\nNumber of just bought knights: ", self.justBoughtKnights, \
             "\nNumber of VP card: ", self.victoryPointsCards, \
-            "\nBank resources:", Bank().resources,
+            "\nBank resources:", Bank.Bank().resources,
             "\nOwned colonies: ", self.ownedColonies,
             "\nOwned cities: ", self.ownedCities,
             "\nOwned streets: ", self.ownedStreets,
@@ -84,7 +85,7 @@ class Player:
 
         availableMoves = [Move.passTurn]
 
-        if(self.resources["crop"] >= 1 and self.resources["iron"] >= 1 and self.resources["sheep"] >= 1 and len(Board().deck) > 0):
+        if(self.resources["crop"] >= 1 and self.resources["iron"] >= 1 and self.resources["sheep"] >= 1 and len(Board.Board().deck) > 0):
             availableMoves.append(Move.buyDevCard)
 
         if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.calculatePossibleColony() == [] and self.nStreets < 15 and self.calculatePossibleEdges() != None): # TEMPORANEAMENTE
@@ -98,7 +99,7 @@ class Player:
 
         canTrade = False
         for resource in self.resources.keys():
-            if(Bank().resourceToAsk(self, resource) <= self.resources[resource]):
+            if(Bank.Bank().resourceToAsk(self, resource) <= self.resources[resource]):
                 canTrade = True
         if(canTrade):
                 availableMoves.append(Move.tradeBank)
@@ -121,52 +122,52 @@ class Player:
         p1 = edge[0]
         p2 = edge[1]
         toRet = []
-        if(Board().places[p1].owner == 0 or Board().places[p1].owner == self.id):
-            for p in Board().graph.listOfAdj[p1]:
+        if(Board.Board().places[p1].owner == 0 or Board.Board().places[p1].owner == self.id):
+            for p in Board.Board().graph.listOfAdj[p1]:
                 if(p2 != p):
                     edge = tuple(sorted([p1, p]))
-                    if(Board().edges[edge] == 0):
+                    if(Board.Board().edges[edge] == 0):
                         toRet.append(edge)
 
-        if(Board().places[p2].owner == 0 or Board().places[p2].owner == self.id):
-            for p in Board().graph.listOfAdj[p2]:
+        if(Board.Board().places[p2].owner == 0 or Board.Board().places[p2].owner == self.id):
+            for p in Board.Board().graph.listOfAdj[p2]:
                 if(p1 != p):
                     edge = tuple(sorted([p2, p]))
-                    if(Board().edges[edge] == 0):
+                    if(Board.Board().edges[edge] == 0):
                         toRet.append(edge)
         return toRet
 
     def calculatePossibleEdges(self):
         possibleEdges = []
-        for edge in Board().edges.keys():
-            if(Board().edges[edge] == self.id):
+        for edge in Board.Board().edges.keys():
+            if(Board.Board().edges[edge] == self.id):
                 if(edge == None):
                     time.sleep(10)
-                    print(Board().edges[edge])
+                    print(Board.Board().edges[edge])
                 if(self.connectedEmptyEdges(edge) != None):
                     possibleEdges.extend(self.connectedEmptyEdges(edge))
         return possibleEdges
 
     def calculatePossibleInitialColony(self):
         toRet = []
-        for p in Board().places:
+        for p in Board.Board().places:
             if(p.owner == 0):
                 available = True
-                for padj in Board().graph.listOfAdj[p.id]:
-                    if(Board().places[padj].owner != 0):
+                for padj in Board.Board().graph.listOfAdj[p.id]:
+                    if(Board.Board().places[padj].owner != 0):
                         available = False
                 if(available):
                     toRet.append(p)
         return toRet
 
     def calculatePossibleInitialStreets(self):
-        for p in Board().places:
+        for p in Board.Board().places:
             if(p.owner == self.id):
                 streetOccupied = False
                 toRet = []
-                for padj in Board().graph.listOfAdj[p.id]:
+                for padj in Board.Board().graph.listOfAdj[p.id]:
                     edge = tuple(sorted([p.id, padj]))
-                    if(Board().edges[edge] != 0):
+                    if(Board.Board().edges[edge] != 0):
                         streetOccupied = True
                     toRet.append(edge)
 
@@ -176,23 +177,23 @@ class Player:
 
     def calculatePossibleColony(self):
         possibleColonies = []
-        for p in Board().places:
+        for p in Board.Board().places:
             if(p.owner == 0):
-                for p_adj in Board().graph.listOfAdj[p.id]:
+                for p_adj in Board.Board().graph.listOfAdj[p.id]:
                     edge = tuple(sorted([p.id, p_adj]))
-                    if(Board().edges[edge] == self.id): #controlliamo che l'arco appartenga al giocatore, edges è un dictionary che prende in input l'edge e torna l'owner (il peso)
+                    if(Board.Board().edges[edge] == self.id): #controlliamo che l'arco appartenga al giocatore, edges è un dictionary che prende in input l'edge e torna l'owner (il peso)
                         available = True
-                        for p_adj_adj in Board().graph.listOfAdj[p_adj]:
-                            if(Board().places[p_adj_adj].owner != 0):
+                        for p_adj_adj in Board.Board().graph.listOfAdj[p_adj]:
+                            if(Board.Board().places[p_adj_adj].owner != 0):
                                 available = False
-                        if(available and Board().places[p_adj].owner == 0 and self.nColonies < 5): # soluzione temporanea
-                            possibleColonies.append(Board().places[p_adj])
+                        if(available and Board.Board().places[p_adj].owner == 0 and self.nColonies < 5): # soluzione temporanea
+                            possibleColonies.append(Board.Board().places[p_adj])
         #print("POSSIBLE COLONIES: ", possibleColonies)
         return possibleColonies
 
     def calculatePossibleCity(self):
         possibleCities = []
-        for p in Board().places:
+        for p in Board.Board().places:
             if(p.owner == self.id and p.isColony == 1 and self.nCities < 4):
                 possibleCities.append(p)
         return possibleCities
@@ -200,7 +201,7 @@ class Player:
     def calculatePossibleTrades(self):
         possibleTrades = []
         for resource in self.resources.keys():
-            if(self.resources[resource] >= Bank().resourceToAsk(self, resource)):
+            if(self.resources[resource] >= Bank.Bank().resourceToAsk(self, resource)):
                 for resourceToTake in self.resources.keys():
                     if(resourceToTake != resource):
                         possibleTrades.append((resourceToTake, resource))
@@ -283,7 +284,7 @@ class Player:
 
         if(move == Move.useKnight):
             max = 0
-            for tile in Board().tiles: 
+            for tile in Board.Board().tiles: 
                 valutation = self.moveValue(move, tile.identificator)
                 if(max < valutation):
                     max = valutation
@@ -292,7 +293,7 @@ class Player:
 
         if(move == Move.useRobber):
             max = 0
-            for tile in Board().tiles: 
+            for tile in Board.Board().tiles: 
                 valutation = self.moveValue(move, tile.identificator)
                 if(max < valutation):
                     max = valutation
@@ -312,7 +313,7 @@ class Player:
 
         if(move == Move.useMonopolyCard):
             max = 0
-            for res in Bank().resources.keys():
+            for res in Bank.Bank().resources.keys():
                 valutation = self.moveValue(move, res)
                 if(max < valutation):
                     max = valutation
@@ -322,8 +323,8 @@ class Player:
         if(move == Move.useYearOfPlentyCard):
             candidateRes = ()
             max = 0
-            for res1 in Bank().resources.keys():
-                for res2 in Bank().resources.keys():
+            for res1 in Bank.Bank().resources.keys():
+                for res2 in Bank.Bank().resources.keys():
                     valutation = self.moveValue(move, (res1, res2))
                     if(max < valutation):
                         max = valutation
@@ -409,4 +410,7 @@ class Player:
 
         return toRet + random.uniform(0,2)
 
+# import Move
+# import Bank
+# import Board
 

@@ -1,5 +1,3 @@
-from libb import *
-
 
 class GraphicTile():
     def __init__(self, axialCoords, tile):

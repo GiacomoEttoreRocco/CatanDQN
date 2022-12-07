@@ -1,4 +1,4 @@
-import Player
+import Classes.Player as Player
 
 class Bank:
     instance = None
@@ -26,3 +26,5 @@ class Bank:
 
     def reset(cls):
         Bank.instance = None
+
+

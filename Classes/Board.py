@@ -1,6 +1,6 @@
 import random
 import numpy as np
-import CatanGraph as cg
+import Classes.CatanGraph as CatanGraph
 
 class Board: # deve diventare un singleton
 
@@ -17,7 +17,7 @@ class Board: # deve diventare un singleton
             #   SHUFFLE DECK
             cls.deck = np.random.permutation(cls.deck)
 
-            cls.graph = cg.CatanGraph()
+            cls.graph = CatanGraph.CatanGraph()
             cls.tiles = cls.graph.tiles
             cls.places = cls.graph.places
             cls.edges = cls.graph.edges
@@ -41,10 +41,10 @@ class Board: # deve diventare un singleton
         number_index = 0
         for index, res in enumerate(cls.resources): 
             if(res == "desert"):
-                tile = cg.Tile(res, 7, index)
+                tile = CatanGraph.Tile(res, 7, index)
                 cls.tiles.append(tile)
             else:
-                tile = cg.Tile(res, cls.numbers[number_index], index)
+                tile = CatanGraph.Tile(res, cls.numbers[number_index], index)
                 number_index = number_index+1
                 cls.tiles.append(tile)
 

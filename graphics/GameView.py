@@ -1,14 +1,11 @@
-import sys
-
 import pygame
 from GraphicTile import *
 from GraphicPlace import *
-from CatanGraph import *
 from lib2 import *
-from Board import Board
+#from Classes.CatanGraph import CatanGraph
+from Classes.Board import Board
 
 pygame.init()
-
 
 class GameView:
     def __init__(self):
