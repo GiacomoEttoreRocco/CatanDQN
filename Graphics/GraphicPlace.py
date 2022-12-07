@@ -9,5 +9,5 @@ class GraphicPlace:
         self.harbor = None if place.harbor == "" else place.harbor
         self.isOnTheSea = place.isOnTheSea()
 
-    def setupCoords(self, x, y):
-        self.coords = (x, y)
+    def setupCoords(self, coords):
+        self.coords = (coords[0], coords[1])

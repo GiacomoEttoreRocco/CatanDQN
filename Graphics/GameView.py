@@ -3,7 +3,9 @@ import Graphics.GraphicTile as GraphicTile
 import Graphics.GraphicPlace as GraphicPlace
 import Graphics.geomlib as geomlib
 import Classes.CatanGraph  as cg
-from Classes.Board import Board
+import Classes.Board as Board
+import Graphics.PlaceCoordinates as pc
+
 
 pygame.init()
 
@@ -14,9 +16,9 @@ class GameView:
         self.graphicTileList = []
         self.graphicPlaceList = []
         self.screen = pygame.display.set_mode(size)
-        self.font_resource = pygame.font.SysFont('tahoma', 15)
-        self.font_harbors = pygame.font.SysFont('arialblack', 10)
-        self.font_robber = pygame.font.SysFont('arialblack', 50)
+        self.font_resource = pygame.font.SysFont('tahoma', 55)
+        self.font_harbors = pygame.font.SysFont('tahoma', 15)
+        self.font_robber = pygame.font.SysFont('tahoma', 50)
 
     # Function to display the initial board
     def displayInitialBoard(self):
@@ -29,10 +31,10 @@ class GameView:
         # Render each hexTile
         flat = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(80, 80),
                       geomlib.Point(500, 400))  # specify Layout
-        print(Board().tiles)
+        #print(Board.Board().tiles)
         width = 1000
         hex_i = 0
-        for boardtile in Board().tiles:
+        for boardtile in Board.Board().tiles:
             hexCoords = self.getHexCoords(hex_i)
             graphicTile = GraphicTile.GraphicTile(hexCoords, boardtile)
             self.graphicTileList.append(graphicTile)
@@ -40,14 +42,15 @@ class GameView:
             tileColorRGB = colorDict_RGB[boardtile.resource]
             pygame.draw.polygon(self.screen, pygame.Color(tileColorRGB[0], tileColorRGB[1], tileColorRGB[2]), hexTileCorners, width == 0)
             graphicTile.pixelCenter = geomlib.hex_to_pixel(flat, graphicTile.hex)
-            resourceText = self.font_resource.render(str(boardtile.resource) + " \n" +str(boardtile.number), False, (0, 0, 0))
-            self.screen.blit(resourceText, (graphicTile.pixelCenter.x - 25, graphicTile.pixelCenter.y))
+            #resourceText = self.font_resource.render(str(boardtile.resource) + " " +str(boardtile.number), False, (0, 0, 0))
+            resourceText = self.font_resource.render(str(boardtile.number), False, (0, 0, 0))
+            self.screen.blit(resourceText, (graphicTile.pixelCenter.x-25, graphicTile.pixelCenter.y-30))
             hex_i += 1
         return None
 
     def setupInitialPlaces(self):
-        print(Board().places)
-        for place in Board().places:
+        #print(Board.Board().places)
+        for place in Board.Board().places:
             self.graphicPlaceList.append(GraphicPlace.GraphicPlace(place))
         alreadyFound = []
         for gtile in self.graphicTileList:
@@ -56,14 +59,15 @@ class GameView:
                     for el in v:
                         if el not in alreadyFound:
                             placeToAdd = self.graphicPlaceList[el]
-                            placeToAdd.setupCoords(430.0, 360.0)        #A mano?
+
+                            placeToAdd.setupCoords(pc.placeCoordinates[placeToAdd.index])        
                             gtile.places.append(placeToAdd)
                             alreadyFound.append(el)
-            print(gtile.places)
+            #print(gtile.places)
 
         for gtile in self.graphicTileList:
             for place in gtile.places:
-                print(place.isCity)
+                #print(place.isCity)
                 self.drawPlace(place)
 
     def displayGameScreen(self):
@@ -91,10 +95,10 @@ class GameView:
         return coordDict[hex_i]
 
     def drawPlace(self, graphicPlace):
-        print(graphicPlace.harbor)
+        #print(graphicPlace.harbor)
         if graphicPlace.harbor is not None:
             harborText = self.font_harbors.render(graphicPlace.harbor, False, (0, 0, 0))
-            self.screen.blit(harborText, graphicPlace.coords)
+            self.screen.blit(harborText, (graphicPlace.coords[0] +10, graphicPlace.coords[1] +10))
         color = pygame.Color('grey')    #Needs to be taken from player
         if graphicPlace.isColony:
             pygame.draw.rect(self.screen, color, (graphicPlace.coords[0] - 5, graphicPlace.coords[1], 20, 20))
