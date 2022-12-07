@@ -1,4 +1,4 @@
-._pycache/
-.idea/
-.Classes/_pycache
-.Graphics/_pycache
+__pycache__/
+idea/
+Classes/_pycache_
+Graphics/__pycache__/
