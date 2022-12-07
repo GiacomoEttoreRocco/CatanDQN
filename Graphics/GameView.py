@@ -14,12 +14,9 @@ class GameView:
         self.graphicTileList = []
         self.graphicPlaceList = []
         self.screen = pygame.display.set_mode(size)
-        self.font_resource = pygame.font.SysFont('cambria', 15)
-        self.font_harbors = pygame.font.SysFont('cambria', 10)
-
-        self.font_button = pygame.font.SysFont('cambria', 12)
-        self.font_diceRoll = pygame.font.SysFont('cambria', 25)
-        self.font_Robber = pygame.font.SysFont('arialblack', 50)
+        self.font_resource = pygame.font.SysFont('tahoma', 15)
+        self.font_harbors = pygame.font.SysFont('arialblack', 10)
+        self.font_robber = pygame.font.SysFont('arialblack', 50)
 
     # Function to display the initial board
     def displayInitialBoard(self):
@@ -59,7 +56,7 @@ class GameView:
                     for el in v:
                         if el not in alreadyFound:
                             placeToAdd = self.graphicPlaceList[el]
-                            placeToAdd.setupCoords(gtile.pixelCenter.x, gtile.pixelCenter.y)        #A mano?
+                            placeToAdd.setupCoords(430.0, 360.0)        #A mano?
                             gtile.places.append(placeToAdd)
                             alreadyFound.append(el)
             print(gtile.places)
@@ -85,8 +82,12 @@ class GameView:
         return
 
     def getHexCoords(self, hex_i):
-        coordDict = {0: geomlib.Axial_Point(-1, -1), 1: geomlib.Axial_Point(-2, 0), 2: geomlib.Axial_Point(-2, 1), 3: geomlib.Axial_Point(-2, 2), 4: geomlib.Axial_Point(-1, 2), 5: geomlib.Axial_Point(0, 2), 6: geomlib.Axial_Point(1, 1), 7: geomlib.Axial_Point(2, 0), 8: geomlib.Axial_Point(2, -1), 9: geomlib.Axial_Point(2,-2), 10: geomlib.Axial_Point(1, -2),
-                        11: geomlib.Axial_Point(0, -2), 12: geomlib.Axial_Point(-1, 0), 13: geomlib.Axial_Point(-1, 1), 14: geomlib.Axial_Point(0, 1), 15: geomlib.Axial_Point(1, 0), 16: geomlib.Axial_Point(1, -1), 17: geomlib.Axial_Point(0, -1), 18: geomlib.Axial_Point(0, 0)}
+        coordDict = {0: geomlib.Axial_Point(0, -2), 1: geomlib.Axial_Point(1, -2), 2: geomlib.Axial_Point(2, -2),
+                     3: geomlib.Axial_Point(-1, -1), 4: geomlib.Axial_Point(0, -1), 5: geomlib.Axial_Point(1, -1),
+                     6: geomlib.Axial_Point(2, -1), 7: geomlib.Axial_Point(-2, 0), 8: geomlib.Axial_Point(-1, 0), 9: geomlib.Axial_Point(0, 0),
+                     10: geomlib.Axial_Point(1, 0), 11: geomlib.Axial_Point(2, 0), 12: geomlib.Axial_Point(-2, 1),
+                     13: geomlib.Axial_Point(-1, 1), 14: geomlib.Axial_Point(0, 1), 15: geomlib.Axial_Point(1, 1), 16: geomlib.Axial_Point(-2, 2),
+                     17: geomlib.Axial_Point(-1, 2), 18: geomlib.Axial_Point(0, 2)}
         return coordDict[hex_i]
 
     def drawPlace(self, graphicPlace):
@@ -102,7 +103,7 @@ class GameView:
         pygame.draw.circle(self.screen, color, graphicPlace.coords, 10)     #da togliere!
 
     def placeRobber(self):
-        robberText = self.font_Robber.render("R", False, (0, 0, 0))
+        robberText = self.font_robber.render("R", False, (0, 0, 0))
         for graphicTile in self.graphicTileList:
             if(graphicTile.robber):
                 robberCoords = graphicTile.pixelCenter
