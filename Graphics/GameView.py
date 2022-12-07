@@ -23,8 +23,8 @@ class GameView:
     # Function to display the initial board
     def displayInitialBoard(self):
         # Dictionary to store RGB Color values
-        colorDict_RGB = {"clay": (188, 74, 60), "iron": (128, 128, 128), "crop": (245, 222, 179), "wood": (0, 153, 0),
-                         "sheep": (51, 255, 51), "desert": pygame.Color('orange')}
+        colorDict_RGB = {"clay": (188, 74, 60), "iron": (128, 128, 128), "crop": pygame.Color('orange'), "wood": (0, 153, 0),
+                         "sheep": (51, 255, 51), "desert": (245, 222, 179) }
         imgDict = {"clay": "imgs/clay.png", "iron": "imgs/iron.png", "crop": "imgs/crop.png", "wood": "imgs/wood.png",
                    "sheep": "imgs/sheep.png", "desert": "imgs/desert.png"}
         pygame.draw.rect(self.screen, pygame.Color('lightblue'),
