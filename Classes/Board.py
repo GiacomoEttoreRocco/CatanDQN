@@ -26,7 +26,7 @@ class Board: # deve diventare un singleton
             cls.numbers = np.random.permutation(cls.graph.numbers)
             cls.resources = np.random.permutation(cls.graph.resources)
             cls.harbors = np.random.permutation(cls.graph.harbors)
-            cls.tilesOnTheSea = np.random.permutation(cls.graph.tilesOnTheSea)
+            cls.EdgesOnTheSea = np.random.permutation(cls.graph.EdgesOnTheSea)
 
             if(doPlacement):
                 print("\n Tiles placement...\n")
@@ -36,6 +36,24 @@ class Board: # deve diventare un singleton
 
     def reset(cls):
         Board.instance = None
+
+    def availableForHarbor(cls, edge):
+        p1 = edge[0]
+        p2 = edge[1]
+        for pAdj in cls.graph.listOfAdj[p1]:
+            if(cls.places[pAdj].harbor != ""):
+                return False
+        for pAdj in cls.graph.listOfAdj[p2]:
+            if(cls.places[pAdj].harbor != ""):
+                return False
+        return True
+
+    def chooseTileHarbor(cls):
+        for harbor in cls.harbors:
+            for edge in cls.EdgesOnTheSea:
+                if(cls.availableForHarbor(cls, edge)):
+                    cls.places[edge[0]].harbor = harbor
+                    cls.places[edge[1]].harbor = harbor
 
     def tilesPlacement(cls):
         number_index = 0
@@ -48,40 +66,11 @@ class Board: # deve diventare un singleton
                 number_index = number_index+1
                 cls.tiles.append(tile)
 
-        alreadyHarborPlaceInEdge = []
-
-        for i in range(0, 9):
-            alreadyHarborPlaceInEdge = cls.chooseTileHarbor(cls, alreadyHarborPlaceInEdge, i)
+        cls.chooseTileHarbor(cls)
 
         for t in cls.tiles:
             for p in t.associatedPlaces:
                 cls.places[p].touchedResourses.append(t.resource)
-
-    def chooseTileHarbor(cls, ahpe: list, i: int):
-        tos = cls.tilesOnTheSea[random.randint(0, len(cls.tilesOnTheSea)-1)]
-        edges = []
-        for e in cls.graph.CoupleOfPlaceOnTheSea[tos]: 
-            edges.append(e)
-        choosenEdge = edges[random.randint(0, len(edges)-1)]
-        if(cls.edgeAlreadyHarbor(cls, choosenEdge, ahpe)):
-            return cls.chooseTileHarbor(cls, ahpe, i)  # RICORSIONE, occhio che ci va la i non tos.
-        else:
-            p1 = choosenEdge[0]
-            #print("p1:", p1)
-            p2 = choosenEdge[1]
-            #print("p2:", p2)
-            for p in range(0, len(cls.tiles[tos].associatedPlaces)):
-                if((cls.tiles[tos].associatedPlaces[p] == p1) or (cls.tiles[tos].associatedPlaces[p] == p2)):
-                    cls.places[cls.tiles[tos].associatedPlaces[p]].harbor = cls.harbors[i]
-                    #print("Debug in Board, inserted arbor: " , cls.harbors[i], ", Place: ", cls.tiles[tos].associatedPlaces[p]) 
-            ahpe.append(p1)
-            ahpe.append(p2)
-            return ahpe
-
-    def edgeAlreadyHarbor(cls, edge, places):
-        if((edge[0] in places) or (edge[1] in places)):
-            return True
-        return False
 
     def __repr__(cls):
         s = ""

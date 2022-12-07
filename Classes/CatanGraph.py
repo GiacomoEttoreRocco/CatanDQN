@@ -124,23 +124,27 @@ class CatanGraph:
         self.edges = dict.copy(ListOfEdges)
         self.listOfAdj = ListOfAdj
         self.places = [Place(x) for x in range(0, 54)] # vanno inseriti per fare in modo che le tiles li condividano.
-        self.tilesOnTheSea = [0,1,2,6,11,15,18,17,16,12,7,3]
+        #self.tilesOnTheSea = [0,1,2,6,11,15,18,17,16,12,7,3]
         self.numbers = [2,3,3,4,4,5,5,6,6,8,8,9,9,10,10,11,11,12] # 18 numeri + 7 (deserto)
         self.resources = ["wood","wood","wood","wood","crop","crop","crop","crop","sheep","sheep","sheep","sheep","iron","iron","iron","clay","clay","clay","desert"]
         self.harbors = ["2:1 wood", "2:1 crop", "2:1 sheep", "2:1 iron", "2:1 clay", "3:1", "3:1", "3:1", "3:1"] # 9 porti, REGOLA: non possono esserci due porti nella stessa tile.
-        self.CoupleOfPlaceOnTheSea = {
-            0 : [[8,0],[0,1],[1,2]],
-            1 : [[2,3],[3,4]],
-            2 : [[4,5],[5,6],[6,14]],
-            6 : [[14,15],[15,25]],
-            11 : [[25,26],[26,37],[37,36]],
-            15 : [[36,46],[46,45]],
-            18 : [[45,53],[53,52],[52,51]],
-            17 : [[51,50],[50,49]],
-            16 : [[49,48],[48,47],[47,39]],
-            12 : [[39,38],[38,28]],
-            7 : [[28,27],[27,16],[16,17]],
-            3 : [[17,7],[7,8]]
-            }  # CREDIMI, VAI A VEDERE COME SONO I PORTI SU CATAN PRIMA DI TOCCARE.
+        # self.CoupleOfPlaceOnTheSea = {
+        #     0 : [[8,0],[0,1],[1,2]],
+        #     1 : [[2,3],[3,4]],
+        #     2 : [[4,5],[5,6],[6,14]],
+        #     6 : [[14,15],[15,25]],
+        #     11 : [[25,26],[26,37],[37,36]],
+        #     15 : [[36,46],[46,45]],
+        #     18 : [[45,53],[53,52],[52,51]],
+        #     17 : [[51,50],[50,49]],
+        #     16 : [[49,48],[48,47],[47,39]],
+        #     12 : [[39,38],[38,28]],
+        #     7 : [[28,27],[27,16],[16,17]],
+        #     3 : [[17,7],[7,8]]
+        #     } 
+        self.EdgesOnTheSea = [(8,0),(0,1),(1,2),(2,3),(3,4),(4,5),(5,6),(6,14),(14,15),(15,25),(25,26),(26,37),(37,36),
+                            (36,46),(46,45),(45,53),(53,52),(52,51),(51,50),(50,49),(49,48),(48,47),(47,39),(39,38),
+                            (38,28),(28,27),(27,16),(16,17),(17,7),(7,8)]
+        
 
 
