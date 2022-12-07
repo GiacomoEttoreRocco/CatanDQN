@@ -49,11 +49,15 @@ class Board: # deve diventare un singleton
         return True
 
     def chooseTileHarbor(cls):
-        for harbor in cls.harbors:
-            for edge in cls.EdgesOnTheSea:
-                if(cls.availableForHarbor(cls, edge)):
-                    cls.places[edge[0]].harbor = harbor
-                    cls.places[edge[1]].harbor = harbor
+        #for harbor in cls.harbors:
+        #    print(harbor)
+        i = 0
+        for edge in cls.EdgesOnTheSea:
+            harbor = cls.harbors[i]
+            if(cls.availableForHarbor(cls, edge) and i < len(cls.harbors)):
+                cls.places[edge[0]].harbor = harbor
+                cls.places[edge[1]].harbor = harbor
+                i += 1
 
     def tilesPlacement(cls):
         number_index = 0
