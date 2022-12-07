@@ -23,10 +23,11 @@ class GameView:
     # Function to display the initial board
     def displayInitialBoard(self):
         # Dictionary to store RGB Color values
-        colorDict_RGB = {"clay": (255, 51, 51), "iron": (128, 128, 128), "crop": (255, 255, 51), "wood": (0, 153, 0),
-                         "sheep": (51, 255, 51), "desert": (255, 255, 204)}
-        imgDict = {"clay": "iron.jpg", "iron": "iron.jpg", "crop": "iron.jpg", "wood": "iron.jpg", "sheep": "iron.jpg", "desert": "iron.jpg"}
-        pygame.draw.rect(self.screen, pygame.Color('white'),
+        colorDict_RGB = {"clay": (188, 74, 60), "iron": (128, 128, 128), "crop": (245, 222, 179), "wood": (0, 153, 0),
+                         "sheep": (51, 255, 51), "desert": pygame.Color('orange')}
+        imgDict = {"clay": "imgs/clay.png", "iron": "imgs/iron.png", "crop": "imgs/crop.png", "wood": "imgs/wood.png",
+                   "sheep": "imgs/sheep.png", "desert": "imgs/desert.png"}
+        pygame.draw.rect(self.screen, pygame.Color('lightblue'),
                          (0, 0, 1000, 800))  # blue background
 
         # Render each hexTile
@@ -42,16 +43,18 @@ class GameView:
             hexTileCorners = geomlib.polygon_corners(flat, graphicTile.hex)
             tileColorRGB = colorDict_RGB[boardtile.resource]
             pygame.draw.polygon(self.screen, pygame.Color(tileColorRGB[0], tileColorRGB[1], tileColorRGB[2]), hexTileCorners, width == 0)
+            pygame.draw.polygon(self.screen, pygame.Color('black'), hexTileCorners, 5)
             graphicTile.pixelCenter = geomlib.hex_to_pixel(flat, graphicTile.hex)
             #resourceText = self.font_resource.render(str(boardtile.resource) + " " +str(boardtile.number), False, (0, 0, 0))
-            resourceText = self.font_resource.render(str(boardtile.number), False, (0, 0, 0))
+            resourceText = self.font_resource.render(str(boardtile.number), False, (255, 255, 255))
             sourceFileDir = os.path.dirname(os.path.abspath(__file__))
             imgPath = os.path.join(sourceFileDir, imgDict[boardtile.resource])
             image = pygame.image.load(imgPath).convert_alpha()
             mask = image.copy()
-            mask = pygame.transform.scale(mask, (80, 80))
-            self.screen.blit(mask, (graphicTile.pixelCenter.x - 40, graphicTile.pixelCenter.y - 40))
-            self.screen.blit(resourceText, (graphicTile.pixelCenter.x - 25, graphicTile.pixelCenter.y - 30))
+            mask = pygame.transform.scale(mask, (130, 130))
+            self.screen.blit(mask, (graphicTile.pixelCenter.x - 65, graphicTile.pixelCenter.y - 65))
+            if boardtile.resource != 'desert':
+                self.screen.blit(resourceText, (graphicTile.pixelCenter.x - 25, graphicTile.pixelCenter.y - 30))
             hex_i += 1
 
 
@@ -113,7 +116,7 @@ class GameView:
             pygame.draw.rect(self.screen, color, (graphicPlace.coords[0] - 5, graphicPlace.coords[1], 20, 20))
         elif graphicPlace.isCity:
             pygame.draw.circle(self.screen, color, graphicPlace.coords, 10)
-        pygame.draw.circle(self.screen, color, graphicPlace.coords, 10)     #da togliere!
+        #Places show up only when a player plays something
 
     def placeRobber(self):
         robberText = self.font_robber.render("R", False, (0, 0, 0))
