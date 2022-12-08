@@ -6,6 +6,7 @@ import Classes.CatanGraph  as cg
 import Classes.Board as Board
 import Graphics.PlaceCoordinates as pc
 import os
+import time
 
 pygame.init()
 
@@ -19,7 +20,6 @@ class GameView:
                          "sheep": (51, 255, 51), "desert": (245, 222, 179) }
         self.imgDict = {"clay": "imgs/clay.png", "iron": "imgs/iron.png", "crop": "imgs/crop.png", "wood": "imgs/wood.png",
                    "sheep": "imgs/sheep.png", "desert": "imgs/desert.png"}
-        self.edges = Board.Board().edges
         self.graphicTileList = []
         self.graphicPlaceList = []
         self.screen = pygame.display.set_mode(windowSize)
@@ -82,28 +82,25 @@ class GameView:
         self.setupAndDisplayBoard()
         self.setupPlaces()
         #Check turn end
-        self.updateScreen()
-        while running:
-            pygame.display.update()
-            event = pygame.event.wait()
-            if event.type == pygame.QUIT:
-                running = False
-        pygame.quit()
-
+        self.updateGameScreen()
+        #while running:
+        pygame.display.update()
+        event = pygame.event.wait()
+        #if event.type == pygame.QUIT:
+        #    running = False
+        #pygame.quit()
         return
 
-    def updateScreen(self):
-        #after the end of every turn
+    def updateGameScreen(self):
         self.checkAndDrawPlaces()
         self.checkAndDrawStreets()
-
-
+        pygame.display.update()
+        time.sleep(0.1)
 
     def drawPlace(self, graphicPlace):
         if graphicPlace.harbor is not None:
             harborText = self.font_harbors.render(graphicPlace.harbor, False, (0, 0, 0))
             self.screen.blit(harborText, (graphicPlace.coords[0] + 10, graphicPlace.coords[1] + 10))
-
         graphicPlace.setupSprite()
         sprlist = pygame.sprite.Group()
         sprlist.add(graphicPlace.sprite)
@@ -112,19 +109,22 @@ class GameView:
     def drawStreet(self, edge, color):
         startPos = edge[0]
         endPos = edge[1]
-        pygame.draw.line(self.screen, color, self.graphicPlaceList[startPos].coords, self.graphicPlaceList[endPos].coords, 8)
+        pygame.draw.line(self.screen, color, self.graphicPlaceList[startPos].coords, self.graphicPlaceList[endPos].coords, 10)
 
     def checkAndDrawPlaces(self):
         for gplace, place in zip(self.graphicPlaceList, Board.Board().places):
             gplace.update(place)
             if place.owner != 0:
-                self.drawPlace(place)
+                self.drawPlace(gplace) #    self.drawPlace(place)
+                #print(gplace.isColony)
+                #print(gplace.isCity)
 
     def checkAndDrawStreets(self):
-        for edge in self.edges:
-            owner = self.edges[edge]
+        for edge in Board.Board().edges:
+            owner = Board.Board().edges[edge]
             if owner != 0:
                 self.drawStreet(edge, self.playerColorDict[owner])
+                #print("PRINT OWNER: ", owner)
 
     def drawRobber(self):
         robberText = self.font_robber.render("Robber", False, (0, 0, 0))

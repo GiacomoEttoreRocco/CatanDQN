@@ -1,6 +1,7 @@
 import Classes as c
 import pygame
 import Graphics.GameView as GameView
+import time
 
 def doTurnGraphic(self, player: c.Player):
     player.printStats()
@@ -81,7 +82,6 @@ def playGameWithGraphic(self):
         p.printStats()
     while won == False:
         playerTurn = self.players[turn%self.nplayer]
-        #time.sleep(5)
         turn += 1
         playerTurn.printStats()
         doTurnGraphic(self, playerTurn)
@@ -89,7 +89,8 @@ def playGameWithGraphic(self):
             return playerTurn
         if(turn % 4 == 0):
             print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
-
+    time.sleep(5)
+    pygame.quit()
 
 view = GameView.GameView()
 g = c.Game.Game()
