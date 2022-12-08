@@ -88,13 +88,16 @@ class GameView:
         self.displayInitialBoard()
         self.setupInitialPlaces()
         while running:
-            # other code
             pygame.display.update()
             event = pygame.event.wait()
             if event.type == pygame.QUIT:
                 running = False  # Be interpreter friendly
         pygame.quit()
+        return
 
+
+    def displayGameUpdate(self):
+        pygame.display.update()
         return
 
     def getHexCoords(self, hex_i):
