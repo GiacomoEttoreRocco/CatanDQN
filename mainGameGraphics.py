@@ -1,5 +1,6 @@
 import Classes as c
 import pygame
+import Graphics.GameView as GameView
 
 def doTurnGraphic(self, player: c.Player):
     player.printStats()
@@ -13,11 +14,7 @@ def doTurnGraphic(self, player: c.Player):
     player.yearOfPlentyCard += player.justBoughtYearOfPlentyCard
     player.justBoughtYearOfPlentyCard = 0
 
-    ev = pygame.event.Event(pygame.MOUSEBUTTONDOWN)
-    pygame.event.post(ev)
-    #print(ev)
-    #print(pygame.event.get())
-    # UPDATE BOARD
+    view.updateGameScreen() 
 
     if(player.unusedKnights > 0 and not turnCardUsed):
         actualEvaluation = c.Board.Board().actualEvaluation()
@@ -25,10 +22,7 @@ def doTurnGraphic(self, player: c.Player):
         if(afterKnight > actualEvaluation):
             c.Move.useKnight(player, place)
             print("BEFORE ROLL DICE: ", c.Move.useKnight, "\n")
-
-            pygame.event.post(ev)
-            # UPDATE BOARD
-
+            view.updateGameScreen()
             turnCardUsed = True 
     if(self.checkWon(player)):
         return
@@ -44,8 +38,7 @@ def doTurnGraphic(self, player: c.Player):
     move, thingNeeded = self.bestMove(player, turnCardUsed)
     move(player, thingNeeded)
 
-    pygame.event.post(ev)
-    # UPDATE BOARD
+    view.updateGameScreen()
 
     print("Player ", player.id, " mossa: ", move, " ")
     if(self.checkWon(player)):
@@ -59,8 +52,7 @@ def doTurnGraphic(self, player: c.Player):
         move, thingNeeded = self.bestMove(player, turnCardUsed)
         move(player, thingNeeded)
 
-        pygame.event.post(ev)
-        # UPDATE BOARD
+        view.updateGameScreen()
 
         print("Player ", player.id, " mossa: ", move, " ")
 
@@ -69,8 +61,7 @@ def doTurnGraphic(self, player: c.Player):
 
 def playGameWithGraphic(self):
 
-    pygame.init()
-    ev = pygame.event.Event(pygame.MOUSEBUTTONDOWN)
+    view.displayGameScreen()  
 
     c.Board.Board().reset()
     c.Bank.Bank().reset()
@@ -80,14 +71,12 @@ def playGameWithGraphic(self):
     for p in self.players:
         self.doInitialChoise(p)
 
-        pygame.event.post(ev)
-        # UPDATE BOARD
+        view.updateGameScreen()
 
     for p in sorted(self.players, reverse=True):
         self.doInitialChoise(p)
 
-        pygame.event.post(ev)
-        # UPDATE BOARD
+        view.updateGameScreen()
 
         p.printStats()
     while won == False:
@@ -102,13 +91,7 @@ def playGameWithGraphic(self):
             print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
 
 
-import Graphics.GameView as GameView
-
 view = GameView.GameView()
-
-view.displayGameScreen()
-
 g = c.Game.Game()
 playGameWithGraphic(g)
 
-print(pygame.event.get())

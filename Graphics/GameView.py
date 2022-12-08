@@ -56,12 +56,9 @@ class GameView:
             if boardtile.resource != 'desert':
                 self.screen.blit(resourceText, (graphicTile.pixelCenter.x - 25, graphicTile.pixelCenter.y - 30))
             hex_i += 1
-
-
         return None
 
     def setupInitialPlaces(self):
-        #print(Board.Board().places)
         for place in Board.Board().places:
             self.graphicPlaceList.append(GraphicPlace.GraphicPlace(place))
         alreadyFound = []
@@ -71,34 +68,31 @@ class GameView:
                     for el in v:
                         if el not in alreadyFound:
                             placeToAdd = self.graphicPlaceList[el]
-
                             placeToAdd.setupCoords(pc.placeCoordinates[placeToAdd.index])        
                             gtile.places.append(placeToAdd)
                             alreadyFound.append(el)
-            #print(gtile.places)
-
         for gtile in self.graphicTileList:
             for place in gtile.places:
-                #print(place.isCity)
                 self.drawPlace(place)
 
     def displayGameScreen(self):
         # First display all initial hexes and regular buttons
-        running = True
+        #running = True
         self.displayInitialBoard()
         self.setupInitialPlaces()
-        while running:
-            pygame.display.update()
-            event = pygame.event.wait()
-            if event.type == pygame.QUIT:
-                running = False  # Be interpreter friendly
-        pygame.quit()
-        return
-
-
-    def displayGameUpdate(self):
+        #while running:
         pygame.display.update()
+        event = pygame.event.wait()
+        #if event.type == pygame.QUIT:
+        #    running = False  # Be interpreter friendly
+        #pygame.quit()
         return
+
+    def updateGameScreen(self):
+        for place in Board.Board().places:
+            self.drawPlace(place)
+        for edge in Board.Board().edges:
+            self.drawEdge(edge)
 
     def getHexCoords(self, hex_i):
         coordDict = {0: geomlib.Axial_Point(0, -2), 1: geomlib.Axial_Point(1, -2), 2: geomlib.Axial_Point(2, -2),
