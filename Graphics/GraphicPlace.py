@@ -20,15 +20,18 @@ class GraphicPlace:
         self.isCity = place.isCity
         self.owner = place.owner
 
-    def setupSprite(self, color):
+    def setupSprite(self):
         sourceFileDir = os.path.dirname(os.path.abspath(__file__))
-        imgPath = os.path.join(sourceFileDir, "imgs/casa.png")     #"cityImg.png" if self.isCity else "colonyImg.png"
-        self.sprite = PlaceSprite(imgPath, pygame.Color('red'), self.coords)    #Player's color
+        if self.isColony:
+            imgPath = os.path.join(sourceFileDir, "imgs/playericons/set_p" + str(self.owner) + ".png")
+        elif self.isCity:
+            imgPath = os.path.join(sourceFileDir, "imgs/playericons/cit_p" + str(self.owner) + ".png")
+        self.sprite = PlaceSprite(imgPath, self.coords)
 
 
 class PlaceSprite(pygame.sprite.Sprite):
 
-    def __init__(self, imgName, color, coords):
+    def __init__(self, imgName, coords):
         super().__init__()
 
         self.image = pygame.image.load(imgName)
@@ -36,9 +39,6 @@ class PlaceSprite(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.centerx = coords[0]
         self.rect.centery = coords[1]
-        colorFill = pygame.Surface(self.image.get_size()).convert_alpha()
-        self.image.fill(color)
-        self.image.blit(colorFill, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
 
 
 
