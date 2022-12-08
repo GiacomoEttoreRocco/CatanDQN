@@ -11,8 +11,9 @@ import time
 pygame.init()
 
 class GameView:
-    def __init__(self):
+    def __init__(self, game):
         # #Use pygame to display the board
+        self.game = game #?????
         windowSize = 1000, 800
         self.playerColorDict = {0: pygame.Color('grey'), 1: pygame.Color('red'), 2: pygame.Color('yellow'),
                            3: pygame.Color('green'), 4:  pygame.Color('blue')}
@@ -24,14 +25,22 @@ class GameView:
         self.graphicPlaceList = []
         self.screen = pygame.display.set_mode(windowSize)
         self.font_resource = pygame.font.SysFont('tahoma', 55)
+        self.font_resourceSmaller = pygame.font.SysFont('tahoma', 35)
+
         self.font_harbors = pygame.font.SysFont('tahoma', 15)
         self.font_robber = pygame.font.SysFont('tahoma', 50)
+
+        self.pointsP1 = self.font_resource.render(str(self.game.players[0].victoryPoints), False, pygame.Color('red'))
+        self.pointsP2 = self.font_resource.render(str(self.game.players[1].victoryPoints), False, pygame.Color('yellow'))
+        self.pointsP3 = self.font_resource.render(str(self.game.players[2].victoryPoints), False, pygame.Color('green'))
+        self.pointsP4 = self.font_resource.render(str(self.game.players[3].victoryPoints), False, pygame.Color('blue'))
+        self.bgScoreColor = pygame.Color("black")
+
 
     def setupAndDisplayBoard(self):
         #Draw the sea
         pygame.draw.rect(self.screen, pygame.Color('lightblue'),
                          (0, 0, 1000, 800))
-
         # Render each tile
         hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(80, 80),
                       geomlib.Point(500, 400))
@@ -44,13 +53,10 @@ class GameView:
             self.graphicTileList.append(graphicTile)
             hexTileCorners = geomlib.polygon_corners(hexLayout, graphicTile.hex)
             tileColorRGB = self.tileColorDict[boardtile.resource]
-            #Draw hexagonal tile
             pygame.draw.polygon(self.screen, pygame.Color(tileColorRGB[0], tileColorRGB[1], tileColorRGB[2]), hexTileCorners, width == 0)
             pygame.draw.polygon(self.screen, pygame.Color('black'), hexTileCorners, 5)
-            #Position the tile
             graphicTile.pixelCenter = geomlib.hex_to_pixel(hexLayout, graphicTile.hex)
             resourceText = self.font_resource.render(str(boardtile.number), False, (255, 255, 255))
-            #Setup images
             sourceFileDir = os.path.dirname(os.path.abspath(__file__))
             imgPath = os.path.join(sourceFileDir, self.imgDict[boardtile.resource])
             image = pygame.image.load(imgPath).convert_alpha()
@@ -81,9 +87,7 @@ class GameView:
         running = True
         self.setupAndDisplayBoard()
         self.setupPlaces()
-        #Check turn end
         self.updateGameScreen()
-        #while running:
         pygame.display.update()
         event = pygame.event.wait()
         #if event.type == pygame.QUIT:
@@ -92,8 +96,46 @@ class GameView:
         return
 
     def updateGameScreen(self):
-        self.checkAndDrawPlaces()
+
+        score = pygame.Rect(0,0,100,100) 
+        self.screen.fill(self.bgScoreColor, score)  #pygame.Color('lightblue')
+        pygame.display.update(score)
+
+        score = pygame.Rect(0,700,100,100) 
+        self.screen.fill(self.bgScoreColor, score)  #pygame.Color('lightblue')
+        pygame.display.update(score)
+
+        score = pygame.Rect(900,0,100,100) 
+        self.screen.fill(self.bgScoreColor, score)  #pygame.Color('lightblue')
+        pygame.display.update(score)
+
+        score = pygame.Rect(900,700,100,100) 
+        self.screen.fill(self.bgScoreColor, score)  #pygame.Color('lightblue')
+        pygame.display.update(score)
+
+        self.pointsP1 = self.font_resource.render(str(self.game.players[0].victoryPoints), False, pygame.Color('red'))
+        self.pointsCardsP1 = self.font_resourceSmaller.render(str(self.game.players[0].victoryPointsCards), False, pygame.Color('red'))
+        self.screen.blit(self.pointsP1, (5, 5))
+        self.screen.blit(self.pointsCardsP1, (5, 60))
+
+        self.pointsP2 = self.font_resource.render(str(self.game.players[1].victoryPoints), False, pygame.Color('yellow'))
+        self.pointsCardsP2 = self.font_resourceSmaller.render(str(self.game.players[1].victoryPointsCards), False, pygame.Color('yellow'))
+        self.screen.blit(self.pointsP2, (5, 700))
+        self.screen.blit(self.pointsCardsP2, (5, 755))
+
+
+        self.pointsP3 = self.font_resource.render(str(self.game.players[2].victoryPoints), False, pygame.Color('green'))
+        self.pointsCardsP3 = self.font_resourceSmaller.render(str(self.game.players[2].victoryPointsCards), False, pygame.Color('green'))
+        self.screen.blit(self.pointsP3, (950, 5))
+        self.screen.blit(self.pointsCardsP3, (950, 60))
+
+        self.pointsP4 = self.font_resource.render(str(self.game.players[3].victoryPoints), False, pygame.Color('blue'))
+        self.pointsCardsP4 = self.font_resourceSmaller.render(str(self.game.players[3].victoryPointsCards), False, pygame.Color('blue'))
+        self.screen.blit(self.pointsP4, (950, 700))
+        self.screen.blit(self.pointsCardsP4, (950, 755))
+
         self.checkAndDrawStreets()
+        self.checkAndDrawPlaces()
         pygame.display.update()
         time.sleep(0.1)
 
@@ -109,6 +151,7 @@ class GameView:
     def drawStreet(self, edge, color):
         startPos = edge[0]
         endPos = edge[1]
+        pygame.draw.line(self.screen, pygame.Color("Black"), self.graphicPlaceList[startPos].coords, self.graphicPlaceList[endPos].coords, 20)
         pygame.draw.line(self.screen, color, self.graphicPlaceList[startPos].coords, self.graphicPlaceList[endPos].coords, 10)
 
     def checkAndDrawPlaces(self):

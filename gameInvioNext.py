@@ -3,7 +3,15 @@ import pygame
 import Graphics.GameView as GameView
 import time
 
-def doTurnGraphic(self, player: c.Player):
+def goNextIfInvio():
+    event = pygame.event.wait()
+    for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN: 
+                    view.updateGameScreen()
+                    return
+
+def doTurnGraphic(game: c.Game, player: c.Player):
     player.printStats()
     turnCardUsed = False # SI PUò USARE UNA SOLA CARTA SVILUPPO A TURNO.
     player.unusedKnights = player.unusedKnights + player.justBoughtKnights
@@ -25,68 +33,78 @@ def doTurnGraphic(self, player: c.Player):
             print("BEFORE ROLL DICE: ", c.Move.useKnight, "\n")
             view.updateGameScreen()
             turnCardUsed = True 
-    if(self.checkWon(player)):
+    if(game.checkWon(player)):
         return
     ####################################################################### ROLL DICES #####################################################################   
-    dicesValue = self.rollDice()
+    dicesValue = game.rollDice()
     ########################################################################################################################################################
     print("Dice value: ", dicesValue)
     if(dicesValue == 7):
         print("############# SEVEN! #############")
     else:
-        self.dice_production(dicesValue)
-    move, thingNeeded = self.bestMove(player, turnCardUsed)
+        game.dice_production(dicesValue)
+    move, thingNeeded = game.bestMove(player, turnCardUsed)
     move(player, thingNeeded)
 
-    view.updateGameScreen()
+    goNextIfInvio()
 
     print("Player ", player.id, " mossa: ", move, " ")
-    if(self.checkWon(player)):
+    if(game.checkWon(player)):
         return
 
     if(move in c.Move.cardMoves()):
             turnCardUsed = True
 
-    while(move != c.Move.passTurn and not self.checkWon(player)): # move è una funzione 
+    while(move != c.Move.passTurn and not game.checkWon(player)): # move è una funzione 
 
-        move, thingNeeded = self.bestMove(player, turnCardUsed)
+        move, thingNeeded = game.bestMove(player, turnCardUsed)
         move(player, thingNeeded)
 
-        view.updateGameScreen()
+        #view.updateGameScreen()
+        goNextIfInvio()
 
         print("Player ", player.id, " mossa: ", move, " ")
 
         if(move in c.Move.cardMoves()):
             turnCardUsed = True
 
-def playGameWithGraphic(self):
-
-    view.displayGameScreen()  
+def playGameWithGraphic(game, view):
+    running = True
+    GameView.GameView.setupAndDisplayBoard(view)
+    GameView.GameView.setupPlaces(view)
+    GameView.GameView.updateGameScreen(view)
+    pygame.display.update()
+    #event = pygame.event.wait()
+    #if event.type == pygame.QUIT:
+    #    running = False
+    #pygame.quit()
+    #return 
     turn = 1 
     won = False
     # START INIZIALE
-    for p in self.players:
-        self.doInitialChoise(p)
-        view.updateGameScreen()
+    for p in game.players:
+        game.doInitialChoise(p)
+        goNextIfInvio()
 
-    for p in sorted(self.players, reverse=True):
-        self.doInitialChoise(p)
-        view.updateGameScreen()
+    for p in sorted(game.players, reverse=True):
+        game.doInitialChoise(p)
+        goNextIfInvio()
         p.printStats()
 
     while won == False:
-        playerTurn = self.players[turn%self.nplayer]
+        playerTurn = game.players[turn%game.nplayer]
         turn += 1
         playerTurn.printStats()
-        doTurnGraphic(self, playerTurn)
+        doTurnGraphic(game, playerTurn)
         if(playerTurn.victoryPoints >= 10):
             return playerTurn
         if(turn % 4 == 0):
             print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
-    time.sleep(5)
+    #time.sleep(5)
+    goNextIfInvio()
     pygame.quit()
 
-view = GameView.GameView()
 g = c.Game.Game()
-playGameWithGraphic(g)
+view = GameView.GameView(g)
+playGameWithGraphic(g, view)
 
