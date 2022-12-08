@@ -13,6 +13,9 @@ class GameView:
     def __init__(self):
         # #Use pygame to display the board
         size = 1000, 800
+        self.playerColorDict = {0: pygame.Color('grey'), 1: pygame.Color('red'), 2: pygame.Color('royalblue'),
+                           3: pygame.Color('green'), 4:  pygame.Color('yellow')}
+        self.edges = Board.Board().edges
         self.graphicTileList = []
         self.graphicPlaceList = []
         self.screen = pygame.display.set_mode(size)
@@ -45,7 +48,6 @@ class GameView:
             pygame.draw.polygon(self.screen, pygame.Color(tileColorRGB[0], tileColorRGB[1], tileColorRGB[2]), hexTileCorners, width == 0)
             pygame.draw.polygon(self.screen, pygame.Color('black'), hexTileCorners, 5)
             graphicTile.pixelCenter = geomlib.hex_to_pixel(flat, graphicTile.hex)
-            #resourceText = self.font_resource.render(str(boardtile.resource) + " " +str(boardtile.number), False, (0, 0, 0))
             resourceText = self.font_resource.render(str(boardtile.number), False, (255, 255, 255))
             sourceFileDir = os.path.dirname(os.path.abspath(__file__))
             imgPath = os.path.join(sourceFileDir, imgDict[boardtile.resource])
@@ -75,18 +77,19 @@ class GameView:
                             placeToAdd.setupCoords(pc.placeCoordinates[placeToAdd.index])        
                             gtile.places.append(placeToAdd)
                             alreadyFound.append(el)
-            #print(gtile.places)
 
+        color = pygame.Color('grey')
         for gtile in self.graphicTileList:
             for place in gtile.places:
-                #print(place.isCity)
-                self.drawPlace(place)
+                self.drawPlace(place, color)
 
     def displayGameScreen(self):
         # First display all initial hexes and regular buttons
         running = True
         self.displayInitialBoard()
         self.setupInitialPlaces()
+        #Check turn end
+        self.updateScreen()
         while running:
             # other code
             pygame.display.update()
@@ -106,17 +109,40 @@ class GameView:
                      17: geomlib.Axial_Point(-1, 2), 18: geomlib.Axial_Point(0, 2)}
         return coordDict[hex_i]
 
-    def drawPlace(self, graphicPlace):
-        #print(graphicPlace.harbor)
+    def updateScreen(self):
+        #after the end of every turn
+        for gplace, place in zip(self.graphicPlaceList, Board.Board().places):
+            gplace.update(place)
+
+
+
+    def drawPlace(self, graphicPlace, color):
+
         if graphicPlace.harbor is not None:
             harborText = self.font_harbors.render(graphicPlace.harbor, False, (0, 0, 0))
-            self.screen.blit(harborText, (graphicPlace.coords[0] +10, graphicPlace.coords[1] +10))
-        color = pygame.Color('grey')    #Needs to be taken from player
-        if graphicPlace.isColony:
-            pygame.draw.rect(self.screen, color, (graphicPlace.coords[0] - 5, graphicPlace.coords[1], 20, 20))
-        elif graphicPlace.isCity:
-            pygame.draw.circle(self.screen, color, graphicPlace.coords, 10)
+            self.screen.blit(harborText, (graphicPlace.coords[0] + 10, graphicPlace.coords[1] + 10))
+
+        graphicPlace.setupSprite(self.playerColorDict[graphicPlace.owner])
+        sprlist = pygame.sprite.Group()
+        sprlist.add(graphicPlace.sprite)
+        sprlist.draw(self.screen)
+        # if graphicPlace.isColony:
+        #     pygame.draw.rect(self.screen, color, (graphicPlace.coords[0] - 5, graphicPlace.coords[1], 20, 20))
+        # elif graphicPlace.isCity:
+        #     pygame.draw.circle(self.screen, color, graphicPlace.coords, 10)
         #Places show up only when a player plays something
+
+    def drawStreet(self, edge, color):
+        startPos = edge[0]
+        endPos = edge[1]
+        pygame.draw.line(self.screen, color, startPos, endPos, 8)
+
+    def checkAndDrawStreet(self):
+        for edge in self.edges:
+            owner = self.edges[edge]
+            self.drawStreet(edge, self.playerColorDict[owner])
+
+
 
     def placeRobber(self):
         robberText = self.font_robber.render("R", False, (0, 0, 0))
