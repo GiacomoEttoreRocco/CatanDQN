@@ -284,13 +284,14 @@ class Player:
         if(move == Move.useKnight):
             max = 0
             for tile in Board.Board().tiles: 
-                valutation = self.moveValue(move, tile.identificator)
-                if(max < valutation):
-                    max = valutation
-                    candidatePos = tile.identificator
+                if(tile.identificator != Board.Board().robberTile):
+                    valutation = self.moveValue(move, tile.identificator)
+                    if(max < valutation):
+                        max = valutation
+                        candidatePos = tile.identificator
             return max, candidatePos
 
-        if(move == Move.useRobber):
+        if(move == Move.useRobber): # Yes they are the same method, but must be differentiated becouse of the count of knights.
             max = 0
             for tile in Board.Board().tiles: 
                 if(tile.identificator != Board.Board().robberTile):
@@ -373,13 +374,13 @@ class Player:
         if(move == Move.useKnight):
             previousTilePos = move(self, thingNeeded, False, True)
             toRet = 1.5
-            move(self, previousTilePos, True, True) # ATTUALMENTE è INUTILE SIA QUESTA RIGA CHE QUELLA SOPRA
+            move(self, previousTilePos, True, True) 
             return toRet + random.uniform(0,2)
 
         if(move == Move.useRobber):
             previousTilePos = move(self, thingNeeded, False, True)
             toRet = 1.5
-            move(self, previousTilePos, True, True) # ATTUALMENTE è INUTILE SIA QUESTA RIGA CHE QUELLA SOPRA
+            move(self, previousTilePos, True, True) 
             return toRet + random.uniform(0,2)
 
         if(move == Move.buyDevCard):

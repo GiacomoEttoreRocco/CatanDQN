@@ -10,7 +10,7 @@ def goNextIfInvio():
         event = pygame.event.wait()
     view.updateGameScreen()
 
-def doTurnGraphic(game: c.Game, player: c.Player):
+def doTurnGraphic(game: c.Game, player: c.Player, withGraphic = False):
     #player.printStats()
     turnCardUsed = False # SI PUò USARE UNA SOLA CARTA SVILUPPO A TURNO.
     player.unusedKnights = player.unusedKnights + player.justBoughtKnights
@@ -38,30 +38,25 @@ def doTurnGraphic(game: c.Game, player: c.Player):
     print("Dice value: ", dicesValue)
     if(dicesValue == 7):
         print("############# SEVEN! #############")
+        ev, pos = player.evaluate(c.Move.useRobber)
+        #print("POS: ", pos)
+        c.Move.useRobber(player, pos)
+        #print("POS: ", pos)
     else:
         game.dice_production(dicesValue)
     move, thingNeeded = game.bestMove(player, turnCardUsed)
     move(player, thingNeeded)
-    
     goNextIfInvio()
-
     print("Player ", player.id, " mossa: ", move, " ")
     if(game.checkWon(player)):
         return
-
     if(move in c.Move.cardMoves()):
             turnCardUsed = True
-
     while(move != c.Move.passTurn and not game.checkWon(player)): # move è una funzione 
-
         move, thingNeeded = game.bestMove(player, turnCardUsed)
         move(player, thingNeeded)
-
-        #view.updateGameScreen()
         goNextIfInvio()
-
         print("Player ", player.id, " mossa: ", move, " ")
-
         if(move in c.Move.cardMoves()):
             turnCardUsed = True
 
@@ -71,11 +66,6 @@ def playGameWithGraphic(game, view):
     GameView.GameView.setupPlaces(view)
     GameView.GameView.updateGameScreen(view)
     pygame.display.update()
-    #event = pygame.event.wait()
-    #if event.type == pygame.QUIT:
-    #    running = False
-    #pygame.quit()
-    #return 
     turn = 1 
     won = False
     # START INIZIALE
@@ -86,7 +76,6 @@ def playGameWithGraphic(game, view):
     for p in sorted(game.players, reverse=True):
         game.doInitialChoise(p)
         goNextIfInvio()
-        #p.printStats()
 
     while won == False:
         playerTurn = game.players[turn%game.nplayer]
@@ -97,7 +86,6 @@ def playGameWithGraphic(game, view):
             return playerTurn
         if(turn % 4 == 0):
             print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
-    #time.sleep(5)
     goNextIfInvio()
     pygame.quit()
 

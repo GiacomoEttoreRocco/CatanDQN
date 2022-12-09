@@ -193,7 +193,6 @@ def stealResource(player, tile: cg.Tile):
         chosenPlayer.stealFromMe(player)
     return
 
-
 def tradeBank(player, coupleOfResources, undo = False):
     toTake, toGive = coupleOfResources
     if(not undo):
@@ -217,12 +216,10 @@ def useMonopolyCard(player, resource):
     return
     
 def useRoadBuildingCard(player, edges, undo = False):
-
     if(not undo):
         player.roadBuildingCard -= 1
     else:
         player.roadBuildingCard += 1
-
     placeFreeStreet(player, edges[0], undo)
     placeFreeStreet(player, edges[1], undo)
 

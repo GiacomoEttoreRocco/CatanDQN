@@ -53,7 +53,6 @@ class Game:
                 while(pyr.resourceCount() <= nCards):
                     eval, card = player.evaluate(Move.discardResource)
                     Move.discardResource(player, card)
-                
         eval, tilePos = player.evaluate(Move.useRobber)
         Move.useRobber(player, tilePos)   
 
@@ -73,8 +72,8 @@ class Game:
         player.justBoughtYearOfPlentyCard = 0
         if(player.unusedKnights > 0 and not turnCardUsed):
             actualEvaluation = Board.Board().actualEvaluation()
-            afterKnight, place = player.evaluate(Move.useKnight)
-            if(afterKnight > actualEvaluation):
+            afterKnightEvaluation, place = player.evaluate(Move.useKnight)
+            if(afterKnightEvaluation > actualEvaluation):
                 Move.useKnight(player, place)
                 print("BEFORE ROLL DICE: ", Move.useKnight, "\n")
                 turnCardUsed = True 
@@ -83,11 +82,12 @@ class Game:
         ####################################################################### ROLL DICES #####################################################################   
         dicesValue = self.rollDice()
         ########################################################################################################################################################  
-        print("Dice value: ", dicesValue)
+        print("Dice value: ", dicesValue, dicesValue == 7)
         if(dicesValue == 7):
-            #print("############# SEVEN! #############")
             ev, pos = player.evaluate(Move.useRobber)
+            print("POS: ", pos)
             Move.useRobber(player, pos)
+            print("POS: ", pos)
         else:
             self.dice_production(dicesValue)
 
@@ -196,42 +196,18 @@ class Game:
         Bank.Bank().reset()
         turn = 1 
         won = False
-        # START INIZIALE
         for p in self.players:
             self.doInitialChoise(p)
-
         for p in sorted(self.players, reverse=True):
             self.doInitialChoise(p)
-            #p.printStats()
-
         while won == False:
-
             playerTurn = self.players[turn%self.nplayer]
-            #time.sleep(5)
             turn += 1
-
-            #playerTurn.printStats()
-
             self.doTurn(playerTurn)
-
             if(playerTurn.victoryPoints >= 10):
                 return playerTurn
-
             if(turn % 4 == 0):
                 print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
-
-# if __name__ == "__main__":
-#     whoWon = []
-#     for i in range(0, 1):
-#         g = Game()
-#         whoWon.append(g.playGame().id)
-#         Board.Board().reset()
-#         Bank.Bank().reset()
-#         #print(Board.Board().places)
-#         #print(Board.Board().edges)
-#         #time.sleep(4043)
-
-#     print("Who won? ", whoWon)
 
 
 

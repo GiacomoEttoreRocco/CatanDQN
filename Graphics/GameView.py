@@ -108,7 +108,6 @@ class GameView:
                     self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-10, graphicTile.pixelCenter.y+18))
                 else:
                     self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-5, graphicTile.pixelCenter.y+18))
-
             hex_i += 1
         return None
 
@@ -134,9 +133,6 @@ class GameView:
         self.updateGameScreen()
         pygame.display.update()
         event = pygame.event.wait()
-        #if event.type == pygame.QUIT:
-        #    running = False
-        #pygame.quit()
         return
 
     def updateGameScreen(self):
@@ -223,7 +219,6 @@ class GameView:
                         pygame.draw.circle(self.screen, pygame.Color("black"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+30), 17, width==0)
                         pygame.draw.circle(self.screen, pygame.Color("white"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+30), 13, width==0)
                         tileNumberText = self.font_resourceSmallest.render(str(graphicTile.number), False, pygame.Color("black"))
-
                         if(graphicTile.number >= 10):
                             self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-10, graphicTile.pixelCenter.y+18))
                         else:
