@@ -26,14 +26,16 @@ class GameView:
         self.screen = pygame.display.set_mode(windowSize)
         self.font_resource = pygame.font.SysFont('tahoma', 55)
         self.font_resourceSmaller = pygame.font.SysFont('tahoma', 35)
+        self.font_resourceSmallest = pygame.font.SysFont('tahoma', 17, bold=True)
+
 
         self.font_harbors = pygame.font.SysFont('tahoma', 15)
         self.font_robber = pygame.font.SysFont('tahoma', 50)
 
-        self.pointsP1 = self.font_resource.render(str(self.game.players[0].victoryPoints), False, self.playerColorDict[0])
-        self.pointsP2 = self.font_resource.render(str(self.game.players[1].victoryPoints), False, self.playerColorDict[1])
-        self.pointsP3 = self.font_resource.render(str(self.game.players[2].victoryPoints), False, self.playerColorDict[2])
-        self.pointsP4 = self.font_resource.render(str(self.game.players[3].victoryPoints), False, self.playerColorDict[3])
+        self.pointsP1 = self.font_resource.render(str(self.game.players[0].victoryPoints), False, self.playerColorDict[1])
+        self.pointsP2 = self.font_resource.render(str(self.game.players[1].victoryPoints), False, self.playerColorDict[2])
+        self.pointsP3 = self.font_resource.render(str(self.game.players[2].victoryPoints), False, self.playerColorDict[3])
+        self.pointsP4 = self.font_resource.render(str(self.game.players[3].victoryPoints), False, self.playerColorDict[4])
         self.bgScoreColor = pygame.Color("black")
 
 
@@ -56,7 +58,7 @@ class GameView:
             pygame.draw.polygon(self.screen, pygame.Color(tileColorRGB[0], tileColorRGB[1], tileColorRGB[2]), hexTileCorners, width == 0)
             pygame.draw.polygon(self.screen, pygame.Color('black'), hexTileCorners, 5)
             graphicTile.pixelCenter = geomlib.hex_to_pixel(hexLayout, graphicTile.hex)
-            resourceText = self.font_resource.render(str(boardtile.number), False, (255, 255, 255))
+            tileNumberText = self.font_resourceSmallest.render(str(boardtile.number), False, pygame.Color("black"))
             sourceFileDir = os.path.dirname(os.path.abspath(__file__))
             imgPath = os.path.join(sourceFileDir, self.imgDict[boardtile.resource])
             image = pygame.image.load(imgPath).convert_alpha()
@@ -64,7 +66,13 @@ class GameView:
             mask = pygame.transform.scale(mask, (130, 130))
             self.screen.blit(mask, (graphicTile.pixelCenter.x - 65, graphicTile.pixelCenter.y - 65))
             if boardtile.resource != 'desert':
-                self.screen.blit(resourceText, (graphicTile.pixelCenter.x - 25, graphicTile.pixelCenter.y - 30))
+                pygame.draw.circle(self.screen, pygame.Color("black"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+30), 17, width==0)
+                pygame.draw.circle(self.screen, pygame.Color("white"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+30), 13, width==0)
+                if(boardtile.number >= 10):
+                    self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-10, graphicTile.pixelCenter.y+18))
+                else:
+                    self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-5, graphicTile.pixelCenter.y+18))
+
             hex_i += 1
         return None
 
@@ -113,24 +121,24 @@ class GameView:
         self.screen.fill(self.bgScoreColor, score)  #pygame.Color('lightblue')
         pygame.display.update(score)
 
-        self.pointsP1 = self.font_resource.render(str(self.game.players[0].victoryPoints), False, pygame.Color('red'))
-        self.pointsCardsP1 = self.font_resourceSmaller.render(str(self.game.players[0].victoryPointsCards), False, pygame.Color('red'))
+        self.pointsP1 = self.font_resource.render(str(self.game.players[0].victoryPoints), False, self.playerColorDict[1])
+        self.pointsCardsP1 = self.font_resourceSmaller.render(str(self.game.players[0].victoryPointsCards), False, self.playerColorDict[1])
         self.screen.blit(self.pointsP1, (5, 5))
         self.screen.blit(self.pointsCardsP1, (5, 60))
 
-        self.pointsP2 = self.font_resource.render(str(self.game.players[1].victoryPoints), False, pygame.Color('yellow'))
-        self.pointsCardsP2 = self.font_resourceSmaller.render(str(self.game.players[1].victoryPointsCards), False, pygame.Color('yellow'))
+        self.pointsP2 = self.font_resource.render(str(self.game.players[1].victoryPoints), False, self.playerColorDict[2])
+        self.pointsCardsP2 = self.font_resourceSmaller.render(str(self.game.players[1].victoryPointsCards), False, self.playerColorDict[2])
         self.screen.blit(self.pointsP2, (5, 700))
         self.screen.blit(self.pointsCardsP2, (5, 755))
 
 
-        self.pointsP3 = self.font_resource.render(str(self.game.players[2].victoryPoints), False, pygame.Color('green'))
-        self.pointsCardsP3 = self.font_resourceSmaller.render(str(self.game.players[2].victoryPointsCards), False, pygame.Color('green'))
+        self.pointsP3 = self.font_resource.render(str(self.game.players[2].victoryPoints), False, self.playerColorDict[3])
+        self.pointsCardsP3 = self.font_resourceSmaller.render(str(self.game.players[2].victoryPointsCards), False, self.playerColorDict[3])
         self.screen.blit(self.pointsP3, (950, 5))
         self.screen.blit(self.pointsCardsP3, (950, 60))
 
-        self.pointsP4 = self.font_resource.render(str(self.game.players[3].victoryPoints), False, pygame.Color('blue'))
-        self.pointsCardsP4 = self.font_resourceSmaller.render(str(self.game.players[3].victoryPointsCards), False, pygame.Color('blue'))
+        self.pointsP4 = self.font_resource.render(str(self.game.players[3].victoryPoints), False, self.playerColorDict[4])
+        self.pointsCardsP4 = self.font_resourceSmaller.render(str(self.game.players[3].victoryPointsCards), False, self.playerColorDict[4])
         self.screen.blit(self.pointsP4, (950, 700))
         self.screen.blit(self.pointsCardsP4, (950, 755))
 

@@ -23,16 +23,16 @@ class Game:
                 for p in tile.associatedPlaces:
                     if(Board.Board().places[p].owner != 0):
                         if(Board.Board().places[p].isColony):
-                            print(self.players[Board.Board().places[p].owner-1].id, "TAKEN ", tile.resource, "\n")
+                            #print(self.players[Board.Board().places[p].owner-1].id, "TAKEN ", tile.resource, "\n")
                             Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
                         elif(Board.Board().places[p].isCity):
-                            print(self.players[Board.Board().places[p].owner-1].id, "TAKEN 2 ", tile.resource, "\n")
+                            #print(self.players[Board.Board().places[p].owner-1].id, "TAKEN 2 ", tile.resource, "\n")
                             Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
                             Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
 
     def bestMove(self, player: Player, usedCard):
         moves = player.availableMoves(usedCard)
-        print("\n")
+        #print("\n")
         player.printResources()
         print("\n AVAILABLE MOVES: ", moves, "\n")
         max = 0
