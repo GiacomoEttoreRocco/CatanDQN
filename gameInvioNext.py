@@ -22,9 +22,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
     player.justBoughtRoadBuildingCard = 0
     player.yearOfPlentyCard += player.justBoughtYearOfPlentyCard
     player.justBoughtYearOfPlentyCard = 0
-
     view.updateGameScreen() 
-
     if(player.unusedKnights > 0 and not turnCardUsed):
         actualEvaluation = c.Board.Board().actualEvaluation()
         afterKnight, place = player.evaluate(c.Move.useKnight)

@@ -177,6 +177,11 @@ def useKnight(player, tilePosition, undo = False, justCheck = False):
         largArmy.victoryPoints -= 2
     return previousPosition
 
+def stealResource(player, tile):
+    players
+    for p in tile.associatedPlaces:
+
+
 def tradeBank(player, coupleOfResources, undo = False):
     toTake, toGive = coupleOfResources
     if(not undo):
