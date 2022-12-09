@@ -10,6 +10,7 @@ class GraphicTile():
         self.adjacentTiles = []
         self.places = []
         self.robber = False
+        self.number = tile.number
 
     # Function to Display Hex Info
     def displayHexInfo(self):

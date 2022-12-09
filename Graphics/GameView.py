@@ -196,6 +196,16 @@ class GameView:
                     mask = image.copy()
                     mask = pygame.transform.scale(mask, (130, 130))
                     self.screen.blit(mask, (graphicTile.pixelCenter.x - 65, graphicTile.pixelCenter.y - 65))
+                    if graphicTile.resource != 'desert':
+                        width = 1000
+                        pygame.draw.circle(self.screen, pygame.Color("black"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+30), 17, width==0)
+                        pygame.draw.circle(self.screen, pygame.Color("white"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+30), 13, width==0)
+                        tileNumberText = self.font_resourceSmallest.render(str(graphicTile.number), False, pygame.Color("black"))
+
+                        if(graphicTile.number >= 10):
+                            self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-10, graphicTile.pixelCenter.y+18))
+                        else:
+                            self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-5, graphicTile.pixelCenter.y+18))
             self.tempRobberTile = robTile
                 
 
