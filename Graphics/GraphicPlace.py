@@ -23,9 +23,9 @@ class GraphicPlace:
     def setupSprite(self):
         sourceFileDir = os.path.dirname(os.path.abspath(__file__))
         if self.isColony:
-            imgPath = os.path.join(sourceFileDir, "imgs\playericons\set_p" + str(self.owner) + ".png")
+            imgPath = os.path.join(sourceFileDir, "imgs/playericons/set_p" + str(self.owner) + ".png")
         elif self.isCity:
-            imgPath = os.path.join(sourceFileDir, "imgs\playericons\cit_p" + str(self.owner) + ".png")
+            imgPath = os.path.join(sourceFileDir, "imgs/playericons/cit_p" + str(self.owner) + ".png")
         self.sprite = PlaceSprite(imgPath, self.coords)
 
 

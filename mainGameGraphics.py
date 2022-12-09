@@ -86,7 +86,7 @@ def playGameWithGraphic(self):
     time.sleep(5)
     pygame.quit()
 
-view = GameView.GameView()
 g = c.Game.Game()
+view = GameView.GameView(g)
 playGameWithGraphic(g)
 

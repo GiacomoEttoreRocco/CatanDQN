@@ -16,7 +16,7 @@ class GameView:
         self.game = game #?????
         windowSize = 1000, 800
         self.playerColorDict = {0: pygame.Color('grey'), 1: pygame.Color('red'), 2: pygame.Color('yellow'),
-                           3: pygame.Color('green'), 4:  pygame.Color('blue')}
+                           3: pygame.Color('blueviolet'), 4:  pygame.Color('blue')}
         self.tileColorDict = {"clay": (188, 74, 60), "iron": (128, 128, 128), "crop": pygame.Color('orange'), "wood": (0, 153, 0),
                          "sheep": (51, 255, 51), "desert": (245, 222, 179) }
         self.imgDict = {"clay": "imgs/clay.png", "iron": "imgs/iron.png", "crop": "imgs/crop.png", "wood": "imgs/wood.png",
@@ -30,10 +30,10 @@ class GameView:
         self.font_harbors = pygame.font.SysFont('tahoma', 15)
         self.font_robber = pygame.font.SysFont('tahoma', 50)
 
-        self.pointsP1 = self.font_resource.render(str(self.game.players[0].victoryPoints), False, pygame.Color('red'))
-        self.pointsP2 = self.font_resource.render(str(self.game.players[1].victoryPoints), False, pygame.Color('yellow'))
-        self.pointsP3 = self.font_resource.render(str(self.game.players[2].victoryPoints), False, pygame.Color('green'))
-        self.pointsP4 = self.font_resource.render(str(self.game.players[3].victoryPoints), False, pygame.Color('blue'))
+        self.pointsP1 = self.font_resource.render(str(self.game.players[0].victoryPoints), False, self.playerColorDict[0])
+        self.pointsP2 = self.font_resource.render(str(self.game.players[1].victoryPoints), False, self.playerColorDict[1])
+        self.pointsP3 = self.font_resource.render(str(self.game.players[2].victoryPoints), False, self.playerColorDict[2])
+        self.pointsP4 = self.font_resource.render(str(self.game.players[3].victoryPoints), False, self.playerColorDict[3])
         self.bgScoreColor = pygame.Color("black")
 
 
@@ -136,6 +136,7 @@ class GameView:
 
         self.checkAndDrawStreets()
         self.checkAndDrawPlaces()
+        self.drawRobber()
         pygame.display.update()
         time.sleep(0.1)
 
@@ -170,11 +171,13 @@ class GameView:
                 #print("PRINT OWNER: ", owner)
 
     def drawRobber(self):
-        robberText = self.font_robber.render("Robber", False, (0, 0, 0))
+        sourceFileDir = os.path.dirname(os.path.abspath(__file__))
+        imgPath = os.path.join(sourceFileDir, "imgs/robber.png")
+        robberImg = pygame.image.load(imgPath).convert_alpha()
         for graphicTile in self.graphicTileList:
             if(graphicTile.robber):
                 robberCoords = graphicTile.pixelCenter
-                self.screen.blit(robberText, (int(robberCoords.x) - 20, int(robberCoords.y) - 35))
+                self.screen.blit(robberImg, robberCoords)
 
     def getHexCoords(self, hex_i):
         coordDict = {0: geomlib.Axial_Point(0, -2), 1: geomlib.Axial_Point(1, -2), 2: geomlib.Axial_Point(2, -2),
