@@ -188,7 +188,7 @@ class GameView:
             robTile = Board.Board().robberTile
             for graphicTile in self.graphicTileList:
                 if(graphicTile.index == robTile):
-                    robberCoords = graphicTile.pixelCenter
+                    robberCoords = (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y -20)
                     self.screen.blit(robberImg, robberCoords)
                 elif(self.tempRobberTile != -1 and self.tempRobberTile == graphicTile.index):
                     imgPath = os.path.join(self.sourceFileDir, self.imgDict[graphicTile.resource])
