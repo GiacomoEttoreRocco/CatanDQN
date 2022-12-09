@@ -2,6 +2,7 @@ import Classes.Board as Board
 import Classes.Bank as Bank
 import Classes.Player as Player
 import Classes.CatanGraph as cg
+import random
 
 def placeFreeStreet(player, edge, undo = False, justCheck = False):
     previousLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
@@ -156,15 +157,19 @@ def discardResource(player, resource, undo = False):
 def passTurn(player, temp):
     pass
 
-def useRobber(player, tilePosition, undo = False):
+def useRobber(player, tilePosition, undo = False, justCheck = False):
+    if(not justCheck):
+        stealResource(player, Board.Board().tiles[tilePosition])
     previousPosition = Board.Board().robberTile
     Board.Board().robberTile = tilePosition
     return previousPosition
 
 def useKnight(player, tilePosition, undo = False, justCheck = False):
-    largArmy = player.game.largestArmy(justCheck)
+    largArmy = player.game.largestArmy(justCheck)        
     previousPosition = Board.Board().robberTile
     Board.Board().robberTile = tilePosition
+    if(not justCheck):
+        stealResource(player, Board.Board().tiles[tilePosition])
     if(not undo):
         player.unusedKnights -= 1
         player.usedKnights += 1
@@ -177,9 +182,16 @@ def useKnight(player, tilePosition, undo = False, justCheck = False):
         largArmy.victoryPoints -= 2
     return previousPosition
 
-def stealResource(player, tile):
-    players
-    for p in tile.associatedPlaces:
+def stealResource(player, tile: cg.Tile):
+    playersInTile = []
+    for place in tile.associatedPlaces:
+        owner = player.game.players[Board.Board().places[place].owner-1]
+        if owner not in playersInTile and owner.id != 0 and owner != player and owner.resourceCount() > 0: 
+            playersInTile.append(owner)
+    if len(playersInTile) > 0:
+        chosenPlayer = playersInTile[random.randint(0,len(playersInTile)-1)]
+        chosenPlayer.stealFromMe(player)
+    return
 
 
 def tradeBank(player, coupleOfResources, undo = False):

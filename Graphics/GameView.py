@@ -31,15 +31,50 @@ class GameView:
         self.font_resourceSmaller = pygame.font.SysFont('tahoma', 35)
         self.font_resourceSmallest = pygame.font.SysFont('tahoma', 17, bold=True)
 
-
         self.font_harbors = pygame.font.SysFont('tahoma', 15)
         self.font_robber = pygame.font.SysFont('tahoma', 50)
 
-        self.pointsP1 = self.font_resource.render(str(self.game.players[0].victoryPoints), False, self.playerColorDict[1])
-        self.pointsP2 = self.font_resource.render(str(self.game.players[1].victoryPoints), False, self.playerColorDict[2])
-        self.pointsP3 = self.font_resource.render(str(self.game.players[2].victoryPoints), False, self.playerColorDict[3])
-        self.pointsP4 = self.font_resource.render(str(self.game.players[3].victoryPoints), False, self.playerColorDict[4])
-        self.bgScoreColor = pygame.Color("black")
+        self.points = []
+        self.pointsCards = []
+
+        self.woods = []
+        self.sheeps = []
+        self.crops = []
+        self.irons = []
+        self.clays = []
+        self.knights = []
+
+        for i in range(0, len(self.game.players)):
+            self.points.append(self.font_resource.render(str(self.game.players[i].victoryPoints), False, self.playerColorDict[i+1]))
+            self.pointsCards.append(self.font_resourceSmallest.render("Vp cards: " + str(self.game.players[i].victoryPointsCards), False, self.playerColorDict[i+1]))
+            self.woods.append(self.font_resourceSmallest.render("Wood: " + str(self.game.players[i].resources["wood"]), False, self.playerColorDict[i+1]))
+            self.sheeps.append(self.font_resourceSmallest.render("Sheep: " +str(self.game.players[i].resources["sheep"]), False, self.playerColorDict[i+1]))
+            self.crops.append(self.font_resourceSmallest.render("Crop: " + str(self.game.players[i].resources["crop"]), False, self.playerColorDict[i+1]))
+            self.irons.append(self.font_resourceSmallest.render("Iron: " + str(self.game.players[i].resources["iron"]), False, self.playerColorDict[i+1]))
+            self.clays.append(self.font_resourceSmallest.render("Clay: " + str(self.game.players[i].resources["clay"]), False, self.playerColorDict[i+1]))
+            self.knights.append(self.font_resourceSmallest.render("Knights: " + str(self.game.players[i].usedKnights), False, self.playerColorDict[i+1]))
+
+    def updateStats(self):
+        for i in range(0, len(self.game.players)):
+            self.points[i] = self.font_resource.render(str(self.game.players[i].victoryPoints), False, self.playerColorDict[i+1])
+            self.pointsCards[i] = self.font_resourceSmallest.render("Vp cards: " + str(self.game.players[i].victoryPointsCards), False, self.playerColorDict[i+1])
+            self.woods[i] = self.font_resourceSmallest.render("Wood: " + str(self.game.players[i].resources["wood"]), False, self.playerColorDict[i+1])
+            self.sheeps[i] = self.font_resourceSmallest.render("Sheep: " +str(self.game.players[i].resources["sheep"]), False, self.playerColorDict[i+1])
+            self.crops[i] = self.font_resourceSmallest.render("Crop: " + str(self.game.players[i].resources["crop"]), False, self.playerColorDict[i+1])
+            self.irons[i] = self.font_resourceSmallest.render("Iron: " + str(self.game.players[i].resources["iron"]), False, self.playerColorDict[i+1])
+            self.clays[i] = self.font_resourceSmallest.render("Clay: " + str(self.game.players[i].resources["clay"]), False, self.playerColorDict[i+1])
+            self.knights[i] = (self.font_resourceSmallest.render("Knights: " + str(self.game.players[i].usedKnights), False, self.playerColorDict[i+1]))
+
+
+    def blit(self, player, x, y):
+        self.screen.blit(self.points[player.id-1], (x, y)) # 5,5
+        self.screen.blit(self.pointsCards[player.id-1], (x, y+55))
+        self.screen.blit(self.woods[player.id-1], (x, y+95))
+        self.screen.blit(self.sheeps[player.id-1], (x, y+115))
+        self.screen.blit(self.crops[player.id-1], (x, y+135))
+        self.screen.blit(self.irons[player.id-1], (x, y+155))
+        self.screen.blit(self.clays[player.id-1], (x, y+175))
+        self.screen.blit(self.knights[player.id-1], (x, y+215))
 
 
     def setupAndDisplayBoard(self):
@@ -47,8 +82,7 @@ class GameView:
         pygame.draw.rect(self.screen, pygame.Color('lightblue'),
                          (0, 0, 1000, 800))
         # Render each tile
-        hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(80, 80),
-                      geomlib.Point(500, 400))
+        hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(80, 80), geomlib.Point(500, 400))
         width = 1000
         hex_i = 0
         #Takes tiles from board and draws their graphic equivalent
@@ -109,46 +143,34 @@ class GameView:
 
         self.drawRobber()
 
-        score = pygame.Rect(0,0,100,100) 
-        self.screen.fill(self.bgScoreColor, score)  #pygame.Color('lightblue')
-        pygame.display.update(score)
-
-        score = pygame.Rect(0,700,100,100) 
-        self.screen.fill(self.bgScoreColor, score)  #pygame.Color('lightblue')
-        pygame.display.update(score)
-
-        score = pygame.Rect(900,0,100,100) 
-        self.screen.fill(self.bgScoreColor, score)  #pygame.Color('lightblue')
-        pygame.display.update(score)
-
-        score = pygame.Rect(900,700,100,100) 
-        self.screen.fill(self.bgScoreColor, score)  #pygame.Color('lightblue')
-        pygame.display.update(score)
-
-        self.pointsP1 = self.font_resource.render(str(self.game.players[0].victoryPoints), False, self.playerColorDict[1])
-        self.pointsCardsP1 = self.font_resourceSmaller.render(str(self.game.players[0].victoryPointsCards), False, self.playerColorDict[1])
-        self.screen.blit(self.pointsP1, (5, 5))
-        self.screen.blit(self.pointsCardsP1, (5, 60))
-
-        self.pointsP2 = self.font_resource.render(str(self.game.players[1].victoryPoints), False, self.playerColorDict[2])
-        self.pointsCardsP2 = self.font_resourceSmaller.render(str(self.game.players[1].victoryPointsCards), False, self.playerColorDict[2])
-        self.screen.blit(self.pointsP2, (5, 700))
-        self.screen.blit(self.pointsCardsP2, (5, 755))
-
-
-        self.pointsP3 = self.font_resource.render(str(self.game.players[2].victoryPoints), False, self.playerColorDict[3])
-        self.pointsCardsP3 = self.font_resourceSmaller.render(str(self.game.players[2].victoryPointsCards), False, self.playerColorDict[3])
-        self.screen.blit(self.pointsP3, (950, 5))
-        self.screen.blit(self.pointsCardsP3, (950, 60))
-
-        self.pointsP4 = self.font_resource.render(str(self.game.players[3].victoryPoints), False, self.playerColorDict[4])
-        self.pointsCardsP4 = self.font_resourceSmaller.render(str(self.game.players[3].victoryPointsCards), False, self.playerColorDict[4])
-        self.screen.blit(self.pointsP4, (950, 700))
-        self.screen.blit(self.pointsCardsP4, (950, 755))
-
         self.checkAndDrawStreets()
         self.checkAndDrawPlaces()
+
+        self.bgScoreColor = pygame.Color("grey32")
+        score = pygame.Rect(0,0,120,250) 
+        self.screen.fill(self.bgScoreColor, score)  #pygame.Color('lightblue')
+        pygame.display.update(score)
+
+        score = pygame.Rect(0,550,120,250) 
+        self.screen.fill(self.bgScoreColor, score)  #pygame.Color('lightblue')
+        pygame.display.update(score)
+
+        score = pygame.Rect(880,0,120,250) 
+        self.screen.fill(self.bgScoreColor, score)  #pygame.Color('lightblue')
+        pygame.display.update(score)
+
+        score = pygame.Rect(880,550,120,250) 
+        self.screen.fill(self.bgScoreColor, score)  #pygame.Color('lightblue')
+
+        self.updateStats()
+        self.blit(self.game.players[0], 5, 5)
+        self.blit(self.game.players[1], 5, 550)
+        self.blit(self.game.players[2], 900, 5)
+        self.blit(self.game.players[3], 900, 550)
+
+
         pygame.display.update()
+        #pygame.display.update(score)
         #time.sleep(0.1)
 
     def drawPlace(self, graphicPlace):

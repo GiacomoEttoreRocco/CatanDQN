@@ -50,16 +50,13 @@ def doTurnGraphic(self, player: c.Player):
     while(move != c.Move.passTurn and not self.checkWon(player)): # move è una funzione 
         move, thingNeeded = self.bestMove(player, turnCardUsed)
         move(player, thingNeeded)
-
         view.updateGameScreen()
-
         print("Player ", player.id, " mossa: ", move, " ")
 
         if(move in c.Move.cardMoves()):
             turnCardUsed = True
 
-def playGameWithGraphic(self):
-
+def playGameWithGraphic(self, view):
     view.displayGameScreen()  
     turn = 1 
     won = False
@@ -87,5 +84,5 @@ def playGameWithGraphic(self):
 
 g = c.Game.Game()
 view = GameView.GameView(g)
-playGameWithGraphic(g)
+playGameWithGraphic(g, view)
 

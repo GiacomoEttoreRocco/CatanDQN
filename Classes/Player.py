@@ -293,10 +293,11 @@ class Player:
         if(move == Move.useRobber):
             max = 0
             for tile in Board.Board().tiles: 
-                valutation = self.moveValue(move, tile.identificator)
-                if(max < valutation):
-                    max = valutation
-                    candidatePos = tile.identificator
+                if(tile.identificator != Board.Board().robberTile):
+                    valutation = self.moveValue(move, tile.identificator)
+                    if(max < valutation):
+                        max = valutation
+                        candidatePos = tile.identificator
             return max, candidatePos        
 
         if(move == Move.tradeBank):
@@ -351,8 +352,19 @@ class Player:
                         candidateEdge2 = edge
             return max1+max2, [candidateEdge1, candidateEdge2]
 
-    def totalCards(self):
+    def resourceCount(self):
         return sum(self.resources.values())
+
+    def stealFromMe(self, player):
+        resourcesOfPlayer = []
+        for keyRes in self.resources.keys():
+            resourcesOfPlayer.extend([keyRes] * self.resources[keyRes])
+        assert(len(resourcesOfPlayer) > 0)
+        randomTake = random.randint(0, len(resourcesOfPlayer)-1)
+        resourceTaken = resourcesOfPlayer[randomTake]
+        print("RESOURCE TAKEN ---------------------------------------------------->", resourceTaken)
+        self.resources[resourceTaken] -= 1
+        player.resources[resourceTaken] += 1
 
     def moveValue(self, move, thingNeeded = None):
         if(move == Move.passTurn):
@@ -365,9 +377,9 @@ class Player:
             return toRet + random.uniform(0,2)
 
         if(move == Move.useRobber):
-            previousTilePos = move(self, thingNeeded)
+            previousTilePos = move(self, thingNeeded, False, True)
             toRet = 1.5
-            move(self, previousTilePos, True) # ATTUALMENTE è INUTILE SIA QUESTA RIGA CHE QUELLA SOPRA
+            move(self, previousTilePos, True, True) # ATTUALMENTE è INUTILE SIA QUESTA RIGA CHE QUELLA SOPRA
             return toRet + random.uniform(0,2)
 
         if(move == Move.buyDevCard):

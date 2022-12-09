@@ -34,7 +34,7 @@ class Game:
         moves = player.availableMoves(usedCard)
         #print("\n")
         player.printResources()
-        print("\n AVAILABLE MOVES: ", moves, "\n")
+        #print("\n AVAILABLE MOVES: ", moves, "\n")
         max = 0
         thingsNeeded = None
         bestMove = Move.passTurn
@@ -48,9 +48,9 @@ class Game:
 
     def sevenOnDices(self, player: Player):
         for pyr in self.players:
-            if(pyr.totalCards() >= 7):
-                nCards = pyr.totalCards()/2
-                while(pyr.totalCards() <= nCards):
+            if(pyr.resourceCount() >= 7):
+                nCards = pyr.resourceCount()/2
+                while(pyr.resourceCount() <= nCards):
                     eval, card = player.evaluate(Move.discardResource)
                     Move.discardResource(player, card)
                 
@@ -61,7 +61,7 @@ class Game:
         return random.randint(1,6) + random.randint(1,6)    
 
     def doTurn(self, player: Player):
-        player.printStats()
+        #player.printStats()
         turnCardUsed = False # SI PUò USARE UNA SOLA CARTA SVILUPPO A TURNO.
         player.unusedKnights = player.unusedKnights + player.justBoughtKnights
         player.justBoughtKnights = 0
@@ -112,7 +112,7 @@ class Game:
 
     def checkWon(self, player):
         if(player.victoryPoints >= 10):
-            player.printStats()
+            #player.printStats()
             print("Il vincitore è il Player ", str(player.id), "!")
             return True
         return False
@@ -124,8 +124,8 @@ class Game:
 
         evaluation, edgeChoosen = player.evaluate(Move.placeFreeStreet)
         Move.placeFreeStreet(player, edgeChoosen)
-        print(" edge: ", edgeChoosen[0], " - ", edgeChoosen[1], "\n")
-        print("edge owner: ", str(Board.Board().edges[edgeChoosen]), "\n")
+        #print(" edge: ", edgeChoosen[0], " - ", edgeChoosen[1], "\n")
+        #print("edge owner: ", str(Board.Board().edges[edgeChoosen]), "\n")
 
     def totalKnightsUsed(self):
         totKnightUsed = 0
@@ -202,7 +202,7 @@ class Game:
 
         for p in sorted(self.players, reverse=True):
             self.doInitialChoise(p)
-            p.printStats()
+            #p.printStats()
 
         while won == False:
 
@@ -210,7 +210,7 @@ class Game:
             #time.sleep(5)
             turn += 1
 
-            playerTurn.printStats()
+            #playerTurn.printStats()
 
             self.doTurn(playerTurn)
 
