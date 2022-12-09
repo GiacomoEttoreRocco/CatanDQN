@@ -48,7 +48,6 @@ def doTurnGraphic(self, player: c.Player):
             turnCardUsed = True
 
     while(move != c.Move.passTurn and not self.checkWon(player)): # move è una funzione 
-
         move, thingNeeded = self.bestMove(player, turnCardUsed)
         move(player, thingNeeded)
 

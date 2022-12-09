@@ -142,7 +142,6 @@ class Player:
         for edge in Board.Board().edges.keys():
             if(Board.Board().edges[edge] == self.id):
                 if(edge == None):
-                    time.sleep(10)
                     print(Board.Board().edges[edge])
                 if(self.connectedEmptyEdges(edge) != None):
                     possibleEdges.extend(self.connectedEmptyEdges(edge))

@@ -10,7 +10,7 @@ class Board: # deve diventare un singleton
 
         if cls.instance is None: 
             cls.instance = super(Board, cls).__new__(cls)
-            cls.robberTile = 7
+            cls.robberTile = 0
             cls.deck = ["knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight",
                         "victory_point","victory_point","victory_point","victory_point","victory_point",
                         "year_of_plenty","year_of_plenty","monopoly","monopoly", "road_building","road_building"]
@@ -63,6 +63,7 @@ class Board: # deve diventare un singleton
         number_index = 0
         for index, res in enumerate(cls.resources): 
             if(res == "desert"):
+                cls.robberTile = index
                 tile = CatanGraph.Tile(res, 7, index)
                 cls.tiles.append(tile)
             else:

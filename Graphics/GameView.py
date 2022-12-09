@@ -12,6 +12,9 @@ pygame.init()
 
 class GameView:
     def __init__(self, game):
+        self.sourceFileDir = os.path.dirname(os.path.abspath(__file__))
+        self.robberImgPath = os.path.join(self.sourceFileDir, "imgs/robber.png")
+        self.tempRobberTile = -1 # per motivi di efficienza.
         # #Use pygame to display the board
         self.game = game #?????
         windowSize = 1000, 800
@@ -59,8 +62,7 @@ class GameView:
             pygame.draw.polygon(self.screen, pygame.Color('black'), hexTileCorners, 5)
             graphicTile.pixelCenter = geomlib.hex_to_pixel(hexLayout, graphicTile.hex)
             tileNumberText = self.font_resourceSmallest.render(str(boardtile.number), False, pygame.Color("black"))
-            sourceFileDir = os.path.dirname(os.path.abspath(__file__))
-            imgPath = os.path.join(sourceFileDir, self.imgDict[boardtile.resource])
+            imgPath = os.path.join(self.sourceFileDir, self.imgDict[boardtile.resource])
             image = pygame.image.load(imgPath).convert_alpha()
             mask = image.copy()
             mask = pygame.transform.scale(mask, (130, 130))
@@ -105,6 +107,8 @@ class GameView:
 
     def updateGameScreen(self):
 
+        self.drawRobber()
+
         score = pygame.Rect(0,0,100,100) 
         self.screen.fill(self.bgScoreColor, score)  #pygame.Color('lightblue')
         pygame.display.update(score)
@@ -144,9 +148,8 @@ class GameView:
 
         self.checkAndDrawStreets()
         self.checkAndDrawPlaces()
-        self.drawRobber()
         pygame.display.update()
-        time.sleep(0.1)
+        #time.sleep(0.1)
 
     def drawPlace(self, graphicPlace):
         if graphicPlace.harbor is not None:
@@ -179,13 +182,22 @@ class GameView:
                 #print("PRINT OWNER: ", owner)
 
     def drawRobber(self):
-        sourceFileDir = os.path.dirname(os.path.abspath(__file__))
-        imgPath = os.path.join(sourceFileDir, "imgs/robber.png")
-        robberImg = pygame.image.load(imgPath).convert_alpha()
-        for graphicTile in self.graphicTileList:
-            if(graphicTile.robber):
-                robberCoords = graphicTile.pixelCenter
-                self.screen.blit(robberImg, robberCoords)
+        robberImg = pygame.image.load(self.robberImgPath).convert_alpha()
+        if(self.tempRobberTile != Board.Board().robberTile):
+            print("drowing robber...")
+            robTile = Board.Board().robberTile
+            for graphicTile in self.graphicTileList:
+                if(graphicTile.index == robTile):
+                    robberCoords = graphicTile.pixelCenter
+                    self.screen.blit(robberImg, robberCoords)
+                elif(self.tempRobberTile != -1 and self.tempRobberTile == graphicTile.index):
+                    imgPath = os.path.join(self.sourceFileDir, self.imgDict[graphicTile.resource])
+                    image = pygame.image.load(imgPath).convert_alpha()
+                    mask = image.copy()
+                    mask = pygame.transform.scale(mask, (130, 130))
+                    self.screen.blit(mask, (graphicTile.pixelCenter.x - 65, graphicTile.pixelCenter.y - 65))
+            self.tempRobberTile = robTile
+                
 
     def getHexCoords(self, hex_i):
         coordDict = {0: geomlib.Axial_Point(0, -2), 1: geomlib.Axial_Point(1, -2), 2: geomlib.Axial_Point(2, -2),

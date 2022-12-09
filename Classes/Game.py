@@ -85,7 +85,9 @@ class Game:
         ########################################################################################################################################################  
         print("Dice value: ", dicesValue)
         if(dicesValue == 7):
-            print("############# SEVEN! #############")
+            #print("############# SEVEN! #############")
+            ev, pos = player.evaluate(Move.useRobber)
+            Move.useRobber(player, pos)
         else:
             self.dice_production(dicesValue)
 
