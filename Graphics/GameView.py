@@ -100,19 +100,19 @@ class GameView:
             pygame.draw.polygon(self.screen, pygame.Color(tileColorRGB[0], tileColorRGB[1], tileColorRGB[2]), hexTileCorners, width == 0)
             pygame.draw.polygon(self.screen, pygame.Color('black'), hexTileCorners, 5)
             graphicTile.pixelCenter = geomlib.hex_to_pixel(hexLayout, graphicTile.hex)
-            tileNumberText = self.font_resourceSmallest.render(str(boardtile.number), False, pygame.Color("black"))
+            tileNumberText = self.font_resourceSmaller.render(str(boardtile.number), False, pygame.Color("black"))
             imgPath = os.path.join(self.sourceFileDir, self.imgDict[boardtile.resource])
             image = pygame.image.load(imgPath).convert_alpha()
             mask = image.copy()
-            mask = pygame.transform.scale(mask, (130, 130))
-            self.screen.blit(mask, (graphicTile.pixelCenter.x - 65, graphicTile.pixelCenter.y - 65))
+            mask = pygame.transform.scale(mask, (54, 54))
+            self.screen.blit(mask, (graphicTile.pixelCenter.x - 27, graphicTile.pixelCenter.y - 60))
             if boardtile.resource != 'desert':
-                pygame.draw.circle(self.screen, pygame.Color("black"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+30), 17, width==0)
-                pygame.draw.circle(self.screen, pygame.Color("white"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+30), 13, width==0)
+                pygame.draw.circle(self.screen, pygame.Color("black"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+30), 27, width==0)
+                pygame.draw.circle(self.screen, pygame.Color("white"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+30), 23, width==0)
                 if(boardtile.number >= 10):
-                    self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-10, graphicTile.pixelCenter.y+18))
+                    self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-20, graphicTile.pixelCenter.y+10))
                 else:
-                    self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-5, graphicTile.pixelCenter.y+18))
+                    self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-10, graphicTile.pixelCenter.y+10))
             hex_i += 1
         return None
 
@@ -144,7 +144,6 @@ class GameView:
         self.drawRobber()
         self.checkAndDrawStreets()
         self.checkAndDrawPlaces()
-
         self.updateStats()
         self.blit(self.game.players[0], 5, 5)
         self.blit(self.game.players[1], 5, 555)
@@ -193,23 +192,33 @@ class GameView:
             robTile = Board.Board().robberTile
             for graphicTile in self.graphicTileList:
                 if(graphicTile.index == robTile):
-                    robberCoords = (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y -20)
+                    robberCoords = (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y-30)
                     self.screen.blit(robberImg, robberCoords)
                 elif(self.tempRobberTile != -1 and self.tempRobberTile == graphicTile.index):
+                    width = 1000
+                    ###############
+                    hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(80, 80), geomlib.Point(500, 400))
+                    hexTileCorners = geomlib.polygon_corners(hexLayout, graphicTile.hex)
+                    tileColorRGB = self.tileColorDict[graphicTile.resource]
+                    pygame.draw.polygon(self.screen, pygame.Color(tileColorRGB[0], tileColorRGB[1], tileColorRGB[2]),
+                                        hexTileCorners, width == 0)
+                    pygame.draw.polygon(self.screen, pygame.Color('black'), hexTileCorners, 5)
+                    graphicTile.pixelCenter = geomlib.hex_to_pixel(hexLayout, graphicTile.hex)
+                    ###############
                     imgPath = os.path.join(self.sourceFileDir, self.imgDict[graphicTile.resource])
                     image = pygame.image.load(imgPath).convert_alpha()
                     mask = image.copy()
-                    mask = pygame.transform.scale(mask, (130, 130))
-                    self.screen.blit(mask, (graphicTile.pixelCenter.x - 65, graphicTile.pixelCenter.y - 65))
+                    mask = pygame.transform.scale(mask, (54, 54))
+                    self.screen.blit(mask, (graphicTile.pixelCenter.x - 27, graphicTile.pixelCenter.y - 60))
                     if graphicTile.resource != 'desert':
                         width = 1000
-                        pygame.draw.circle(self.screen, pygame.Color("black"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+30), 17, width==0)
-                        pygame.draw.circle(self.screen, pygame.Color("white"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+30), 13, width==0)
-                        tileNumberText = self.font_resourceSmallest.render(str(graphicTile.number), False, pygame.Color("black"))
+                        pygame.draw.circle(self.screen, pygame.Color("black"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+30), 27, width==0)
+                        pygame.draw.circle(self.screen, pygame.Color("white"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+30), 23, width==0)
+                        tileNumberText = self.font_resourceSmaller.render(str(graphicTile.number), False, pygame.Color("black"))
                         if(graphicTile.number >= 10):
-                            self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-10, graphicTile.pixelCenter.y+18))
+                            self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-20, graphicTile.pixelCenter.y+10))
                         else:
-                            self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-5, graphicTile.pixelCenter.y+18))
+                            self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-10, graphicTile.pixelCenter.y+10))
             self.tempRobberTile = robTile
                 
 
