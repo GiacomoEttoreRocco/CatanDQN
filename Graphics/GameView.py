@@ -78,14 +78,10 @@ class GameView:
 
 
     def setupAndDisplayBoard(self):
-        #Draw the sea
-        pygame.draw.rect(self.screen, pygame.Color('lightblue'),
-                         (0, 0, 1000, 800))
-        # Render each tile
+        pygame.draw.rect(self.screen, pygame.Color('cadetblue1'),(0, 0, 1000, 800))
         hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(80, 80), geomlib.Point(500, 400))
         width = 1000
         hex_i = 0
-        #Takes tiles from board and draws their graphic equivalent
         for boardtile in Board.Board().tiles:
             hexCoords = self.getHexCoords(hex_i)
             graphicTile = GraphicTile.GraphicTile(hexCoords, boardtile)
@@ -136,27 +132,26 @@ class GameView:
         return
 
     def updateGameScreen(self):
-
         self.drawRobber()
-
         self.checkAndDrawStreets()
         self.checkAndDrawPlaces()
 
-        self.bgScoreColor = pygame.Color("grey32")
+        self.bgScoreColor = pygame.Color("grey18")
+
         score = pygame.Rect(0,0,120,250) 
-        self.screen.fill(self.bgScoreColor, score)  #pygame.Color('lightblue')
+        self.screen.fill(self.bgScoreColor, score)  
         pygame.display.update(score)
 
         score = pygame.Rect(0,550,120,250) 
-        self.screen.fill(self.bgScoreColor, score)  #pygame.Color('lightblue')
+        self.screen.fill(self.bgScoreColor, score)  
         pygame.display.update(score)
 
         score = pygame.Rect(880,0,120,250) 
-        self.screen.fill(self.bgScoreColor, score)  #pygame.Color('lightblue')
+        self.screen.fill(self.bgScoreColor, score) 
         pygame.display.update(score)
 
         score = pygame.Rect(880,550,120,250) 
-        self.screen.fill(self.bgScoreColor, score)  #pygame.Color('lightblue')
+        self.screen.fill(self.bgScoreColor, score)  
 
         self.updateStats()
         self.blit(self.game.players[0], 5, 5)
@@ -164,10 +159,7 @@ class GameView:
         self.blit(self.game.players[2], 900, 5)
         self.blit(self.game.players[3], 900, 550)
 
-
         pygame.display.update()
-        #pygame.display.update(score)
-        #time.sleep(0.1)
 
     def drawPlace(self, graphicPlace):
         if graphicPlace.harbor is not None:
@@ -188,16 +180,13 @@ class GameView:
         for gplace, place in zip(self.graphicPlaceList, Board.Board().places):
             gplace.update(place)
             if place.owner != 0:
-                self.drawPlace(gplace) #    self.drawPlace(place)
-                #print(gplace.isColony)
-                #print(gplace.isCity)
+                self.drawPlace(gplace) 
 
     def checkAndDrawStreets(self):
         for edge in Board.Board().edges:
             owner = Board.Board().edges[edge]
             if owner != 0:
                 self.drawStreet(edge, self.playerColorDict[owner])
-                #print("PRINT OWNER: ", owner)
 
     def drawRobber(self):
         robberImg = pygame.image.load(self.robberImgPath).convert_alpha()

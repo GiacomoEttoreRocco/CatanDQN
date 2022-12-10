@@ -3,18 +3,16 @@ import pygame
 import Graphics.GameView as GameView
 import time
 
-speed = False
+speed = True
 def goNextIfInvio(speed = False):
     if(not speed):
         event = pygame.event.wait()
-        #print("EVENT: ---------------------> ", event)
         while event.type != pygame.KEYDOWN:
             event = pygame.event.wait()
     view.updateGameScreen()
 
 def doTurnGraphic(game: c.Game, player: c.Player, withGraphic = False):
-    #player.printStats()
-    turnCardUsed = False # SI PUò USARE UNA SOLA CARTA SVILUPPO A TURNO.
+    turnCardUsed = False 
     player.unusedKnights = player.unusedKnights + player.justBoughtKnights
     player.justBoughtKnights = 0
     player.monopolyCard += player.justBoughtMonopolyCard
@@ -41,9 +39,7 @@ def doTurnGraphic(game: c.Game, player: c.Player, withGraphic = False):
     if(dicesValue == 7):
         print("############# SEVEN! #############")
         ev, pos = player.evaluate(c.Move.useRobber)
-        #print("POS: ", pos)
         c.Move.useRobber(player, pos)
-        #print("POS: ", pos)
     else:
         game.dice_production(dicesValue)
     move, thingNeeded = game.bestMove(player, turnCardUsed)
@@ -74,15 +70,12 @@ def playGameWithGraphic(game, view):
     for p in game.players:
         game.doInitialChoise(p)
         goNextIfInvio(speed)
-
     for p in sorted(game.players, reverse=True):
         game.doInitialChoise(p, giveResources = True)
         goNextIfInvio(speed)
-
     while won == False:
         playerTurn = game.players[turn%game.nplayer]
         turn += 1
-        #playerTurn.printStats()
         doTurnGraphic(game, playerTurn)
         if(playerTurn.victoryPoints >= 10):
             return playerTurn
