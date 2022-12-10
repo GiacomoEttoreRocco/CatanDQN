@@ -12,6 +12,7 @@ pygame.init()
 
 class GameView:
     def __init__(self, game):
+        self.width = 1000
         self.sourceFileDir = os.path.dirname(os.path.abspath(__file__))
         self.robberImgPath = os.path.join(self.sourceFileDir, "imgs/robber.png")
         self.tempRobberTile = -1 # per motivi di efficienza.
@@ -100,21 +101,24 @@ class GameView:
             pygame.draw.polygon(self.screen, pygame.Color(tileColorRGB[0], tileColorRGB[1], tileColorRGB[2]), hexTileCorners, width == 0)
             pygame.draw.polygon(self.screen, pygame.Color('black'), hexTileCorners, 5)
             graphicTile.pixelCenter = geomlib.hex_to_pixel(hexLayout, graphicTile.hex)
-            tileNumberText = self.font_resourceSmaller.render(str(boardtile.number), False, pygame.Color("black"))
             imgPath = os.path.join(self.sourceFileDir, self.imgDict[boardtile.resource])
             image = pygame.image.load(imgPath).convert_alpha()
             mask = image.copy()
             mask = pygame.transform.scale(mask, (54, 54))
             self.screen.blit(mask, (graphicTile.pixelCenter.x - 27, graphicTile.pixelCenter.y - 60))
-            if boardtile.resource != 'desert':
-                pygame.draw.circle(self.screen, pygame.Color("black"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+30), 27, width==0)
-                pygame.draw.circle(self.screen, pygame.Color("white"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+30), 23, width==0)
-                if(boardtile.number >= 10):
-                    self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-20, graphicTile.pixelCenter.y+10))
-                else:
-                    self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-10, graphicTile.pixelCenter.y+10))
+            self.drawNumberCircle(graphicTile)
             hex_i += 1
         return None
+
+    def drawNumberCircle(self, graphicTile):
+        tileNumberText = self.font_resourceSmaller.render(str(graphicTile.number), False, pygame.Color("black"))
+        if graphicTile.resource != 'desert':
+            pygame.draw.circle(self.screen, pygame.Color("black"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+25), 27, self.width==0)
+            pygame.draw.circle(self.screen, pygame.Color("white"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+25), 23, self.width==0)
+            if(graphicTile.number >= 10):
+                self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-20, graphicTile.pixelCenter.y))
+            else:
+                self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-10, graphicTile.pixelCenter.y))
 
     def setupPlaces(self):
         for place in Board.Board().places:
@@ -134,7 +138,6 @@ class GameView:
                             alreadyFound.append(el)
 
     def displayGameScreen(self):
-        running = True
         self.setupAndDisplayBoard()
         self.setupPlaces()
         self.updateGameScreen()
@@ -214,15 +217,7 @@ class GameView:
                     mask = image.copy()
                     mask = pygame.transform.scale(mask, (54, 54))
                     self.screen.blit(mask, (graphicTile.pixelCenter.x - 27, graphicTile.pixelCenter.y - 60))
-                    if graphicTile.resource != 'desert':
-                        width = 1000
-                        pygame.draw.circle(self.screen, pygame.Color("black"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+30), 27, width==0)
-                        pygame.draw.circle(self.screen, pygame.Color("white"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+30), 23, width==0)
-                        tileNumberText = self.font_resourceSmaller.render(str(graphicTile.number), False, pygame.Color("black"))
-                        if(graphicTile.number >= 10):
-                            self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-20, graphicTile.pixelCenter.y+10))
-                        else:
-                            self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-10, graphicTile.pixelCenter.y+10))
+                    self.drawNumberCircle(graphicTile)
             self.tempRobberTile = robTile
                 
 

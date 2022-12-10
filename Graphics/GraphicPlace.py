@@ -30,14 +30,19 @@ class GraphicPlace:
 
 
 class PlaceSprite(pygame.sprite.Sprite):
-
     def __init__(self, imgName, coords):
         super().__init__()
         self.image = pygame.image.load(imgName)
-        self.image = pygame.transform.scale(self.image, (50, 50))
-        self.rect = self.image.get_rect()
-        self.rect.centerx = coords[0]
-        self.rect.centery = coords[1]
+        if("set_p" in imgName):
+            self.image = pygame.transform.scale(self.image, (50, 50))
+            self.rect = self.image.get_rect()
+            self.rect.centerx = coords[0]
+            self.rect.centery = coords[1]-5
+        else:
+            self.image = pygame.transform.scale(self.image, (70, 70))
+            self.rect = self.image.get_rect()
+            self.rect.centerx = coords[0]
+            self.rect.centery = coords[1]
 
 
 

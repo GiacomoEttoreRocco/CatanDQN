@@ -3,7 +3,7 @@ import pygame
 import Graphics.GameView as GameView
 import time
 
-speed = False
+speed = True
 def goNextIfInvio(speed = False):
     if(not speed):
         event = pygame.event.wait()
