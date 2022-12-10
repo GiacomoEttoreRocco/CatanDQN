@@ -86,7 +86,6 @@ class GameView:
         self.screen.blit(self.clays[player.id-1], (x, y+175))
         self.screen.blit(self.knights[player.id-1], (x, y+215))
 
-
     def setupAndDisplayBoard(self):
         pygame.draw.rect(self.screen, pygame.Color('cadetblue1'),(0, 0, 1000, 800))
         hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(80, 80), geomlib.Point(500, 400))
@@ -191,10 +190,22 @@ class GameView:
             if owner != 0:
                 self.drawStreet(edge, self.playerColorDict[owner])
 
-    def checkAndDrawHarbors(self, place):
-        if place.harbor is not None:
-            harborText = self.font_harbors.render(place.harbor, False, (0, 0, 0))
-            self.screen.blit(harborText, (place.coords[0] + 15, place.coords[1] + 10))
+    def checkAndDrawHarbors(self, graphicPlace):
+        idPlace = graphicPlace.index
+        if graphicPlace.harbor is not None:
+            harborText = self.font_harbors.render(graphicPlace.harbor, False, (0, 0, 0))
+            placesOnRight = [6,14,15,25,26,37,36,45,46,53]
+            placesOnLeft = [0,8,7,17,16,27,28,38,39,47]
+            placesOnTop = [1,2,3,4,5]
+            placesOnDown = [48,49,50,51,52]
+            if(idPlace in placesOnRight):
+                self.screen.blit(harborText, (graphicPlace.coords[0] + 20, graphicPlace.coords[1]-5))
+            elif(idPlace in placesOnLeft):
+                self.screen.blit(harborText, (graphicPlace.coords[0] - 70, graphicPlace.coords[1]-5))
+            elif(idPlace in placesOnTop):
+                self.screen.blit(harborText, (graphicPlace.coords[0]-5, graphicPlace.coords[1] - 55))
+            else:
+                self.screen.blit(harborText, (graphicPlace.coords[0]-5, graphicPlace.coords[1] + 25))
 
     def drawRobber(self):
         robberImg = pygame.image.load(self.robberImgPath).convert_alpha()
