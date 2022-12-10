@@ -3,11 +3,13 @@ import pygame
 import Graphics.GameView as GameView
 import time
 
-def goNextIfInvio():
-    event = pygame.event.wait()
-    #print("EVENT: ---------------------> ", event)
-    while event.type != pygame.KEYDOWN:
+speed = False
+def goNextIfInvio(speed = False):
+    if(not speed):
         event = pygame.event.wait()
+        #print("EVENT: ---------------------> ", event)
+        while event.type != pygame.KEYDOWN:
+            event = pygame.event.wait()
     view.updateGameScreen()
 
 def doTurnGraphic(game: c.Game, player: c.Player, withGraphic = False):
@@ -46,7 +48,7 @@ def doTurnGraphic(game: c.Game, player: c.Player, withGraphic = False):
         game.dice_production(dicesValue)
     move, thingNeeded = game.bestMove(player, turnCardUsed)
     move(player, thingNeeded)
-    goNextIfInvio()
+    goNextIfInvio(speed)
     print("Player ", player.id, " mossa: ", move, " ")
     if(game.checkWon(player)):
         return
@@ -55,7 +57,7 @@ def doTurnGraphic(game: c.Game, player: c.Player, withGraphic = False):
     while(move != c.Move.passTurn and not game.checkWon(player)): # move è una funzione 
         move, thingNeeded = game.bestMove(player, turnCardUsed)
         move(player, thingNeeded)
-        goNextIfInvio()
+        goNextIfInvio(speed)
         print("Player ", player.id, " mossa: ", move, " ")
         if(move in c.Move.cardMoves()):
             turnCardUsed = True
@@ -71,11 +73,11 @@ def playGameWithGraphic(game, view):
     # START INIZIALE
     for p in game.players:
         game.doInitialChoise(p)
-        goNextIfInvio()
+        goNextIfInvio(speed)
 
     for p in sorted(game.players, reverse=True):
-        game.doInitialChoise(p)
-        goNextIfInvio()
+        game.doInitialChoise(p, giveResources = True)
+        goNextIfInvio(speed)
 
     while won == False:
         playerTurn = game.players[turn%game.nplayer]
@@ -86,7 +88,7 @@ def playGameWithGraphic(game, view):
             return playerTurn
         if(turn % 4 == 0):
             print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
-    goNextIfInvio()
+    goNextIfInvio(speed)
     pygame.quit()
 
 g = c.Game.Game()

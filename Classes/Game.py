@@ -117,15 +117,16 @@ class Game:
             return True
         return False
         
-    def doInitialChoise(self, player: Player):
+    def doInitialChoise(self, player: Player, giveResources = False):
         evaluation, colonyChoosen = player.evaluate(Move.placeFreeColony)
         Move.placeFreeColony(player, colonyChoosen)
+        if(giveResources):
+            for touchedResource in Board.Board().places[colonyChoosen.id].touchedResourses:
+                Bank.Bank().giveResource(player, touchedResource)
         print("Initial choise, colony: ", str(colonyChoosen.id))
-
         evaluation, edgeChoosen = player.evaluate(Move.placeFreeStreet)
         Move.placeFreeStreet(player, edgeChoosen)
-        #print(" edge: ", edgeChoosen[0], " - ", edgeChoosen[1], "\n")
-        #print("edge owner: ", str(Board.Board().edges[edgeChoosen]), "\n")
+
 
     def totalKnightsUsed(self):
         totKnightUsed = 0
@@ -199,7 +200,7 @@ class Game:
         for p in self.players:
             self.doInitialChoise(p)
         for p in sorted(self.players, reverse=True):
-            self.doInitialChoise(p)
+            self.doInitialChoise(p, giveResources=True)
         while won == False:
             playerTurn = self.players[turn%self.nplayer]
             turn += 1
