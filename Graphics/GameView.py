@@ -24,7 +24,9 @@ class GameView:
         self.tileColorDict = {"clay": (188, 74, 60), "iron": (128, 128, 128), "crop": pygame.Color('orange'), "wood": (0, 153, 0),
                          "sheep": (51, 255, 51), "desert": (245, 222, 179) }
         self.imgDict = {"clay": "imgs/clay.png", "iron": "imgs/iron.png", "crop": "imgs/crop.png", "wood": "imgs/wood.png",
-                   "sheep": "imgs/sheep.png", "desert": "imgs/desert.png"}
+                   "sheep": "imgs/sheep.png", "desert": "imgs/desert.png", "2:1 wood": "imgs/harbors/21wood.png", 
+                   "2:1 crop":"imgs/harbors/21crop.png", "2:1 sheep" : "imgs/harbors/21sheep.png", "2:1 iron":"imgs/harbors/21iron.png", 
+                   "2:1 clay":"imgs/harbors/21clay.png", "3:1":"imgs/harbors/31.png"}
         self.graphicTileList = []
         self.graphicPlaceList = []
         self.screen = pygame.display.set_mode(windowSize)
@@ -159,10 +161,10 @@ class GameView:
         self.blit(self.game.players[3], 885, 555)
 
         font_dice = self.font_resourceSmaller.render(str(self.game.dice), False, pygame.Color('white'))
-        diceRoll = pygame.Rect(475, 0, 50, 50)
+        diceRoll = pygame.Rect(0, 475, 50, 50)
         self.screen.fill(self.bgScoreColor, diceRoll)
         pygame.display.update(diceRoll)
-        self.screen.blit(font_dice, (480, 5))
+        self.screen.blit(font_dice, (5, 480))
 
         pygame.display.update()
 
@@ -193,19 +195,36 @@ class GameView:
     def checkAndDrawHarbors(self, graphicPlace):
         idPlace = graphicPlace.index
         if graphicPlace.harbor is not None:
-            harborText = self.font_harbors.render(graphicPlace.harbor, False, (0, 0, 0))
-            placesOnRight = [6,14,15,25,26,37,36,45,46,53]
-            placesOnLeft = [0,8,7,17,16,27,28,38,39,47]
+            harborPath = os.path.join(self.sourceFileDir, self.imgDict[graphicPlace.harbor])
+            harborImg = pygame.transform.scale(pygame.image.load(harborPath).convert_alpha(),(50, 50))
+
+            placesOnRightUp = [6,14,15,25,26]
+            placesOnRightDown = [37,36,46,45,53]
+
+            placesOnLeftUp = [0,8,7,17,16]
+            placesOnLeftDown = [27,28,38,39,47]
+
             placesOnTop = [1,2,3,4,5]
             placesOnDown = [48,49,50,51,52]
-            if(idPlace in placesOnRight):
-                self.screen.blit(harborText, (graphicPlace.coords[0] + 20, graphicPlace.coords[1]-5))
-            elif(idPlace in placesOnLeft):
-                self.screen.blit(harborText, (graphicPlace.coords[0] - 70, graphicPlace.coords[1]-5))
+
+            if(idPlace in placesOnLeftUp):
+                coords = (graphicPlace.coords[0]-55, graphicPlace.coords[1]-55)
+                self.screen.blit(harborImg, coords)
+            elif(idPlace in placesOnLeftDown):
+                coords = (graphicPlace.coords[0]-55, graphicPlace.coords[1]+5)
+                self.screen.blit(harborImg, coords)
+            elif(idPlace in placesOnRightUp):
+                coords = (graphicPlace.coords[0]+5, graphicPlace.coords[1]-55)
+                self.screen.blit(harborImg, coords)
+            elif(idPlace in placesOnRightDown):
+                coords = (graphicPlace.coords[0]+5, graphicPlace.coords[1]+5)
+                self.screen.blit(harborImg, coords)
             elif(idPlace in placesOnTop):
-                self.screen.blit(harborText, (graphicPlace.coords[0]-5, graphicPlace.coords[1] - 55))
-            else:
-                self.screen.blit(harborText, (graphicPlace.coords[0]-5, graphicPlace.coords[1] + 25))
+                coords = (graphicPlace.coords[0]-25, graphicPlace.coords[1]-65)
+                self.screen.blit(harborImg, coords)
+            elif(idPlace in placesOnDown):
+                coords = (graphicPlace.coords[0]-25, graphicPlace.coords[1]+15)
+                self.screen.blit(harborImg, coords)
 
     def drawRobber(self):
         robberImg = pygame.image.load(self.robberImgPath).convert_alpha()
