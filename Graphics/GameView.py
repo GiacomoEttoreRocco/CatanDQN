@@ -31,7 +31,7 @@ class GameView:
         self.font_resourceSmaller = pygame.font.SysFont('tahoma', 35)
         self.font_resourceSmallest = pygame.font.SysFont('tahoma', 17, bold=True)
 
-        self.font_harbors = pygame.font.SysFont('tahoma', 15)
+        self.font_harbors = pygame.font.SysFont('tahoma', 20)
         self.font_robber = pygame.font.SysFont('tahoma', 50)
 
         self.points = []
@@ -127,8 +127,10 @@ class GameView:
                     for el in v:
                         if el not in alreadyFound:
                             placeToAdd = self.graphicPlaceList[el]
-                            placeToAdd.setupCoords(pc.placeCoordinates[placeToAdd.index])        
+                            placeToAdd.setupCoords(pc.placeCoordinates[placeToAdd.index])
                             gtile.places.append(placeToAdd)
+
+                            self.checkAndDrawHarbors(placeToAdd)
                             alreadyFound.append(el)
 
     def displayGameScreen(self):
@@ -159,9 +161,6 @@ class GameView:
         pygame.display.update()
 
     def drawPlace(self, graphicPlace):
-        if graphicPlace.harbor is not None:
-            harborText = self.font_harbors.render(graphicPlace.harbor, False, (0, 0, 0))
-            self.screen.blit(harborText, (graphicPlace.coords[0] + 10, graphicPlace.coords[1] + 10))
         graphicPlace.setupSprite()
         sprlist = pygame.sprite.Group()
         sprlist.add(graphicPlace.sprite)
@@ -184,6 +183,11 @@ class GameView:
             owner = Board.Board().edges[edge]
             if owner != 0:
                 self.drawStreet(edge, self.playerColorDict[owner])
+
+    def checkAndDrawHarbors(self, place):
+        if place.harbor is not None:
+            harborText = self.font_harbors.render(place.harbor, False, (0, 0, 0))
+            self.screen.blit(harborText, (place.coords[0] + 15, place.coords[1] + 10))
 
     def drawRobber(self):
         robberImg = pygame.image.load(self.robberImgPath).convert_alpha()
