@@ -13,6 +13,8 @@ class Game:
         self.longestStreetOwner = Player.Player(0, self)
         self.longestStreetLength = 0
         self.tmpVisitedEdges = []
+        self.dice = 0
+        self.currentTurn = Player.Player(0, self)
 
     def dice_production(self, number):
         for tile in Board.Board().tiles:
@@ -75,7 +77,7 @@ class Game:
             return
         ####################################################################### ROLL DICES #####################################################################   
         dicesValue = self.rollDice()
-        ########################################################################################################################################################  
+        ########################################################################################################################################################
         print("Dice value: ", dicesValue, dicesValue == 7)
         if(dicesValue == 7):
             ev, pos = player.evaluate(Move.useRobber)

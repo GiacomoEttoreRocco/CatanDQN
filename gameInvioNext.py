@@ -3,7 +3,7 @@ import pygame
 import Graphics.GameView as GameView
 import time
 
-speed = True
+speed = False
 def goNextIfInvio(speed = False):
     if(not speed):
         event = pygame.event.wait()
@@ -34,6 +34,7 @@ def doTurnGraphic(game: c.Game, player: c.Player, withGraphic = False):
         return
     ####################################################################### ROLL DICES #####################################################################   
     dicesValue = game.rollDice()
+    game.dice = dicesValue
     ########################################################################################################################################################
     print("Dice value: ", dicesValue)
     if(dicesValue == 7):
@@ -75,6 +76,7 @@ def playGameWithGraphic(game, view):
         goNextIfInvio(speed)
     while won == False:
         playerTurn = game.players[turn%game.nplayer]
+        game.currentTurn = playerTurn
         turn += 1
         doTurnGraphic(game, playerTurn)
         if(playerTurn.victoryPoints >= 10):

@@ -44,6 +44,10 @@ class GameView:
         self.clays = []
         self.knights = []
 
+        self.turns = []
+        self.bgScoreColor = pygame.Color("grey18")
+        self.bgScoreColorHighlited = pygame.Color('grey34')
+
         for i in range(0, len(self.game.players)):
             self.points.append(self.font_resource.render(str(self.game.players[i].victoryPoints), False, self.playerColorDict[i+1]))
             self.pointsCards.append(self.font_resourceSmallest.render("Vp cards: " + str(self.game.players[i].victoryPointsCards), False, self.playerColorDict[i+1]))
@@ -67,6 +71,11 @@ class GameView:
 
 
     def blit(self, player, x, y):
+        playerBox = pygame.Rect(x-5, y-5, 120, 250)
+        if self.game.currentTurn == player:
+            self.screen.fill(self.bgScoreColorHighlited, playerBox)
+        else:
+            self.screen.fill(self.bgScoreColor, playerBox)
         self.screen.blit(self.points[player.id-1], (x, y)) # 5,5
         self.screen.blit(self.pointsCards[player.id-1], (x, y+55))
         self.screen.blit(self.woods[player.id-1], (x, y+95))
@@ -136,28 +145,17 @@ class GameView:
         self.checkAndDrawStreets()
         self.checkAndDrawPlaces()
 
-        self.bgScoreColor = pygame.Color("grey18")
-
-        score = pygame.Rect(0,0,120,250) 
-        self.screen.fill(self.bgScoreColor, score)  
-        pygame.display.update(score)
-
-        score = pygame.Rect(0,550,120,250) 
-        self.screen.fill(self.bgScoreColor, score)  
-        pygame.display.update(score)
-
-        score = pygame.Rect(880,0,120,250) 
-        self.screen.fill(self.bgScoreColor, score) 
-        pygame.display.update(score)
-
-        score = pygame.Rect(880,550,120,250) 
-        self.screen.fill(self.bgScoreColor, score)  
-
         self.updateStats()
         self.blit(self.game.players[0], 5, 5)
-        self.blit(self.game.players[1], 5, 550)
-        self.blit(self.game.players[2], 900, 5)
-        self.blit(self.game.players[3], 900, 550)
+        self.blit(self.game.players[1], 5, 555)
+        self.blit(self.game.players[2], 885, 5)
+        self.blit(self.game.players[3], 885, 555)
+
+        font_dice = self.font_resourceSmaller.render(str(self.game.dice), False, pygame.Color('white'))
+        diceRoll = pygame.Rect(475, 0, 50, 50)
+        self.screen.fill(self.bgScoreColor, diceRoll)
+        pygame.display.update(diceRoll)
+        self.screen.blit(font_dice, (480, 5))
 
         pygame.display.update()
 
