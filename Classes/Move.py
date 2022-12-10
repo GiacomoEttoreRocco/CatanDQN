@@ -27,12 +27,20 @@ def placeFreeColony(player: Player, place: cg.Place, undo = False):
         player.victoryPoints+=1
         player.nColonies+=1
         player.ownedColonies.append(place.id)
+        
+        if(place.harbor != ""):
+            player.ownedHarbors.append(place.harbor)
+            print("HARBOR AGGIUNTO.")
     else:
         Board.Board().places[place.id].owner = 0
         Board.Board().places[place.id].isColony = False
         player.victoryPoints-=1
         player.nColonies-=1
         del player.ownedColonies[-1]
+
+        if(place.harbor != ""):
+            del player.ownedHarbors[-1]
+            print("HARBOR TOLTO.")
 
 def placeStreet(player, edge, undo = False, justCheck = False):
     previousLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
@@ -74,6 +82,7 @@ def placeColony(player, place: cg.Place, undo = False):
 
         if(place.harbor != ""):
             player.ownedHarbors.append(place.harbor)
+            print("HARBOR AGGIUNTO.")
     else:
         Bank.Bank().giveResource(player, "wood")   
         Bank.Bank().giveResource(player, "clay")  
@@ -88,6 +97,8 @@ def placeColony(player, place: cg.Place, undo = False):
 
         if(place.harbor != ""):
             del player.ownedHarbors[-1]
+            print("HARBOR TOLTO.")
+        
 
 def placeCity(player, place: cg.Place, undo = False):
     if(not undo):

@@ -31,6 +31,7 @@ class Game:
 
     def bestMove(self, player: Player, usedCard):
         moves = player.availableMoves(usedCard)
+        print("Available moves of player ", player.id, ": ", moves)
         player.printResources()
         max = 0
         thingsNeeded = None

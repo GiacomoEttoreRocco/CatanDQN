@@ -101,6 +101,8 @@ class Player:
         for resource in self.resources.keys():
             if(Bank.Bank().resourceToAsk(self, resource) <= self.resources[resource]):
                 canTrade = True
+        print("Can trade: ", Bank.Bank().resourceToAsk(self, resource) <= self.resources[resource])
+        print("Owned harbors: ", self.ownedHarbors)
         if(canTrade):
                 availableMoves.append(Move.tradeBank)
 
