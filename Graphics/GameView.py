@@ -96,19 +96,24 @@ class GameView:
             hexCoords = self.getHexCoords(hex_i)
             graphicTile = GraphicTile.GraphicTile(hexCoords, boardtile)
             self.graphicTileList.append(graphicTile)
-            hexTileCorners = geomlib.polygon_corners(hexLayout, graphicTile.hex)
-            tileColorRGB = self.tileColorDict[boardtile.resource]
-            pygame.draw.polygon(self.screen, pygame.Color(tileColorRGB[0], tileColorRGB[1], tileColorRGB[2]), hexTileCorners, width == 0)
-            pygame.draw.polygon(self.screen, pygame.Color('black'), hexTileCorners, 5)
-            graphicTile.pixelCenter = geomlib.hex_to_pixel(hexLayout, graphicTile.hex)
-            imgPath = os.path.join(self.sourceFileDir, self.imgDict[boardtile.resource])
-            image = pygame.image.load(imgPath).convert_alpha()
-            mask = image.copy()
-            mask = pygame.transform.scale(mask, (54, 54))
-            self.screen.blit(mask, (graphicTile.pixelCenter.x - 27, graphicTile.pixelCenter.y - 60))
-            self.drawNumberCircle(graphicTile)
+            self.drawGraphicTile(graphicTile)
             hex_i += 1
         return None
+
+    def drawGraphicTile(self, graphicTile):
+        hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(80, 80), geomlib.Point(500, 400))
+        hexTileCorners = geomlib.polygon_corners(hexLayout, graphicTile.hex)
+        tileColorRGB = self.tileColorDict[graphicTile.resource]
+        pygame.draw.polygon(self.screen, pygame.Color(tileColorRGB[0], tileColorRGB[1], tileColorRGB[2]),
+                            hexTileCorners, self.width == 0)
+        pygame.draw.polygon(self.screen, pygame.Color('black'), hexTileCorners, 5)
+        graphicTile.pixelCenter = geomlib.hex_to_pixel(hexLayout, graphicTile.hex)
+        imgPath = os.path.join(self.sourceFileDir, self.imgDict[graphicTile.resource])
+        image = pygame.image.load(imgPath).convert_alpha()
+        mask = image.copy()
+        mask = pygame.transform.scale(mask, (54, 54))
+        self.screen.blit(mask, (graphicTile.pixelCenter.x - 27, graphicTile.pixelCenter.y - 60))
+        self.drawNumberCircle(graphicTile)
 
     def drawNumberCircle(self, graphicTile):
         tileNumberText = self.font_resourceSmaller.render(str(graphicTile.number), False, pygame.Color("black"))
@@ -133,7 +138,6 @@ class GameView:
                             placeToAdd = self.graphicPlaceList[el]
                             placeToAdd.setupCoords(pc.placeCoordinates[placeToAdd.index])
                             gtile.places.append(placeToAdd)
-
                             self.checkAndDrawHarbors(placeToAdd)
                             alreadyFound.append(el)
 
@@ -202,24 +206,8 @@ class GameView:
                     robberCoords = (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y-30)
                     self.screen.blit(robberImg, robberCoords)
                 elif(self.tempRobberTile != -1 and self.tempRobberTile == graphicTile.index):
-                    width = 1000
-                    ###############
-                    hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(80, 80), geomlib.Point(500, 400))
-                    hexTileCorners = geomlib.polygon_corners(hexLayout, graphicTile.hex)
-                    tileColorRGB = self.tileColorDict[graphicTile.resource]
-                    pygame.draw.polygon(self.screen, pygame.Color(tileColorRGB[0], tileColorRGB[1], tileColorRGB[2]),
-                                        hexTileCorners, width == 0)
-                    pygame.draw.polygon(self.screen, pygame.Color('black'), hexTileCorners, 5)
-                    graphicTile.pixelCenter = geomlib.hex_to_pixel(hexLayout, graphicTile.hex)
-                    ###############
-                    imgPath = os.path.join(self.sourceFileDir, self.imgDict[graphicTile.resource])
-                    image = pygame.image.load(imgPath).convert_alpha()
-                    mask = image.copy()
-                    mask = pygame.transform.scale(mask, (54, 54))
-                    self.screen.blit(mask, (graphicTile.pixelCenter.x - 27, graphicTile.pixelCenter.y - 60))
-                    self.drawNumberCircle(graphicTile)
-            self.tempRobberTile = robTile
-                
+                    self.drawGraphicTile(graphicTile)
+            self.tempRobberTile = robTile           
 
     def getHexCoords(self, hex_i):
         coordDict = {0: geomlib.Axial_Point(0, -2), 1: geomlib.Axial_Point(1, -2), 2: geomlib.Axial_Point(2, -2),
