@@ -93,7 +93,7 @@ def placeColony(player, place: cg.Place, undo = False):
 
         if(place.harbor != ""):
             player.ownedHarbors.append(place.harbor)
-            print("HARBOR AGGIUNTO.")
+            #print("HARBOR AGGIUNTO.")
     else:
         Bank.Bank().giveResource(player, "wood")   
         Bank.Bank().giveResource(player, "clay")  
@@ -108,7 +108,7 @@ def placeColony(player, place: cg.Place, undo = False):
 
         if(place.harbor != ""):
             del player.ownedHarbors[-1]
-            print("HARBOR TOLTO.")
+            #print("HARBOR TOLTO.")
         
 
 def placeCity(player, place: cg.Place, undo = False):
