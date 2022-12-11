@@ -133,6 +133,7 @@ class Game:
             if(giveResources):
                 for touchedResource in Board.Board().places[colonyChoosen.id].touchedResourses:
                     Bank.Bank().giveResource(player, touchedResource)
+            moves = []
             for street in player.calculatePossibleInitialStreets():
                 moves.append((Move.placeInitialStreet, street))
             move, edgeChoosen = player.chooseMove(moves)

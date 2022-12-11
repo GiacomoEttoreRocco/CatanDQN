@@ -46,7 +46,6 @@ def placeInitialColony(player: Player, place: cg.Place, undo = False):
         
         if(place.harbor != ""):
             player.ownedHarbors.append(place.harbor)
-            #print("HARBOR AGGIUNTO.")
     else:
         Board.Board().places[place.id].owner = 0
         Board.Board().places[place.id].isColony = False
@@ -56,7 +55,6 @@ def placeInitialColony(player: Player, place: cg.Place, undo = False):
 
         if(place.harbor != ""):
             del player.ownedHarbors[-1]
-            #print("HARBOR TOLTO.")
 
 def placeStreet(player, edge, undo = False, justCheck = False):
     previousLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
