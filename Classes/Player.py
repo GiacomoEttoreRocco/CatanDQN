@@ -153,7 +153,7 @@ class Player:
             ress = self.resources.keys()
             for ires1 in range(0, len(ress)):
                 for ires2 in range(ires1, len(ress)):
-                    availableMoves.append((Move.useYearOfPlentyCard, (self.resources.keys[ires1], self.resources.keys[ires2])))
+                    availableMoves.append((Move.useYearOfPlentyCard, (self.resources.keys().index(ires1), self.resources.keys().index(ires2))))
         return availableMoves
 
     def connectedEmptyEdges(self, edge):

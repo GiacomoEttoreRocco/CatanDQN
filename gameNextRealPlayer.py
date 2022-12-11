@@ -32,6 +32,7 @@ def doTurnGraphic(game: c.Game, player: c.Player, withGraphic = False):
                 view.updateGameScreen()
                 turnCardUsed = True 
         else:
+            view.updateGameScreen() 
             if(player.unusedKnights >= 1 and not turnCardUsed):
                 print("Mosse disponibili: ")
                 moves = []
