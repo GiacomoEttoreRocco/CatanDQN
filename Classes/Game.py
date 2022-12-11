@@ -30,19 +30,23 @@ class Game:
                             Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
 
     def bestMove(self, player: Player, usedCard):
-        moves = player.availableMoves(usedCard)
-        print("Available moves of player ", player.id, ": ", moves)
-        player.printResources()
-        max = 0
-        thingsNeeded = None
-        bestMove = Move.passTurn
-        for move in moves:
-            evaluation, tempInput = player.evaluate(move)
-            if(max <= evaluation):
-                max = evaluation
-                thingsNeeded = tempInput
-                bestMove = move
-        return bestMove, thingsNeeded
+        if(player.AI == True):
+            moves = player.availableMoves(usedCard)
+            print("Available moves of player ", player.id, ": ", moves)
+            player.printResources()
+            max = 0
+            thingsNeeded = None
+            bestMove = Move.passTurn
+            for move in moves:
+                evaluation, tempInput = player.evaluate(move)
+                if(max <= evaluation):
+                    max = evaluation
+                    thingsNeeded = tempInput
+                    bestMove = move
+            return bestMove, thingsNeeded
+        else:
+            moves = player.availableMovesWithInput(usedCard)
+            return player.chooseMove(moves)
 
     def sevenOnDices(self, player: Player):
         for pyr in self.players:
@@ -110,14 +114,29 @@ class Game:
         return False
 
     def doInitialChoise(self, player: Player, giveResources = False):
-        evaluation, colonyChoosen = player.evaluate(Move.placeFreeColony)
-        Move.placeFreeColony(player, colonyChoosen)
-        if(giveResources):
-            for touchedResource in Board.Board().places[colonyChoosen.id].touchedResourses:
-                Bank.Bank().giveResource(player, touchedResource)
-        print("Initial choise, colony: ", str(colonyChoosen.id))
-        evaluation, edgeChoosen = player.evaluate(Move.placeFreeStreet)
-        Move.placeFreeStreet(player, edgeChoosen)
+        if(player.AI):
+            evaluation, colonyChoosen = player.evaluate(Move.placeInitialColony)
+            Move.placeInitialColony(player, colonyChoosen)
+            if(giveResources):
+                for touchedResource in Board.Board().places[colonyChoosen.id].touchedResourses:
+                    Bank.Bank().giveResource(player, touchedResource)
+            print("Initial choise, colony: ", str(colonyChoosen.id))
+            evaluation, edgeChoosen = player.evaluate(Move.placeInitialStreet)
+            Move.placeInitialStreet(player, edgeChoosen)
+        else:
+            moves = []
+            print("DBUG: ", player.calculatePossibleInitialColony())
+            for colony in player.calculatePossibleInitialColony():
+                moves.append((Move.placeInitialColony, colony))
+            move, colonyChoosen = player.chooseMove(moves)
+            Move.placeInitialColony(player, colonyChoosen)
+            if(giveResources):
+                for touchedResource in Board.Board().places[colonyChoosen.id].touchedResourses:
+                    Bank.Bank().giveResource(player, touchedResource)
+            for street in player.calculatePossibleInitialStreets():
+                moves.append((Move.placeInitialStreet, street))
+            move, edgeChoosen = player.chooseMove(moves)
+            Move.placeInitialStreet(player, edgeChoosen)
 
     def totalKnightsUsed(self):
         totKnightUsed = 0

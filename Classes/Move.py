@@ -4,6 +4,22 @@ import Classes.Player as Player
 import Classes.CatanGraph as cg
 import random
 
+def placeInitialStreet(player, edge, undo = False, justCheck = False):
+    previousLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
+    if(not undo):
+        Board.Board().edges[edge] = player.id
+        player.nStreets+=1
+        player.ownedStreets.append(edge)
+    else:
+        Board.Board().edges[edge] = 0
+        player.nStreets-=1
+        del player.ownedStreets[-1]
+
+    actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
+    if(previousLongestStreetOwner != actualLongestStreetOwner):
+        actualLongestStreetOwner.victoryPoints += 2
+        previousLongestStreetOwner.victoryPoints -= 2
+
 def placeFreeStreet(player, edge, undo = False, justCheck = False):
     previousLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
     if(not undo):
@@ -20,7 +36,7 @@ def placeFreeStreet(player, edge, undo = False, justCheck = False):
         actualLongestStreetOwner.victoryPoints += 2
         previousLongestStreetOwner.victoryPoints -= 2
 
-def placeFreeColony(player: Player, place: cg.Place, undo = False):
+def placeInitialColony(player: Player, place: cg.Place, undo = False):
     if(not undo):
         Board.Board().places[place.id].owner = player.id
         Board.Board().places[place.id].isColony = True
@@ -30,7 +46,7 @@ def placeFreeColony(player: Player, place: cg.Place, undo = False):
         
         if(place.harbor != ""):
             player.ownedHarbors.append(place.harbor)
-            print("HARBOR AGGIUNTO.")
+            #print("HARBOR AGGIUNTO.")
     else:
         Board.Board().places[place.id].owner = 0
         Board.Board().places[place.id].isColony = False
@@ -40,7 +56,7 @@ def placeFreeColony(player: Player, place: cg.Place, undo = False):
 
         if(place.harbor != ""):
             del player.ownedHarbors[-1]
-            print("HARBOR TOLTO.")
+            #print("HARBOR TOLTO.")
 
 def placeStreet(player, edge, undo = False, justCheck = False):
     previousLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
@@ -50,10 +66,6 @@ def placeStreet(player, edge, undo = False, justCheck = False):
         Board.Board().edges[edge] = player.id
         player.nStreets+=1
         player.ownedStreets.append(edge)
-        # actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
-        # if(previousLongestStreetOwner != actualLongestStreetOwner):
-        #     actualLongestStreetOwner.victoryPoints += 2
-        #     previousLongestStreetOwner.victoryPoints -= 2
     else:
         Bank.Bank().giveResource(player, "wood")   
         Bank.Bank().giveResource(player, "clay")    
@@ -64,7 +76,6 @@ def placeStreet(player, edge, undo = False, justCheck = False):
     if(previousLongestStreetOwner != actualLongestStreetOwner):
         actualLongestStreetOwner.victoryPoints += 2
         previousLongestStreetOwner.victoryPoints -= 2
-
 
 def placeColony(player, place: cg.Place, undo = False):
     if(not undo):
