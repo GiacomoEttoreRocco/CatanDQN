@@ -40,13 +40,17 @@ class GameView:
 
         self.points = []
         self.pointsCards = []
-
         self.woods = []
         self.sheeps = []
         self.crops = []
         self.irons = []
         self.clays = []
         self.knights = []
+
+        self.monopolyCards = []
+        self.roadBuildingCards = []
+        self.yearOfPlentyCards = []
+
 
         self.turns = []
         self.bgScoreColor = pygame.Color("grey18")
@@ -62,6 +66,10 @@ class GameView:
             self.clays.append(self.font_resourceSmallest.render("Clay: " + str(self.game.players[i].resources["clay"]), False, self.playerColorDict[i+1]))
             self.knights.append(self.font_resourceSmallest.render("Knights: " + str(self.game.players[i].usedKnights), False, self.playerColorDict[i+1]))
 
+            self.monopolyCards.append(self.font_resourceSmallest.render("MonopolyCards: " + str(self.game.players[i].monopolyCard), False, self.playerColorDict[i+1]))
+            self.roadBuildingCards.append(self.font_resourceSmallest.render("RoadBuildingCards: " + str(self.game.players[i].roadBuildingCard), False, self.playerColorDict[i+1]))
+            self.yearOfPlentyCards.append(self.font_resourceSmallest.render("YearOfPlentyCards: " + str(self.game.players[i].yearOfPlentyCard), False, self.playerColorDict[i+1]))
+
     def updateStats(self):
         for i in range(0, len(self.game.players)):
             self.points[i] = self.font_resource.render(str(self.game.players[i].victoryPoints), False, self.playerColorDict[i+1])
@@ -72,10 +80,14 @@ class GameView:
             self.irons[i] = self.font_resourceSmallest.render("Iron: " + str(self.game.players[i].resources["iron"]), False, self.playerColorDict[i+1])
             self.clays[i] = self.font_resourceSmallest.render("Clay: " + str(self.game.players[i].resources["clay"]), False, self.playerColorDict[i+1])
             self.knights[i] = (self.font_resourceSmallest.render("Knights: " + str(self.game.players[i].usedKnights), False, self.playerColorDict[i+1]))
+            self.monopolyCards[i] = self.font_resourceSmallest.render("Monopoly: " + str(self.game.players[i].monopolyCard), False, self.playerColorDict[i+1])
+            self.roadBuildingCards[i] = self.font_resourceSmallest.render("RoadBuilding: " + str(self.game.players[i].roadBuildingCard), False, self.playerColorDict[i+1])
+            self.yearOfPlentyCards[i] = self.font_resourceSmallest.render("YearOfPlenty: " + str(self.game.players[i].yearOfPlentyCard), False, self.playerColorDict[i+1])
+
 
 
     def blit(self, player, x, y):
-        playerBox = pygame.Rect(x-5, y-5, 120, 350)
+        playerBox = pygame.Rect(x-5, y-5, 150, 350)
 
         if self.game.currentTurn == player:
             self.screen.fill(self.bgScoreColorHighlited, playerBox)
@@ -89,6 +101,12 @@ class GameView:
         self.screen.blit(self.irons[player.id-1], (x, y+155))
         self.screen.blit(self.clays[player.id-1], (x, y+175))
         self.screen.blit(self.knights[player.id-1], (x, y+215))
+        
+        self.screen.blit(self.monopolyCards[player.id-1], (x, y+235))
+        self.screen.blit(self.roadBuildingCards[player.id-1], (x, y+275))
+        self.screen.blit(self.yearOfPlentyCards[player.id-1], (x, y+305))
+
+
 
     def setupAndDisplayBoard(self):
         pygame.draw.rect(self.screen, pygame.Color('cadetblue1'),(0, 0, self.width, self.height))
@@ -158,9 +176,8 @@ class GameView:
         self.updateStats()
         self.blit(self.game.players[0], 5, 5)
         self.blit(self.game.players[1], 5, 655)
-        self.blit(self.game.players[2], 1085, 5)
-        self.blit(self.game.players[3], 1085, 655)
-
+        self.blit(self.game.players[2], 1055, 5)
+        self.blit(self.game.players[3], 1055, 655)
         font_dice = self.font_resourceSmaller.render(str(self.game.dice), False, pygame.Color('white'))
         diceRoll = pygame.Rect(405, 0, 50, 50)
         self.screen.fill(self.bgScoreColor, diceRoll)

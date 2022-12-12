@@ -4,13 +4,16 @@ import Graphics.GameView as GameView
 import time
 
 speed = True
-realPlayer = False
+realPlayer = True
 
 def goNextIfInvio(speed = False):
     if(not speed):
         event = pygame.event.wait()
         while event.type != pygame.KEYDOWN:
             event = pygame.event.wait()
+    else:
+        print("Line 15 event wait...")
+        event = pygame.event.wait()
     view.updateGameScreen()
 
 def doTurnGraphic(game: c.Game, player: c.Player, withGraphic = False):
