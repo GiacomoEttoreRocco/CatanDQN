@@ -4,7 +4,7 @@ import Graphics.GameView as GameView
 import time
 
 speed = True
-realPlayer = False
+realPlayer = True
 def goNextIfInvio(speed = False):
     if(not speed):
         event = pygame.event.wait()
@@ -14,7 +14,7 @@ def goNextIfInvio(speed = False):
         event = pygame.event.get()
         pygame.display.update()
     view.updateGameScreen()
-    time.sleep(1)
+    time.sleep(0.2)
 
 def doTurnGraphic(game: c.Game, player: c.Player):
     turnCardUsed = False 
