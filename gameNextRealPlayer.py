@@ -14,6 +14,7 @@ def goNextIfInvio(speed = False):
         event = pygame.event.get()
         pygame.display.update()
     view.updateGameScreen()
+    time.sleep(1)
 
 def doTurnGraphic(game: c.Game, player: c.Player):
     turnCardUsed = False 

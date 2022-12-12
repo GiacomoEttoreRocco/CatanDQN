@@ -99,8 +99,12 @@ class Player:
         availableMoves = [Move.passTurn]
         if(self.resources["crop"] >= 1 and self.resources["iron"] >= 1 and self.resources["sheep"] >= 1 and len(Board.Board().deck) > 0):
             availableMoves.append(Move.buyDevCard)
-        if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.calculatePossibleColony() == [] and self.nStreets < 15 and self.calculatePossibleEdges() != None): # TEMPORANEAMENTE
-            availableMoves.append(Move.placeStreet)
+        if(self.id % 2 == 0):
+            if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.nStreets < 15 and self.calculatePossibleEdges() != None and self.calculatePossibleColony() == []): 
+                availableMoves.append(Move.placeStreet)
+        else:
+            if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.nStreets < 15 and self.calculatePossibleEdges() != None): # and self.calculatePossibleColony() == []): 
+                availableMoves.append(Move.placeStreet)
         if(self.resources["wood"] >= 1  and self.resources["clay"] >= 1 and self.resources["sheep"] >= 1 and self.resources["crop"] >= 1):
             availableMoves.append(Move.placeColony)
         if(self.resources["iron"] >= 3 and self.resources["crop"] >= 2):
