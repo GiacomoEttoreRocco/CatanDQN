@@ -166,6 +166,7 @@ class GameView:
         self.setupPlaces()
         self.updateGameScreen()
         pygame.display.update()
+        print("Line 169, gameView, event wait()...")
         event = pygame.event.wait()
         return
 

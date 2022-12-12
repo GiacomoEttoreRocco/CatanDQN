@@ -226,7 +226,7 @@ def tradeBank(player, coupleOfResources, undo = False):
         #print("UNDO OF: TAKEN 1", toTake, " GIVEN ", Bank.Bank().resourceToAsk(player, toGive), toGive)
 
 def useMonopolyCard(player, resource):
-    player.monopolyCard = player.monopolyCard - 1
+    player.monopolyCard -= 1
     sum = 0
     for p in player.game.players:
         sum = sum + p.resources[resource]
@@ -244,9 +244,11 @@ def useRoadBuildingCard(player, edges, undo = False):
 
 def useYearOfPlentyCard(player, resources, undo = False):
     if not undo:
+        player.yearOfPlenyCard -= 1
         Bank.Bank().giveResource(player, resources[0])
         Bank.Bank().giveResource(player, resources[1])
     else:
+        player.yearOfPlenyCard += 1
         player.useResource(resources[0])
         player.useResource(resources[1])
 

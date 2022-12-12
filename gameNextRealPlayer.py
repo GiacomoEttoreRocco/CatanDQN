@@ -13,10 +13,11 @@ def goNextIfInvio(speed = False):
             event = pygame.event.wait()
     else:
         print("Line 15 event wait...")
-        event = pygame.event.wait()
+        event = pygame.event.get()
+        pygame.display.update()
     view.updateGameScreen()
 
-def doTurnGraphic(game: c.Game, player: c.Player, withGraphic = False):
+def doTurnGraphic(game: c.Game, player: c.Player):
     turnCardUsed = False 
     player.unusedKnights = player.unusedKnights + player.justBoughtKnights
     player.justBoughtKnights = 0
