@@ -64,7 +64,11 @@ class Player:
         print("Mosse disponibili: ")
         for i, move in enumerate(moves):
             print("Move ", i, ": ", move)
-        toDo = int(input("Inserisci l'indice della mossa che vuoi eseguire: "))
+        if len(moves) == 1:     #Only possible move is passTurn
+            toDo = 0
+            print("Automatically passing turn...")
+        else:
+            toDo = int(input("Inserisci l'indice della mossa che vuoi eseguire: "))
         return moves[toDo][0], moves[toDo][1]
 
     def printStats(self):
