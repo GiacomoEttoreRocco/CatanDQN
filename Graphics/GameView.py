@@ -12,13 +12,14 @@ pygame.init()
 
 class GameView:
     def __init__(self, game):
-        self.width = 1000
+        self.width = 1200
+        self.height = 1000
         self.sourceFileDir = os.path.dirname(os.path.abspath(__file__))
         self.robberImgPath = os.path.join(self.sourceFileDir, "imgs/robber.png")
         self.tempRobberTile = -1 # per motivi di efficienza.
         # #Use pygame to display the board
         self.game = game #?????
-        windowSize = 1000, 800
+        windowSize = self.width, self.height
         self.playerColorDict = {0: pygame.Color('grey'), 1: pygame.Color('red'), 2: pygame.Color('yellow'),
                            3: pygame.Color('blueviolet'), 4:  pygame.Color('blue')}
         self.tileColorDict = {"clay": (188, 74, 60), "iron": (128, 128, 128), "crop": pygame.Color('orange'), "wood": (0, 153, 0),
@@ -74,7 +75,8 @@ class GameView:
 
 
     def blit(self, player, x, y):
-        playerBox = pygame.Rect(x-5, y-5, 120, 250)
+        playerBox = pygame.Rect(x-5, y-5, 120, 350)
+
         if self.game.currentTurn == player:
             self.screen.fill(self.bgScoreColorHighlited, playerBox)
         else:
@@ -89,9 +91,8 @@ class GameView:
         self.screen.blit(self.knights[player.id-1], (x, y+215))
 
     def setupAndDisplayBoard(self):
-        pygame.draw.rect(self.screen, pygame.Color('cadetblue1'),(0, 0, 1000, 800))
-        hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(80, 80), geomlib.Point(500, 400))
-        width = 1000
+        pygame.draw.rect(self.screen, pygame.Color('cadetblue1'),(0, 0, self.width, self.height))
+        #hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(80, 80), geomlib.Point(500, 400))
         hex_i = 0
         for boardtile in Board.Board().tiles:
             hexCoords = self.getHexCoords(hex_i)
@@ -102,7 +103,7 @@ class GameView:
         return None
 
     def drawGraphicTile(self, graphicTile):
-        hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(80, 80), geomlib.Point(500, 400))
+        hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(80, 80), geomlib.Point(self.width/2, self.height/2))
         hexTileCorners = geomlib.polygon_corners(hexLayout, graphicTile.hex)
         tileColorRGB = self.tileColorDict[graphicTile.resource]
         pygame.draw.polygon(self.screen, pygame.Color(tileColorRGB[0], tileColorRGB[1], tileColorRGB[2]),
@@ -156,16 +157,15 @@ class GameView:
         self.checkAndDrawPlaces()
         self.updateStats()
         self.blit(self.game.players[0], 5, 5)
-        self.blit(self.game.players[1], 5, 555)
-        self.blit(self.game.players[2], 885, 5)
-        self.blit(self.game.players[3], 885, 555)
+        self.blit(self.game.players[1], 5, 655)
+        self.blit(self.game.players[2], 1085, 5)
+        self.blit(self.game.players[3], 1085, 655)
 
         font_dice = self.font_resourceSmaller.render(str(self.game.dice), False, pygame.Color('white'))
-        diceRoll = pygame.Rect(0, 475, 50, 50)
+        diceRoll = pygame.Rect(405, 0, 50, 50)
         self.screen.fill(self.bgScoreColor, diceRoll)
         pygame.display.update(diceRoll)
-        self.screen.blit(font_dice, (5, 480))
-
+        self.screen.blit(font_dice, (410, 5))
         pygame.display.update()
 
     def drawPlace(self, graphicPlace):

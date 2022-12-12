@@ -3,7 +3,9 @@ import pygame
 import Graphics.GameView as GameView
 import time
 
-speed = False
+speed = True
+realPlayer = False
+
 def goNextIfInvio(speed = False):
     if(not speed):
         event = pygame.event.wait()
@@ -95,7 +97,9 @@ def playGameWithGraphic(game, view):
     turn = 1 
     won = False
     # START INIZIALE
-    game.players[3].AI = False
+    if(realPlayer == True):
+        game.players[3].AI = False
+
     for p in game.players:
         game.doInitialChoise(p)
         goNextIfInvio(speed)
