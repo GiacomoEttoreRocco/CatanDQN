@@ -244,11 +244,11 @@ def useRoadBuildingCard(player, edges, undo = False):
 
 def useYearOfPlentyCard(player, resources, undo = False):
     if not undo:
-        player.yearOfPlenyCard -= 1
+        player.yearOfPlentyCard -= 1
         Bank.Bank().giveResource(player, resources[0])
         Bank.Bank().giveResource(player, resources[1])
     else:
-        player.yearOfPlenyCard += 1
+        player.yearOfPlentyCard += 1
         player.useResource(resources[0])
         player.useResource(resources[1])
 

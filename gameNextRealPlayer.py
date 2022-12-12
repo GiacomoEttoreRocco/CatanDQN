@@ -4,15 +4,13 @@ import Graphics.GameView as GameView
 import time
 
 speed = True
-realPlayer = True
-
+realPlayer = False
 def goNextIfInvio(speed = False):
     if(not speed):
         event = pygame.event.wait()
         while event.type != pygame.KEYDOWN:
             event = pygame.event.wait()
     else:
-        print("Line 15 event wait...")
         event = pygame.event.get()
         pygame.display.update()
     view.updateGameScreen()
