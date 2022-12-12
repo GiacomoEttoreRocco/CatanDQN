@@ -150,10 +150,10 @@ class Player:
                     if(street1 != street2):
                         availableMoves.append((Move.useRoadBuildingCard, (street1, street2)))
         if(self.yearOfPlentyCard >= 1 and not turnCardUsed):
-            ress = self.resources.keys()
+            ress = list(self.resources.keys())
             for ires1 in range(0, len(ress)):
                 for ires2 in range(ires1, len(ress)):
-                    availableMoves.append((Move.useYearOfPlentyCard, (self.resources.keys().index(ires1), self.resources.keys().index(ires2))))
+                    availableMoves.append((Move.useYearOfPlentyCard, (ress[ires1], ress[ires2])))
         return availableMoves
 
     def connectedEmptyEdges(self, edge):
