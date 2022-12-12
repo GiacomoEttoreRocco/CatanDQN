@@ -4,6 +4,7 @@ import Classes.Bank as Bank
 import Classes.Move as Move
 import random
 import time
+import math
 
 class Game:
     def __init__(self, num_players = 4):
@@ -48,15 +49,24 @@ class Game:
             moves = player.availableMovesWithInput(usedCard)
             return player.chooseMove(moves)
 
-    def sevenOnDices(self, player: Player):
+    def sevenOnDices(self):
         for pyr in self.players:
+            print("Resource count: ", pyr.resourceCount())
+            half = int(pyr.resourceCount()/2)
             if(pyr.resourceCount() >= 7):
-                nCards = pyr.resourceCount()/2
-                while(pyr.resourceCount() <= nCards):
-                    eval, card = player.evaluate(Move.discardResource)
-                    Move.discardResource(player, card)
-        eval, tilePos = player.evaluate(Move.useRobber)
-        Move.useRobber(player, tilePos)   
+                if(pyr.AI == True):
+                    for i in range(0, half):
+                        print("Sono nel for")
+                        eval, card = pyr.evaluate(Move.discardResource)
+                        Move.discardResource(pyr, card)
+                else:
+                    for i in range(0, half):
+                        moves = []
+                        for res in pyr.resources.keys():
+                            if(pyr.resources[res] > 0):
+                                moves.append((Move.discardResource, res))
+                        move, resource = pyr.chooseMove(moves)
+                        Move.discardResource(pyr, resource)
 
     def rollDice(self): 
         return random.randint(1,6) + random.randint(1,6)    
@@ -83,8 +93,9 @@ class Game:
         ####################################################################### ROLL DICES #####################################################################   
         dicesValue = self.rollDice()
         ########################################################################################################################################################
-        print("Dice value: ", dicesValue, dicesValue == 7)
+        print("Dice value: ", dicesValue)
         if(dicesValue == 7):
+            self.sevenOnDices(player)
             ev, pos = player.evaluate(Move.useRobber)
             print("POS: ", pos)
             Move.useRobber(player, pos)

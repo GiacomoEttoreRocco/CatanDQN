@@ -91,7 +91,7 @@ def placeColony(player, place: cg.Place, undo = False):
 
         if(place.harbor != ""):
             player.ownedHarbors.append(place.harbor)
-            #print("HARBOR AGGIUNTO.")
+
     else:
         Bank.Bank().giveResource(player, "wood")   
         Bank.Bank().giveResource(player, "clay")  
@@ -106,7 +106,6 @@ def placeColony(player, place: cg.Place, undo = False):
 
         if(place.harbor != ""):
             del player.ownedHarbors[-1]
-            #print("HARBOR TOLTO.")
         
 
 def placeCity(player, place: cg.Place, undo = False):
@@ -174,7 +173,7 @@ def discardResource(player, resource, undo = False):
         print("debug riga 124 move, undo")
         Bank.Bank().giveResource(player, resource)
 
-def passTurn(player, temp):
+def passTurn(player, temp=None):
     pass
 
 def useRobber(player, tilePosition, undo = False, justCheck = False):

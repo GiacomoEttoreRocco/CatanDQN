@@ -35,13 +35,16 @@ def doTurnGraphic(game: c.Game, player: c.Player, withGraphic = False):
             view.updateGameScreen() 
             if(player.unusedKnights >= 1 and not turnCardUsed):
                 print("Mosse disponibili: ")
-                moves = []
+                moves = [(c.Move.passTurn, None)]
                 for i in range(0, 17):
                     moves.append((c.Move.useKnight, i))  
                 for i, move in enumerate(moves):
                     print("Move ", i, ": ", move)  
                 toDo = int(input("Inserisci l'indice della mossa che vuoi eseguire: "))
-                c.Move.useKnight(player, moves[toDo][1])
+                if(toDo != 0):
+                    c.Move.useKnight(player, moves[toDo][1])
+                else:
+                    c.Move.passTurn(player)
                 
     if(game.checkWon(player)):
         return
@@ -51,6 +54,7 @@ def doTurnGraphic(game: c.Game, player: c.Player, withGraphic = False):
     ########################################################################################################################################################
     print("Dice value: ", dicesValue)
     if(dicesValue == 7):
+        game.sevenOnDices()
         print("############# SEVEN! #############")
         if(player.AI == True):
             ev, pos = player.evaluate(c.Move.useRobber)
@@ -59,14 +63,14 @@ def doTurnGraphic(game: c.Game, player: c.Player, withGraphic = False):
             print("Mosse disponibili: ")
             moves = []
             for i in range(0, 19):
-                moves.append((c.Move.useRobber, i))  
+                if(i != c.Board.Board().robberTile):
+                    moves.append((c.Move.useRobber, i))  
             for i, move in enumerate(moves):
                 print("Move ", i, ": ", move)  
             toDo = int(input("Inserisci l'indice della mossa che vuoi eseguire: "))
             c.Move.useRobber(player, moves[toDo][1])
     else:
         game.dice_production(dicesValue)
-
     move, thingNeeded = game.bestMove(player, turnCardUsed)
     move(player, thingNeeded)
     goNextIfInvio(speed)

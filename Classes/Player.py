@@ -68,7 +68,9 @@ class Player:
             toDo = 0
             print("Automatically passing turn...")
         else:
-            toDo = int(input("Inserisci l'indice della mossa che vuoi eseguire: "))
+            toDo = int(input("Insert the index of the move you want to do: "))
+            while(toDo >= len(moves)):
+                toDo = int(input("Index too large. Try again: "))
         return moves[toDo][0], moves[toDo][1]
 
     def printStats(self):
@@ -140,8 +142,9 @@ class Player:
                     if(resource != res):
                         availableMoves.append((Move.tradeBank, (res, resource)))
         if(self.unusedKnights >= 1 and not turnCardUsed):
-            for i in range(0, 17):
-                availableMoves.append((Move.useKnight, i))    
+            for i in range(0, 19):
+                if(i != Board.Board().robberTile):
+                    availableMoves.append((Move.useKnight, i))    
         if(self.monopolyCard >= 1 and not turnCardUsed):
             for res in self.resources.keys():
                 availableMoves.append((Move.useMonopolyCard, res))
