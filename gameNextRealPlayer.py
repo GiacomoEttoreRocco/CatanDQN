@@ -4,7 +4,7 @@ import Graphics.GameView as GameView
 import time
 
 speed = True
-realPlayer = True
+realPlayer = False
 def goNextIfInvio(speed = False):
     if(not speed):
         event = pygame.event.wait()
@@ -14,7 +14,7 @@ def goNextIfInvio(speed = False):
         event = pygame.event.get()
         pygame.display.update()
     view.updateGameScreen()
-    time.sleep(0.2)
+    #time.sleep(0.2)
 
 def doTurnGraphic(game: c.Game, player: c.Player):
     turnCardUsed = False 
@@ -124,4 +124,11 @@ def playGameWithGraphic(game, view):
 g = c.Game.Game()
 view = GameView.GameView(g)
 playGameWithGraphic(g, view)
+
+import os
+
+sourceFileDir = os.path.dirname(os.path.abspath(__file__))
+csvPath = os.path.join(sourceFileDir, "firstTrial.csv")
+
+c.Board.Board().stringForCsv(csvPath)
 

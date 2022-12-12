@@ -1,6 +1,11 @@
 import random
 import numpy as np
 import Classes.CatanGraph as CatanGraph
+import csv
+
+dictCsvResources = {None: "-2", "desert": "-1", "crop": "0", "iron": "1", "wood": "2", "clay": "3", "sheep": "4"}
+dictCsvHarbor = {"" : "0", "3:1" : "1", "2:1 crop" : "2", "2:1 iron" : "3", "2:1 wood" : "4", "2:1 clay" : "5", "2:1 sheep" : "6"}
+
 
 class Board: # deve diventare un singleton
 
@@ -85,10 +90,97 @@ class Board: # deve diventare un singleton
             s = s + "Place: "+ str(p) + "\n"
         return s
 
-    def actualEvaluation(self):
+    def actualEvaluation(cls):
         return 2
 
+    def dicesOfPlace(cls, place):
+        numbers = []
+        for tile in cls.tiles:
+            if place.id in CatanGraph.tilePlaces[tile.identificator]:
+                numbers.append(str(tile.number))
+        if(len(numbers) < 1):
+            return ["-1", "-1", "-1"]
+        elif(len(numbers) < 2):
+            numbers.append("-1")
+            numbers.append("-1")
+        elif(len(numbers) < 3):
+            numbers.append("-1")
+        return numbers
 
-b = Board()
-#for p in Board().places:
-#    print(p.owner)
+    def robberOfPlace(cls, place):
+        number = 0
+        for tile in cls.tiles:
+            if place.id in CatanGraph.tilePlaces[tile.identificator]:
+                if(cls.robberTile == tile.identificator):
+                    return str(number)
+                else:
+                    number += 1
+        return str(number)
+
+            
+
+###########################################################################################################################################################################################################################
+
+    def stringForCsv(cls, pathToCsv):
+        f = open(pathToCsv, "w")
+
+        writer = csv.writer(f)
+
+        for p in cls.places:
+            row = str(p.id) + "," + str(p.owner) + ","
+            if(p.isCity):
+                row += "2" + ","
+            elif(p.isColony):
+                row += "1" + ","
+            else:
+                row += "0" + ","
+            dices = cls.dicesOfPlace(p)
+            if(len(p.touchedResourses) < 1):
+                row += dictCsvResources[None]  + ","
+                row += "-1" + ","
+            else:
+                row += str(dictCsvResources[p.touchedResourses[0]])  + ","
+                row += dices[0] + ","
+
+            if(len(p.touchedResourses) < 2):
+                row += dictCsvResources[None]  + ","
+                row += "-1" + ","
+            else:
+                row += dictCsvResources[p.touchedResourses[1]]  + ","
+                row += dices[1] + ","
+
+            if(len(p.touchedResourses) < 3):
+                row += dictCsvResources[None]  + ","
+                row += "-1" + ","
+            else:
+                row += dictCsvResources[p.touchedResourses[2]]  + ","
+                row += dices[2] + ","
+            row += dictCsvHarbor[p.harbor] + ","
+            row += cls.robberOfPlace(p)
+
+            writer.writerow([row])
+        f.close()
+            
+# Nodes: 
+
+# ID: 		{0,...,53}
+# Owner: 		{0,1,2,3,4}
+# Type: 		{Nothing : 0, Colony: 1, City: 2}
+# ResTile1: 	{None: -1, Crop: 0, Iron: 1, Wood: 2, Clay: 3, Sheep: 4} 
+# DiceTile1: 	{None: -1, 2,3,4,5,6,8,9,10,11,12} 
+# ResTile2: 	{None: -1, Crop: 0, Iron: 1, Wood: 2, Clay: 3, Sheep: 4}
+# DiceTile2: 	{None: -1, 2,3,4,5,6,8,9,10,11,12}
+# ResTile3: 	{None: -1, Crop: 0, Iron: 1, Wood: 2, Clay: 3, Sheep: 4}
+# DiceTile3: 	{None: -1, 2,3,4,5,6,8,9,10,11,12}
+# Harbor: {None: 0, Harbor31: 1, Harbor21Crop: 2, Harbor21Iron: 3, Harbor21Wood: 4, Harbor21Clay: 5, Harbor21Sheep: 6}
+# RobberTile: 	{No: 0, Tile1: 1, Tile2: 2, Tile3: 3}
+
+#Altra opzione:
+
+# Harbor31: 	{0, 1}
+# Harbor21C: 	{0, 1}
+# Harbor21I: 	{0, 1}
+# Harbor21W: 	{0, 1}
+# Harbor21CL: 	{0, 1}
+# Harbro21S: 	{0, 1}
+
