@@ -8,7 +8,7 @@ withDelay = False
 realPlayer = False
 save = True
 
-def goNextIfInvio(speed = False):
+def goNextIfInvio():
     if(not speed):
         event = pygame.event.wait()
         while event.type != pygame.KEYDOWN:
@@ -82,7 +82,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
         game.dice_production(dicesValue)
     move, thingNeeded = game.bestMove(player, turnCardUsed)
     move(player, thingNeeded)
-    goNextIfInvio(speed)
+    goNextIfInvio()
     print("Player ", player.id, " mossa: ", move, " ")
     if(game.checkWon(player)):
         return
@@ -91,7 +91,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
     while(move != c.Move.passTurn and not game.checkWon(player)): # move è una funzione 
         move, thingNeeded = game.bestMove(player, turnCardUsed)
         move(player, thingNeeded)
-        goNextIfInvio(speed)
+        goNextIfInvio()
         print("Player ", player.id, " mossa: ", move, " ")
         if(move in c.Move.cardMoves()):
             turnCardUsed = True
@@ -108,10 +108,10 @@ def playGameWithGraphic(game, view):
         game.players[3].AI = False
     for p in game.players:
         game.doInitialChoise(p)
-        goNextIfInvio(speed)
+        goNextIfInvio()
     for p in sorted(game.players, reverse=True):
         game.doInitialChoise(p, giveResources = True)
-        goNextIfInvio(speed)
+        goNextIfInvio()
     while won == False:
         playerTurn = game.players[turn%game.nplayer]
         game.currentTurn = playerTurn
@@ -121,16 +121,11 @@ def playGameWithGraphic(game, view):
             return playerTurn
         if(turn % 4 == 0):
             print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
-    goNextIfInvio(speed)
+    goNextIfInvio()
     pygame.quit()
 
 g = c.Game.Game()
 view = GameView.GameView(g)
 playGameWithGraphic(g, view)
 
-# if(save):
-#     import os
-#     sourceFileDir = os.path.dirname(os.path.abspath(__file__))
-#     csvPath = os.path.join(sourceFileDir, "graphPreEmbdding.csv")
-#     c.Board.Board().stringForCsv(csvPath)
 

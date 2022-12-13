@@ -4,14 +4,16 @@ import Graphics.GameView as GameView
 import time
 import os
 import csv
+from csv import QUOTE_NONE
 
 
 speed = True
 withDelay = False
 realPlayer = False
 save = True
+moveIndex = 0
 
-def goNextIfInvio(speed = False):
+def goNextIfInvio():
     if(not speed):
         event = pygame.event.wait()
         while event.type != pygame.KEYDOWN:
@@ -40,7 +42,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
             afterKnight, place = player.evaluate(c.Move.useKnight)
             if(afterKnight > actualEvaluation):
                 c.Move.useKnight(player, place)
-                saveBoardAndGlobals(save, f1, f2, f3, player) ######################################################
+                saveBoardAndGlobals(save, player) ######################################################
                 print("BEFORE ROLL DICE: ", c.Move.useKnight, "\n")
                 view.updateGameScreen()
                 turnCardUsed = True 
@@ -56,7 +58,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
                 toDo = int(input("Inserisci l'indice della mossa che vuoi eseguire: "))
                 if(toDo != 0):
                     c.Move.useKnight(player, moves[toDo][1])
-                    saveBoardAndGlobals(save, f1, f2, f3, player) ######################################################
+                    saveBoardAndGlobals(save, player) ######################################################
                 else:
                     c.Move.passTurn(player)
                 
@@ -73,7 +75,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
         if(player.AI == True):
             ev, pos = player.evaluate(c.Move.useRobber)
             c.Move.useRobber(player, pos)
-            saveBoardAndGlobals(save, f1, f2, f3, player) ######################################################
+            saveBoardAndGlobals(save, player) ######################################################
         else:
             print("Mosse disponibili: ")
             moves = []
@@ -84,13 +86,13 @@ def doTurnGraphic(game: c.Game, player: c.Player):
                 print("Move ", i, ": ", move)  
             toDo = int(input("Inserisci l'indice della mossa che vuoi eseguire: "))
             c.Move.useRobber(player, moves[toDo][1])
-            saveBoardAndGlobals(save, f1, f2, f3, player) ######################################################
+            saveBoardAndGlobals(save, player) ######################################################
     else:
         game.dice_production(dicesValue)
     move, thingNeeded = game.bestMove(player, turnCardUsed)
     move(player, thingNeeded)
-    saveBoardAndGlobals(save, f1, f2, f3, player) ######################################################
-    goNextIfInvio(speed)
+    saveBoardAndGlobals(save, player) ######################################################
+    goNextIfInvio()
     print("Player ", player.id, " mossa: ", move, " ")
     if(game.checkWon(player)):
         return
@@ -100,9 +102,9 @@ def doTurnGraphic(game: c.Game, player: c.Player):
         move, thingNeeded = game.bestMove(player, turnCardUsed)
         move(player, thingNeeded)
 
-        saveBoardAndGlobals(save, f1, f2, f3, player) ######################################################
+        saveBoardAndGlobals(save, player) ######################################################
 
-        goNextIfInvio(speed)
+        goNextIfInvio()
         print("Player ", player.id, " mossa: ", move, " ")
         if(move in c.Move.cardMoves()):
             turnCardUsed = True
@@ -119,16 +121,16 @@ def playGameWithGraphic(game, view):
         game.players[3].AI = False
     for p in game.players:
         game.doInitialChoise(p)
-        saveBoardAndGlobals(save, f1, f2, f3, p) #################
+        saveBoardAndGlobals(save, p) #################
 
-        goNextIfInvio(speed)
+        goNextIfInvio()
     for p in sorted(game.players, reverse=True):
         game.doInitialChoise(p, giveResources = True)
-        saveBoardAndGlobals(save, f1, f2, f3, p) #################
+        saveBoardAndGlobals(save, p) #################
 
     # INITIAL CHOISE TERMINATED
 
-        goNextIfInvio(speed)
+        goNextIfInvio()
 
     while won == False:
         playerTurn = game.players[turn%game.nplayer]
@@ -139,25 +141,24 @@ def playGameWithGraphic(game, view):
             return playerTurn
         if(turn % 4 == 0):
             print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
-    goNextIfInvio(speed)
+    goNextIfInvio()
     pygame.quit()
 
-
-def openCsvGlobal():
+def openCsvGlobal(name, n):
     sourceFileDir = os.path.dirname(os.path.abspath(__file__))
-    csvPath = os.path.join(sourceFileDir, "csv\globalFeatures.csv")
+    csvPath = os.path.join(sourceFileDir, name+str(n)+".csv")
     gFeatureCsv = open(csvPath, "w")
     return gFeatureCsv
 
-def openCsvBoard():
+def openCsvBoard(name, n):
     sourceFileDir = os.path.dirname(os.path.abspath(__file__))
-    csvPath = os.path.join(sourceFileDir, "csv\placesPreEmbedding.csv")
+    csvPath = os.path.join(sourceFileDir, name+str(n)+".csv")
     f = open(csvPath, "w")
     return f
 
-def openCsvEdges():
+def openCsvEdges(name, n):
     sourceFileDir = os.path.dirname(os.path.abspath(__file__))
-    csvPath = os.path.join(sourceFileDir, "csv\edgesPreEmbedding.csv")
+    csvPath = os.path.join(sourceFileDir, name+str(n)+".csv")
     f = open(csvPath, "w")
     return f
 
@@ -166,29 +167,39 @@ def saveBoard(fp, fe):
     c.Board.Board().edgesForCsv(fe)
 
 def gFeaturePlayerToCsv(gfc, player):
-        writer = csv.writer(gfc)
+        writer = csv.writer(gfc, delimiter= ',')
         gFeatures = str(player.id)+","+str(player.victoryPoints)+","+str(player.usedKnights)+","+str(player.resources["crop"])+"," \
             +str(player.resources["iron"])+","+str(player.resources["wood"])+","+str(player.resources["clay"])+","+str(player.resources["sheep"])
-        writer.writerow([gFeatures])
+        writer.writerow(gFeatures)
 
-def saveBoardAndGlobals(save, fglobal, fboard, fedges, player):
+def saveBoardAndGlobals(save, player):
+    global moveIndex 
+    moveIndex += 1
+    fglobal = openCsvGlobal("csv\globalFeatures", moveIndex)
+    fboard = openCsvBoard("csv\placesPreEmbedding", moveIndex)
+    fedges = openCsvEdges("csv\edgesPreEmbedding", moveIndex)
+
     if(save):
         gFeaturePlayerToCsv(fglobal, player)
         saveBoard(fboard, fedges)
 
-def closeFiles(f1, f2, f3):
-    f1.close()
-    f2.close()
-    f3.close()
+    fglobal.close()
+    fboard.close()
+    fedges.close()
 
-f1 = openCsvGlobal()
-f2 = openCsvBoard()
-f3 = openCsvEdges()
+
+
+
+
+
+#f1 = openCsvGlobal()
+#f2 = openCsvBoard()
+#f3 = openCsvEdges()
 
 g = c.Game.Game()
 view = GameView.GameView(g)
 playGameWithGraphic(g, view)
 
-closeFiles(f1, f2, f3)
+#closeFiles(f1, f2, f3)
 
 

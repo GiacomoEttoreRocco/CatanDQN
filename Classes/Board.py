@@ -2,6 +2,7 @@ import random
 import numpy as np
 import Classes.CatanGraph as CatanGraph
 import csv
+from csv import QUOTE_NONE
 
 dictCsvResources = {None: "-2", "desert": "-1", "crop": "0", "iron": "1", "wood": "2", "clay": "3", "sheep": "4"}
 dictCsvHarbor = {"" : "0", "3:1" : "1", "2:1 crop" : "2", "2:1 iron" : "3", "2:1 wood" : "4", "2:1 clay" : "5", "2:1 sheep" : "6"}
@@ -122,7 +123,7 @@ class Board: # deve diventare un singleton
     def stringPlacesForCsv(cls, f) : #pathToCsv):
         #f = open(pathToCsv, "w")
 
-        writer = csv.writer(f)
+        writer = csv.writer(f, delimiter=',')
 
         for p in cls.places:
             row = str(p.id)
@@ -166,14 +167,14 @@ class Board: # deve diventare un singleton
             row += dictCsvHarbor[p.harbor] + ","
             row += cls.robberOfPlace(p)
 
-            writer.writerow([row])
+            writer.writerow(row)
 
     def edgesForCsv(cls, f):
-        writer = csv.writer(f)
+        writer = csv.writer(f,delimiter=',')
         
         for edge in cls.edges.keys():
             row = str(edge[0]) +","+str(edge[1])+","+str(cls.edges[edge])
-            writer.writerow([row])
+            writer.writerow(row)
 
         #f.close()
             
