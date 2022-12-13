@@ -119,13 +119,23 @@ class Board: # deve diventare un singleton
 
 ###########################################################################################################################################################################################################################
 
-    def stringForCsv(cls, pathToCsv):
-        f = open(pathToCsv, "w")
+    def stringForCsv(cls, f) : #pathToCsv):
+        #f = open(pathToCsv, "w")
 
         writer = csv.writer(f)
 
         for p in cls.places:
-            row = str(p.id) + "," + str(p.owner) + ","
+            row = str(p.id)
+            if(p.owner == 0):
+                row += "," + "0," + "0," + "0," + "0,"
+            elif(p.owner == 1):
+                row += "," + "1," + "0," + "0," + "0,"
+            elif(p.owner == 2):
+                row += "," + "0," + "1," + "0," + "0,"
+            elif(p.owner == 3):
+                row += "," + "0," + "0," + "1," + "0,"
+            elif(p.owner == 4):
+                row += "," + "0," + "0," + "0," + "1,"
             if(p.isCity):
                 row += "2" + ","
             elif(p.isColony):
@@ -157,12 +167,12 @@ class Board: # deve diventare un singleton
             row += cls.robberOfPlace(p)
 
             writer.writerow([row])
-        f.close()
+        #f.close()
             
 # Nodes: 
 
 # ID: 		{0,...,53}
-# Owner: 		{0,1,2,3,4}
+# Owner: 		one hot econding: {0000,1000,0100,0010,0001}
 # Type: 		{Nothing : 0, Colony: 1, City: 2}
 # ResTile1: 	{None: -1, Crop: 0, Iron: 1, Wood: 2, Clay: 3, Sheep: 4} 
 # DiceTile1: 	{None: -1, 2,3,4,5,6,8,9,10,11,12} 

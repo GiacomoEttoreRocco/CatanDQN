@@ -3,7 +3,8 @@ import pygame
 import Graphics.GameView as GameView
 import time
 
-speed = True
+speed = False
+
 def goNextIfInvio(speed = False):
     if(not speed):
         event = pygame.event.wait()
@@ -65,7 +66,7 @@ def playGameWithGraphic(game, view):
     GameView.GameView.setupPlaces(view)
     GameView.GameView.updateGameScreen(view)
     pygame.display.update()
-    turn = 1 
+    turn = 0
     won = False
     # START INIZIALE
     for p in game.players:
@@ -74,6 +75,7 @@ def playGameWithGraphic(game, view):
     for p in sorted(game.players, reverse=True):
         game.doInitialChoise(p, giveResources = True)
         goNextIfInvio(speed)
+
     while won == False:
         playerTurn = game.players[turn%game.nplayer]
         game.currentTurn = playerTurn
