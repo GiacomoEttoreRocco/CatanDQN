@@ -119,7 +119,7 @@ class Board: # deve diventare un singleton
 
 ###########################################################################################################################################################################################################################
 
-    def stringForCsv(cls, f) : #pathToCsv):
+    def stringPlacesForCsv(cls, f) : #pathToCsv):
         #f = open(pathToCsv, "w")
 
         writer = csv.writer(f)
@@ -167,6 +167,14 @@ class Board: # deve diventare un singleton
             row += cls.robberOfPlace(p)
 
             writer.writerow([row])
+
+    def edgesForCsv(cls, f):
+        writer = csv.writer(f)
+        
+        for edge in cls.edges.keys():
+            row = str(edge[0]) +","+str(edge[1])+","+str(cls.edges[edge])
+            writer.writerow([row])
+
         #f.close()
             
 # Nodes: 
