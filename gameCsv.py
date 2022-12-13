@@ -151,7 +151,7 @@ def openCsvGlobal():
 
 def openCsvBoard():
     sourceFileDir = os.path.dirname(os.path.abspath(__file__))
-    csvPath = os.path.join(sourceFileDir, "graphPreEmbdding.csv")
+    csvPath = os.path.join(sourceFileDir, "graphPreEmbedding.csv")
     f = open(csvPath, "w")
     return f
 
