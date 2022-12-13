@@ -168,16 +168,19 @@ def saveBoard(fp, fe):
 
 def gFeaturePlayerToCsv(gfc, player):
         writer = csv.writer(gfc, delimiter= ',')
-        gFeatures = str(player.id)+","+str(player.victoryPoints)+","+str(player.usedKnights)+","+str(player.resources["crop"])+"," \
-            +str(player.resources["iron"])+","+str(player.resources["wood"])+","+str(player.resources["clay"])+","+str(player.resources["sheep"])
+        # gFeatures = str(player.id)+","+str(player.victoryPoints)+","+str(player.usedKnights)+","+str(player.resources["crop"])+"," \
+        #     +str(player.resources["iron"])+","+str(player.resources["wood"])+","+str(player.resources["clay"])+","+str(player.resources["sheep"])
+        gFeatures = []
+        gFeatures.extend([player.id, player.victoryPoints, player.usedKnights, player.resources["crop"], player.resources["iron"],
+                         player.resources["wood"],player.resources["clay"], player.resources["sheep"]])
         writer.writerow(gFeatures)
 
 def saveBoardAndGlobals(save, player):
     global moveIndex 
     moveIndex += 1
-    fglobal = openCsvGlobal("csv\globalFeatures", moveIndex)
-    fboard = openCsvBoard("csv\placesPreEmbedding", moveIndex)
-    fedges = openCsvEdges("csv\edgesPreEmbedding", moveIndex)
+    fglobal = openCsvGlobal("csv/globalFeatures", moveIndex)
+    fboard = openCsvBoard("csv/placesPreEmbedding", moveIndex)
+    fedges = openCsvEdges("csv/edgesPreEmbedding", moveIndex)
 
     if(save):
         gFeaturePlayerToCsv(fglobal, player)
