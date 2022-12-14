@@ -127,68 +127,45 @@ class Board: # deve diventare un singleton
 
         for p in cls.places:
             row = []
-            #row = str(p.id)
             row.append(p.id)
             if(p.owner == 0):
-                #row += "," + "0," + "0," + "0," + "0,"
                 row.extend([0,0,0,0])
             elif(p.owner == 1):
-                #row += "," + "1," + "0," + "0," + "0,"
                 row.extend([1,0,0,0])
             elif(p.owner == 2):
-                #row += "," + "0," + "1," + "0," + "0,"
                 row.extend([0,1,0,0])
             elif(p.owner == 3):
-                #row += "," + "0," + "0," + "1," + "0,"
                 row.extend([0,0,1,0])
             elif(p.owner == 4):
-                #row += "," + "0," + "0," + "0," + "1,"
                 row.extend([0,0,0,1])
             if(p.isCity):
-                #row += "2" + ","
                 row.append(2)
             elif(p.isColony):
-                #row += "1" + ","
                 row.append(1)
             else:
-                #row += "0" + ","
                 row.append(0)
             dices = cls.dicesOfPlace(p)
             if(len(p.touchedResourses) < 1):
-                #row += dictCsvResources[None]  + ","
-                #row += "-1" + ","
                 row.append(dictCsvResources[None])
                 row.append(-1)
             else:
-                #row += str(dictCsvResources[p.touchedResourses[0]])  + ","
-                #row += dices[0] + ","
                 row.append(dictCsvResources[p.touchedResourses[0]])
                 row.append(dices[0])
 
             if(len(p.touchedResourses) < 2):
-                #row += dictCsvResources[None]  + ","
-                #row += "-1" + ","
                 row.append(dictCsvResources[None])
                 row.append(-1)
             else:
-                #row += dictCsvResources[p.touchedResourses[1]]  + ","
-                #row += dices[1] + ","
                 row.append(dictCsvResources[p.touchedResourses[1]])
                 row.append(dices[1])
 
             if(len(p.touchedResourses) < 3):
-                #row += dictCsvResources[None]  + ","
-                #row += "-1" + ","
                 row.append(dictCsvResources[None])
                 row.append(-1)
             else:
-                #row += dictCsvResources[p.touchedResourses[2]]  + ","
-                #row += dices[2] + ","
                 row.append(dictCsvResources[p.touchedResourses[2]])
                 row.append(dices[2])
-            #row += dictCsvHarbor[p.harbor] + ","
             row.append(dictCsvHarbor[p.harbor])
-            #row += cls.robberOfPlace(p)
             row.append(cls.robberOfPlace(p))
 
             writer.writerow(row)
@@ -197,7 +174,6 @@ class Board: # deve diventare un singleton
         writer = csv.writer(f, delimiter=',')
         for edge in cls.edges.keys():
             row = []
-            #row = str(edge[0]) +","+str(edge[1])+","+str(cls.edges[edge])
             row.extend([edge[0], edge[1], cls.edges[edge]])
             writer.writerow(row)
 

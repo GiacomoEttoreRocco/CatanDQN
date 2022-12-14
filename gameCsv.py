@@ -11,7 +11,6 @@ speed = True
 withDelay = False
 realPlayer = False
 save = True
-moveIndex = 0
 
 def goNextIfInvio():
     if(not speed):
@@ -101,9 +100,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
     while(move != c.Move.passTurn and not game.checkWon(player)): # move è una funzione 
         move, thingNeeded = game.bestMove(player, turnCardUsed)
         move(player, thingNeeded)
-
         saveBoardAndGlobals(save, player) ######################################################
-
         goNextIfInvio()
         print("Player ", player.id, " mossa: ", move, " ")
         if(move in c.Move.cardMoves()):
@@ -144,21 +141,21 @@ def playGameWithGraphic(game, view):
     goNextIfInvio()
     pygame.quit()
 
-def openCsvGlobal(name, n):
+def openCsvGlobal(name):
     sourceFileDir = os.path.dirname(os.path.abspath(__file__))
-    csvPath = os.path.join(sourceFileDir, name+str(n)+".csv")
+    csvPath = os.path.join(sourceFileDir, name+".csv")
     gFeatureCsv = open(csvPath, "w")
     return gFeatureCsv
 
-def openCsvBoard(name, n):
+def openCsvBoard(name):
     sourceFileDir = os.path.dirname(os.path.abspath(__file__))
-    csvPath = os.path.join(sourceFileDir, name+str(n)+".csv")
+    csvPath = os.path.join(sourceFileDir, name+".csv")
     f = open(csvPath, "w")
     return f
 
-def openCsvEdges(name, n):
+def openCsvEdges(name):
     sourceFileDir = os.path.dirname(os.path.abspath(__file__))
-    csvPath = os.path.join(sourceFileDir, name+str(n)+".csv")
+    csvPath = os.path.join(sourceFileDir, name+".csv")
     f = open(csvPath, "w")
     return f
 
@@ -168,40 +165,28 @@ def saveBoard(fp, fe):
 
 def gFeaturePlayerToCsv(gfc, player):
         writer = csv.writer(gfc, delimiter= ',')
-        # gFeatures = str(player.id)+","+str(player.victoryPoints)+","+str(player.usedKnights)+","+str(player.resources["crop"])+"," \
-        #     +str(player.resources["iron"])+","+str(player.resources["wood"])+","+str(player.resources["clay"])+","+str(player.resources["sheep"])
         gFeatures = []
         gFeatures.extend([player.id, player.victoryPoints, player.usedKnights, player.resources["crop"], player.resources["iron"],
                          player.resources["wood"],player.resources["clay"], player.resources["sheep"]])
         writer.writerow(gFeatures)
 
 def saveBoardAndGlobals(save, player):
-    global moveIndex 
-    moveIndex += 1
-    fglobal = openCsvGlobal("csv/globalFeatures", moveIndex)
-    fboard = openCsvBoard("csv/placesPreEmbedding", moveIndex)
-    fedges = openCsvEdges("csv/edgesPreEmbedding", moveIndex)
-
     if(save):
         gFeaturePlayerToCsv(fglobal, player)
         saveBoard(fboard, fedges)
 
-    fglobal.close()
-    fboard.close()
-    fedges.close()
-
-
-
-
-
-
-#f1 = openCsvGlobal()
-#f2 = openCsvBoard()
-#f3 = openCsvEdges()
+###########################################################################################################################
+fglobal = openCsvGlobal("csv/globalFeatures")
+fboard = openCsvBoard("csv/placesPreEmbedding")
+fedges = openCsvEdges("csv/edgesPreEmbedding")
 
 g = c.Game.Game()
 view = GameView.GameView(g)
 playGameWithGraphic(g, view)
+
+fglobal.close()
+fboard.close()
+fedges.close()
 
 #closeFiles(f1, f2, f3)
 
