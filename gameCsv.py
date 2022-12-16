@@ -42,13 +42,13 @@ def doTurnGraphic(game: c.Game, player: c.Player):
             if(afterKnight > actualEvaluation):
                 c.Move.useKnight(player, place)
                 saveMove(save, player) ######################################################
-                print("BEFORE ROLL DICE: ", c.Move.useKnight, "\n")
+                # print("BEFORE ROLL DICE: ", c.Move.useKnight, "\n")
                 # view.updateGameScreen()
                 turnCardUsed = True 
         else:
             # view.updateGameScreen() 
             if(player.unusedKnights >= 1 and not turnCardUsed):
-                print("Mosse disponibili: ")
+                # print("Mosse disponibili: ")
                 moves = [(c.Move.passTurn, None)]
                 for i in range(0, 17):
                     moves.append((c.Move.useKnight, i))  
@@ -67,16 +67,16 @@ def doTurnGraphic(game: c.Game, player: c.Player):
     dicesValue = game.rollDice()
     game.dice = dicesValue
     ########################################################################################################################################################
-    print("Dice value: ", dicesValue)
+    # print("Dice value: ", dicesValue)
     if(dicesValue == 7):
         game.sevenOnDices()
-        print("############# SEVEN! #############")
+        # print("############# SEVEN! #############")
         if(player.AI == True):
             ev, pos = player.evaluate(c.Move.useRobber)
             c.Move.useRobber(player, pos)
             saveMove(save, player) ######################################################
         else:
-            print("Mosse disponibili: ")
+            # print("Mosse disponibili: ")
             moves = []
             for i in range(0, 19):
                 if(i != c.Board.Board().robberTile):
@@ -92,7 +92,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
     move(player, thingNeeded)
     saveMove(save, player) ######################################################
     # goNextIfInvio()
-    print("Player ", player.id, " mossa: ", move, " ")
+    # print("Player ", player.id, " mossa: ", move, " ")
     if(game.checkWon(player)):
         return
     if(move in c.Move.cardMoves()):
@@ -102,7 +102,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
         move(player, thingNeeded)
         saveMove(save, player) ######################################################
         # goNextIfInvio()
-        print("Player ", player.id, " mossa: ", move, " ")
+        # print("Player ", player.id, " mossa: ", move, " ")
         if(move in c.Move.cardMoves()):
             turnCardUsed = True
 
@@ -137,8 +137,8 @@ def playGameWithGraphic(game):#, view):
         if(playerTurn.victoryPoints >= 10):
             saveToCsv(playerTurn)
             return playerTurn
-        if(turn % 4 == 0):
-            print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
+        # if(turn % 4 == 0):
+            # print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
     # goNextIfInvio()
     # pygame.quit()
 
@@ -176,14 +176,18 @@ def saveMove(save, player):
 
 
 def saveToCsv(victoryPlayer):
+    print('winner: ', victoryPlayer.id)
     for i in range(len(total)):
         total.globals[i]['winner'] = victoryPlayer.id
+    print(len(total))
     global allGames
     allGames = pd.concat([allGames, total], ignore_index=True)
 
 ###########################################################################################################################
 
-for i in range(10):
+for i in range(100): 
+    print('game: ', i) 
+    total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
     g = c.Game.Game()
     # view = GameView.GameView(g)
     playGameWithGraphic(g)#, view)

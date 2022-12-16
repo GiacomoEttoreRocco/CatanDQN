@@ -113,8 +113,8 @@ class Player:
         for resource in self.resources.keys():
             if(Bank.Bank().resourceToAsk(self, resource) <= self.resources[resource]):
                 canTrade = True
-        print("Can trade: ", Bank.Bank().resourceToAsk(self, resource) <= self.resources[resource])
-        print("Owned harbors: ", self.ownedHarbors)
+        # print("Can trade: ", Bank.Bank().resourceToAsk(self, resource) <= self.resources[resource])
+        # print("Owned harbors: ", self.ownedHarbors)
         if(canTrade):
                 availableMoves.append(Move.tradeBank)
         if(self.unusedKnights >= 1 and not turnCardUsed):
@@ -422,7 +422,7 @@ class Player:
         assert(len(resourcesOfPlayer) > 0)
         randomTake = random.randint(0, len(resourcesOfPlayer)-1)
         resourceTaken = resourcesOfPlayer[randomTake]
-        print("RESOURCE TAKEN ---------------------------------------------------->", resourceTaken)
+        # print("RESOURCE TAKEN ---------------------------------------------------->", resourceTaken)
         self.resources[resourceTaken] -= 1
         player.resources[resourceTaken] += 1
 

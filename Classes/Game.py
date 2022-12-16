@@ -33,8 +33,8 @@ class Game:
     def bestMove(self, player: Player, usedCard):
         if(player.AI == True):
             moves = player.availableMoves(usedCard)
-            print("Available moves of player ", player.id, ": ", moves)
-            player.printResources()
+            # print("Available moves of player ", player.id, ": ", moves)
+            # player.printResources()
             max = 0
             thingsNeeded = None
             bestMove = Move.passTurn
@@ -51,12 +51,11 @@ class Game:
 
     def sevenOnDices(self):
         for pyr in self.players:
-            print("Resource count: ", pyr.resourceCount())
+            # print("Resource count: ", pyr.resourceCount())
             half = int(pyr.resourceCount()/2)
             if(pyr.resourceCount() >= 7):
                 if(pyr.AI == True):
                     for i in range(0, half):
-                        print("Sono nel for")
                         eval, card = pyr.evaluate(Move.discardResource)
                         Move.discardResource(pyr, card)
                 else:
@@ -86,26 +85,26 @@ class Game:
             afterKnightEvaluation, place = player.evaluate(Move.useKnight)
             if(afterKnightEvaluation > actualEvaluation):
                 Move.useKnight(player, place)
-                print("BEFORE ROLL DICE: ", Move.useKnight, "\n")
+                # print("BEFORE ROLL DICE: ", Move.useKnight, "\n")
                 turnCardUsed = True 
         if(self.checkWon(player)):
             return
         ####################################################################### ROLL DICES #####################################################################   
         dicesValue = self.rollDice()
         ########################################################################################################################################################
-        print("Dice value: ", dicesValue)
+        # print("Dice value: ", dicesValue)
         if(dicesValue == 7):
             self.sevenOnDices(player)
             ev, pos = player.evaluate(Move.useRobber)
-            print("POS: ", pos)
+            # print("POS: ", pos)
             Move.useRobber(player, pos)
-            print("POS: ", pos)
+            # print("POS: ", pos)
         else:
             self.dice_production(dicesValue)
 
         move, thingNeeded = self.bestMove(player, turnCardUsed)
         move(player, thingNeeded)
-        print("Player ", player.id, " mossa: ", move, " ")
+        # print("Player ", player.id, " mossa: ", move, " ")
         if(self.checkWon(player)):
             return
         if(move in Move.cardMoves()):
@@ -113,14 +112,14 @@ class Game:
         while(move != Move.passTurn and not self.checkWon(player)): # move è una funzione 
             move, thingNeeded = self.bestMove(player, turnCardUsed)
             move(player, thingNeeded)
-            print("Player ", player.id, " mossa: ", move, " ")
+            # print("Player ", player.id, " mossa: ", move, " ")
             if(move in Move.cardMoves()):
                 turnCardUsed = True
 
     def checkWon(self, player):
         if(player.victoryPoints >= 10):
             #player.printStats()
-            print("Il vincitore è il Player ", str(player.id), "!")
+            # print("Il vincitore è il Player ", str(player.id), "!")
             return True
         return False
 
@@ -131,12 +130,12 @@ class Game:
             if(giveResources):
                 for touchedResource in Board.Board().places[colonyChoosen.id].touchedResourses:
                     Bank.Bank().giveResource(player, touchedResource)
-            print("Initial choise, colony: ", str(colonyChoosen.id))
+            # print("Initial choise, colony: ", str(colonyChoosen.id))
             evaluation, edgeChoosen = player.evaluate(Move.placeInitialStreet)
             Move.placeInitialStreet(player, edgeChoosen)
         else:
             moves = []
-            print("DBUG: ", player.calculatePossibleInitialColony())
+            # print("DBUG: ", player.calculatePossibleInitialColony())
             for colony in player.calculatePossibleInitialColony():
                 moves.append((Move.placeInitialColony, colony))
             move, colonyChoosen = player.chooseMove(moves)

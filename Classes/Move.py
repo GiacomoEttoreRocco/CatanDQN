@@ -167,10 +167,10 @@ def buyDevCard(player, card, undo = False):
 
 def discardResource(player, resource, undo = False):
     if(not undo):
-        print("debug riga 124 move")
+        # print("debug riga 124 move")
         player.useResource(resource)
     else:
-        print("debug riga 124 move, undo")
+        # print("debug riga 124 move, undo")
         Bank.Bank().giveResource(player, resource)
 
 def passTurn(player, temp=None):

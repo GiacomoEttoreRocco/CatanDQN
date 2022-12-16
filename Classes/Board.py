@@ -99,7 +99,7 @@ class Board: # deve diventare un singleton
         numbers = []
         for tile in cls.tiles:
             if place.id in CatanGraph.tilePlaces[tile.identificator]:
-                numbers.append(str(tile.number))
+                numbers.append(tile.number)
         if(len(numbers) < 1):
             return [-1, -1, -1]
         elif(len(numbers) < 2):
@@ -114,10 +114,10 @@ class Board: # deve diventare un singleton
         for tile in cls.tiles:
             if place.id in CatanGraph.tilePlaces[tile.identificator]:
                 if(cls.robberTile == tile.identificator):
-                    return str(number)
+                    return number
                 else:
                     number += 1
-        return str(number)
+        return number
 
 ###########################################################################################################################################################################################################################
 
