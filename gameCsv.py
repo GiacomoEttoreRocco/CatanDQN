@@ -142,35 +142,12 @@ def playGameWithGraphic(game):#, view):
     # goNextIfInvio()
     # pygame.quit()
 
-def openCsvGlobal(name):
-    sourceFileDir = os.path.dirname(os.path.abspath(__file__))
-    csvPath = os.path.join(sourceFileDir, name+".csv")
-    gFeatureCsv = open(csvPath, "w")
-    return gFeatureCsv
-
-def openCsvBoard(name):
-    sourceFileDir = os.path.dirname(os.path.abspath(__file__))
-    csvPath = os.path.join(sourceFileDir, name+".csv")
-    f = open(csvPath, "w")
-    return f
-
-def openCsvEdges(name):
-    sourceFileDir = os.path.dirname(os.path.abspath(__file__))
-    csvPath = os.path.join(sourceFileDir, name+".csv")
-    f = open(csvPath, "w")
-    return f
-
-def globalFeaturesPlayerToDf(player):
-    return {'player_id': player.id,'victory_points': player.victoryPoints,\
-        'used_knights': player.usedKnights, 'crop': player.resources["crop"], 'iron': player.resources["iron"],\
-            'wood': player.resources["wood"], 'clay': player.resources["clay"], 'sheep': player.resources["sheep"], 'winner':None}
-
 
 def saveMove(save, player):
     if(save):
-        places = c.Board.Board().placesToDf()
-        edges = c.Board.Board().edgesToDf()
-        globals = globalFeaturesPlayerToDf(player)
+        places = c.Board.Board().placesToDict()
+        edges = c.Board.Board().edgesToDict()
+        globals = player.globalFeaturesToDict()
 
         total.loc[len(total)] = [places, edges, globals]
 

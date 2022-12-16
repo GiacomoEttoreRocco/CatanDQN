@@ -121,7 +121,7 @@ class Board: # deve diventare un singleton
 
 ###########################################################################################################################################################################################################################
 
-    def placesToDf(cls) :
+    def placesToDict(cls) :
         data={'id':[], 'place_owner':[], 'type':[], 'resource_1':[],'dice_1':[],'resource_2':[],'dice_2':[],'resource_3':[],'dice_3':[], 'harbor':[], 'robber_tile':[]}
         for p in cls.places:
             data['id'].append(p.id)
@@ -158,7 +158,7 @@ class Board: # deve diventare un singleton
             data['robber_tile'].append(cls.robberOfPlace(p))    
         return data
 
-    def edgesToDf(cls):
+    def edgesToDict(cls):
         data={'place_1':[],'place_2':[], 'edge_owner':[]}
         for edge in cls.edges.keys():
             data['place_1'].append(edge[0])
