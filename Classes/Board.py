@@ -3,6 +3,7 @@ import numpy as np
 import Classes.CatanGraph as CatanGraph
 import csv
 from csv import QUOTE_NONE
+import pandas as pd
 
 dictCsvResources = {None: -2, "desert": -1, "crop": 0, "iron": 1, "wood": 2, "clay": 3, "sheep": 4}
 dictCsvHarbor = {"" : 0, "3:1" : 1, "2:1 crop" : 2, "2:1 iron" : 3, "2:1 wood" : 4, "2:1 clay" : 5, "2:1 sheep" : 6}
@@ -120,64 +121,50 @@ class Board: # deve diventare un singleton
 
 ###########################################################################################################################################################################################################################
 
-    def stringPlacesForCsv(cls, f) : #pathToCsv):
-        #f = open(pathToCsv, "w")
-
-        writer = csv.writer(f, delimiter=',')
-
+    def placesToDf(cls) :
+        data={'id':[], 'place_owner':[], 'type':[], 'resource_1':[],'dice_1':[],'resource_2':[],'dice_2':[],'resource_3':[],'dice_3':[], 'harbor':[], 'robber_tile':[]}
         for p in cls.places:
-            row = []
-            row.append(p.id)
-            if(p.owner == 0):
-                row.extend([0,0,0,0])
-            elif(p.owner == 1):
-                row.extend([1,0,0,0])
-            elif(p.owner == 2):
-                row.extend([0,1,0,0])
-            elif(p.owner == 3):
-                row.extend([0,0,1,0])
-            elif(p.owner == 4):
-                row.extend([0,0,0,1])
+            data['id'].append(p.id)
+            data['place_owner'].append(p.owner)
             if(p.isCity):
-                row.append(2)
+                data['type'].append(2)
             elif(p.isColony):
-                row.append(1)
+                data['type'].append(1)
             else:
-                row.append(0)
+                data['type'].append(0)
+            
             dices = cls.dicesOfPlace(p)
             if(len(p.touchedResourses) < 1):
-                row.append(dictCsvResources[None])
-                row.append(-1)
+                data['resource_1'].append(dictCsvResources[None])
+                data['dice_1'].append(-1)
             else:
-                row.append(dictCsvResources[p.touchedResourses[0]])
-                row.append(dices[0])
+                data['resource_1'].append(dictCsvResources[p.touchedResourses[0]])
+                data['dice_1'].append(dices[0])
 
             if(len(p.touchedResourses) < 2):
-                row.append(dictCsvResources[None])
-                row.append(-1)
+                data['resource_2'].append(dictCsvResources[None])
+                data['dice_2'].append(-1)
             else:
-                row.append(dictCsvResources[p.touchedResourses[1]])
-                row.append(dices[1])
+                data['resource_2'].append(dictCsvResources[p.touchedResourses[1]])
+                data['dice_2'].append(dices[1])
 
             if(len(p.touchedResourses) < 3):
-                row.append(dictCsvResources[None])
-                row.append(-1)
+                data['resource_3'].append(dictCsvResources[None])
+                data['dice_3'].append(-1)
             else:
-                row.append(dictCsvResources[p.touchedResourses[2]])
-                row.append(dices[2])
-            row.append(dictCsvHarbor[p.harbor])
-            row.append(cls.robberOfPlace(p))
+                data['resource_3'].append(dictCsvResources[p.touchedResourses[2]])
+                data['dice_3'].append(dices[2])
+            data['harbor'].append(dictCsvHarbor[p.harbor])
+            data['robber_tile'].append(cls.robberOfPlace(p))    
+        return data
 
-            writer.writerow(row)
-
-    def edgesForCsv(cls, f):
-        writer = csv.writer(f, delimiter=',')
+    def edgesToDf(cls):
+        data={'place_1':[],'place_2':[], 'edge_owner':[]}
         for edge in cls.edges.keys():
-            row = []
-            row.extend([edge[0], edge[1], cls.edges[edge]])
-            writer.writerow(row)
-
-        #f.close()
+            data['place_1'].append(edge[0])
+            data['place_2'].append(edge[1])
+            data['edge_owner'].append(cls.edges[edge])
+        return data
             
 # Nodes: 
 
