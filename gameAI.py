@@ -164,10 +164,10 @@ epochs = 100
 batchs = 1
 
 for epoch in range(epochs):
-    print('epoch: ', epoch+1)
+    print('Iteration: ', epoch+1, "/", epochs)
     allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})   
     for batch in range(batchs): 
-        print('game: ', batch+1) 
+        print('game: ', batch+1, "/", batchs) 
         total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
         g = c.Game.Game()
         view = GameView.GameView(g)

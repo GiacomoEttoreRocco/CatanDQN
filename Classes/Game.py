@@ -214,7 +214,7 @@ class Game:
             self.doTurn(playerTurn)
             if(playerTurn.victoryPoints >= 10):
                 print("The winner is: ", playerTurn, "!")
-                time.sleep(5)
+                # time.sleep(5)
                 return playerTurn
             if(turn % 4 == 0):
                 print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")

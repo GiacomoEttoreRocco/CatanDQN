@@ -13,16 +13,16 @@ import Classes.Board as Board
 
 class Gnn():
     instance = None
-    def __new__(cls, epochs=10, learningRate=0.001):
+    def __new__(cls, epochs=5, learningRate=0.001):
         if cls.instance is None:
             cls.instance = super(Gnn, cls).__new__(cls)
             cls.moves = None
             cls.epochs = epochs
             cls.learningRate = learningRate
-            cls.model = Net(11, 8, 3, 8)
+            cls.model = Net(11, 8, 3, 8).to('cuda:0')
             if os.path.exists('./AI/model_weights.pth'):
                 #cls.model.load_state_dict(torch.load('./AI/model_weights.pth')
-                cls.model.load_state_dict(torch.load('./AI/model_weights.pth', map_location=torch.device('cpu')))
+                cls.model.load_state_dict(torch.load('./AI/model_weights.pth'))# map_location=torch.device('cpu')))
                 print('Weights loaded..')
                 
         return cls.instance
@@ -33,11 +33,11 @@ class Gnn():
         optimizer = torch.optim.Adam(cls.model.parameters(), lr=cls.learningRate)
         permutationIndexMoves = np.random.permutation([x for x in range(len(cls.moves))])
         for epoch in range(cls.epochs):
-            print('epoch: ', epoch+1)
+            print('epochOnOneGame: ', epoch+1, "/", cls.epochs)
             for i, idx in enumerate(permutationIndexMoves):
-                g = cls.extractInputFeaturesMove(idx)
-                glob = torch.tensor(list(cls.moves.iloc[idx].globals.values())[:-1]).float()
-                labels = torch.tensor(list(cls.moves.iloc[idx].globals.values())[-1])-1
+                g = cls.extractInputFeaturesMove(idx).to('cuda:0')
+                glob = torch.tensor(list(cls.moves.iloc[idx].globals.values())[:-1]).float().cuda()
+                labels = torch.tensor(list(cls.moves.iloc[idx].globals.values())[-1]).cuda()-1
                 optimizer.zero_grad()
                 outputs = cls.model(g, glob)
                 outputs = loss(outputs, labels)
@@ -45,12 +45,11 @@ class Gnn():
                 optimizer.step()
         
         cls.saveWeights()           
-    
 
     def evaluatePosition(cls, player):
         globalFeats = player.globalFeaturesToDict()
-        graph = cls.fromDictsToGraph(Board.Board().placesToDict(), Board.Board().edgesToDict())
-        glob = torch.tensor(list(globalFeats.values())[:-1]).float()
+        graph = cls.fromDictsToGraph(Board.Board().placesToDict(), Board.Board().edgesToDict()).to('cuda:0')
+        glob = torch.tensor(list(globalFeats.values())[:-1]).float().cuda()
         
         return cls.model(graph, glob)[globalFeats['player_id']-1]
 
@@ -95,7 +94,6 @@ class Net(nn.Module):
     globalFeats = F.relu(self.GlobalLayer1(globalFeats))
     globalFeats = F.relu(self.GlobalLayer2(globalFeats))
     globalFeats = F.relu(self.GlobalLayer3(globalFeats))
-
 
     output = F.relu(self.OutputLayer1(torch.cat([embeds, globalFeats])))
     output = self.OutputLayer2(output)

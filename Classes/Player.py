@@ -253,7 +253,7 @@ class Player:
         if(move == Move.discardResource):
             possibleCards = [r for r in self.resources.keys() if self.resources[r] > 0]
             candidateCard = None
-            max = 0
+            max = -1
             for card in possibleCards:
                 valutation = self.moveValue(move, card)
                 if(max < valutation):
@@ -264,7 +264,7 @@ class Player:
         if(move == Move.placeFreeStreet):
             possibleEdges = self.calculatePossibleEdges()
             candidateEdge = None
-            max = 0
+            max = -1
             for edge in possibleEdges: 
                 valutation = self.moveValue(move, edge)
                 if(max < valutation):
@@ -275,7 +275,7 @@ class Player:
         if(move == Move.placeInitialStreet):
             possibleEdges = self.calculatePossibleInitialStreets()
             candidateEdge = None
-            max = 0
+            max = -1
             for edge in possibleEdges: 
                 valutation = self.moveValue(move, edge)
                 if(max < valutation):
@@ -286,7 +286,7 @@ class Player:
         if(move == Move.placeInitialColony):
             possibleColony = self.calculatePossibleInitialColony()
             candidateColony = None
-            max = 0
+            max = -1
             for colony in possibleColony:
                 valutation = self.moveValue(move, colony)
                 if(max < valutation):
@@ -297,7 +297,7 @@ class Player:
         if(move == Move.placeStreet):
             possibleEdges = self.calculatePossibleEdges()
             candidateEdge = None
-            max = 0
+            max = -1
             for edge in possibleEdges: 
                 valutation = self.moveValue(move, edge)
                 if(max < valutation):
@@ -308,7 +308,7 @@ class Player:
         if(move == Move.placeColony):
             possibleColony = self.calculatePossibleColony()
             candidateColony = None
-            max = 0
+            max = -1
             for colony in possibleColony:
                 valutation = self.moveValue(move, colony)
                 if(max < valutation):
@@ -319,7 +319,7 @@ class Player:
         if(move == Move.placeCity):
             possibleCity = self.calculatePossibleCity()
             candidateCity = None
-            max = 0
+            max = -1
             for city in possibleCity:
                 valutation = self.moveValue(move, city)
                 if(max < valutation):
@@ -335,7 +335,7 @@ class Player:
             return self.moveValue(move), None
 
         if(move == Move.useKnight):
-            max = 0
+            max = -1
             for tile in Board.Board().tiles: 
                 if(tile.identificator != Board.Board().robberTile):
                     valutation = self.moveValue(move, tile.identificator)
@@ -345,7 +345,7 @@ class Player:
             return max, candidatePos
 
         if(move == Move.useRobber): # Yes they are the same method, but must be differentiated becouse of the count of knights.
-            max = 0
+            max = -1
             for tile in Board.Board().tiles: 
                 if(tile.identificator != Board.Board().robberTile):
                     valutation = self.moveValue(move, tile.identificator)
@@ -357,7 +357,7 @@ class Player:
         if(move == Move.tradeBank):
             possibleTrades = self.calculatePossibleTrades()
             candidateTrade = None
-            max = 0
+            max = -1
             for trade in possibleTrades:
                 valutation = self.moveValue(move, trade)
                 if(max < valutation):
@@ -366,7 +366,7 @@ class Player:
             return max, candidateTrade
 
         if(move == Move.useMonopolyCard):
-            max = 0
+            max = -1
             for res in Bank.Bank().resources.keys():
                 valutation = self.moveValue(move, res)
                 if(max < valutation):
@@ -376,7 +376,7 @@ class Player:
 
         if(move == Move.useYearOfPlentyCard):
             candidateRes = ()
-            max = 0
+            max = -1
             for res1 in Bank.Bank().resources.keys():
                 for res2 in Bank.Bank().resources.keys():
                     valutation = self.moveValue(move, (res1, res2))
