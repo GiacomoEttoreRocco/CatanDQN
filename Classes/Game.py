@@ -31,7 +31,7 @@ class Game:
                             Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
 
     def bestMove(self, player: Player, usedCard):
-        if(player.AI == True):
+        if(player.AI or player.RANDOM):
             moves = player.availableMoves(usedCard)
             # print("Available moves of player ", player.id, ": ", moves)
             # player.printResources()
@@ -54,7 +54,7 @@ class Game:
             # print("Resource count: ", pyr.resourceCount())
             half = int(pyr.resourceCount()/2)
             if(pyr.resourceCount() >= 7):
-                if(pyr.AI == True):
+                if(pyr.AI or pyr.RANDOM):
                     for i in range(0, half):
                         eval, card = pyr.evaluate(Move.discardResource)
                         Move.discardResource(pyr, card)
@@ -124,7 +124,7 @@ class Game:
         return False
 
     def doInitialChoise(self, player: Player, giveResources = False):
-        if(player.AI):
+        if(player.AI or player.RANDOM):
             evaluation, colonyChoosen = player.evaluate(Move.placeInitialColony)
             Move.placeInitialColony(player, colonyChoosen)
             if(giveResources):

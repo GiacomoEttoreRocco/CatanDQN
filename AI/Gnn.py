@@ -7,6 +7,9 @@ from dgl.nn import GraphConv
 import numpy as np
 import pandas as pd
 import os as os
+import Classes.Board as Board
+
+
 
 class Gnn():
     instance = None
@@ -16,9 +19,11 @@ class Gnn():
             cls.moves = None
             cls.epochs = epochs
             cls.learningRate = learningRate
-            cls.model = Net(14, 8, 3, 8)
-            if os.path.exists('./model_weights.pth'):
-                cls.model.load_state_dict(torch.load('./model_weights.pth'))
+            cls.model = Net(11, 8, 3, 8)
+            if os.path.exists('./AI/model_weights.pth'):
+                cls.model.load_state_dict(torch.load('./AI/model_weights.pth'))
+                print('Weights loaded..')
+                
         return cls.instance
 
     def trainModel(cls):
@@ -37,12 +42,14 @@ class Gnn():
                 outputs = loss(outputs, labels)
                 outputs.backward()
                 optimizer.step()
-            os.system('cls')
+            # os.system('cls')
     
 
-    def evaluateMove(cls, places, edges, globalFeats):
-        graph = cls.fromDictsToGraph(places, edges)
-        glob = torch.tensor(list(globalFeats.values()))
+    def evaluatePosition(cls, player):
+        globalFeats = player.globalFeaturesToDict()
+        graph = cls.fromDictsToGraph(Board.Board().placesToDict(), Board.Board().edgesToDict())
+        glob = torch.tensor(list(globalFeats.values())[:-1]).float()
+        
         return cls.model(graph, glob)[globalFeats['player_id']-1]
 
     def extractInputFeaturesMove(cls, moveIndex):
@@ -72,6 +79,7 @@ class Net(nn.Module):
     self.GlobalLayer1 = nn.Linear(globInputDim, 16)
     self.GlobalLayer2 = nn.Linear(16, 16)
     self.GlobalLayer3 = nn.Linear(16, globInputDim)
+
 
     self.OutputLayer1 = nn.Linear(54*gnnOutputDim+globInputDim, 85)
     self.OutputLayer2 = nn.Linear(85, 4)

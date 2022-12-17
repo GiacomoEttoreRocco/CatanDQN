@@ -1,28 +1,29 @@
 import Classes as c
-# import pygame
-# import Graphics.GameView as GameView
+import pygame
+import Graphics.GameView as GameView
 import os
 import pandas as pd
+import time
 
 
 speed = True
-withDelay = False
-realPlayer = False
+withDelay = True
+realPlayer = False # If you put this to true you will play with the 3th player.
 save = True
 total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
 allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
 
-# def goNextIfInvio():
-#     if(not speed):
-#         event = pygame.event.wait()
-#         while event.type != pygame.KEYDOWN:
-#             event = pygame.event.wait()
-#     else:
-#         event = pygame.event.get()
-#         pygame.display.update()
-#     view.updateGameScreen()
-#     if(withDelay):
-#         time.sleep(0.2)
+def goNextIfInvio():
+    if(not speed):
+        event = pygame.event.wait()
+        while event.type != pygame.KEYDOWN:
+            event = pygame.event.wait()
+    else:
+        event = pygame.event.get()
+        pygame.display.update()
+    view.updateGameScreen()
+    if(withDelay):
+        time.sleep(0.2)
 
 def doTurnGraphic(game: c.Game, player: c.Player):
     turnCardUsed = False 
@@ -34,19 +35,19 @@ def doTurnGraphic(game: c.Game, player: c.Player):
     player.justBoughtRoadBuildingCard = 0
     player.yearOfPlentyCard += player.justBoughtYearOfPlentyCard
     player.justBoughtYearOfPlentyCard = 0
-    # view.updateGameScreen() 
+    view.updateGameScreen() 
     if(player.unusedKnights > 0 and not turnCardUsed):
-        if(player.AI == True):
+        if(player.AI or player.RANDOM):
             actualEvaluation = c.Board.Board().actualEvaluation()
             afterKnight, place = player.evaluate(c.Move.useKnight)
             if(afterKnight > actualEvaluation):
                 c.Move.useKnight(player, place)
                 saveMove(save, player) ######################################################
                 # print("BEFORE ROLL DICE: ", c.Move.useKnight, "\n")
-                # view.updateGameScreen()
+                view.updateGameScreen()
                 turnCardUsed = True 
         else:
-            # view.updateGameScreen() 
+            view.updateGameScreen() 
             if(player.unusedKnights >= 1 and not turnCardUsed):
                 # print("Mosse disponibili: ")
                 moves = [(c.Move.passTurn, None)]
@@ -71,7 +72,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
     if(dicesValue == 7):
         game.sevenOnDices()
         # print("############# SEVEN! #############")
-        if(player.AI == True):
+        if(player.AI or player.RANDOM):
             ev, pos = player.evaluate(c.Move.useRobber)
             c.Move.useRobber(player, pos)
             saveMove(save, player) ######################################################
@@ -91,7 +92,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
     move, thingNeeded = game.bestMove(player, turnCardUsed)
     move(player, thingNeeded)
     saveMove(save, player) ######################################################
-    # goNextIfInvio()
+    goNextIfInvio()
     # print("Player ", player.id, " mossa: ", move, " ")
     if(game.checkWon(player)):
         return
@@ -101,33 +102,35 @@ def doTurnGraphic(game: c.Game, player: c.Player):
         move, thingNeeded = game.bestMove(player, turnCardUsed)
         move(player, thingNeeded)
         saveMove(save, player) ######################################################
-        # goNextIfInvio()
+        goNextIfInvio()
         # print("Player ", player.id, " mossa: ", move, " ")
         if(move in c.Move.cardMoves()):
             turnCardUsed = True
 
-def playGameWithGraphic(game):#, view):
-    # GameView.GameView.setupAndDisplayBoard(view)
-    # GameView.GameView.setupPlaces(view)
-    # GameView.GameView.updateGameScreen(view)
-    # pygame.display.update()
+def playGameWithGraphic(game, view):
+    GameView.GameView.setupAndDisplayBoard(view)
+    GameView.GameView.setupPlaces(view)
+    GameView.GameView.updateGameScreen(view)
+    pygame.display.update()
     turn = 0 
     won = False
     # START INIZIALE
-    if(realPlayer == True):
-        game.players[3].AI = False
+    game.players[0].AI = True
+    game.players[1].RANDOM = True
+    game.players[2].RANDOM = True
+    game.players[3].RANDOM = True
     for p in game.players:
         game.doInitialChoise(p)
         saveMove(save, p) #################
 
-        # goNextIfInvio()
+        goNextIfInvio()
     for p in sorted(game.players, reverse=True):
         game.doInitialChoise(p, giveResources = True)
         saveMove(save, p) #################
 
     # INITIAL CHOISE TERMINATED
 
-        # goNextIfInvio()
+        goNextIfInvio()
 
     while won == False:
         playerTurn = game.players[turn%game.nplayer]
@@ -139,8 +142,8 @@ def playGameWithGraphic(game):#, view):
             return playerTurn
         # if(turn % 4 == 0):
             # print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
-    # goNextIfInvio()
-    # pygame.quit()
+    goNextIfInvio()
+    pygame.quit()
 
 
 def saveMove(save, player):
@@ -166,8 +169,8 @@ for i in range(100):
     print('game: ', i) 
     total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
     g = c.Game.Game()
-    # view = GameView.GameView(g)
-    playGameWithGraphic(g)#, view)
+    view = GameView.GameView(g)
+    playGameWithGraphic(g, view)
     c.Board.Board().reset()
     c.Bank.Bank().reset()
 allGames.to_json("json/game.json")

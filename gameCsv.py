@@ -7,7 +7,7 @@ import pandas as pd
 
 speed = True
 withDelay = False
-realPlayer = False
+realPlayer = False # If you put this to true you will play with the 3th player.
 save = True
 total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
 allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
@@ -36,7 +36,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
     player.justBoughtYearOfPlentyCard = 0
     # view.updateGameScreen() 
     if(player.unusedKnights > 0 and not turnCardUsed):
-        if(player.AI == True):
+        if(player.AI or player.RANDOM):
             actualEvaluation = c.Board.Board().actualEvaluation()
             afterKnight, place = player.evaluate(c.Move.useKnight)
             if(afterKnight > actualEvaluation):
@@ -71,7 +71,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
     if(dicesValue == 7):
         game.sevenOnDices()
         # print("############# SEVEN! #############")
-        if(player.AI == True):
+        if(player.AI or player.RANDOM):
             ev, pos = player.evaluate(c.Move.useRobber)
             c.Move.useRobber(player, pos)
             saveMove(save, player) ######################################################
@@ -114,8 +114,10 @@ def playGameWithGraphic(game):#, view):
     turn = 0 
     won = False
     # START INIZIALE
-    if(realPlayer == True):
-        game.players[3].AI = False
+    game.players[0].AI = True
+    game.players[1].RANDOM = True
+    game.players[2].RANDOM = True
+    game.players[3].RANDOM = True
     for p in game.players:
         game.doInitialChoise(p)
         saveMove(save, p) #################

@@ -6,9 +6,11 @@ import random
 import AI.Gnn as Gnn
 
 class Player: 
-    def __init__(self, id, game, AI = True):
-
+    def __init__(self, id, game, AI = False, RANDOM = False):
+        assert (not  (AI and RANDOM), "Error in definition of player")
         self.AI = AI
+        self.RANDOM = RANDOM
+
         self.ownedColonies = []
         self.ownedStreets = []
         self.ownedCities = []
@@ -426,7 +428,15 @@ class Player:
         self.resources[resourceTaken] -= 1
         player.resources[resourceTaken] += 1
 
-    def fakeMoveValue(self, move, thingNeeded = None):
+
+    def moveValue(self, move, thingNeeded = None):
+        if self.AI:
+            return self.aiMoveValue(move, thingNeeded)
+        elif self.RANDOM:
+            return self.randomMoveValue(move, thingNeeded)
+        
+        
+    def randomMoveValue(self, move, thingNeeded = None):
         if(move == Move.passTurn):
             return 0.2 + random.uniform(0, 1)
 
@@ -481,49 +491,50 @@ class Player:
 
         return toRet + random.uniform(0,2)
 
-    def moveValue(self, move, thingNeeded = None):
+
+
+    def aiMoveValue(self, move, thingNeeded = None):
+
         if(move == Move.passTurn):
-            return 0.2 + random.uniform(0, 1)
+            return Gnn.Gnn().evaluatePosition(self)
 
         if(move == Move.useKnight):
             previousTilePos = move(self, thingNeeded, False, True)
-            toRet = 1.5
+            toRet = Gnn.Gnn().evaluatePosition(self)
             move(self, previousTilePos, True, True) 
-            return toRet + random.uniform(0,2)
+            return toRet
 
         if(move == Move.useRobber):
             previousTilePos = move(self, thingNeeded, False, True)
-            toRet = 1.5
+            toRet = Gnn.Gnn().evaluatePosition(self)
             move(self, previousTilePos, True, True) 
-            return toRet + random.uniform(0,2)
+            return toRet
 
         if(move == Move.buyDevCard):
-            toRet = 1.5
-            return toRet + random.uniform(0,5)
+            toRet = Gnn.Gnn().evaluatePosition(self)
+            return toRet + random.uniform(-0.1,0.1)
 
         if(move == Move.useMonopolyCard):
-            toRet = 100.0
-            return toRet
+            toRet = Gnn.Gnn().evaluatePosition(self)
+            return toRet + random.uniform(-0.1,0.1)
 
         if(move == Move.placeFreeStreet or move == Move.placeStreet or move == Move.placeInitialStreet):
             move(self, thingNeeded, False, True)
-            toRet = 16
+            toRet = Gnn.Gnn().evaluatePosition(self)
             move(self, thingNeeded, True, True) 
-            return toRet + random.uniform(0,2)
+            return toRet
 
         move(self, thingNeeded)
-        # board sarà cambaita
-        # global deatures saranno cambiate
-        # Board.Board().
-        # player. glob
-        toRet = Gnn.evaluation(Board.Board().placesToDict(), Board.Board().edgesToDict(), self.globalFeaturesToDict())
 
-        #print("VALUE OF THE BOARD: ", toRet)
-
+        toRet = Gnn.Gnn().evaluatePosition(self)
+        print("Move: ", move, " Object: " , thingNeeded, " Value: ", toRet)
         move(self, thingNeeded, undo=True)
 
-        return toRet + random.uniform(0,2)
+        return toRet
 
+
+
+    
     def globalFeaturesToDict(self):
         return {'player_id': self.id,'victory_points': self.victoryPoints,\
             'used_knights': self.usedKnights, 'crop': self.resources["crop"], 'iron': self.resources["iron"],\
