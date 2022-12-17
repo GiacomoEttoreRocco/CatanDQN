@@ -1,4 +1,6 @@
 __pycache__/
-idea/
-Classes/_pycache_
+.idea/
+.vscode
+Classes/__pycache__/
 Graphics/__pycache__/
+json/game.json
