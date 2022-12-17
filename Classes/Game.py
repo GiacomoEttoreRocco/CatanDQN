@@ -164,21 +164,26 @@ class Game:
             edge = tuple(sorted([p, newPlace]))
             if(Board.Board().edges[edge] == player.id and edge not in self.tmpVisitedEdges):
                 self.tmpVisitedEdges.append(edge)
-                actual = 1 + self.longestStreetPlace(player, p, newPlace)
+                actual = 1
+                if(Board.Board().places[newPlace].owner == 0 or Board.Board().places[newPlace] == player.id): # nuova aggiunta
+                    actual += self.longestStreetPlace(player, p, newPlace)
                 if(max < actual):
                     max = actual
         return max
               
     def longestStreet(self, player, edge):
-        assert(edge is None, "Edge is None, something went wrong.")    
-        print("Edge:", edge)
-        self.tmpVisitedEdges.append(edge)
-        toRet =  1 + self.longestStreetPlace(player, edge[0], edge[1]) + self.longestStreetPlace(player, edge[1], edge[0])
+        #assert(edge is None, "Edge is None, something went wrong.")    
+        #print("Edge:", edge)
+        if(edge != None):
+            self.tmpVisitedEdges.append(edge)
+            toRet = 1 + self.longestStreetPlace(player, edge[0], edge[1]) + self.longestStreetPlace(player, edge[1], edge[0])
+        else:
+            toRet = 0
         return toRet
 
     def calculateLongestStreet(self, player):
         self.tmpVisitedEdges = []
-        max = -1
+        max = 0
         for edge in player.ownedStreets:
             if edge not in self.tmpVisitedEdges:
                 actual = self.longestStreet(player, edge)

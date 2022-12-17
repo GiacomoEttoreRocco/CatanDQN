@@ -118,11 +118,10 @@ def playGameWithGraphic(game, view):
     game.players[0].AI = True
     game.players[1].AI = True
     game.players[2].AI = True
-    game.players[3].RANDOM = True
+    game.players[3].AI = True
     for p in game.players:
         game.doInitialChoise(p)
         saveMove(save, p) #################
-
         goNextIfInvio()
     for p in sorted(game.players, reverse=True):
         game.doInitialChoise(p, giveResources = True)

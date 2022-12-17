@@ -276,6 +276,7 @@ class Player:
             max = -1
             for edge in possibleEdges: 
                 valutation = self.moveValue(move, edge)
+                #print(valutation)
                 if(max < valutation):
                     max = valutation
                     candidateEdge = edge
@@ -386,7 +387,7 @@ class Player:
         if(move == Move.useRoadBuildingCard):
             possibleEdges = self.calculatePossibleEdges()
             candidateEdge1 = None
-            max1 = 0
+            max1 = -1
             for edge in possibleEdges: 
                 valutation = self.moveValue(Move.placeFreeStreet, edge)
                 if(max1 < valutation):
@@ -395,7 +396,7 @@ class Player:
 
             possibleEdges = self.calculatePossibleEdges()
             candidateEdge2 = None
-            max2 = 0
+            max2 = -1
             for edge in possibleEdges: 
                 if(edge != candidateEdge1):
                     valutation = self.moveValue(Move.placeFreeStreet, edge)
@@ -494,15 +495,21 @@ class Player:
             # return toRet + random.uniform(-0.1,0.1)
         elif(move == Move.placeFreeStreet or move == Move.placeStreet or move == Move.placeInitialStreet):
             move(self, thingNeeded, False, True)
-            toRet = Gnn.Gnn().evaluatePosition(self)
+            toRet = Gnn.Gnn().evaluatePosition(self) + random.uniform(0.1,0.2)
+            #print(toRet)
             move(self, thingNeeded, True, True) 
+            # return toRet
+        elif(move == Move.placeInitialColony):
+            move(self, thingNeeded)
+            toRet = Gnn.Gnn().evaluatePosition(self) + random.uniform(0.1,0.2)
+            move(self, thingNeeded, True) 
             # return toRet
         else:
             move(self, thingNeeded)
             toRet = Gnn.Gnn().evaluatePosition(self)
             move(self, thingNeeded, undo=True)
         # print("Move: ", move, " Object: " , thingNeeded, " Value: ", toRet, "Player: ", self.id)
-        return toRet
+        return toRet + random.uniform(0.01,0.2)
 
     def globalFeaturesToDict(self):
         return {'player_id': self.id,'victory_points': self.victoryPoints,\

@@ -43,7 +43,6 @@ def placeInitialColony(player: Player, place: cg.Place, undo = False):
         player.victoryPoints+=1
         player.nColonies+=1
         player.ownedColonies.append(place.id)
-        
         if(place.harbor != ""):
             player.ownedHarbors.append(place.harbor)
     else:
