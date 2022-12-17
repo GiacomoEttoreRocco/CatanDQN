@@ -5,8 +5,8 @@ import csv
 from csv import QUOTE_NONE
 import pandas as pd
 
-dictCsvResources = {None: -2, "desert": -1, "crop": 0, "iron": 1, "wood": 2, "clay": 3, "sheep": 4}
-dictCsvHarbor = {"" : 0, "3:1" : 1, "2:1 crop" : 2, "2:1 iron" : 3, "2:1 wood" : 4, "2:1 clay" : 5, "2:1 sheep" : 6}
+dictCsvResources = {None: -20, "desert": -10, "crop": 0, "iron": 10, "wood": 20, "clay": 30, "sheep": 40}
+dictCsvHarbor = {"" : 0, "3:1" : 10, "2:1 crop" : 20, "2:1 iron" : 30, "2:1 wood" : 40, "2:1 clay" : 50, "2:1 sheep" : 60}  # incrementato il peso!
 
 
 class Board: # deve diventare un singleton
@@ -23,7 +23,6 @@ class Board: # deve diventare un singleton
                         "year_of_plenty","year_of_plenty","monopoly","monopoly", "road_building","road_building"]
             #   SHUFFLE DECK
             cls.deck = np.random.permutation(cls.deck)
-
             cls.graph = CatanGraph.CatanGraph()
             cls.tiles = cls.graph.tiles
             cls.places = cls.graph.places
@@ -127,30 +126,30 @@ class Board: # deve diventare un singleton
             data['id'].append(p.id)
             data['place_owner'].append(p.owner)
             if(p.isCity):
-                data['type'].append(2)
+                data['type'].append(100) # incrementato il peso!
             elif(p.isColony):
-                data['type'].append(1)
+                data['type'].append(50) # incrementato il peso!
             else:
                 data['type'].append(0)
             
             dices = cls.dicesOfPlace(p)
             if(len(p.touchedResourses) < 1):
                 data['resource_1'].append(dictCsvResources[None])
-                data['dice_1'].append(-1)
+                data['dice_1'].append(-10) # incrementato il peso!
             else:
                 data['resource_1'].append(dictCsvResources[p.touchedResourses[0]])
                 data['dice_1'].append(dices[0])
 
             if(len(p.touchedResourses) < 2):
                 data['resource_2'].append(dictCsvResources[None])
-                data['dice_2'].append(-1)
+                data['dice_2'].append(-10) # incrementato il peso!
             else:
                 data['resource_2'].append(dictCsvResources[p.touchedResourses[1]])
                 data['dice_2'].append(dices[1])
 
             if(len(p.touchedResourses) < 3):
                 data['resource_3'].append(dictCsvResources[None])
-                data['dice_3'].append(-1)
+                data['dice_3'].append(-10)  # incrementato il peso!
             else:
                 data['resource_3'].append(dictCsvResources[p.touchedResourses[2]])
                 data['dice_3'].append(dices[2])

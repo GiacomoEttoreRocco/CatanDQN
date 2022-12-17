@@ -13,6 +13,8 @@ save = True
 total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
 allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
 
+WINNERS = [0.0,0.0,0.0,0.0]
+
 def goNextIfInvio():
     if(not speed):
         event = pygame.event.wait()
@@ -154,9 +156,22 @@ def saveToCsv(victoryPlayer):
     print('winner: ', victoryPlayer.id)
     for i in range(len(total)):
         total.globals[i]['winner'] = victoryPlayer.id
+        WINNERS[victoryPlayer.id-1] += 1
     print(len(total))
     global allGames
     allGames = pd.concat([allGames, total], ignore_index=True)
+
+###########################################################################################################################
+
+def printWinners():
+    normValue = sum(WINNERS)
+    toPrint = [0.0, 0.0, 0.0, 0.0]
+    for i, v in enumerate(WINNERS):
+        toPrint[i] = v/normValue
+    s = ""
+    for i, vperc in enumerate(toPrint):
+        s = s + "Player ",i+ " " + str(round(vperc*100), 2) + "%"
+    print(s)
 
 ###########################################################################################################################
 epochs = 100
@@ -175,3 +190,7 @@ for epoch in range(epochs):
         c.Bank.Bank().reset()
     allGames.to_json("./json/game.json")
     Gnn.Gnn().trainModel()
+    printWinners()
+
+
+

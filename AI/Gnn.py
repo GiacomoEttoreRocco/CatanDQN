@@ -13,7 +13,7 @@ import Classes.Board as Board
 
 class Gnn():
     instance = None
-    def __new__(cls, epochs=5, learningRate=0.001):
+    def __new__(cls, epochs=10, learningRate=0.001):
         if cls.instance is None:
             cls.instance = super(Gnn, cls).__new__(cls)
             cls.moves = None
@@ -50,7 +50,6 @@ class Gnn():
         globalFeats = player.globalFeaturesToDict()
         graph = cls.fromDictsToGraph(Board.Board().placesToDict(), Board.Board().edgesToDict()).to('cuda:0')
         glob = torch.tensor(list(globalFeats.values())[:-1]).float().cuda()
-        
         return cls.model(graph, glob)[globalFeats['player_id']-1]
 
     def extractInputFeaturesMove(cls, moveIndex):

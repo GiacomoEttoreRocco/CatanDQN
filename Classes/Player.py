@@ -495,13 +495,13 @@ class Player:
             # return toRet + random.uniform(-0.1,0.1)
         elif(move == Move.placeFreeStreet or move == Move.placeStreet or move == Move.placeInitialStreet):
             move(self, thingNeeded, False, True)
-            toRet = Gnn.Gnn().evaluatePosition(self) + random.uniform(0.1,0.2)
+            toRet = Gnn.Gnn().evaluatePosition(self) + random.uniform(0.00001,0.00002)
             #print(toRet)
             move(self, thingNeeded, True, True) 
             # return toRet
         elif(move == Move.placeInitialColony):
             move(self, thingNeeded)
-            toRet = Gnn.Gnn().evaluatePosition(self) + random.uniform(0.1,0.2)
+            toRet = Gnn.Gnn().evaluatePosition(self) + random.uniform(0.00001,0.00002)
             move(self, thingNeeded, True) 
             # return toRet
         else:
@@ -509,7 +509,7 @@ class Player:
             toRet = Gnn.Gnn().evaluatePosition(self)
             move(self, thingNeeded, undo=True)
         # print("Move: ", move, " Object: " , thingNeeded, " Value: ", toRet, "Player: ", self.id)
-        return toRet + random.uniform(0.01,0.2)
+        return toRet + random.uniform(0.00001,0.00002)
 
     def globalFeaturesToDict(self):
         return {'player_id': self.id,'victory_points': self.victoryPoints,\
