@@ -503,7 +503,7 @@ class Player:
             move(self, thingNeeded)
             toRet = Gnn.Gnn().evaluatePosition(self)
             move(self, thingNeeded, undo=True)
-        print("Move: ", move, " Object: " , thingNeeded, " Value: ", toRet, "Player: ", self.id)
+        # print("Move: ", move, " Object: " , thingNeeded, " Value: ", toRet, "Player: ", self.id)
         return toRet
 
     def globalFeaturesToDict(self):

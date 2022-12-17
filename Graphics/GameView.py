@@ -156,7 +156,7 @@ class GameView:
                     for el in v:
                         if el not in alreadyFound:
                             placeToAdd = self.graphicPlaceList[el]
-                            placeToAdd.setupCoords(pc.placeCoordinates[placeToAdd.index])
+                            placeToAdd.setupCoords(pc.scaleCoords(self.width, self.height, placeToAdd.index))
                             gtile.places.append(placeToAdd)
                             self.checkAndDrawHarbors(placeToAdd)
                             alreadyFound.append(el)
@@ -176,9 +176,9 @@ class GameView:
         self.checkAndDrawPlaces()
         self.updateStats()
         self.blit(self.game.players[0], 5, 5)
-        self.blit(self.game.players[1], 5, 655)
-        self.blit(self.game.players[2], 1055, 5)
-        self.blit(self.game.players[3], 1055, 655)
+        self.blit(self.game.players[1], 5, self.height-345)
+        self.blit(self.game.players[2], self.width-145, 5)
+        self.blit(self.game.players[3], self.width-145, self.height-345)
         font_dice = self.font_resourceSmaller.render(str(self.game.dice), False, pygame.Color('white'))
         diceRoll = pygame.Rect(405, 0, 50, 50)
         self.screen.fill(self.bgScoreColor, diceRoll)
@@ -247,7 +247,7 @@ class GameView:
     def drawRobber(self):
         robberImg = pygame.image.load(self.robberImgPath).convert_alpha()
         if(self.tempRobberTile != Board.Board().robberTile):
-            print("drowing robber...")
+            # print("drowing robber...")
             robTile = Board.Board().robberTile
             for graphicTile in self.graphicTileList:
                 if(graphicTile.index == robTile):

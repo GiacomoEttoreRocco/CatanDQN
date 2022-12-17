@@ -55,6 +55,11 @@
 #     53 : (708.5640646055101, 680.0)
 #     }
 
+def scaleCoords(width, height, i):
+    w, h = placeCoordinates[i]
+    return (width/1200*w, height/1000*h)
+
+
 placeCoordinates = { 
     0 : (391.4, 220.0),
     1 : (461.4, 185.0),
@@ -111,6 +116,8 @@ placeCoordinates = {
     52 : (738.5, 815.0),
     53 : (808.5, 780.0)
     }
+
+
 
 
 

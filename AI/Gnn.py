@@ -28,7 +28,7 @@ class Gnn():
         return cls.instance
 
     def trainModel(cls):
-        cls.moves = pd.read_json('../json/game.json')
+        cls.moves = pd.read_json('./json/game.json')
         loss = nn.CrossEntropyLoss()
         optimizer = torch.optim.Adam(cls.model.parameters(), lr=cls.learningRate)
         permutationIndexMoves = np.random.permutation([x for x in range(len(cls.moves))])
@@ -43,7 +43,8 @@ class Gnn():
                 outputs = loss(outputs, labels)
                 outputs.backward()
                 optimizer.step()
-            # os.system('cls')
+        
+        cls.saveWeights()           
     
 
     def evaluatePosition(cls, player):
@@ -68,7 +69,7 @@ class Gnn():
         return g
 
     def saveWeights(cls):
-        torch.save(cls.model.state_dict(), './model_weights.pth')
+        torch.save(cls.model.state_dict(), './AI/model_weights.pth')
 
 class Net(nn.Module):
   def __init__(self, gnnInputDim, gnnHiddenDim, gnnOutputDim, globInputDim):

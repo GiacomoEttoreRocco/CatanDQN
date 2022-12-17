@@ -4,6 +4,7 @@ import Graphics.GameView as GameView
 import os
 import pandas as pd
 import time
+import AI.Gnn as Gnn
 
 speed = True
 withDelay = False
@@ -159,13 +160,19 @@ def saveToCsv(victoryPlayer):
     allGames = pd.concat([allGames, total], ignore_index=True)
 
 ###########################################################################################################################
+epochs = 100
+batchs = 1
 
-for i in range(100): 
-    print('game: ', i) 
-    total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
-    g = c.Game.Game()
-    view = GameView.GameView(g)
-    playGameWithGraphic(g, view)
-    c.Board.Board().reset()
-    c.Bank.Bank().reset()
-allGames.to_json("json/game.json")
+for epoch in range(epochs):
+    print('epoch: ', epoch+1)
+    allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})   
+    for batch in range(batchs): 
+        print('game: ', batch+1) 
+        total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
+        g = c.Game.Game()
+        view = GameView.GameView(g)
+        playGameWithGraphic(g, view)
+        c.Board.Board().reset()
+        c.Bank.Bank().reset()
+    allGames.to_json("./json/game.json")
+    Gnn.Gnn().trainModel()
