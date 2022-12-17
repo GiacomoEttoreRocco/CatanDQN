@@ -89,10 +89,8 @@ class Player:
             "\nOwned colonies: ", self.ownedColonies,
             "\nOwned cities: ", self.ownedCities,
             "\nOwned streets: ", self.ownedStreets,
-
             "\nCONTROLLER OF THE LARGEST ARMY:  ", self.game.largestArmyPlayer.id,
             "\nCONTROLLER OF THE LONGEST STREET:  ", self.game.longestStreetOwner.id, " of length: ", self.game.longestStreetLength)
-
 
     def printResources(self):
          print("Print resources of player:  ", self.id," ", self.resources, "\n")

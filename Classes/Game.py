@@ -32,7 +32,7 @@ class Game:
         if(player.AI or player.RANDOM):
             moves = player.availableMoves(usedCard)
             # player.printResources()
-            max = 0
+            max = -1
             thingsNeeded = None
             bestMove = Move.passTurn
             for move in moves:
@@ -159,7 +159,7 @@ class Game:
     def longestStreetPlace(self, player, newPlace, oldPlace):
         placesToVisit = list.copy(Board.Board().graph.listOfAdj[newPlace])
         placesToVisit.remove(oldPlace)
-        max = 0
+        max = -1
         for p in placesToVisit:
             edge = tuple(sorted([p, newPlace]))
             if(Board.Board().edges[edge] == player.id and edge not in self.tmpVisitedEdges):
@@ -171,13 +171,14 @@ class Game:
               
     def longestStreet(self, player, edge):
         assert(edge is None, "Edge is None, something went wrong.")    
+        print("Edge:", edge)
         self.tmpVisitedEdges.append(edge)
         toRet =  1 + self.longestStreetPlace(player, edge[0], edge[1]) + self.longestStreetPlace(player, edge[1], edge[0])
         return toRet
 
     def calculateLongestStreet(self, player):
         self.tmpVisitedEdges = []
-        max = 0
+        max = -1
         for edge in player.ownedStreets:
             if edge not in self.tmpVisitedEdges:
                 actual = self.longestStreet(player, edge)
