@@ -35,7 +35,7 @@ class Gnn():
         for epoch in range(cls.epochs):
             print('epoch: ', epoch+1)
             for i, idx in enumerate(permutationIndexMoves):
-                g = cls.extractInputFeaturesMove(cls.moves, idx)
+                g = cls.extractInputFeaturesMove(idx)
                 glob = torch.tensor(list(cls.moves.iloc[idx].globals.values())[:-1]).float()
                 labels = torch.tensor(list(cls.moves.iloc[idx].globals.values())[-1])-1
                 optimizer.zero_grad()

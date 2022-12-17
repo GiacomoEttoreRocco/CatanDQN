@@ -57,7 +57,7 @@
 
 def scaleCoords(width, height, i):
     w, h = placeCoordinates[i]
-    return (width/1200*w, height/1000*h)
+    return (w - (1200/2-width/2), h - (1000/2-height/2))
 
 
 placeCoordinates = { 

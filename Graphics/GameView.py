@@ -13,7 +13,7 @@ pygame.init()
 class GameView:
     def __init__(self, game):
         self.width = 1200
-        self.height = 1000
+        self.height = 800
         self.sourceFileDir = os.path.dirname(os.path.abspath(__file__))
         self.robberImgPath = os.path.join(self.sourceFileDir, "imgs/robber.png")
         self.tempRobberTile = -1 # per motivi di efficienza.
