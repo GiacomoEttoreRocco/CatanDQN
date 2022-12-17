@@ -1,5 +1,5 @@
 import Classes as c
-import pygame
+#import pygame
 import Graphics.GameView as GameView
 import os
 import pandas as pd
@@ -15,17 +15,17 @@ allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
 
 WINNERS = [0.0,0.0,0.0,0.0]
 
-def goNextIfInvio():
-    if(not speed):
-        event = pygame.event.wait()
-        while event.type != pygame.KEYDOWN:
-            event = pygame.event.wait()
-    else:
-        event = pygame.event.get()
-        pygame.display.update()
-    view.updateGameScreen()
-    if(withDelay):
-        time.sleep(0.05)
+# def goNextIfInvio():
+#     if(not speed):
+#         event = pygame.event.wait()
+#         while event.type != pygame.KEYDOWN:
+#             event = pygame.event.wait()
+#     else:
+#         event = pygame.event.get()
+#         pygame.display.update()
+#     view.updateGameScreen()
+#     if(withDelay):
+#         time.sleep(0.05)
 
 def doTurnGraphic(game: c.Game, player: c.Player):
     turnCardUsed = False 
@@ -37,7 +37,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
     player.justBoughtRoadBuildingCard = 0
     player.yearOfPlentyCard += player.justBoughtYearOfPlentyCard
     player.justBoughtYearOfPlentyCard = 0
-    view.updateGameScreen() 
+    #view.updateGameScreen() 
     if(player.unusedKnights > 0 and not turnCardUsed):
         if(player.AI or player.RANDOM):
             actualEvaluation = c.Board.Board().actualEvaluation()
@@ -46,10 +46,10 @@ def doTurnGraphic(game: c.Game, player: c.Player):
                 c.Move.useKnight(player, place)
                 saveMove(save, player) ######################################################
                 # print("BEFORE ROLL DICE: ", c.Move.useKnight, "\n")
-                view.updateGameScreen()
+                #view.updateGameScreen()
                 turnCardUsed = True 
         else:
-            view.updateGameScreen() 
+            #view.updateGameScreen() 
             if(player.unusedKnights >= 1 and not turnCardUsed):
                 # print("Mosse disponibili: ")
                 moves = [(c.Move.passTurn, None)]
@@ -94,7 +94,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
     move, thingNeeded = game.bestMove(player, turnCardUsed)
     move(player, thingNeeded)
     saveMove(save, player) ######################################################
-    goNextIfInvio()
+    #goNextIfInvio()
     # print("Player ", player.id, " mossa: ", move, " ")
     if(game.checkWon(player)):
         return
@@ -104,16 +104,16 @@ def doTurnGraphic(game: c.Game, player: c.Player):
         move, thingNeeded = game.bestMove(player, turnCardUsed)
         move(player, thingNeeded)
         saveMove(save, player) ######################################################
-        goNextIfInvio()
+        #goNextIfInvio()
         # print("Player ", player.id, " mossa: ", move, " ")
         if(move in c.Move.cardMoves()):
             turnCardUsed = True
 
-def playGameWithGraphic(game, view):
-    GameView.GameView.setupAndDisplayBoard(view)
-    GameView.GameView.setupPlaces(view)
-    GameView.GameView.updateGameScreen(view)
-    pygame.display.update()
+def playGameWithGraphic(game, view=None):
+    # GameView.GameView.setupAndDisplayBoard(view)
+    # GameView.GameView.setupPlaces(view)
+    # GameView.GameView.updateGameScreen(view)
+    #pygame.display.update()
     turn = 0 
     won = False
     # START INIZIALE
@@ -124,12 +124,12 @@ def playGameWithGraphic(game, view):
     for p in game.players:
         game.doInitialChoise(p)
         saveMove(save, p) #################
-        goNextIfInvio()
+        #goNextIfInvio()
     for p in sorted(game.players, reverse=True):
         game.doInitialChoise(p, giveResources = True)
         saveMove(save, p) #################
         # INITIAL CHOISE TERMINATED
-        goNextIfInvio()
+        #goNextIfInvio()
     while won == False:
         playerTurn = game.players[turn%game.nplayer]
         game.currentTurn = playerTurn
@@ -140,8 +140,8 @@ def playGameWithGraphic(game, view):
             return playerTurn
         # if(turn % 4 == 0):
             # print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
-    goNextIfInvio()
-    pygame.quit()
+    #goNextIfInvio()
+    #pygame.quit()
 
 
 def saveMove(save, player):
@@ -170,7 +170,7 @@ def printWinners():
         toPrint[i] = v/normValue
     s = ""
     for i, vperc in enumerate(toPrint):
-        s = s + "Player ",i+ " " + str(round(vperc*100), 2) + "%"
+        s = s + "Player " + str(i+1)+ ": " + str(round(vperc*100,2)) + " % "
     print(s)
 
 ###########################################################################################################################
@@ -184,8 +184,8 @@ for epoch in range(epochs):
         print('game: ', batch+1, "/", batchs) 
         total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
         g = c.Game.Game()
-        view = GameView.GameView(g)
-        playGameWithGraphic(g, view)
+        #view = GameView.GameView(g)
+        playGameWithGraphic(g) #, view)
         c.Board.Board().reset()
         c.Bank.Bank().reset()
     allGames.to_json("./json/game.json")

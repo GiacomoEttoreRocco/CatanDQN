@@ -43,8 +43,8 @@ class Gnn():
                 outputs = loss(outputs, labels)
                 outputs.backward()
                 optimizer.step()
-        
-        cls.saveWeights()           
+        cls.saveWeights()   
+        print("wheights corretly updated.")        
 
     def evaluatePosition(cls, player):
         globalFeats = player.globalFeaturesToDict()
