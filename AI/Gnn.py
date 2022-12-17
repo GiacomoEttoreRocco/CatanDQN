@@ -8,8 +8,6 @@ import numpy as np
 import pandas as pd
 import os as os
 
-
-
 class Gnn():
     instance = None
     def __new__(cls, epochs=10, learningRate=0.001):
@@ -74,7 +72,6 @@ class Net(nn.Module):
     self.GlobalLayer1 = nn.Linear(globInputDim, 16)
     self.GlobalLayer2 = nn.Linear(16, 16)
     self.GlobalLayer3 = nn.Linear(16, globInputDim)
-
 
     self.OutputLayer1 = nn.Linear(54*gnnOutputDim+globInputDim, 85)
     self.OutputLayer2 = nn.Linear(85, 4)
