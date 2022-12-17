@@ -21,7 +21,8 @@ class Gnn():
             cls.learningRate = learningRate
             cls.model = Net(11, 8, 3, 8)
             if os.path.exists('./AI/model_weights.pth'):
-                cls.model.load_state_dict(torch.load('./AI/model_weights.pth'))
+                #cls.model.load_state_dict(torch.load('./AI/model_weights.pth')
+                cls.model.load_state_dict(torch.load('./AI/model_weights.pth', map_location=torch.device('cpu')))
                 print('Weights loaded..')
                 
         return cls.instance

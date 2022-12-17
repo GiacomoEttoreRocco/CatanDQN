@@ -5,9 +5,8 @@ import os
 import pandas as pd
 import time
 
-
 speed = True
-withDelay = True
+withDelay = False
 realPlayer = False # If you put this to true you will play with the 3th player.
 save = True
 total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
@@ -23,7 +22,7 @@ def goNextIfInvio():
         pygame.display.update()
     view.updateGameScreen()
     if(withDelay):
-        time.sleep(0.2)
+        time.sleep(0.05)
 
 def doTurnGraphic(game: c.Game, player: c.Player):
     turnCardUsed = False 
@@ -55,7 +54,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
                     moves.append((c.Move.useKnight, i))  
                 for i, move in enumerate(moves):
                     print("Move ", i, ": ", move)  
-                toDo = int(input("Inserisci l'indice della mossa che vuoi eseguire: "))
+                toDo = int(input("Insert the move index of the move you want to play: "))
                 if(toDo != 0):
                     c.Move.useKnight(player, moves[toDo][1])
                     saveMove(save, player) ######################################################
@@ -116,8 +115,8 @@ def playGameWithGraphic(game, view):
     won = False
     # START INIZIALE
     game.players[0].AI = True
-    game.players[1].RANDOM = True
-    game.players[2].RANDOM = True
+    game.players[1].AI = True
+    game.players[2].AI = True
     game.players[3].RANDOM = True
     for p in game.players:
         game.doInitialChoise(p)
@@ -127,11 +126,8 @@ def playGameWithGraphic(game, view):
     for p in sorted(game.players, reverse=True):
         game.doInitialChoise(p, giveResources = True)
         saveMove(save, p) #################
-
-    # INITIAL CHOISE TERMINATED
-
+        # INITIAL CHOISE TERMINATED
         goNextIfInvio()
-
     while won == False:
         playerTurn = game.players[turn%game.nplayer]
         game.currentTurn = playerTurn
@@ -153,7 +149,6 @@ def saveMove(save, player):
         globals = player.globalFeaturesToDict()
 
         total.loc[len(total)] = [places, edges, globals]
-
 
 def saveToCsv(victoryPlayer):
     print('winner: ', victoryPlayer.id)

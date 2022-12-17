@@ -101,12 +101,8 @@ class Player:
         availableMoves = [Move.passTurn]
         if(self.resources["crop"] >= 1 and self.resources["iron"] >= 1 and self.resources["sheep"] >= 1 and len(Board.Board().deck) > 0):
             availableMoves.append(Move.buyDevCard)
-        if(self.id % 2 == 0):
-            if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.nStreets < 15 and self.calculatePossibleEdges() != None and self.calculatePossibleColony() == []): 
-                availableMoves.append(Move.placeStreet)
-        else:
-            if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.nStreets < 15 and self.calculatePossibleEdges() != None): # and self.calculatePossibleColony() == []): 
-                availableMoves.append(Move.placeStreet)
+        if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.nStreets < 15 and self.calculatePossibleEdges() != None): 
+            availableMoves.append(Move.placeStreet)
         if(self.resources["wood"] >= 1  and self.resources["clay"] >= 1 and self.resources["sheep"] >= 1 and self.resources["crop"] >= 1):
             availableMoves.append(Move.placeColony)
         if(self.resources["iron"] >= 3 and self.resources["crop"] >= 2):
@@ -115,8 +111,6 @@ class Player:
         for resource in self.resources.keys():
             if(Bank.Bank().resourceToAsk(self, resource) <= self.resources[resource]):
                 canTrade = True
-        # print("Can trade: ", Bank.Bank().resourceToAsk(self, resource) <= self.resources[resource])
-        # print("Owned harbors: ", self.ownedHarbors)
         if(canTrade):
                 availableMoves.append(Move.tradeBank)
         if(self.unusedKnights >= 1 and not turnCardUsed):
@@ -291,8 +285,6 @@ class Player:
 
         if(move == Move.placeInitialColony):
             possibleColony = self.calculatePossibleInitialColony()
-            #possibleColony = self.calculatePossibleColony()
-            #print(possibleColony)
             candidateColony = None
             max = 0
             for colony in possibleColony:
@@ -428,13 +420,11 @@ class Player:
         self.resources[resourceTaken] -= 1
         player.resources[resourceTaken] += 1
 
-
     def moveValue(self, move, thingNeeded = None):
         if self.AI:
             return self.aiMoveValue(move, thingNeeded)
         elif self.RANDOM:
             return self.randomMoveValue(move, thingNeeded)
-        
         
     def randomMoveValue(self, move, thingNeeded = None):
         if(move == Move.passTurn):
@@ -465,9 +455,7 @@ class Player:
             toRet = 16
             move(self, thingNeeded, True, True) 
             return toRet + random.uniform(0,2)
-
         move(self, thingNeeded)
-
         if(move == Move.placeInitialColony):
             toRet = 10.0
         if(move == Move.placeFreeStreet):
@@ -484,57 +472,40 @@ class Player:
             toRet = 2000.0
         if(move == Move.discardResource):
             toRet = 1.0 
-
-        #print("VALUE OF THE BOARD: ", toRet)
-
         move(self, thingNeeded, undo=True)
-
         return toRet + random.uniform(0,2)
 
-
-
     def aiMoveValue(self, move, thingNeeded = None):
-
         if(move == Move.passTurn):
-            return Gnn.Gnn().evaluatePosition(self)
-
-        if(move == Move.useKnight):
+            toRet = Gnn.Gnn().evaluatePosition(self)
+        elif(move == Move.useKnight):
             previousTilePos = move(self, thingNeeded, False, True)
             toRet = Gnn.Gnn().evaluatePosition(self)
             move(self, previousTilePos, True, True) 
-            return toRet
-
-        if(move == Move.useRobber):
+            # return toRet
+        elif(move == Move.useRobber):
             previousTilePos = move(self, thingNeeded, False, True)
             toRet = Gnn.Gnn().evaluatePosition(self)
             move(self, previousTilePos, True, True) 
-            return toRet
-
-        if(move == Move.buyDevCard):
+            # return toRet
+        elif(move == Move.buyDevCard):
             toRet = Gnn.Gnn().evaluatePosition(self)
-            return toRet + random.uniform(-0.1,0.1)
-
-        if(move == Move.useMonopolyCard):
+            # return toRet + random.uniform(-0.1,0.1)
+        elif(move == Move.useMonopolyCard):
             toRet = Gnn.Gnn().evaluatePosition(self)
-            return toRet + random.uniform(-0.1,0.1)
-
-        if(move == Move.placeFreeStreet or move == Move.placeStreet or move == Move.placeInitialStreet):
+            # return toRet + random.uniform(-0.1,0.1)
+        elif(move == Move.placeFreeStreet or move == Move.placeStreet or move == Move.placeInitialStreet):
             move(self, thingNeeded, False, True)
             toRet = Gnn.Gnn().evaluatePosition(self)
             move(self, thingNeeded, True, True) 
-            return toRet
-
-        move(self, thingNeeded)
-
-        toRet = Gnn.Gnn().evaluatePosition(self)
-        print("Move: ", move, " Object: " , thingNeeded, " Value: ", toRet)
-        move(self, thingNeeded, undo=True)
-
+            # return toRet
+        else:
+            move(self, thingNeeded)
+            toRet = Gnn.Gnn().evaluatePosition(self)
+            move(self, thingNeeded, undo=True)
+        print("Move: ", move, " Object: " , thingNeeded, " Value: ", toRet, "Player: ", self.id)
         return toRet
 
-
-
-    
     def globalFeaturesToDict(self):
         return {'player_id': self.id,'victory_points': self.victoryPoints,\
             'used_knights': self.usedKnights, 'crop': self.resources["crop"], 'iron': self.resources["iron"],\

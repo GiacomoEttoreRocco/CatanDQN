@@ -23,17 +23,14 @@ class Game:
                 for p in tile.associatedPlaces:
                     if(Board.Board().places[p].owner != 0):
                         if(Board.Board().places[p].isColony):
-                            #print(self.players[Board.Board().places[p].owner-1].id, "TAKEN ", tile.resource, "\n")
                             Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
                         elif(Board.Board().places[p].isCity):
-                            #print(self.players[Board.Board().places[p].owner-1].id, "TAKEN 2 ", tile.resource, "\n")
                             Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
                             Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
 
     def bestMove(self, player: Player, usedCard):
         if(player.AI or player.RANDOM):
             moves = player.availableMoves(usedCard)
-            # print("Available moves of player ", player.id, ": ", moves)
             # player.printResources()
             max = 0
             thingsNeeded = None
@@ -92,19 +89,15 @@ class Game:
         ####################################################################### ROLL DICES #####################################################################   
         dicesValue = self.rollDice()
         ########################################################################################################################################################
-        # print("Dice value: ", dicesValue)
         if(dicesValue == 7):
             self.sevenOnDices(player)
             ev, pos = player.evaluate(Move.useRobber)
-            # print("POS: ", pos)
             Move.useRobber(player, pos)
-            # print("POS: ", pos)
         else:
             self.dice_production(dicesValue)
 
         move, thingNeeded = self.bestMove(player, turnCardUsed)
         move(player, thingNeeded)
-        # print("Player ", player.id, " mossa: ", move, " ")
         if(self.checkWon(player)):
             return
         if(move in Move.cardMoves()):
@@ -112,14 +105,11 @@ class Game:
         while(move != Move.passTurn and not self.checkWon(player)): # move è una funzione 
             move, thingNeeded = self.bestMove(player, turnCardUsed)
             move(player, thingNeeded)
-            # print("Player ", player.id, " mossa: ", move, " ")
             if(move in Move.cardMoves()):
                 turnCardUsed = True
 
     def checkWon(self, player):
         if(player.victoryPoints >= 10):
-            #player.printStats()
-            # print("Il vincitore è il Player ", str(player.id), "!")
             return True
         return False
 
@@ -180,6 +170,7 @@ class Game:
         return max
               
     def longestStreet(self, player, edge):
+        assert(edge is None, "Edge is None, something went wrong.")    
         self.tmpVisitedEdges.append(edge)
         toRet =  1 + self.longestStreetPlace(player, edge[0], edge[1]) + self.longestStreetPlace(player, edge[1], edge[0])
         return toRet
@@ -222,6 +213,8 @@ class Game:
             turn += 1
             self.doTurn(playerTurn)
             if(playerTurn.victoryPoints >= 10):
+                print("The winner is: ", playerTurn, "!")
+                time.sleep(5)
                 return playerTurn
             if(turn % 4 == 0):
                 print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
