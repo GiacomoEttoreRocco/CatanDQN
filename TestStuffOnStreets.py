@@ -47,7 +47,7 @@ class TestStreetOwner():
             Move.placeFreeStreet(Player1, (40,41))
             Move.placeFreeStreet(Player1, (41,42))
 
-            Move.placeColony(Player2, 42)
+            Move.placeColony(Player2, Board.Board().places[42])
 
             Move.placeFreeStreet(Player1, (42,43))
             Move.placeFreeStreet(Player1, (43,44))
@@ -63,11 +63,11 @@ class TestStreetOwner():
             Move.placeFreeStreet(Player1, (42,43))
             Move.placeFreeStreet(Player1, (43,51))
 
-            Move.placeFreeStreet(Player1, (51, 50))
-            Move.placeFreeStreet(Player1, (50, 49))
-            Move.placeFreeStreet(Player1, (49, 48))
-            Move.placeFreeStreet(Player1, (48, 47))
-            Move.placeFreeStreet(Player1, (47, 39))
+            Move.placeFreeStreet(Player1, (50, 51))
+            Move.placeFreeStreet(Player1, (49, 50))
+            Move.placeFreeStreet(Player1, (48, 49))
+            Move.placeFreeStreet(Player1, (47, 48))
+            Move.placeFreeStreet(Player1, (39, 47))
 
         if(test == 5):
             Move.placeFreeStreet(Player1, (39,40))
@@ -80,18 +80,18 @@ class TestStreetOwner():
             Move.placeFreeStreet(Player1, (42,43))
             Move.placeFreeStreet(Player1, (43,51))
 
-            Move.placeFreeStreet(Player1, (51, 50))
-            Move.placeFreeStreet(Player1, (50, 49))
-            Move.placeFreeStreet(Player1, (49, 48))
-            Move.placeFreeStreet(Player1, (48, 47))
-            Move.placeFreeStreet(Player1, (47, 39))
+            Move.placeFreeStreet(Player1, (50, 51))
+            Move.placeFreeStreet(Player1, (49, 50))
+            Move.placeFreeStreet(Player1, (48, 49))
+            Move.placeFreeStreet(Player1, (47, 48))
+            Move.placeFreeStreet(Player1, (39, 47))
 
         if(test == 6):
             Move.placeFreeStreet(Player1, (39,40))
             Move.placeFreeStreet(Player1, (40,41))
             Move.placeFreeStreet(Player1, (41,42))
 
-            Move.placeColony(Player1, 42)
+            Move.placeColony(Player1, Board.Board().places[42])
 
             Move.placeFreeStreet(Player1, (42,43))
             Move.placeFreeStreet(Player1, (43,44))         
@@ -145,5 +145,5 @@ class TestStreetOwner():
         print("SDGNSJGBIGBG BELONGER ", self.longestStreetOwner.id, "  New one: " , belonger.id)
         return belonger
 
-ts = TestStreetOwner(3)
+ts = TestStreetOwner(2)
 print(ts)
