@@ -13,7 +13,7 @@ import Classes.Board as Board
 
 class Gnn():
     instance = None
-    def __new__(cls, epochs=10, learningRate=0.001):
+    def __new__(cls, epochs=10, learningRate=0.03): # precedente 0.001
         if cls.instance is None:
             cls.instance = super(Gnn, cls).__new__(cls)
             cls.moves = None
