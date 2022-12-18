@@ -2,23 +2,22 @@ import Classes.Player as Player
 import Classes.Board as Board
 import Classes.Bank as Bank
 import Classes.Move as Move
-import Move
-import Game
+import Classes.Game as Game
 
 class TestStreetOwner():    
 
     def __init__(self, test):
-        self.game = Game.Game(1)
+        self.game = Game.Game(2)
         self.longestStreetOwner = Player.Player(0, self.game)
         
         Player1 = self.game.players[0]
         Player2 = self.game.players[1]
 
         result1 = 5
-        result2 = 10
+        result2 = 11
         result3 = 3
         result4 = 9
-        result5 = 10
+        result5 = 11
         result6 = 5
 
 
@@ -38,11 +37,11 @@ class TestStreetOwner():
             Move.placeFreeStreet(Player1, (42,43))
             Move.placeFreeStreet(Player1, (43,51))
 
-            Move.placeFreeStreet(Player1, (51, 50))
-            Move.placeFreeStreet(Player1, (50, 49))
-            Move.placeFreeStreet(Player1, (49, 48))
-            Move.placeFreeStreet(Player1, (48, 47))
-            Move.placeFreeStreet(Player1, (47, 39))
+            Move.placeFreeStreet(Player1, (50, 51))
+            Move.placeFreeStreet(Player1, (49, 50))
+            Move.placeFreeStreet(Player1, (48, 49))
+            Move.placeFreeStreet(Player1, (47, 48))
+            Move.placeFreeStreet(Player1, (39, 47))
         if(test == 3):
             Move.placeFreeStreet(Player1, (39,40))
             Move.placeFreeStreet(Player1, (40,41))
@@ -146,5 +145,5 @@ class TestStreetOwner():
         print("SDGNSJGBIGBG BELONGER ", self.longestStreetOwner.id, "  New one: " , belonger.id)
         return belonger
 
-ts = TestStreetOwner()
-ts.longestStreetPlayer(False)
+ts = TestStreetOwner(3)
+print(ts)

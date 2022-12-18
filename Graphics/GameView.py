@@ -179,11 +179,24 @@ class GameView:
         self.blit(self.game.players[1], 5, self.height-345)
         self.blit(self.game.players[2], self.width-145, 5)
         self.blit(self.game.players[3], self.width-145, self.height-345)
+
+        longestStreetBox = pygame.Rect(170, self.height-100, 100, 100)
+        self.screen.fill(self.bgScoreColor, longestStreetBox)
+        font_longest_street = self.font_resourceSmaller.render('LS: '+ str(self.game.longestStreetOwner.id), False, pygame.Color('white'))
+        self.screen.blit(font_longest_street, (175, self.height - 95))
+        font_longest_street_length = self.font_resourceSmaller.render('len: '+ str(self.game.longestStreetLength), False, pygame.Color('white'))
+        self.screen.blit(font_longest_street_length, (175, self.height - 45))
+        
+        largestArmyBox = pygame.Rect(self.width-170-100, self.height-50, 100, 50)
+        self.screen.fill(self.bgScoreColor, largestArmyBox)
+        font_largest_army = self.font_resourceSmaller.render('LA: '+ str(self.game.largestArmyPlayer.id), False, pygame.Color('white'))
+        self.screen.blit(font_largest_army, (self.width-170-100+5, self.height - 45))
+
         font_dice = self.font_resourceSmaller.render(str(self.game.dice), False, pygame.Color('white'))
-        diceRoll = pygame.Rect(405, 0, 50, 50)
+        diceRoll = pygame.Rect(170, 0, 50, 50)
         self.screen.fill(self.bgScoreColor, diceRoll)
-        pygame.display.update(diceRoll)
-        self.screen.blit(font_dice, (410, 5))
+        # pygame.display.update(diceRoll)
+        self.screen.blit(font_dice, (175, 5))
         pygame.display.update()
 
     def drawPlace(self, graphicPlace):

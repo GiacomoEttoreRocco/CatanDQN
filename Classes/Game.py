@@ -12,10 +12,11 @@ class Game:
         self.players = [Player.Player(i+1, self) for i in range(0, num_players)]
         self.largestArmyPlayer = Player.Player(0, self)
         self.longestStreetOwner = Player.Player(0, self)
-        self.longestStreetLength = 0
+        self.longestStreetLength = 4
         self.tmpVisitedEdges = []
         self.dice = 0
         self.currentTurn = Player.Player(0, self)
+        self.order =0
 
     def dice_production(self, number):
         for tile in Board.Board().tiles:
@@ -192,18 +193,101 @@ class Game:
         return max
 
     def longestStreetPlayer(self, justCheck = False):
-        max = 4 
+        max = self.longestStreetLength
         belonger = self.longestStreetOwner
         for p in self.players:
-            actual = self.calculateLongestStreet(p)
+            actual = self.longest(p)
             if(max < actual):
                 max = actual
                 belonger = p
         if(not justCheck):
             if(belonger != self.longestStreetOwner):
                 self.longestStreetOwner = belonger
-                self.longestStreetLength = max
+                print("Longest street length: ", max)
+            self.longestStreetLength = max
+        print("Out, Longest street length: ", max)
         return belonger
+
+    
+    def longest(self, player):
+        self.order = 0
+        visitedEdges = []
+        edges = player.ownedStreets
+
+        max = 0
+        for tail in self.findTails(player):
+            if tail not in visitedEdges:
+                length, tmpVisited = self.exploreEdge(player, tail, visitedEdges)
+                visitedEdges.extend(tmpVisited)
+                if max<length:
+                    max = length
+        for edge in edges:
+            if edge not in visitedEdges:
+                length, tmpVisited = self.exploreEdge(player, edge, visitedEdges)
+                visitedEdges.extend(tmpVisited)
+                if max<length:
+                    max = length
+                
+
+        return max + 1
+        
+
+    def exploreEdge(self, player, edge, visited):
+        self.order +=1
+        print('ExporeEdge: ', edge, self.order)
+        max = 0
+        visited.append(edge)
+        tmpVisited = visited
+        for edge in self.connectedOwnedEdges(player, edge):
+            if edge not in visited:
+                length, v = self.exploreEdge(player, edge, visited)
+                tmpVisited.extend(v)
+                if(max<length):
+                    max = length
+            
+        return max + 1, tmpVisited
+
+    def findTails(self, player):
+        toRet = []
+        for edge in player.ownedStreets:
+            if self.isTail(player, edge):
+                toRet.append(edge)
+        return toRet
+
+    def isTail(self, player, edge):
+        p1, p2 = edge
+        return len(self.connectedEdgesToPlace(player, p1))==1 or len(self.connectedEdgesToPlace(player, p2))==1
+        
+    def connectedOwnedEdges(self, player, edge):
+        p1, p2 = edge
+        own1 = Board.Board().places[p1].owner
+        own2 = Board.Board().places[p2].owner
+        edges = set()
+        if(own1 in (0, player.id)):
+            edges.update(self.connectedEdgesToPlace(player, p1))
+        if(own2 in (0, player.id)):
+            edges.update(self.connectedEdgesToPlace(player, p2))
+        edges.remove(edge)
+        return edges
+
+
+    def connectedEdgesToPlace(self, player, place):
+        toRet = []
+        for adjPlace in Board.Board().graph.listOfAdj[place]:
+            edge = tuple(sorted([place, adjPlace]))
+            if(Board.Board().edges[edge] == player.id):
+                toRet.append(edge)
+        return toRet
+
+
+        
+
+
+        
+
+
+
+
 
     def playGame(self):
         Board.Board().reset()
