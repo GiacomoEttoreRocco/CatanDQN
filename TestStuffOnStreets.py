@@ -43,6 +43,8 @@ class TestStreetOwner():
             Move.placeFreeStreet(Player1, (47, 48))
             Move.placeFreeStreet(Player1, (39, 47))
         if(test == 3):
+            Move.placeFreeStreet(Player1, (28,38))
+            Move.placeFreeStreet(Player1, (38,39))
             Move.placeFreeStreet(Player1, (39,40))
             Move.placeFreeStreet(Player1, (40,41))
             Move.placeFreeStreet(Player1, (41,42))
@@ -145,5 +147,5 @@ class TestStreetOwner():
         print("SDGNSJGBIGBG BELONGER ", self.longestStreetOwner.id, "  New one: " , belonger.id)
         return belonger
 
-ts = TestStreetOwner(2)
+ts = TestStreetOwner(3)
 print(ts)

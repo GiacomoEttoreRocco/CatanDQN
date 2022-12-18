@@ -216,6 +216,7 @@ class Game:
 
         max = 0
         for tail in self.findTails(player):
+            print('Tail: ',tail)
             if tail not in visitedEdges:
                 length, tmpVisited = self.exploreEdge(player, tail, visitedEdges)
                 visitedEdges.extend(tmpVisited)
@@ -229,7 +230,7 @@ class Game:
                     max = length
                 
 
-        return max + 1
+        return max
         
 
     def exploreEdge(self, player, edge, visited):
@@ -264,8 +265,10 @@ class Game:
         own2 = Board.Board().places[p2].owner
         edges = set()
         if(own1 in (0, player.id)):
+            print('if1')
             edges.update(self.connectedEdgesToPlace(player, p1))
         if(own2 in (0, player.id)):
+            print('if2')
             edges.update(self.connectedEdgesToPlace(player, p2))
         edges.remove(edge)
         return edges
