@@ -27,7 +27,7 @@ class TestStreetOwner(unittest.TestCase):
 
 
 
-    def test_1(self):
+    def test0(self):
         Move.placeFreeStreet(self.Player1, (41,49))
         Move.placeFreeStreet(self.Player1, (39,40))
         Move.placeFreeStreet(self.Player1, (40,41))
@@ -39,7 +39,7 @@ class TestStreetOwner(unittest.TestCase):
             
 
 
-    def test_2(self):
+    def test1(self):
         Move.placeFreeStreet(self.Player1, (39,40))
         Move.placeFreeStreet(self.Player1, (40,41))
         Move.placeFreeStreet(self.Player1, (41,42))
@@ -66,8 +66,6 @@ class TestStreetOwner(unittest.TestCase):
 
         self.assertEqual(self.game.longestStreetLength, 11)
 
-
-
     def test3(self):
         Move.placeFreeStreet(self.Player1, (28,38))
         Move.placeFreeStreet(self.Player1, (38,39))
@@ -76,30 +74,22 @@ class TestStreetOwner(unittest.TestCase):
         Move.placeFreeStreet(self.Player1, (41,42))
         Move.placeInitialColony(self.Player2, Board.Board().places[42])
         Move.placeFreeStreet(self.Player1, (42,43))
-        Move.placeFreeStreet(self.Player1, (43,44))
-        
+        Move.placeFreeStreet(self.Player1, (43,44))        
         self.assertEqual(self.game.longestStreetLength, 5)
-
 
     def test4(self):
         Move.placeFreeStreet(self.Player1, (39,40))
         Move.placeFreeStreet(self.Player1, (40,41))
-
         Move.placeFreeStreet(self.Player1, (41, 49))
-
         Move.placeFreeStreet(self.Player2, (41,42)) # Player2
-
         Move.placeFreeStreet(self.Player1, (42,43))
         Move.placeFreeStreet(self.Player1, (43,51))
-
         Move.placeFreeStreet(self.Player1, (50, 51))
         Move.placeFreeStreet(self.Player1, (49, 50))
         Move.placeFreeStreet(self.Player1, (48, 49))
         Move.placeFreeStreet(self.Player1, (47, 48))
         Move.placeFreeStreet(self.Player1, (39, 47))
-
         self.assertEqual(self.game.longestStreetLength, 10)
-
 
     def test5(self):
         Move.placeFreeStreet(self.Player1, (39,40))
@@ -113,17 +103,13 @@ class TestStreetOwner(unittest.TestCase):
         Move.placeFreeStreet(self.Player1, (48, 49))
         Move.placeFreeStreet(self.Player1, (47, 48))
         Move.placeFreeStreet(self.Player1, (39, 47))
-
         self.assertEqual(self.game.longestStreetLength, 10)
-
 
     def test6(self):
         Move.placeFreeStreet(self.Player1, (39,40))
         Move.placeFreeStreet(self.Player1, (40,41))
         Move.placeFreeStreet(self.Player1, (41,42))
-
         Move.placeInitialColony(self.Player1, Board.Board().places[42])
-
         Move.placeFreeStreet(self.Player1, (42,43))
         Move.placeFreeStreet(self.Player1, (43,44))     
 
