@@ -157,7 +157,8 @@ class Player:
             ress = list(self.resources.keys())
             for ires1 in range(0, len(ress)):
                 for ires2 in range(ires1, len(ress)):
-                    availableMoves.append((Move.useYearOfPlentyCard, (ress[ires1], ress[ires2])))
+                    if(Bank.Bank().resources[ires1] > 0 and Bank.Bank().resources[ires2] > 0):
+                        availableMoves.append((Move.useYearOfPlentyCard, (ress[ires1], ress[ires2])))
         return availableMoves
 
     def connectedEmptyEdges(self, edge):
@@ -377,7 +378,10 @@ class Player:
             max = -1
             for res1 in Bank.Bank().resources.keys():
                 for res2 in Bank.Bank().resources.keys():
-                    valutation = self.moveValue(move, (res1, res2))
+                    if(Bank.Bank().resources[res1] > 0 and Bank.Bank().resources[res2] > 0):
+                        valutation = self.moveValue(move, (res1, res2))
+                    else:
+                        valutation = -1
                     if(max < valutation):
                         max = valutation
                         candidateRes = (res1, res2)
