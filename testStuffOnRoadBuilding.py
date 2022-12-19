@@ -24,9 +24,18 @@ class TestRoadBuilding(unittest.TestCase):
         self.assertTrue((0, 1) in self.Player1.ownedStreets)
         self.assertTrue((0, 8) in self.Player1.ownedStreets)
 
-    # def test_2(self):
+    def test_2(self):
+        edges = list(Board.Board().edges.keys())
+        for i in range(14):
+            Move.placeFreeStreet(self.Player1, edges[i])
+        print(self.Player1.ownedStreets)
+        Move.useRoadBuildingCard(self.Player1, [(10, 11), (11, 12)])
+        print(self.Player1.ownedStreets)
+        print(self.Player1.nStreets)
+
+    # def test_3(self):
     #     edges = list(Board.Board().edges.keys())
-    #     for i in range(14):
+    #     for i in range(15):
     #         Move.placeFreeStreet(self.Player1, edges[i])
     #     print(self.Player1.ownedStreets)
     #     Move.useRoadBuildingCard(self.Player1, [(10, 11), (11, 12)])

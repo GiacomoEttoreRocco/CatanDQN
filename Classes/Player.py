@@ -120,46 +120,51 @@ class Player:
             availableMoves.append(Move.useYearOfPlentyCard)
         return availableMoves
 
-    def availableMovesWithInput(self, turnCardUsed):
-        availableMoves = [(Move.passTurn, None)]
-        if(self.resources["crop"] >= 1 and self.resources["iron"] >= 1 and self.resources["sheep"] >= 1 and len(Board.Board().deck) > 0):
-            availableMoves.append((Move.buyDevCard, None))
-        if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.calculatePossibleColony() == [] and self.nStreets < 15 and self.calculatePossibleEdges() != None): # TEMPORANEAMENTE
-            for street in self.calculatePossibleEdges():
-                availableMoves.append((Move.placeStreet, street))
-        if(self.resources["wood"] >= 1  and self.resources["clay"] >= 1 and self.resources["sheep"] >= 1 and self.resources["crop"] >= 1):
-            for colony in self.calculatePossibleColony():
-                availableMoves.append((Move.placeColony, colony))
-        if(self.resources["iron"] >= 3 and self.resources["crop"] >= 2):
-            for city in self.calculatePossibleCity():
-                availableMoves.append((Move.placeCity, city))
-        for resource in self.resources.keys():
-            if(Bank.Bank().resourceToAsk(self, resource) <= self.resources[resource]):
-                for res in self.resources.keys():
-                    if(resource != res):
-                        availableMoves.append((Move.tradeBank, (res, resource)))
-        if(self.unusedKnights >= 1 and not turnCardUsed):
-            for i in range(0, 19):
-                if(i != Board.Board().robberTile):
-                    availableMoves.append((Move.useKnight, i))    
-        if(self.monopolyCard >= 1 and not turnCardUsed):
-            for res in self.resources.keys():
-                availableMoves.append((Move.useMonopolyCard, res))
-        if(self.roadBuildingCard >= 1 and not turnCardUsed):
-            cpe = self.calculatePossibleEdges()
-            for is1 in range(0, len(cpe)):
-                for is2 in range(is1, len(cpe)):
-                    street1 = cpe[is1]
-                    street2 = cpe[is2]
-                    if(street1 != street2):
-                        availableMoves.append((Move.useRoadBuildingCard, (street1, street2)))
-        if(self.yearOfPlentyCard >= 1 and not turnCardUsed):
-            ress = list(self.resources.keys())
-            for ires1 in range(0, len(ress)):
-                for ires2 in range(ires1, len(ress)):
-                    if(Bank.Bank().resources[ires1] > 0 and Bank.Bank().resources[ires2] > 0):
-                        availableMoves.append((Move.useYearOfPlentyCard, (ress[ires1], ress[ires2])))
-        return availableMoves
+    # def availableMovesWithInput(self, turnCardUsed):
+    #     availableMoves = [(Move.passTurn, None)]
+    #     if(self.resources["crop"] >= 1 and self.resources["iron"] >= 1 and self.resources["sheep"] >= 1 and len(Board.Board().deck) > 0):
+    #         availableMoves.append((Move.buyDevCard, None))
+    #     if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.calculatePossibleColony() == [] and self.nStreets < 15 and self.calculatePossibleEdges() != None): # TEMPORANEAMENTE
+    #         for street in self.calculatePossibleEdges():
+    #             availableMoves.append((Move.placeStreet, street))
+    #     if(self.resources["wood"] >= 1  and self.resources["clay"] >= 1 and self.resources["sheep"] >= 1 and self.resources["crop"] >= 1):
+    #         for colony in self.calculatePossibleColony():
+    #             availableMoves.append((Move.placeColony, colony))
+    #     if(self.resources["iron"] >= 3 and self.resources["crop"] >= 2):
+    #         for city in self.calculatePossibleCity():
+    #             availableMoves.append((Move.placeCity, city))
+    #     for resource in self.resources.keys():
+    #         if(Bank.Bank().resourceToAsk(self, resource) <= self.resources[resource]):
+    #             for res in self.resources.keys():
+    #                 if(resource != res):
+    #                     availableMoves.append((Move.tradeBank, (res, resource)))
+    #     if(self.unusedKnights >= 1 and not turnCardUsed):
+    #         for i in range(0, 19):
+    #             if(i != Board.Board().robberTile):
+    #                 availableMoves.append((Move.useKnight, i))    
+    #     if(self.monopolyCard >= 1 and not turnCardUsed):
+    #         for res in self.resources.keys():
+    #             availableMoves.append((Move.useMonopolyCard, res))
+    #     if(self.roadBuildingCard >= 1 and not turnCardUsed):
+    #         cpe = self.calculatePossibleEdges()
+    #         if(len(cpe) < 1):
+    #             availableMoves.append((Move.useRoadBuildingCard, (None, None)))
+    #         if(len(cpe) < 2):
+    #             availableMoves.append((Move.useRoadBuildingCard, (cpe[0], None)))
+    #         else:
+    #             for is1 in range(0, len(cpe)):
+    #                 street1 = cpe[is1]
+    #                 for is2 in range(is1+1, len(cpe)):
+    #                     street2 = cpe[is2]
+    #                     availableMoves.append((Move.useRoadBuildingCard, (street1, street2)))
+
+    #     if(self.yearOfPlentyCard >= 1 and not turnCardUsed):
+    #         ress = list(self.resources.keys())
+    #         for ires1 in range(0, len(ress)):
+    #             for ires2 in range(ires1, len(ress)):
+    #                 if(Bank.Bank().resources[ires1] > 0 and Bank.Bank().resources[ires2] > 0):
+    #                     availableMoves.append((Move.useYearOfPlentyCard, (ress[ires1], ress[ires2])))
+    #     return availableMoves
 
     def connectedEmptyEdges(self, edge):
         p1 = edge[0]
@@ -182,6 +187,8 @@ class Player:
 
     def calculatePossibleEdges(self):
         possibleEdges = []
+        if(len(self.ownedStreets) == 15):
+            return possibleEdges
         for edge in Board.Board().edges.keys():
             if(Board.Board().edges[edge] == self.id):
                 if(edge == None):
@@ -388,25 +395,30 @@ class Player:
             return max, candidateRes
 
         if(move == Move.useRoadBuildingCard):
-            possibleEdges = self.calculatePossibleEdges()
             candidateEdge1 = None
-            max1 = -1
-            for edge in possibleEdges: 
-                valutation = self.moveValue(Move.placeFreeStreet, edge)
-                if(max1 < valutation):
-                    max1 = valutation
-                    candidateEdge1 = edge
-
-            possibleEdges = self.calculatePossibleEdges()
             candidateEdge2 = None
-            max2 = -1
-            for edge in possibleEdges: 
-                if(edge != candidateEdge1):
+            toRet = 0
+            
+            if self.ownedStreets< 14:
+                possibleEdges = self.calculatePossibleEdges()
+                max1 = -1
+                for edge in possibleEdges: 
                     valutation = self.moveValue(Move.placeFreeStreet, edge)
-                    if(max2 < valutation):
-                        max2 = valutation
-                        candidateEdge2 = edge
-            return max1+max2, [candidateEdge1, candidateEdge2]
+                    if(max1 < valutation):
+                        max1 = valutation
+                        candidateEdge1 = edge
+                toRet += max1
+            if self.ownedStreets<15:
+                possibleEdges = self.calculatePossibleEdges()
+                max2 = -1
+                for edge in possibleEdges: 
+                    if(edge != candidateEdge1):
+                        valutation = self.moveValue(Move.placeFreeStreet, edge)
+                        if(max2 < valutation):
+                            max2 = valutation
+                            candidateEdge2 = edge
+                toRet += max2
+            return toRet, [candidateEdge1, candidateEdge2]
 
     def resourceCount(self):
         return sum(self.resources.values())

@@ -242,8 +242,12 @@ def useRoadBuildingCard(player, edges, undo = False):
         player.roadBuildingCard -= 1
     else:
         player.roadBuildingCard += 1
-    placeFreeStreet(player, edges[0], undo)
-    placeFreeStreet(player, edges[1], undo)
+
+    e1, e2 = edges
+    if e1 is not None:
+        placeFreeStreet(player, e1, undo)
+    if e2 is not None:
+        placeFreeStreet(player, e2, undo)
 
 def useYearOfPlentyCard(player, resources, undo = False):
     if not undo:
