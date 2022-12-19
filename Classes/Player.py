@@ -7,7 +7,7 @@ import AI.Gnn as Gnn
 
 class Player: 
     def __init__(self, id, game, AI = False, RANDOM = False):
-        assert (not  (AI and RANDOM), "Error in definition of player")
+        assert not  (AI and RANDOM), "Error in definition of player"
         self.AI = AI
         self.RANDOM = RANDOM
 

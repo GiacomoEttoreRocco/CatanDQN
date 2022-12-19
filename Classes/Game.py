@@ -194,8 +194,8 @@ class Game:
         return max
 
     def longestStreetPlayer(self, justCheck = False):
-        max = self.longestStreetLength
-        belonger = self.longestStreetOwner
+        max = 4
+        belonger = Player.Player(0, self)
         for p in self.players:
             actual = self.longest(p)
             if(max < actual):
@@ -204,9 +204,7 @@ class Game:
         if(not justCheck):
             if(belonger != self.longestStreetOwner):
                 self.longestStreetOwner = belonger
-                print("Longest street length: ", max)
             self.longestStreetLength = max
-        print("Out, Longest street length: ", max)
         return belonger
 
     
@@ -222,7 +220,6 @@ class Game:
                 max = length
 
         for edge in player.ownedStreets:
-            print(visited)
             if edge not in visited:
                 p1, p2 = edge
                 length, tmpVisited =self.explorePlace(player, p1, [])
