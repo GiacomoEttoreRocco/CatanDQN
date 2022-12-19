@@ -27,7 +27,7 @@ class TestStreetOwner(unittest.TestCase):
 
 
 
-    def test_1(self):
+    def test0(self):
         Move.placeFreeStreet(self.Player1, (41,49))
         Move.placeFreeStreet(self.Player1, (39,40))
         Move.placeFreeStreet(self.Player1, (40,41))
@@ -39,7 +39,7 @@ class TestStreetOwner(unittest.TestCase):
             
 
 
-    def test_2(self):
+    def test1(self):
         Move.placeFreeStreet(self.Player1, (39,40))
         Move.placeFreeStreet(self.Player1, (40,41))
         Move.placeFreeStreet(self.Player1, (41,42))
