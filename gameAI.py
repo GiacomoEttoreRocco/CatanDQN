@@ -7,7 +7,7 @@ import time
 import AI.Gnn as Gnn
 
 speed = True
-withDelay = False
+withDelay = True
 realPlayer = False # If you put this to true you will play with the 3th player.
 save = True
 total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
@@ -180,8 +180,8 @@ def printWinners():
     print(s)
 
 ###########################################################################################################################
-epochs = 1
-batchs = 1
+epochs = 10
+batchs = 3
 
 for epoch in range(epochs):
     print('Iteration: ', epoch+1, "/", epochs)
@@ -194,8 +194,8 @@ for epoch in range(epochs):
         playGameWithGraphic(g, view)
         c.Board.Board().reset()
         c.Bank.Bank().reset()
-    allGames.to_json("./json/game.json")
-    Gnn.Gnn().trainModel()
+    #allGames.to_json("./json/game.json")
+    #Gnn.Gnn().trainModel()
     printWinners()
 
 
