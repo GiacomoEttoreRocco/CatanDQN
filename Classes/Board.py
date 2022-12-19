@@ -35,7 +35,7 @@ class Board: # deve diventare un singleton
             cls.EdgesOnTheSea = np.random.permutation(cls.graph.EdgesOnTheSea)
 
             if(doPlacement):
-                print("\n Tiles placement...\n")
+                # print("\n Tiles placement...\n")
                 cls.tilesPlacement(cls)
 
         return cls.instance
