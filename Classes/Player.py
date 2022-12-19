@@ -448,9 +448,12 @@ class Player:
             toRet = 100.0
             return toRet
 
-        if(move == Move.placeFreeStreet or move == Move.placeStreet or move == Move.placeInitialStreet):
+        if(move == Move.placeFreeStreet or move == Move.placeStreet or move == Move.placeInitialStreet or Move.placeColony):
             move(self, thingNeeded, False, True)
-            toRet = 16
+            if(move == Move.placeColony):
+                toRet = 90
+            else:
+                toRet = 16
             move(self, thingNeeded, True, True) 
             return toRet + random.uniform(0,2)
         move(self, thingNeeded)
@@ -460,8 +463,6 @@ class Player:
             toRet = 10.0
         if(move == Move.placeCity):
             toRet = 100.0
-        if(move == Move.placeColony):
-            toRet = 90.0
         if(move == Move.tradeBank):
             toRet = 15.0
         if(move == Move.useRoadBuildingCard):
@@ -492,7 +493,7 @@ class Player:
         elif(move == Move.useMonopolyCard):
             toRet = Gnn.Gnn().evaluatePosition(self)
             # return toRet + random.uniform(-0.1,0.1)
-        elif(move == Move.placeFreeStreet or move == Move.placeStreet or move == Move.placeInitialStreet):
+        elif(move == Move.placeFreeStreet or move == Move.placeStreet or move == Move.placeInitialStreet or Move.placeColony):
             move(self, thingNeeded, False, True)
             toRet = Gnn.Gnn().evaluatePosition(self) + random.uniform(0.00001,0.00002)
             #print(toRet)

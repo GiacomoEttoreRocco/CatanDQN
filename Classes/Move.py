@@ -74,7 +74,8 @@ def placeStreet(player, edge, undo = False, justCheck = False):
         actualLongestStreetOwner.victoryPoints += 2
         previousLongestStreetOwner.victoryPoints -= 2
 
-def placeColony(player, place: cg.Place, undo = False):
+def placeColony(player, place: cg.Place, undo = False, justCheck = False):
+    previousLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
     if(not undo):
         player.useResource("wood")
         player.useResource("clay")
@@ -105,6 +106,11 @@ def placeColony(player, place: cg.Place, undo = False):
 
         if(place.harbor != ""):
             del player.ownedHarbors[-1]
+
+    actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
+    if(previousLongestStreetOwner != actualLongestStreetOwner):
+        actualLongestStreetOwner.victoryPoints += 2
+        previousLongestStreetOwner.victoryPoints -= 2
         
 
 def placeCity(player, place: cg.Place, undo = False):
