@@ -5,6 +5,7 @@ import Classes.Move as Move
 import random
 import time
 import math
+import os
 
 class Game:
     def __init__(self, num_players = 4):
@@ -210,76 +211,76 @@ class Game:
 
     
     def longest(self, player):
-        self.order = 0
-        visitedEdges = []
-        edges = player.ownedStreets
-
         max = 0
-        for tail in self.findTails(player):
+        for tail in self.findLeaves(player):
+            self.order = 0
             print('Tail: ',tail)
-            if tail not in visitedEdges:
-                length, tmpVisited = self.exploreEdge(player, tail, visitedEdges)
-                visitedEdges.extend(tmpVisited)
-                if max<length:
-                    max = length
-        for edge in edges:
-            if edge not in visitedEdges:
-                length, tmpVisited = self.exploreEdge(player, edge, visitedEdges)
-                visitedEdges.extend(tmpVisited)
-                if max<length:
-                    max = length
-                
-
-        return max
+            length, tmpVisited = self.explorePlace(player, tail, [])
+            if max<length:
+                max = length
+        # for edge in edges:
+        #     if edge not in visitedEdges:
+        #         length, tmpVisited = self.exploreEdge(player, edge, visitedEdges)
+        #         visitedEdges.extend(tmpVisited)
+        #         if max<length:
+        #             max = length
+        return max - 1 
         
 
-    def exploreEdge(self, player, edge, visited):
+    def explorePlace(self, player, place, visited):
+        print('ExporePlace: ', place, self.order)
         self.order +=1
-        print('ExporeEdge: ', edge, self.order)
         max = 0
-        visited.append(edge)
-        tmpVisited = visited
-        for edge in self.connectedOwnedEdges(player, edge):
-            if edge not in visited:
-                length, v = self.exploreEdge(player, edge, visited)
-                tmpVisited.extend(v)
+        tmpVisited = list.copy(visited)
+        # tmpVisited.append(place)
+
+        for adjPlace in self.connectedPlacesToPlace(player, place):
+            edge = tuple(sorted([place, adjPlace]))
+            if edge not in tmpVisited:
+                tmpVisited.append(edge)
+                length, v = self.explorePlace(player, adjPlace, tmpVisited)
+                # tmpVisited.extend(v)
                 if(max<length):
                     max = length
-            
+
+        print("Back from ", place)
         return max + 1, tmpVisited
 
-    def findTails(self, player):
-        toRet = []
+    def findLeaves(self, player):
+        toRet = set()
         for edge in player.ownedStreets:
-            if self.isTail(player, edge):
-                toRet.append(edge)
+            p1, p2 = edge
+            if self.isLeaf(player, p1):
+                toRet.add(p1)
+            if self.isLeaf(player, p2):
+                toRet.add(p2)
         return toRet
 
-    def isTail(self, player, edge):
-        p1, p2 = edge
-        return len(self.connectedEdgesToPlace(player, p1))==1 or len(self.connectedEdgesToPlace(player, p2))==1
+    def isLeaf(self, player, place):
+        return len(self.connectedPlacesToPlace(player, place))==1 or len(self.connectedPlacesToPlace(player, place))==3
         
-    def connectedOwnedEdges(self, player, edge):
-        p1, p2 = edge
-        own1 = Board.Board().places[p1].owner
-        own2 = Board.Board().places[p2].owner
-        edges = set()
-        if(own1 in (0, player.id)):
-            print('if1')
-            edges.update(self.connectedEdgesToPlace(player, p1))
-        if(own2 in (0, player.id)):
-            print('if2')
-            edges.update(self.connectedEdgesToPlace(player, p2))
-        edges.remove(edge)
-        return edges
+    # def connectedOwnedEdges(self, player, edge):
+    #     p1, p2 = edge
+    #     own1 = Board.Board().places[p1].owner
+    #     own2 = Board.Board().places[p2].owner
+    #     edges = set()
+    #     if(own1 in (0, player.id)):
+    #         print('if1')
+    #         edges.update(self.connectedEdgesToPlace(player, p1))
+    #     if(own2 in (0, player.id)):
+    #         print('if2')
+    #         edges.update(self.connectedEdgesToPlace(player, p2))
+    #     edges.remove(edge)
+    #     return edges
 
 
-    def connectedEdgesToPlace(self, player, place):
+    def connectedPlacesToPlace(self, player, place):
         toRet = []
-        for adjPlace in Board.Board().graph.listOfAdj[place]:
-            edge = tuple(sorted([place, adjPlace]))
-            if(Board.Board().edges[edge] == player.id):
-                toRet.append(edge)
+        if Board.Board().places[place].owner in (0, player.id):
+            for adjPlace in Board.Board().graph.listOfAdj[place]:
+                edge = tuple(sorted([place, adjPlace]))
+                if(Board.Board().edges[edge] == player.id):
+                    toRet.append(adjPlace)
         return toRet
 
 

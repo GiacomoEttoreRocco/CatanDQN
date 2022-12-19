@@ -21,7 +21,7 @@ def placeInitialStreet(player, edge, undo = False, justCheck = False):
         previousLongestStreetOwner.victoryPoints -= 2
 
 def placeFreeStreet(player, edge, undo = False, justCheck = False):
-    previousLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
+    previousLongestStreetOwner = player.game.longestStreetOwner
     if(not undo):
         Board.Board().edges[edge] = player.id
         player.nStreets+=1
