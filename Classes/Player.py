@@ -57,7 +57,7 @@ class Player:
         return self.id <= other.id
         
     def useResource(self, resource):
-        assert self.resources[resource] < 0, "FATAL ERROR. You should not be able to use this method."
+        assert self.resources[resource] >= 0, "FATAL ERROR. You should not be able to use this method."
         self.resources[resource] -= 1
         Bank.Bank().resources[resource] += 1
 
