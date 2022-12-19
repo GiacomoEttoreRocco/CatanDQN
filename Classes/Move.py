@@ -121,8 +121,6 @@ def placeCity(player, place: cg.Place, undo = False):
         player.nCities+=1
         player.nColonies-=1
         player.ownedCities.append(place.id)
-
-
     else:
         Bank.Bank().giveResource(player, "iron")
         Bank.Bank().giveResource(player, "iron")
