@@ -7,7 +7,7 @@ import time
 import AI.Gnn as Gnn
 
 speed = True
-withDelay = True
+withDelay = False
 realPlayer = False # If you put this to true you will play with the 3th player.
 save = True
 total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
@@ -141,7 +141,14 @@ def playGameWithGraphic(game, view=None):
         turn += 1
         doTurnGraphic(game, playerTurn)
         if(playerTurn.victoryPoints >= 10):
-            saveToCsv(playerTurn)
+            WINNERS[playerTurn.id-1] += 1
+            s = 'Winner: ' + str(playerTurn.id) + "\nPoints from colony: " + str(playerTurn.nColonies) + " From cities: " + str(playerTurn.nCities*2) + " From vpCards: " + str(playerTurn.victoryPointsCards)
+            if(playerTurn.id == game.largestArmyPlayer.id):
+                s += " +2 Knigths "
+            if(playerTurn.id == game.longestStreetOwner.id):    
+                s += " +2 Streets "
+#           saveToCsv(playerTurn)
+            print(s) 
             return playerTurn
         # if(turn % 4 == 0):
             # print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
@@ -159,7 +166,6 @@ def saveMove(save, player):
         total.loc[len(total)] = [places, edges, globals]
 
 def saveToCsv(victoryPlayer):
-    print('winner: ', victoryPlayer.id)
     for i in range(len(total)):
         total.globals[i]['winner'] = victoryPlayer.id
         WINNERS[victoryPlayer.id-1] += 1
@@ -180,8 +186,8 @@ def printWinners():
     print(s)
 
 ###########################################################################################################################
-epochs = 10
-batchs = 3
+epochs = 1
+batchs = 1
 
 for epoch in range(epochs):
     print('Iteration: ', epoch+1, "/", epochs)
