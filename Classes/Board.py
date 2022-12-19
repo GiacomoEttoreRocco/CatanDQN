@@ -120,11 +120,19 @@ class Board: # deve diventare un singleton
 
 ###########################################################################################################################################################################################################################
 
-    def placesToDict(cls) :
-        data={'id':[], 'place_owner':[], 'type':[], 'resource_1':[],'dice_1':[],'resource_2':[],'dice_2':[],'resource_3':[],'dice_3':[], 'harbor':[], 'robber_tile':[]}
+    def placesToDict(cls, playerInTurn) :
+        data={'id':[], 'place_owner':[], 'is_owned_place': [], 'type':[], 'resource_1':[],'dice_1':[],'resource_2':[],'dice_2':[],'resource_3':[],'dice_3':[], 'harbor':[], 'robber_tile':[]}
         for p in cls.places:
             data['id'].append(p.id)
             data['place_owner'].append(p.owner)
+
+            if p.owner == playerInTurn.id:
+                data['is_owned_place'].append(1)
+            elif p.owner == 0:
+                data['is_owned_place'].append(0)
+            else:
+                data['is_owned_place'].append(-1)
+
             if(p.isCity):
                 data['type'].append(100) # incrementato il peso!
             elif(p.isColony):
@@ -157,12 +165,18 @@ class Board: # deve diventare un singleton
             data['robber_tile'].append(cls.robberOfPlace(p))    
         return data
 
-    def edgesToDict(cls):
-        data={'place_1':[],'place_2':[], 'edge_owner':[]}
+    def edgesToDict(cls, playerInTurn):
+        data={'place_1':[],'place_2':[], 'edge_owner':[], 'is_owned_edge': [],}
         for edge in cls.edges.keys():
             data['place_1'].append(edge[0])
             data['place_2'].append(edge[1])
             data['edge_owner'].append(cls.edges[edge])
+            if cls.edges[edge] == playerInTurn.id:
+                data['is_owned_edge'].append(1)
+            elif cls.edges[edge] == 0:
+                data['is_owned_edge'].append(0)
+            else:
+                data['is_owned_edge'].append(-1)
         return data
             
 # Nodes: 

@@ -20,7 +20,7 @@ class Gnn():
             cls.epochs = epochs
             cls.learningRate = learningRate
             cls.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
-            cls.model = Net(11, 8, 3, 8).to(cls.device)
+            cls.model = Net(12, 8, 3, 8).to(cls.device)
             if os.path.exists('./AI/model_weights.pth'):
                 cls.model.load_state_dict(torch.load('./AI/model_weights.pth', map_location=cls.device))
                 print('Weights loaded..')
@@ -47,9 +47,9 @@ class Gnn():
 
     def evaluatePosition(cls, player):
         globalFeats = player.globalFeaturesToDict()
-        graph = cls.fromDictsToGraph(Board.Board().placesToDict(), Board.Board().edgesToDict()).to(cls.device)
+        graph = cls.fromDictsToGraph(Board.Board().placesToDict(player), Board.Board().edgesToDict(player)).to(cls.device)
         glob = torch.tensor(list(globalFeats.values())[:-1]).float().to(cls.device)
-        return cls.model(graph, glob)[globalFeats['player_id']-1]
+        return cls.model(graph, glob)[player.id-1]
 
     def extractInputFeaturesMove(cls, moveIndex):
         places = cls.moves.iloc[moveIndex].places

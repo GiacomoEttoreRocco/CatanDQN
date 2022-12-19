@@ -151,8 +151,9 @@ def playGameWithGraphic(game, view=None):
 
 def saveMove(save, player):
     if(save):
-        places = c.Board.Board().placesToDict()
-        edges = c.Board.Board().edgesToDict()
+        places = c.Board.Board().placesToDict(player)
+        edges = c.Board.Board().edgesToDict(player)
+
         globals = player.globalFeaturesToDict()
 
         total.loc[len(total)] = [places, edges, globals]
