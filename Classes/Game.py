@@ -158,56 +158,25 @@ class Game:
             self.largestArmyPlayer = self.players[belonger.id-1]
         return belonger
 
-    def longestStreetPlace(self, player, newPlace, oldPlace):
-        placesToVisit = list.copy(Board.Board().graph.listOfAdj[newPlace])
-        placesToVisit.remove(oldPlace)
-        max = -1
-        for p in placesToVisit:
-            edge = tuple(sorted([p, newPlace]))
-            if(Board.Board().edges[edge] == player.id and edge not in self.tmpVisitedEdges):
-                self.tmpVisitedEdges.append(edge)
-                actual = 1
-                if(Board.Board().places[newPlace].owner == 0 or Board.Board().places[newPlace] == player.id): # nuova aggiunta
-                    actual += self.longestStreetPlace(player, p, newPlace)
-                if(max < actual):
-                    max = actual
-        return max
-              
-    def longestStreet(self, player, edge):
-        #assert(edge is None, "Edge is None, something went wrong.")    
-        #print("Edge:", edge)
-        if(edge != None):
-            self.tmpVisitedEdges.append(edge)
-            toRet = 1 + self.longestStreetPlace(player, edge[0], edge[1]) + self.longestStreetPlace(player, edge[1], edge[0])
-        else:
-            toRet = 0
-        return toRet
-
-    def calculateLongestStreet(self, player):
-        self.tmpVisitedEdges = []
-        max = 0
-        for edge in player.ownedStreets:
-            if edge not in self.tmpVisitedEdges:
-                actual = self.longestStreet(player, edge)
-                if(max < actual):
-                    max = actual
-        return max
-
     def longestStreetPlayer(self, justCheck = False):
-        max = 4
-        belonger = Player.Player(0, self)
+        maxLength = max([self.longest(self.longestStreetOwner), 4])
+        if(maxLength > 4):
+            belonger = self.longestStreetOwner
+        else:
+            belonger = Player.Player(0, self)
+
         for p in self.players:
-            actual = self.longest(p)
-            if(max < actual):
-                max = actual
-                belonger = p
+            if(p.id != self.longestStreetOwner.id):
+                actual = self.longest(p)
+                if(maxLength < actual):
+                    maxLength = actual
+                    belonger = p
         if(not justCheck):
             if(belonger != self.longestStreetOwner):
                 self.longestStreetOwner = belonger
-            self.longestStreetLength = max
+            self.longestStreetLength = maxLength
         return belonger
 
-    
     def longest(self, player):
         max = 0
         visited = set()

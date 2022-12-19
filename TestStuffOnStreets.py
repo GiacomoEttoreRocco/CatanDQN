@@ -16,7 +16,7 @@ class TestStreetOwner():
         self.Player2 = self.game.players[1]
         
         
-        self.results = [5, 5, 11, 5, 10, 10, 5, 7, 6, 10, 5, 10, 5]
+        self.results = [5, 5, 11, 5, 10, 10, 5, 7, 6, 10, 5, 10, 5, 5]
 
         if(test == 0): #green color
             Move.placeFreeStreet(self.Player1, (41,49))
@@ -249,16 +249,37 @@ class TestStreetOwner():
             for p in self.game.players:
                 print('player: ', p.id, ' points: ', p.victoryPoints)
             
+        if(test == 13): #green color
+            print('Step 0 --------- Owner: ', self.game.longestStreetOwner.id, ' length: ', self.game.longestStreetLength)
+            for p in self.game.players:
+                print('player: ', p.id, ' points: ', p.victoryPoints)
 
+            Move.placeFreeStreet(self.Player2, (29,30))
+            Move.placeFreeStreet(self.Player2, (30,31))
+            Move.placeFreeStreet(self.Player2, (31,32))
+            Move.placeFreeStreet(self.Player2, (32,33))
+            Move.placeFreeStreet(self.Player2, (33,34))
 
-            
+            print('Step 1 --------- Owner: ', self.game.longestStreetOwner.id, ' length: ', self.game.longestStreetLength)
+            for p in self.game.players:
+                print('player: ', p.id, ' points: ', p.victoryPoints)
+    
+            Move.placeFreeStreet(self.Player1, (39,40))
+            Move.placeFreeStreet(self.Player1, (40,41))
+            Move.placeFreeStreet(self.Player1, (41,42))
+            Move.placeFreeStreet(self.Player1, (42,43))
+            Move.placeFreeStreet(self.Player1, (43,44))
+
+            print('Step 2 --------- Owner: ', self.game.longestStreetOwner.id, ' length: ', self.game.longestStreetLength)
+            for p in self.game.players:
+                print('player: ', p.id, ' points: ', p.victoryPoints)
             
 
 
         
         # assert self.game.longestStreetLength == results[test], f'Was: {str(self.game.longestStreetLength)} Aspected: {str(results[test])}'
 
-for n in [0,1,2,3,4,5,6,7,8,9,10,11,12]:
+for n in [0,1,2,3,4,5,6,7,8,9,10,11,12, 13]:
     Board.Board().reset()
     ts = TestStreetOwner(n)
     # print(ts.game.connectedPlacesToPlace(ts.Player1, 24))
