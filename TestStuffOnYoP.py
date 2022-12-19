@@ -20,7 +20,6 @@ class TestYearOfPlenty():
 
         #Check if player has 2 resources and if the bank gives them. Check Bank.resources after the move
         #To buy: buyDevCard(player, card, undo = False):
-        #useKnight(player, tilePosition, undo = False, justCheck = False):
 
         def emptyBank(self, resource):
             print("Resource amount before bank emptied: ", Bank.Bank().resources)
@@ -81,6 +80,7 @@ class TestYearOfPlenty():
             allowPlayerToBuyCard(self, self.Player1)
             print("Amount of yop cards before purchase: ", self.Player1.yearOfPlentyCard)
             Move.buyDevCard(self.Player1, "year_of_plenty")
+            self.Player1.yearOfPlentyCard += 1  #Since doTurn is not being called, we simulate the increase
             print("Amount of yop cards after purchase: ", self.Player1.yearOfPlentyCard)
             Move.useYearOfPlentyCard(self.Player1, ["crop", "crop"])
             print("Amount of yop cards after usage: ", self.Player1.yearOfPlentyCard)
