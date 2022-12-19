@@ -212,39 +212,45 @@ class Game:
     
     def longest(self, player):
         max = 0
+        visited = set()
         for tail in self.findLeaves(player):
             self.order = 0
-            print('Tail: ',tail)
+            # print('Tail: ',tail)
             length, tmpVisited = self.explorePlace(player, tail, [])
+            visited.update(tmpVisited)
             if max<length:
                 max = length
-        # for edge in edges:
-        #     if edge not in visitedEdges:
-        #         length, tmpVisited = self.exploreEdge(player, edge, visitedEdges)
-        #         visitedEdges.extend(tmpVisited)
-        #         if max<length:
-        #             max = length
+
+        for edge in player.ownedStreets:
+            print(visited)
+            if edge not in visited:
+                p1, p2 = edge
+                length, tmpVisited =self.explorePlace(player, p1, [])
+                visited.update(tmpVisited)
+                if max < length:
+                    max = length
         return max - 1 
         
 
     def explorePlace(self, player, place, visited):
-        print('ExporePlace: ', place, self.order)
+        # print('ExporePlace: ', place, self.order)
         self.order +=1
         max = 0
         tmpVisited = list.copy(visited)
         # tmpVisited.append(place)
+        outVisited = list.copy(visited)
 
         for adjPlace in self.connectedPlacesToPlace(player, place):
             edge = tuple(sorted([place, adjPlace]))
             if edge not in tmpVisited:
                 tmpVisited.append(edge)
                 length, v = self.explorePlace(player, adjPlace, tmpVisited)
-                # tmpVisited.extend(v)
+                outVisited.extend(v)
                 if(max<length):
                     max = length
 
-        print("Back from ", place)
-        return max + 1, tmpVisited
+        # print("Back from ", place)
+        return max + 1, outVisited
 
     def findLeaves(self, player):
         toRet = set()
