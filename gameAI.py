@@ -118,14 +118,14 @@ def playGameWithGraphic(game, view=None):
     turn = 0 
     won = False
     # START INIZIALE
-    # game.players[0].AI = True
-    # game.players[1].AI = True
-    # game.players[2].AI = True
-    # game.players[3].AI = True
-    game.players[0].RANDOM = True
-    game.players[1].RANDOM = True
-    game.players[2].RANDOM = True
-    game.players[3].RANDOM = True
+    game.players[0].AI = True
+    game.players[1].AI = True
+    game.players[2].AI = True
+    game.players[3].AI = True
+    # game.players[0].RANDOM = True
+    # game.players[1].RANDOM = True
+    # game.players[2].RANDOM = True
+    # game.players[3].RANDOM = True
     
     for p in game.players:
         game.doInitialChoise(p)
@@ -146,7 +146,7 @@ def playGameWithGraphic(game, view=None):
             WINNERS[playerTurn.id-1] += 1
             s = 'Winner: ' + str(playerTurn.id) + "\n"
             game.printVictoryPointsOfAll()
-            time.sleep(15)
+            #time.sleep(15)
             saveToCsv(playerTurn)
             print(s) 
             won = True
@@ -185,7 +185,7 @@ def printWinners():
 
 ###########################################################################################################################
 epochs = 1
-batchs = 3
+batchs = 1000
 
 for epoch in range(epochs):
     print('Iteration: ', epoch+1, "/", epochs)
@@ -199,8 +199,8 @@ for epoch in range(epochs):
         view = GameView.GameView(g)
         playGameWithGraphic(g, view)
 
-    #allGames.to_json("./json/game.json")
-    #Gnn.Gnn().trainModel()
+    allGames.to_json("./json/game.json")
+    Gnn.Gnn().trainModel()
     printWinners()
 
 

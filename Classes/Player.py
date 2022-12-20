@@ -398,7 +398,6 @@ class Player:
             candidateEdge1 = None
             candidateEdge2 = None
             toRet = 0
-            
             if len(self.ownedStreets) < 14:
                 possibleEdges = self.calculatePossibleEdges()
                 max1 = -1
@@ -491,40 +490,29 @@ class Player:
         return toRet + random.uniform(0,2)
 
     def aiMoveValue(self, move, thingNeeded = None):
-        if(move == Move.passTurn):
+        if(move == Move.passTurn or move == Move.buyDevCard or move == Move.useMonopolyCard):
             toRet = Gnn.Gnn().evaluatePosition(self)
-        elif(move == Move.useKnight):
+
+        elif(move == Move.useKnight or move == Move.useRobber):
             previousTilePos = move(self, thingNeeded, False, True)
             toRet = Gnn.Gnn().evaluatePosition(self)
             move(self, previousTilePos, True, True) 
-            # return toRet
-        elif(move == Move.useRobber):
-            previousTilePos = move(self, thingNeeded, False, True)
-            toRet = Gnn.Gnn().evaluatePosition(self)
-            move(self, previousTilePos, True, True) 
-            # return toRet
-        elif(move == Move.buyDevCard):
-            toRet = Gnn.Gnn().evaluatePosition(self)
-            # return toRet + random.uniform(-0.1,0.1)
-        elif(move == Move.useMonopolyCard):
-            toRet = Gnn.Gnn().evaluatePosition(self)
-            # return toRet + random.uniform(-0.1,0.1)
-        elif(move == Move.placeFreeStreet or move == Move.placeStreet or move == Move.placeInitialStreet or move == Move.placeColony):
+
+        elif(move == Move.placeFreeStreet or move == Move.placeStreet or move == Move.placeInitialStreet or move == Move.placeColony or Move.useRoadBuildingCard):
             move(self, thingNeeded, False, True)
-            toRet = Gnn.Gnn().evaluatePosition(self) + random.uniform(0.00001,0.00002)
-            #print(toRet)
+            toRet = Gnn.Gnn().evaluatePosition(self) 
             move(self, thingNeeded, True, True) 
-            # return toRet
+
         elif(move == Move.placeInitialColony):
             move(self, thingNeeded)
-            toRet = Gnn.Gnn().evaluatePosition(self) + random.uniform(0.00001,0.00002)
+            toRet = Gnn.Gnn().evaluatePosition(self) 
             move(self, thingNeeded, True) 
-            # return toRet
+
         else:
             move(self, thingNeeded)
             toRet = Gnn.Gnn().evaluatePosition(self)
             move(self, thingNeeded, undo=True)
-        # print("Move: ", move, " Object: " , thingNeeded, " Value: ", toRet, "Player: ", self.id)
+
         return toRet + random.uniform(0.00001,0.00002)
 
     def globalFeaturesToDict(self):

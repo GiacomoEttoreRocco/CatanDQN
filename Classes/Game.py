@@ -9,15 +9,17 @@ import os
 
 class Game:
     def __init__(self, num_players = 4):
+        self.pippo = Player.Player(0, self)
+        self.pippo.victoryPoints = 4
         self.nplayer = num_players
         self.players = [Player.Player(i+1, self) for i in range(0, num_players)]
 
-        self.largestArmyPlayer = Player.Player(0, self)
-        self.longestStreetOwner = Player.Player(0, self)
+        self.largestArmyPlayer = self.pippo
+        self.longestStreetOwner = self.pippo
         self.longestStreetLength = 4
         self.tmpVisitedEdges = []
         self.dice = 0
-        self.currentTurn = Player.Player(0, self)
+        self.currentTurn = self.pippo
         self.order = 0
 
         for i in range(num_players):
@@ -35,16 +37,27 @@ class Game:
 
     def printVictoryPointsOfAll(self):
         for player in self.players:
-            s = str(player.id) + "-> Points from colony: +" + str(player.nColonies) + " From cities: +" + str(player.nCities*2) + " From vpCards: +" + str(player.victoryPointsCards)
+            s = str(player.id) + " : " + str(player.victoryPoints) + " -> Points from colony: +" + str(player.nColonies) + " From cities: +" + str(player.nCities*2) + " From vpCards: +" + str(player.victoryPointsCards)
             if(player.id == self.largestArmyPlayer.id):
                 s += " From Knigths +2 "
             if(player.id == self.longestStreetOwner.id):    
                 s += " From Streets +2 "
-
             print(s) 
 
-            assert player.victoryPoints < 2, "Error: found a player with less then 2 points."
-            assert player.victoryPoints > 11, "Error: found a player with more then 11 points."
+        s = str(self.pippo.id) + " : " + str(self.pippo.victoryPoints) + " -> Points from colony: +" + str(self.pippo.nColonies) + " From cities: +" + str(self.pippo.nCities*2) + " From vpCards: +" + str(self.pippo.victoryPointsCards)
+        if(self.pippo.id == self.largestArmyPlayer.id):
+            s += " From Knigths +2 "
+        if(self.pippo.id == self.longestStreetOwner.id):    
+            s += " From Streets +2 "
+        print(s) 
+
+        for player in self.players:
+            s = "Player Id: " +str(player.id) + " : "
+            assert player.victoryPoints >= 2, s+"\nError: found a player with less then 2 points."
+            assert player.victoryPoints <= 11, s+"\nError: found a player with more then 11 points."
+
+        assert self.pippo.victoryPoints >= 0, s+"\nError, fake player weird behaviour: less then 0 points."
+        assert self.pippo.victoryPoints <= 4, s+"\nError: fake player weird behaviour: more then 4 points."
 
 
     def dice_production(self, number):
@@ -190,11 +203,11 @@ class Game:
 
     def longestStreetPlayer(self, justCheck = False):
         maxLength = max([self.longest(self.longestStreetOwner), 4])
+        #print("MaxLength: ", maxLength)
         if(maxLength > 4):
             belonger = self.longestStreetOwner
         else:
-            belonger = Player.Player(0, self)
-
+            belonger = self.pippo
         for p in self.players:
             if(p.id != self.longestStreetOwner.id):
                 actual = self.longest(p)

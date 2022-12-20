@@ -17,8 +17,9 @@ def placeInitialStreet(player, edge, undo = False, justCheck = False):
 
     actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
     if(previousLongestStreetOwner != actualLongestStreetOwner):
+        player.game.longestStreetOwner = actualLongestStreetOwner
         actualLongestStreetOwner.victoryPoints += 2
-        print("-2 riga 21")
+        #print("-2 riga 21")
         previousLongestStreetOwner.victoryPoints -= 2
 
 def placeFreeStreet(player, edge, undo = False, justCheck = False):
@@ -34,8 +35,9 @@ def placeFreeStreet(player, edge, undo = False, justCheck = False):
 
     actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
     if(previousLongestStreetOwner != actualLongestStreetOwner):
+        player.game.longestStreetOwner = actualLongestStreetOwner
         actualLongestStreetOwner.victoryPoints += 2
-        print("-2 riga 38")
+        #print("-2 riga 38, JustCheck(?) ", justCheck)
         previousLongestStreetOwner.victoryPoints -= 2
 
 def placeInitialColony(player: Player, place: cg.Place, undo = False):
@@ -72,9 +74,11 @@ def placeStreet(player, edge, undo = False, justCheck = False):
         player.nStreets-=1
         del player.ownedStreets[-1]
     actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
-    if(previousLongestStreetOwner != actualLongestStreetOwner): 
+
+    if(previousLongestStreetOwner.id != actualLongestStreetOwner.id): 
+        player.game.longestStreetOwner = actualLongestStreetOwner
         actualLongestStreetOwner.victoryPoints += 2
-        print("-2 riga 76")
+        #print("-2 riga 76. JustCheck(?) ", justCheck)
         previousLongestStreetOwner.victoryPoints -= 2
 
 def placeColony(player, place: cg.Place, undo = False, justCheck = False):
@@ -110,10 +114,11 @@ def placeColony(player, place: cg.Place, undo = False, justCheck = False):
         if(place.harbor != ""):
             del player.ownedHarbors[-1]
 
-    # actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
-    # if(previousLongestStreetOwner != actualLongestStreetOwner):
-    #     actualLongestStreetOwner.victoryPoints += 2
-    #     previousLongestStreetOwner.victoryPoints -= 2
+    actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
+    if(previousLongestStreetOwner.id != actualLongestStreetOwner.id):
+        player.game.longestStreetOwner = actualLongestStreetOwner
+        actualLongestStreetOwner.victoryPoints += 2
+        previousLongestStreetOwner.victoryPoints -= 2
         
 
 def placeCity(player, place: cg.Place, undo = False):
@@ -130,6 +135,7 @@ def placeCity(player, place: cg.Place, undo = False):
         player.nCities+=1
         player.nColonies-=1
         player.ownedCities.append(place.id)
+
     else:
         Bank.Bank().giveResource(player, "iron")
         Bank.Bank().giveResource(player, "iron")
@@ -207,7 +213,7 @@ def useKnight(player, tilePosition, undo = False, justCheck = False):
 
     if(largestArmy != postMoveLargArmy):
         postMoveLargArmy.victoryPoints += 2 
-        print("-2 riga 207")
+        #print("-2 riga 207")
         largestArmy.victoryPoints -= 2
     return previousPosition
 
@@ -244,7 +250,7 @@ def useMonopolyCard(player, resource):
     player.resources[resource] = sum
     return
     
-def useRoadBuildingCard(player, edges, undo = False):
+def useRoadBuildingCard(player, edges, undo = False, justCheck = False):
     assert len(edges) == 2, " FATAL ERROR. RoadBuildingCard: Number of elements can't be lower then 2, the edges must be passed in a tuple or list."
     if(not undo):
         player.roadBuildingCard -= 1
@@ -252,9 +258,12 @@ def useRoadBuildingCard(player, edges, undo = False):
         player.roadBuildingCard += 1
     e1, e2 = edges
     if e1 is not None:
-        placeFreeStreet(player, e1, undo)
+        placeFreeStreet(player, e1, undo, justCheck)
+        print("Road building card used - first ", e1)
     if e2 is not None:
-        placeFreeStreet(player, e2, undo)
+        placeFreeStreet(player, e2, undo, justCheck)
+        print("Road building card used - second ", e2)
+
 
 def useYearOfPlentyCard(player, resources, undo = False):
     if not undo:
