@@ -190,7 +190,8 @@ def useRobber(player, tilePosition, undo = False, justCheck = False):
     return previousPosition
 
 def useKnight(player, tilePosition, undo = False, justCheck = False):
-    largArmy = player.game.largestArmy(justCheck)        
+    largestArmy = player.game.largestArmy(justCheck)   
+
     previousPosition = Board.Board().robberTile
     Board.Board().robberTile = tilePosition
     if(not justCheck):
@@ -201,11 +202,13 @@ def useKnight(player, tilePosition, undo = False, justCheck = False):
     else:
         player.unusedKnights += 1
         player.usedKnights -= 1
+
     postMoveLargArmy = player.game.largestArmy(justCheck)
-    if(largArmy != postMoveLargArmy):
+
+    if(largestArmy != postMoveLargArmy):
         postMoveLargArmy.victoryPoints += 2 
         print("-2 riga 207")
-        largArmy.victoryPoints -= 2
+        largestArmy.victoryPoints -= 2
     return previousPosition
 
 def stealResource(player, tile: cg.Tile):

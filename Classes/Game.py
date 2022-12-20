@@ -40,7 +40,7 @@ class Game:
                 s += " From Knigths +2 "
             if(player.id == self.longestStreetOwner.id):    
                 s += " From Streets +2 "
-                
+
             print(s) 
 
             assert player.victoryPoints < 2, "Error: found a player with less then 2 points."
@@ -184,7 +184,7 @@ class Game:
             if(p.usedKnights >= 3 and p.usedKnights > max):
                 max = p.usedKnights 
                 belonger = p
-        if(not justCheck and belonger.id != 0):
+        if(not justCheck):
             self.largestArmyPlayer = self.players[belonger.id-1]
         return belonger
 

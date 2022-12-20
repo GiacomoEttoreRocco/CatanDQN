@@ -118,14 +118,14 @@ def playGameWithGraphic(game, view=None):
     turn = 0 
     won = False
     # START INIZIALE
-    game.players[0].AI = True
-    game.players[1].AI = True
-    game.players[2].AI = True
-    game.players[3].AI = True
-    # game.players[0].RANDOM = True
-    # game.players[1].RANDOM = True
-    # game.players[2].RANDOM = True
-    # game.players[3].RANDOM = True
+    # game.players[0].AI = True
+    # game.players[1].AI = True
+    # game.players[2].AI = True
+    # game.players[3].AI = True
+    game.players[0].RANDOM = True
+    game.players[1].RANDOM = True
+    game.players[2].RANDOM = True
+    game.players[3].RANDOM = True
     
     for p in game.players:
         game.doInitialChoise(p)
@@ -199,8 +199,8 @@ for epoch in range(epochs):
         view = GameView.GameView(g)
         playGameWithGraphic(g, view)
 
-    allGames.to_json("./json/game.json")
-    Gnn.Gnn().trainModel()
+    #allGames.to_json("./json/game.json")
+    #Gnn.Gnn().trainModel()
     printWinners()
 
 
