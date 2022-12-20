@@ -158,9 +158,9 @@ def playGameWithGraphic(game, view=None):
             saveToCsv(playerTurn)
             print(s) 
             won = True
-            if(turn > 0):
-                print(turn)
-                os.system("pause")
+            # if(turn > 0):
+            #     print(turn)
+            #     os.system("pause")
             #return playerTurn
         # if(turn % 4 == 0):
             # print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
