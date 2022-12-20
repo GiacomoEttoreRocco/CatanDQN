@@ -101,12 +101,9 @@ class GameView:
         self.screen.blit(self.irons[player.id-1], (x, y+155))
         self.screen.blit(self.clays[player.id-1], (x, y+175))
         self.screen.blit(self.knights[player.id-1], (x, y+215))
-        
         self.screen.blit(self.monopolyCards[player.id-1], (x, y+235))
         self.screen.blit(self.roadBuildingCards[player.id-1], (x, y+275))
         self.screen.blit(self.yearOfPlentyCards[player.id-1], (x, y+305))
-
-
 
     def setupAndDisplayBoard(self):
         pygame.draw.rect(self.screen, pygame.Color('cadetblue1'),(0, 0, self.width, self.height))
@@ -180,7 +177,7 @@ class GameView:
         self.blit(self.game.players[2], self.width-145, 5)
         self.blit(self.game.players[3], self.width-145, self.height-345)
 
-        longestStreetBox = pygame.Rect(170, self.height-100, 100, 100)
+        longestStreetBox = pygame.Rect(170, self.height-100, self.width * 0.1, 100)
         self.screen.fill(self.bgScoreColor, longestStreetBox)
         font_longest_street = self.font_resourceSmaller.render('LS: '+ str(self.game.longestStreetOwner.id), False, pygame.Color('white'))
         self.screen.blit(font_longest_street, (175, self.height - 95))

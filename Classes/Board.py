@@ -23,6 +23,7 @@ class Board: # deve diventare un singleton
                         "year_of_plenty","year_of_plenty","monopoly","monopoly", "road_building","road_building"]
             #   SHUFFLE DECK
             cls.deck = np.random.permutation(cls.deck)
+            print("Deck of this game: ", cls.deck)
             cls.graph = CatanGraph.CatanGraph()
             cls.tiles = cls.graph.tiles
             cls.places = cls.graph.places

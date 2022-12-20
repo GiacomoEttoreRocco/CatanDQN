@@ -259,10 +259,10 @@ def useRoadBuildingCard(player, edges, undo = False, justCheck = False):
     e1, e2 = edges
     if e1 is not None:
         placeFreeStreet(player, e1, undo, justCheck)
-        print("Road building card used - first ", e1)
+        print("User: ", player.id, ", Road building card used - first ", e1)
     if e2 is not None:
         placeFreeStreet(player, e2, undo, justCheck)
-        print("Road building card used - second ", e2)
+        print("User: ", player.id, "Road building card used - second ", e2)
 
 
 def useYearOfPlentyCard(player, resources, undo = False):

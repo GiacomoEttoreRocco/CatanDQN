@@ -9,17 +9,21 @@ import os
 
 class Game:
     def __init__(self, num_players = 4):
-        self.pippo = Player.Player(0, self)
-        self.pippo.victoryPoints = 4
+
+        ########################################## dummy is necessary: debugging and functioning reason. 
+        self.dummy = Player.Player(0, self)
+        self.dummy.victoryPoints = 4
+        ##########################################
+
         self.nplayer = num_players
         self.players = [Player.Player(i+1, self) for i in range(0, num_players)]
 
-        self.largestArmyPlayer = self.pippo
-        self.longestStreetOwner = self.pippo
+        self.largestArmyPlayer = self.dummy
+        self.longestStreetOwner = self.dummy
         self.longestStreetLength = 4
         self.tmpVisitedEdges = []
         self.dice = 0
-        self.currentTurn = self.pippo
+        self.currentTurn = self.dummy
         self.order = 0
 
         for i in range(num_players):
@@ -35,29 +39,30 @@ class Game:
             assert self.players[i].unusedKnights == 0
 
 
-    def printVictoryPointsOfAll(self):
+    def printVictoryPointsOfAll(self, nDevCardsBought: list):
         for player in self.players:
             s = str(player.id) + " : " + str(player.victoryPoints) + " -> Points from colony: +" + str(player.nColonies) + " From cities: +" + str(player.nCities*2) + " From vpCards: +" + str(player.victoryPointsCards)
             if(player.id == self.largestArmyPlayer.id):
                 s += " From Knigths +2 "
             if(player.id == self.longestStreetOwner.id):    
                 s += " From Streets +2 "
+            s += " Number of DevCards bounght: " + str(nDevCardsBought[player.id-1])
             print(s) 
 
-        s = str(self.pippo.id) + " : " + str(self.pippo.victoryPoints) + " -> Points from colony: +" + str(self.pippo.nColonies) + " From cities: +" + str(self.pippo.nCities*2) + " From vpCards: +" + str(self.pippo.victoryPointsCards)
-        if(self.pippo.id == self.largestArmyPlayer.id):
+        s = str(self.dummy.id) + " : " + str(self.dummy.victoryPoints) + " -> Points from colony: +" + str(self.dummy.nColonies) + " From cities: +" + str(self.dummy.nCities*2) + " From vpCards: +" + str(self.dummy.victoryPointsCards)
+        if(self.dummy.id == self.largestArmyPlayer.id):
             s += " From Knigths +2 "
-        if(self.pippo.id == self.longestStreetOwner.id):    
+        if(self.dummy.id == self.longestStreetOwner.id):    
             s += " From Streets +2 "
         print(s) 
 
         for player in self.players:
             s = "Player Id: " +str(player.id) + " : "
             assert player.victoryPoints >= 2, s+"\nError: found a player with less then 2 points."
-            assert player.victoryPoints <= 11, s+"\nError: found a player with more then 11 points."
+            assert player.victoryPoints <= 12, s+"\nError: found a player with more then 11 points."
 
-        assert self.pippo.victoryPoints >= 0, s+"\nError, fake player weird behaviour: less then 0 points."
-        assert self.pippo.victoryPoints <= 4, s+"\nError: fake player weird behaviour: more then 4 points."
+        assert self.dummy.victoryPoints >= 0, s+"\nError, fake player weird behaviour: less then 0 points."
+        assert self.dummy.victoryPoints <= 4, s+"\nError: fake player weird behaviour: more then 4 points."
 
 
     def dice_production(self, number):
@@ -197,7 +202,7 @@ class Game:
             if(p.usedKnights >= 3 and p.usedKnights > max):
                 max = p.usedKnights 
                 belonger = p
-        if(not justCheck):
+        if(not justCheck and max >= 3):
             self.largestArmyPlayer = self.players[belonger.id-1]
         return belonger
 
@@ -207,7 +212,7 @@ class Game:
         if(maxLength > 4):
             belonger = self.longestStreetOwner
         else:
-            belonger = self.pippo
+            belonger = self.dummy
         for p in self.players:
             if(p.id != self.longestStreetOwner.id):
                 actual = self.longest(p)
@@ -233,10 +238,14 @@ class Game:
         for edge in player.ownedStreets:
             if edge not in visited:
                 p1, p2 = edge
-                length, tmpVisited =self.explorePlace(player, p1, [])
-                visited.update(tmpVisited)
-                if max < length:
-                    max = length
+                length1, tmpVisited1 = self.explorePlace(player, p1, [])
+                length2, tmpVisited2 = self.explorePlace(player, p2, []) # for fun
+                visited.update(tmpVisited1)
+                visited.update(tmpVisited2)
+                if max < length1:
+                    max = length1
+                elif max < length2:
+                    max = length2
         return max - 1 
         
 

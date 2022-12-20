@@ -14,6 +14,7 @@ save = True
 #allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
 
 WINNERS = [0.0,0.0,0.0,0.0]
+devCardsBought = [0.0, 0.0, 0.0, 0.0]
 
 def goNextIfInvio():
     # if(not speed):
@@ -28,6 +29,7 @@ def goNextIfInvio():
         time.sleep(0.05)
 
 def doTurnGraphic(game: c.Game, player: c.Player):
+    global devCardsBought
     turnCardUsed = False 
     player.unusedKnights = player.unusedKnights + player.justBoughtKnights
     player.justBoughtKnights = 0
@@ -94,6 +96,8 @@ def doTurnGraphic(game: c.Game, player: c.Player):
         game.dice_production(dicesValue)
     move, thingNeeded = game.bestMove(player, turnCardUsed)
     move(player, thingNeeded)
+    if(move == c.Move.buyDevCard):
+        devCardsBought[player.id-1] += 1
     saveMove(save, player) ######################################################
     goNextIfInvio()
     # print("Player ", player.id, " mossa: ", move, " ")
@@ -104,6 +108,8 @@ def doTurnGraphic(game: c.Game, player: c.Player):
     while(move != c.Move.passTurn and not game.checkWon(player)): # move è una funzione 
         move, thingNeeded = game.bestMove(player, turnCardUsed)
         move(player, thingNeeded)
+        if(move == c.Move.buyDevCard):
+            devCardsBought[player.id-1] += 1
         saveMove(save, player) ######################################################
         goNextIfInvio()
         #print("Player ", player.id, " mossa: ", move, " ")
@@ -111,6 +117,8 @@ def doTurnGraphic(game: c.Game, player: c.Player):
             turnCardUsed = True
 
 def playGameWithGraphic(game, view=None):
+    global devCardsBought
+    devCardsBought = [0.0, 0.0, 0.0, 0.0]
     GameView.GameView.setupAndDisplayBoard(view)
     GameView.GameView.setupPlaces(view)
     GameView.GameView.updateGameScreen(view)
@@ -119,13 +127,13 @@ def playGameWithGraphic(game, view=None):
     won = False
     # START INIZIALE
     game.players[0].AI = True
-    game.players[1].AI = True
+    #game.players[1].AI = True
     game.players[2].AI = True
-    game.players[3].AI = True
+    #game.players[3].AI = True
     # game.players[0].RANDOM = True
-    # game.players[1].RANDOM = True
-    # game.players[2].RANDOM = True
-    # game.players[3].RANDOM = True
+    game.players[1].RANDOM = True
+    #game.players[2].RANDOM = True
+    game.players[3].RANDOM = True
     
     for p in game.players:
         game.doInitialChoise(p)
@@ -139,17 +147,20 @@ def playGameWithGraphic(game, view=None):
     while won == False:
         playerTurn = game.players[turn%game.nplayer]
         #print(turn%game.nplayer)
-        game.currentTurn = playerTurn
+        #game.currentTurn = playerTurn
         turn += 1
         doTurnGraphic(game, playerTurn)
         if(playerTurn.victoryPoints >= 10):
             WINNERS[playerTurn.id-1] += 1
             s = 'Winner: ' + str(playerTurn.id) + "\n"
-            game.printVictoryPointsOfAll()
+            game.printVictoryPointsOfAll(devCardsBought)
             #time.sleep(15)
             saveToCsv(playerTurn)
             print(s) 
             won = True
+            if(turn > 0):
+                print(turn)
+                os.system("pause")
             #return playerTurn
         # if(turn % 4 == 0):
             # print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
@@ -184,8 +195,9 @@ def printWinners():
     print(WINNERS)
 
 ###########################################################################################################################
-epochs = 1
-batchs = 1000
+
+epochs = 3
+batchs = 15
 
 for epoch in range(epochs):
     print('Iteration: ', epoch+1, "/", epochs)

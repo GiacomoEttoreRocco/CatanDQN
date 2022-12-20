@@ -498,7 +498,7 @@ class Player:
             toRet = Gnn.Gnn().evaluatePosition(self)
             move(self, previousTilePos, True, True) 
 
-        elif(move == Move.placeFreeStreet or move == Move.placeStreet or move == Move.placeInitialStreet or move == Move.placeColony or Move.useRoadBuildingCard):
+        elif(move == Move.placeFreeStreet or move == Move.placeStreet or move == Move.placeInitialStreet or move == Move.placeColony or move == Move.useRoadBuildingCard):
             move(self, thingNeeded, False, True)
             toRet = Gnn.Gnn().evaluatePosition(self) 
             move(self, thingNeeded, True, True) 
