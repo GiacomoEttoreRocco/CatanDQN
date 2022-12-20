@@ -16,13 +16,13 @@ save = True
 WINNERS = [0.0,0.0,0.0,0.0]
 
 def goNextIfInvio():
-    if(not speed):
-        event = pygame.event.wait()
-        while event.type != pygame.KEYDOWN:
-            event = pygame.event.wait()
-    else:
-        event = pygame.event.get()
-        pygame.display.update()
+    # if(not speed):
+    #     event = pygame.event.wait()
+    #     while event.type != pygame.KEYDOWN:
+    #         event = pygame.event.wait()
+    # else:
+    event = pygame.event.get()
+    pygame.display.update()
     view.updateGameScreen()
     if(withDelay):
         time.sleep(0.05)
@@ -65,6 +65,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
                     c.Move.passTurn(player)
                 
     if(game.checkWon(player)):
+        print("outside the box?")
         return
     ####################################################################### ROLL DICES #####################################################################   
     dicesValue = game.rollDice()
@@ -94,7 +95,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
     move, thingNeeded = game.bestMove(player, turnCardUsed)
     move(player, thingNeeded)
     saveMove(save, player) ######################################################
-    #goNextIfInvio()
+    goNextIfInvio()
     # print("Player ", player.id, " mossa: ", move, " ")
     if(game.checkWon(player)):
         return
@@ -104,7 +105,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
         move, thingNeeded = game.bestMove(player, turnCardUsed)
         move(player, thingNeeded)
         saveMove(save, player) ######################################################
-        #goNextIfInvio()
+        goNextIfInvio()
         #print("Player ", player.id, " mossa: ", move, " ")
         if(move in c.Move.cardMoves()):
             turnCardUsed = True
@@ -129,12 +130,12 @@ def playGameWithGraphic(game, view=None):
     for p in game.players:
         game.doInitialChoise(p)
         saveMove(save, p) #################
-        #goNextIfInvio()
+        goNextIfInvio()
     for p in sorted(game.players, reverse=True):
         game.doInitialChoise(p, giveResources = True)
         saveMove(save, p) #################
         # INITIAL CHOISE TERMINATED
-        #goNextIfInvio()
+        goNextIfInvio()
     while won == False:
         playerTurn = game.players[turn%game.nplayer]
         #print(turn%game.nplayer)
@@ -143,18 +144,16 @@ def playGameWithGraphic(game, view=None):
         doTurnGraphic(game, playerTurn)
         if(playerTurn.victoryPoints >= 10):
             WINNERS[playerTurn.id-1] += 1
-            s = 'Winner: ' + str(playerTurn.id) + "\nPoints from colony: " + str(playerTurn.nColonies) + " From cities: " + str(playerTurn.nCities*2) + " From vpCards: " + str(playerTurn.victoryPointsCards)
-            if(playerTurn.id == game.largestArmyPlayer.id):
-                s += " +2 Knigths "
-            if(playerTurn.id == game.longestStreetOwner.id):    
-                s += " +2 Streets "
+            s = 'Winner: ' + str(playerTurn.id) + "\n"
+            game.printVictoryPointsOfAll()
+            time.sleep(15)
             saveToCsv(playerTurn)
             print(s) 
             won = True
             #return playerTurn
         # if(turn % 4 == 0):
             # print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
-    #goNextIfInvio()
+    goNextIfInvio()
     pygame.quit()
 
 def saveMove(save, player):
@@ -167,7 +166,6 @@ def saveMove(save, player):
 def saveToCsv(victoryPlayer):
     for i in range(len(total)):
         total.globals[i]['winner'] = victoryPlayer.id
-        WINNERS[victoryPlayer.id-1] += 1
     print(len(total))
     global allGames
     allGames = pd.concat([allGames, total], ignore_index=True)
@@ -183,10 +181,11 @@ def printWinners():
     for i, vperc in enumerate(toPrint):
         s = s + "Player " + str(i+1)+ ": " + str(round(vperc*100,2)) + " % "
     print(s)
+    print(WINNERS)
 
 ###########################################################################################################################
 epochs = 1
-batchs = 1
+batchs = 3
 
 for epoch in range(epochs):
     print('Iteration: ', epoch+1, "/", epochs)

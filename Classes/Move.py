@@ -15,10 +15,11 @@ def placeInitialStreet(player, edge, undo = False, justCheck = False):
         player.nStreets-=1
         del player.ownedStreets[-1]
 
-    #actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
-    # if(previousLongestStreetOwner != actualLongestStreetOwner):
-    #     actualLongestStreetOwner.victoryPoints += 2
-    #     previousLongestStreetOwner.victoryPoints -= 2
+    actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
+    if(previousLongestStreetOwner != actualLongestStreetOwner):
+        actualLongestStreetOwner.victoryPoints += 2
+        print("-2 riga 21")
+        previousLongestStreetOwner.victoryPoints -= 2
 
 def placeFreeStreet(player, edge, undo = False, justCheck = False):
     previousLongestStreetOwner = player.game.longestStreetOwner
@@ -34,6 +35,7 @@ def placeFreeStreet(player, edge, undo = False, justCheck = False):
     actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
     if(previousLongestStreetOwner != actualLongestStreetOwner):
         actualLongestStreetOwner.victoryPoints += 2
+        print("-2 riga 38")
         previousLongestStreetOwner.victoryPoints -= 2
 
 def placeInitialColony(player: Player, place: cg.Place, undo = False):
@@ -72,6 +74,7 @@ def placeStreet(player, edge, undo = False, justCheck = False):
     actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
     if(previousLongestStreetOwner != actualLongestStreetOwner): 
         actualLongestStreetOwner.victoryPoints += 2
+        print("-2 riga 76")
         previousLongestStreetOwner.victoryPoints -= 2
 
 def placeColony(player, place: cg.Place, undo = False, justCheck = False):
@@ -201,6 +204,7 @@ def useKnight(player, tilePosition, undo = False, justCheck = False):
     postMoveLargArmy = player.game.largestArmy(justCheck)
     if(largArmy != postMoveLargArmy):
         postMoveLargArmy.victoryPoints += 2 
+        print("-2 riga 207")
         largArmy.victoryPoints -= 2
     return previousPosition
 
@@ -238,11 +242,11 @@ def useMonopolyCard(player, resource):
     return
     
 def useRoadBuildingCard(player, edges, undo = False):
+    assert len(edges) == 2, " FATAL ERROR. RoadBuildingCard: Number of elements can't be lower then 2, the edges must be passed in a tuple or list."
     if(not undo):
         player.roadBuildingCard -= 1
     else:
         player.roadBuildingCard += 1
-
     e1, e2 = edges
     if e1 is not None:
         placeFreeStreet(player, e1, undo)

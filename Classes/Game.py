@@ -11,6 +11,7 @@ class Game:
     def __init__(self, num_players = 4):
         self.nplayer = num_players
         self.players = [Player.Player(i+1, self) for i in range(0, num_players)]
+
         self.largestArmyPlayer = Player.Player(0, self)
         self.longestStreetOwner = Player.Player(0, self)
         self.longestStreetLength = 4
@@ -18,6 +19,33 @@ class Game:
         self.dice = 0
         self.currentTurn = Player.Player(0, self)
         self.order = 0
+
+        for i in range(num_players):
+            assert self.players[i].resourceCount() == 0
+            assert self.players[i].victoryPoints == 0
+            assert len(self.players[i].ownedStreets) == 0
+            assert len(self.players[i].ownedCities) == 0
+            assert len(self.players[i].ownedColonies) == 0
+            assert len(self.players[i].ownedHarbors) == 0
+            assert self.players[i].nCities == 0
+            assert self.players[i].nColonies == 0
+            assert self.players[i].nStreets == 0
+            assert self.players[i].unusedKnights == 0
+
+
+    def printVictoryPointsOfAll(self):
+        for player in self.players:
+            s = str(player.id) + "-> Points from colony: +" + str(player.nColonies) + " From cities: +" + str(player.nCities*2) + " From vpCards: +" + str(player.victoryPointsCards)
+            if(player.id == self.largestArmyPlayer.id):
+                s += " From Knigths +2 "
+            if(player.id == self.longestStreetOwner.id):    
+                s += " From Streets +2 "
+                
+            print(s) 
+
+            assert player.victoryPoints < 2, "Error: found a player with less then 2 points."
+            assert player.victoryPoints > 11, "Error: found a player with more then 11 points."
+
 
     def dice_production(self, number):
         for tile in Board.Board().tiles:
@@ -87,6 +115,7 @@ class Game:
                 # print("BEFORE ROLL DICE: ", Move.useKnight, "\n")
                 turnCardUsed = True 
         if(self.checkWon(player)):
+            print("outside the box n2?")
             return
         ####################################################################### ROLL DICES #####################################################################   
         dicesValue = self.rollDice()
@@ -101,6 +130,7 @@ class Game:
         move, thingNeeded = self.bestMove(player, turnCardUsed)
         move(player, thingNeeded)
         if(self.checkWon(player)):
+            print("outside the box n3?")
             return
         if(move in Move.cardMoves()):
                 turnCardUsed = True
@@ -182,7 +212,6 @@ class Game:
         visited = set()
         for tail in self.findLeaves(player):
             self.order = 0
-            # print('Tail: ',tail)
             length, tmpVisited = self.explorePlace(player, tail, [])
             visited.update(tmpVisited)
             if max<length:
@@ -230,21 +259,6 @@ class Game:
 
     def isLeaf(self, player, place):
         return len(self.connectedPlacesToPlace(player, place))==1 or len(self.connectedPlacesToPlace(player, place))==3
-        
-    # def connectedOwnedEdges(self, player, edge):
-    #     p1, p2 = edge
-    #     own1 = Board.Board().places[p1].owner
-    #     own2 = Board.Board().places[p2].owner
-    #     edges = set()
-    #     if(own1 in (0, player.id)):
-    #         print('if1')
-    #         edges.update(self.connectedEdgesToPlace(player, p1))
-    #     if(own2 in (0, player.id)):
-    #         print('if2')
-    #         edges.update(self.connectedEdgesToPlace(player, p2))
-    #     edges.remove(edge)
-    #     return edges
-
 
     def connectedPlacesToPlace(self, player, place):
         toRet = []
