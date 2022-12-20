@@ -24,7 +24,6 @@ class Gnn():
             if os.path.exists('./AI/model_weights.pth'):
                 cls.model.load_state_dict(torch.load('./AI/model_weights.pth', map_location=cls.device))
                 print('Weights loaded..')
-                
         return cls.instance
 
     def trainModel(cls):
