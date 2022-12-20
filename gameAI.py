@@ -10,8 +10,8 @@ speed = True
 withDelay = False
 realPlayer = False # If you put this to true you will play with the 3th player.
 save = True
-total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
-allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
+#total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
+#allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
 
 WINNERS = [0.0,0.0,0.0,0.0]
 
@@ -94,7 +94,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
     move, thingNeeded = game.bestMove(player, turnCardUsed)
     move(player, thingNeeded)
     saveMove(save, player) ######################################################
-    goNextIfInvio()
+    #goNextIfInvio()
     # print("Player ", player.id, " mossa: ", move, " ")
     if(game.checkWon(player)):
         return
@@ -104,7 +104,7 @@ def doTurnGraphic(game: c.Game, player: c.Player):
         move, thingNeeded = game.bestMove(player, turnCardUsed)
         move(player, thingNeeded)
         saveMove(save, player) ######################################################
-        goNextIfInvio()
+        #goNextIfInvio()
         #print("Player ", player.id, " mossa: ", move, " ")
         if(move in c.Move.cardMoves()):
             turnCardUsed = True
@@ -129,14 +129,15 @@ def playGameWithGraphic(game, view=None):
     for p in game.players:
         game.doInitialChoise(p)
         saveMove(save, p) #################
-        goNextIfInvio()
+        #goNextIfInvio()
     for p in sorted(game.players, reverse=True):
         game.doInitialChoise(p, giveResources = True)
         saveMove(save, p) #################
         # INITIAL CHOISE TERMINATED
-        goNextIfInvio()
+        #goNextIfInvio()
     while won == False:
         playerTurn = game.players[turn%game.nplayer]
+        #print(turn%game.nplayer)
         game.currentTurn = playerTurn
         turn += 1
         doTurnGraphic(game, playerTurn)
@@ -147,22 +148,20 @@ def playGameWithGraphic(game, view=None):
                 s += " +2 Knigths "
             if(playerTurn.id == game.longestStreetOwner.id):    
                 s += " +2 Streets "
-#           saveToCsv(playerTurn)
+            saveToCsv(playerTurn)
             print(s) 
-            return playerTurn
+            won = True
+            #return playerTurn
         # if(turn % 4 == 0):
             # print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
-    goNextIfInvio()
+    #goNextIfInvio()
     pygame.quit()
-
 
 def saveMove(save, player):
     if(save):
         places = c.Board.Board().placesToDict(player)
         edges = c.Board.Board().edgesToDict(player)
-
         globals = player.globalFeaturesToDict()
-
         total.loc[len(total)] = [places, edges, globals]
 
 def saveToCsv(victoryPlayer):
@@ -195,13 +194,14 @@ for epoch in range(epochs):
     for batch in range(batchs): 
         print('game: ', batch+1, "/", batchs) 
         total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
+        c.Board.Board().reset()
+        c.Bank.Bank().reset()
         g = c.Game.Game()
         view = GameView.GameView(g)
         playGameWithGraphic(g, view)
-        c.Board.Board().reset()
-        c.Bank.Bank().reset()
-    #allGames.to_json("./json/game.json")
-    #Gnn.Gnn().trainModel()
+
+    allGames.to_json("./json/game.json")
+    Gnn.Gnn().trainModel()
     printWinners()
 
 

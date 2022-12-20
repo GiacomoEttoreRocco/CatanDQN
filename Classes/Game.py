@@ -17,7 +17,7 @@ class Game:
         self.tmpVisitedEdges = []
         self.dice = 0
         self.currentTurn = Player.Player(0, self)
-        self.order =0
+        self.order = 0
 
     def dice_production(self, number):
         for tile in Board.Board().tiles:

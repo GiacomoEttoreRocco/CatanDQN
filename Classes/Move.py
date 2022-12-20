@@ -15,10 +15,10 @@ def placeInitialStreet(player, edge, undo = False, justCheck = False):
         player.nStreets-=1
         del player.ownedStreets[-1]
 
-    actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
-    if(previousLongestStreetOwner != actualLongestStreetOwner):
-        actualLongestStreetOwner.victoryPoints += 2
-        previousLongestStreetOwner.victoryPoints -= 2
+    #actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
+    # if(previousLongestStreetOwner != actualLongestStreetOwner):
+    #     actualLongestStreetOwner.victoryPoints += 2
+    #     previousLongestStreetOwner.victoryPoints -= 2
 
 def placeFreeStreet(player, edge, undo = False, justCheck = False):
     previousLongestStreetOwner = player.game.longestStreetOwner
@@ -70,7 +70,7 @@ def placeStreet(player, edge, undo = False, justCheck = False):
         player.nStreets-=1
         del player.ownedStreets[-1]
     actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
-    if(previousLongestStreetOwner != actualLongestStreetOwner):
+    if(previousLongestStreetOwner != actualLongestStreetOwner): 
         actualLongestStreetOwner.victoryPoints += 2
         previousLongestStreetOwner.victoryPoints -= 2
 
@@ -107,10 +107,10 @@ def placeColony(player, place: cg.Place, undo = False, justCheck = False):
         if(place.harbor != ""):
             del player.ownedHarbors[-1]
 
-    actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
-    if(previousLongestStreetOwner != actualLongestStreetOwner):
-        actualLongestStreetOwner.victoryPoints += 2
-        previousLongestStreetOwner.victoryPoints -= 2
+    # actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
+    # if(previousLongestStreetOwner != actualLongestStreetOwner):
+    #     actualLongestStreetOwner.victoryPoints += 2
+    #     previousLongestStreetOwner.victoryPoints -= 2
         
 
 def placeCity(player, place: cg.Place, undo = False):

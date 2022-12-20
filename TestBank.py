@@ -1,18 +1,18 @@
 import unittest
-import Player
-from Bank import Bank
+import Classes.Player as c
+from Classes.Bank import Bank
 
 class TestBank(unittest.TestCase):
 
     def testGiveResource(self):
         previousResources = Bank().resources['wood']
-        Bank().giveResource(Player.Player(1, None), 'wood')
+        Bank().giveResource(c.Player.Player(1, None), 'wood')
         actualResources = Bank().resources['wood']
         self.assertEqual(previousResources-1, actualResources)
 
     def testResourceToAsk(self):
         #res = "wood"
-        player = Player.Player(1, None)
+        player = c.Player.Player(1, None)
 
         player.ownedHarbors = []
         val = Bank().resourceToAsk(player, "wood")

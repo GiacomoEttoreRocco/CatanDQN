@@ -233,7 +233,7 @@ class Player:
                         for p_adj_adj in Board.Board().graph.listOfAdj[p_adj]:
                             if(Board.Board().places[p_adj_adj].owner != 0):
                                 available = False
-                        if(available and Board.Board().places[p_adj].owner == 0 and self.nColonies < 5): # soluzione temporanea
+                        if(available and Board.Board().places[p_adj].owner == 0 and self.nColonies < 5): 
                             possibleColonies.append(Board.Board().places[p_adj])
         #print("POSSIBLE COLONIES: ", possibleColonies)
         return possibleColonies
@@ -399,7 +399,7 @@ class Player:
             candidateEdge2 = None
             toRet = 0
             
-            if self.ownedStreets< 14:
+            if len(self.ownedStreets) < 14:
                 possibleEdges = self.calculatePossibleEdges()
                 max1 = -1
                 for edge in possibleEdges: 
@@ -408,7 +408,7 @@ class Player:
                         max1 = valutation
                         candidateEdge1 = edge
                 toRet += max1
-            if self.ownedStreets<15:
+            if len(self.ownedStreets) < 15:
                 possibleEdges = self.calculatePossibleEdges()
                 max2 = -1
                 for edge in possibleEdges: 

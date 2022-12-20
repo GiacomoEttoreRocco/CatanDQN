@@ -8,10 +8,10 @@ import Graphics.PlaceCoordinates as pc
 import os
 import time
 
-pygame.init()
 
 class GameView:
     def __init__(self, game):
+        pygame.init()
         self.width = 1200
         self.height = 800
         self.sourceFileDir = os.path.dirname(os.path.abspath(__file__))
