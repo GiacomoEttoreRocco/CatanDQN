@@ -16,17 +16,17 @@ save = True
 WINNERS = [0.0,0.0,0.0,0.0]
 devCardsBought = [0.0, 0.0, 0.0, 0.0]
 
-def goNextIfInvio():
+#def goNextIfInvio():
     # if(not speed):
     #     event = pygame.event.wait()
     #     while event.type != pygame.KEYDOWN:
     #         event = pygame.event.wait()
     # else:
-    event = pygame.event.get()
+#    event = pygame.event.get()
  #   pygame.display.update()
  #   view.updateGameScreen()
-    if(withDelay):
-        time.sleep(0.05)
+#    if(withDelay):
+#        time.sleep(0.05)
 
 def doTurnGraphic(game: c.Game, player: c.Player):
     global devCardsBought
