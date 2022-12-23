@@ -54,7 +54,7 @@ class GameView:
 
         self.turns = []
         self.bgScoreColor = pygame.Color("grey18")
-        self.bgScoreColorHighlited = pygame.Color('grey34')
+        self.bgScoreColorHighlited = pygame.Color('grey64')
 
         for i in range(0, len(self.game.players)):
             self.points.append(self.font_resource.render(str(self.game.players[i].victoryPoints), False, self.playerColorDict[i+1]))

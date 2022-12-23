@@ -17,12 +17,12 @@ WINNERS = [0.0,0.0,0.0,0.0]
 devCardsBought = [0.0, 0.0, 0.0, 0.0]
 
 def goNextIfInvio():
-    # if(not speed):
-    #     event = pygame.event.wait()
-    #     while event.type != pygame.KEYDOWN:
-    #         event = pygame.event.wait()
-    # else:
-    event = pygame.event.get()
+    if(not speed):
+        event = pygame.event.wait()
+        while event.type != pygame.KEYDOWN:
+            event = pygame.event.wait()
+    else:
+        event = pygame.event.get()
     pygame.display.update()
     view.updateGameScreen()
     if(withDelay):
@@ -147,7 +147,7 @@ def playGameWithGraphic(game, view=None):
     while won == False:
         playerTurn = game.players[turn%game.nplayer]
         #print(turn%game.nplayer)
-        #game.currentTurn = playerTurn
+        game.currentTurn = playerTurn
         turn += 1
         doTurnGraphic(game, playerTurn)
         if(playerTurn.victoryPoints >= 10):
