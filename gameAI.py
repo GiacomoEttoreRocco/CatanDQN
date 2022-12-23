@@ -197,7 +197,7 @@ def printWinners():
 ###########################################################################################################################
 
 epochs = 3
-batchs = 15
+batchs = 1
 
 for epoch in range(epochs):
     print('Iteration: ', epoch+1, "/", epochs)
