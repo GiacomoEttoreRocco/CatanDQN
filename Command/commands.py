@@ -1,5 +1,6 @@
-from Classes.Player import Player
-import CatanGraph as cg
+import Classes.Player as Player
+import Classes.Board as Board
+import Classes.CatanGraph as cg
 
 @dataclass
 class PlaceStreetCommand:
@@ -8,19 +9,19 @@ class PlaceStreetCommand:
     withCost: bool
 
     def execute(self):
-        if withCost:
-            player.useResource("wood")
-            player.useResource("clay")
-        Board.Board().edges[edge] = player.id
-        player.nStreets+=1
-        player.ownedStreets.append(edge)
+        if self.withCost:
+            self.player.useResource("wood")
+            self.player.useResource("clay")
+        Board.Board().edges[edge] = self.player.id
+        self.player.nStreets+=1
+        self.player.ownedStreets.append(edge)
 
     def undo(self):
-        Bank.Bank().giveResource(player, "wood")   
-        Bank.Bank().giveResource(player, "clay")    
+        Bank.Bank().giveResource(self.player, "wood")   
+        Bank.Bank().giveResource(self.player, "clay")    
         Board.Board().edges[edge] = 0
-        player.nStreets-=1
-        del player.ownedStreets[-1]
+        self.player.nStreets-=1
+        del self.player.ownedStreets[-1]
 
     def redo(self):
         self.execute()
@@ -38,38 +39,39 @@ class placeColonyCommand:
     withCost: bool
     player: Player
     place: Place
+
     def execute(self):
-        if withCost:
-            player.useResource("wood")
-            player.useResource("clay")
-            player.useResource("crop")
-            player.useResource("sheep")
+        if self.withCost:
+            self.player.useResource("wood")
+            self.player.useResource("clay")
+            self.player.useResource("crop")
+            self.player.useResource("sheep")
 
-        place.owner = player.id
-        place.isColony = True
+        self.place.owner = self.player.id
+        self.place.isColony = True
 
-        player.victoryPoints+=1
-        player.nColonies+=1
-        player.ownedColonies.append(place.id)
+        self.player.victoryPoints+=1
+        self.player.nColonies+=1
+        self.player.ownedColonies.append(self.place.id)
 
-        if(place.harbor != ""):
-            player.ownedHarbors.append(place.harbor)
+        if(self.place.harbor != ""):
+            self.player.ownedHarbors.append(self.place.harbor)
 
     def undo(self):
-        if withCost:
-            Bank.Bank().giveResource(player, "wood")   
-            Bank.Bank().giveResource(player, "clay")  
-            Bank.Bank().giveResource(player, "crop")   
-            Bank.Bank().giveResource(player, "sheep")  
+        if self.withCost:
+            Bank.Bank().giveResource(self.player, "wood")   
+            Bank.Bank().giveResource(self.player, "clay")  
+            Bank.Bank().giveResource(self.player, "crop")   
+            Bank.Bank().giveResource(self.player, "sheep")  
 
-        place.owner = 0
-        place.isColony = False
-        player.victoryPoints-=1
-        player.nColonies-=1
-        del player.ownedColonies[-1]
+        self.place.owner = 0
+        self.place.isColony = False
+        self.player.victoryPoints-=1
+        self.player.nColonies-=1
+        del self.player.ownedColonies[-1]
 
-        if(place.harbor != ""):
-            del player.ownedHarbors[-1]
+        if(self.place.harbor != ""):
+            del self.player.ownedHarbors[-1]
 
     def redo(self):
         self.execute()
@@ -81,34 +83,34 @@ class PlaceCityCommand:
     place: cg.Place
 
     def execute(self):
-        if withCost:
-            player.useResource("iron")
-            player.useResource("iron")
-            player.useResource("iron")
-            player.useResource("crop")
-            player.useResource("crop")
+        if self.withCost:
+            self.player.useResource("iron")
+            self.player.useResource("iron")
+            self.player.useResource("iron")
+            self.player.useResource("crop")
+            self.player.useResource("crop")
 
         Board.Board().places[place.id].isColony = False
         Board.Board().places[place.id].isCity = True
-        player.victoryPoints+=1
-        player.nCities+=1
-        player.nColonies-=1
-        player.ownedCities.append(place.id)
+        self.player.victoryPoints+=1
+        self.player.nCities+=1
+        self.player.nColonies-=1
+        self.player.ownedCities.append(self.place.id)
 
     def undo(self):
-        if withCost:
-            Bank.Bank().giveResource(player, "iron")
-            Bank.Bank().giveResource(player, "iron")
-            Bank.Bank().giveResource(player, "iron")
-            Bank.Bank().giveResource(player, "crop")
-            Bank.Bank().giveResource(player, "crop")
+        if self.withCost:
+            Bank.Bank().giveResource(self.player, "iron")
+            Bank.Bank().giveResource(self.player, "iron")
+            Bank.Bank().giveResource(self.player, "iron")
+            Bank.Bank().giveResource(self.player, "crop")
+            Bank.Bank().giveResource(self.player, "crop")
 
         Board.Board().places[place.id].isColony = True
         Board.Board().places[place.id].isCity = False
-        player.victoryPoints-=1
-        player.nCities-=1
-        player.nColonies+=1
-        del player.ownedCities[-1]
+        self.player.victoryPoints-=1
+        self.player.nCities-=1
+        self.player.nColonies+=1
+        del self.player.ownedCities[-1]
 
 @dataclass
 class BuyDevCardCommand:
@@ -116,32 +118,32 @@ class BuyDevCardCommand:
     player: Player
 
     def execute(self):
-        if withCost:
-            player.useResource("iron")
-            player.useResource("crop")
-            player.useResource("sheep")
+        if self.withCost:
+            self.player.useResource("iron")
+            self.player.useResource("crop")
+            self.player.useResource("sheep")
 
         card = Board.Board().deck[0] ##### IL DECK VIENE TOCCATO QUA
 
         if(card == "knight"):
-            player.justBoughtKnights += 1
+            self.player.justBoughtKnights += 1
         if(card == "monopoly"):
-            player.justBoughtMonopolyCard += 1
+            self.player.justBoughtMonopolyCard += 1
         if(card == "road_building"):
-            player.justBoughtRoadBuildingCard += 1
+            self.player.justBoughtRoadBuildingCard += 1
         if(card == "year_of_plenty"):
-            player.justBoughtYearOfPlentyCard += 1
+            self.player.justBoughtYearOfPlentyCard += 1
         if(card == "victory_point"):
-            player.victoryPoints += 1
-            player.victoryPointsCards += 1
+            self.player.victoryPoints += 1
+            self.player.victoryPointsCards += 1
         Board.Board().deck = Board.Board().deck[1:] 
 
     def undo(self):
         print("Debug: BUG wrong way. (riga 114 move")
-        if withCost:
-            Bank.Bank().giveResource(player, "iron")
-            Bank.Bank().giveResource(player, "crop")
-            Bank.Bank().giveResource(player, "sheep")
+        if self.withCost:
+            Bank.Bank().giveResource(self.player, "iron")
+            Bank.Bank().giveResource(self.player, "crop")
+            Bank.Bank().giveResource(self.player, "sheep")
 
     def redo(self):
         self.execute()
@@ -153,12 +155,12 @@ class DiscardResourceCommand:
     withCost: bool
 
     def execute(self):
-        if withCost:
-            player.useResource(resource)
+        if self.withCost:
+            self.player.useResource(self.resource)
 
     def undo(self):
-        if withCost:
-            Bank.Bank().giveResource(player, resource)
+        if self.withCost:
+            Bank.Bank().giveResource(self.player, self.resource)
 
     def redo(self):
         self.execute()
@@ -184,21 +186,21 @@ class StealResourceCommand:
     def execute(self):
         playersInTile = []
         for place in tile.associatedPlaces:
-            owner = player.game.players[Board.Board().places[place].owner-1]
-            if owner not in playersInTile and owner.id != 0 and owner != player and owner.resourceCount() > 0: 
+            owner = self.player.game.players[Board.Board().places[place].owner-1]
+            if owner not in playersInTile and owner.id != 0 and owner != self.player and owner.resourceCount() > 0: 
                 playersInTile.append(owner)
         if len(playersInTile) > 0:
             chosenPlayer = playersInTile[random.randint(0,len(playersInTile)-1)]
-            self.takenResource = chosenPlayer.stealFromMe(player)
+            self.takenResource = chosenPlayer.stealFromMe(self.player)
         return
 
     def undo(self):
-        chosenPlayer.resources[self.takenResource] += 1
-        player.resources[self.takenResource] -= 1
+        self.chosenPlayer.resources[self.takenResource] += 1
+        self.player.resources[self.takenResource] -= 1
 
     def redo(self):
-        chosenPlayer.resources[self.takenResource] -= 1
-        player.resources[self.takenResource] += 1
+        self.chosenPlayer.resources[self.takenResource] -= 1
+        self.player.resources[self.takenResource] += 1
 
 @dataclass
 class UseRobberCommand:
@@ -209,9 +211,9 @@ class UseRobberCommand:
 
     def execute(self):
         self.previousPosition = Board.Board().robberTile
-        self.stealCommand = StealResourceCommand(player, Board.Board().tiles[tilePosition])
+        self.stealCommand = StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])
         self.stealCommand.execute()        
-        Board.Board().robberTile = tilePosition
+        Board.Board().robberTile = self.tilePosition
 
     def undo(self):
         Board.Board().robberTile = self.previousPosition
@@ -231,11 +233,11 @@ class UseKnightCommand:
         #largestArmy = player.game.largestArmy(justCheck)   
 
         self.previousPosition = Board.Board().robberTile
-        Board.Board().robberTile = tilePosition
-        self.stealCommand = StealResourceCommand(player, Board.Board().tiles[tilePosition])
+        Board.Board().robberTile = self.tilePosition
+        self.stealCommand = StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])
         self.stealCommand.execute()  
-        player.unusedKnights -= 1
-        player.usedKnights += 1
+        self.player.unusedKnights -= 1
+        self.player.usedKnights += 1
 
         #postMoveLargArmy = player.game.largestArmy(justCheck)
 
@@ -245,17 +247,17 @@ class UseKnightCommand:
         #     largestArmy.victoryPoints -= 2
 
     def undo(self):
-        player.unusedKnights += 1
-        player.usedKnights -= 1
+        self.player.unusedKnights += 1
+        self.player.usedKnights -= 1
         Board.Board().robberTile = self.previousPosition
         self.stealCommand.undo()
 
     def redo(self):
         self.previousPosition = Board.Board().robberTile
-        Board.Board().robberTile = tilePosition
+        Board.Board().robberTile = self.tilePosition
         self.stealCommand.redo() 
-        player.unusedKnights -= 1
-        player.usedKnights += 1
+        self.player.unusedKnights -= 1
+        self.player.usedKnights += 1
 
 @dataclass
 class TradeBankCommand:
@@ -264,14 +266,14 @@ class TradeBankCommand:
 
     def execute(self):
         toTake, toGive = coupleOfResources
-        Bank.Bank().giveResource(player, toTake)
-        for _ in range(0, Bank.Bank().resourceToAsk(player, toGive)):
-            player.useResource(toGive)
+        Bank.Bank().giveResource(self.player, toTake)
+        for _ in range(0, Bank.Bank().resourceToAsk(self.player, toGive)):
+            self.player.useResource(toGive)
 
     def undo(self):
-        player.useResource(toTake)
-        for i in range(0, Bank.Bank().resourceToAsk(player, toGive)):
-            Bank.Bank().giveResource(player, toGive)
+        self.player.useResource(toTake)
+        for i in range(0, Bank.Bank().resourceToAsk(self.player, toGive)):
+            Bank.Bank().giveResource(self.player, toGive)
 
     def redo(self):
         self.execute()
@@ -283,18 +285,18 @@ class UseMonopolyCardCommand:
     previousPlayersResources: [int]
 
     def execute(self):
-        player.monopolyCard -= 1
+        self.player.monopolyCard -= 1
         sum = 0
-        for p in player.game.players:
-            sum = sum + p.resources[resource]
+        for p in self.player.game.players:
+            sum = sum + p.resources[self.resource]
             self.previousPlayersResources.append(p.resources[self.resource])
-            p.resources[resource] = 0
-        player.resources[resource] = sum
+            p.resources[self.resource] = 0
+        self.player.resources[self.resource] = sum
         return
 
     def undo(self):
-        player.monopolyCard += 1
-        for p, i in enumerate(player.game.players):
+        self.player.monopolyCard += 1
+        for p, i in enumerate(self.player.game.players):
             p.resources[self.resource] = self.previousPlayersResources[i]
 
 
