@@ -432,6 +432,7 @@ class Player:
         # print("RESOURCE TAKEN ---------------------------------------------------->", resourceTaken)
         self.resources[resourceTaken] -= 1
         player.resources[resourceTaken] += 1
+        return resourceTaken
 
     def moveValue(self, move, thingNeeded = None):
         if self.AI:
