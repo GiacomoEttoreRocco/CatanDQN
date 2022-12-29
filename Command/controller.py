@@ -1,12 +1,12 @@
 from dataclasses import dataclass, field
-from action import Action
+import Command.action as action
 
 @dataclass
 class ActionController:
-    undoStack: list[Action] = field(default_factory = list)
-    redoStack: list[Action] = field(default_factory = list)
+    undoStack: list[action.Action] = field(default_factory = list)
+    redoStack: list[action.Action] = field(default_factory = list)
 
-    def execute(self, action: Action):
+    def execute(self, action: action.Action):
         action.execute()
         self.undoStack.clear()
         self.redoStack.append(action)

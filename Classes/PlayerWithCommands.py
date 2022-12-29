@@ -480,19 +480,19 @@ class Player:
         
         #ctr.execute(action(self, thingNeeded))
 
-        if(action == commands.placeInitialColony):
+        if(action == commands.PlaceInitialColonyCommand):
             toRet = 10.0
-        if(action == commands.placeFreeStreet):
+        if(action == commands.PlaceStreetCommand):  #placefreestreet
             toRet = 10.0
-        if(action == commands.placeCity):
+        if(action == commands.PlaceCityCommand):
             toRet = 100.0
-        if(action == commands.tradeBank):
+        if(action == commands.TradeBankCommand):
             toRet = 15.0
-        if(action == commands.useRoadBuildingCard):
+        if(action == commands.UseRoadBuildingCardCommand):
             toRet = 2.0
-        if(action == commands.useYearOfPlentyCard):
+        if(action == commands.UseYearOfPlentyCardCommand):
             toRet = 200.0
-        if(action == commands.discardResource):
+        if(action == commands.DiscardResourceCommand):
             toRet = 1.0 
 
         #ctr.undo() #  action(self, thingNeeded, undo=True)
@@ -512,12 +512,13 @@ class Player:
             toRet = Gnn.Gnn().evaluatePosition(self)
             ctr.undo() # action(self, previousTilePos, True, True) 
 
-        elif(action == commands.PlaceFreeStreetCommand or action == commands.PlaceStreetCommand or action == commands.PlaceInitialStreetCommand or action == commands.PlaceColonyCommand or action == commands.UseRoadBuildingCardCommand):
+        #elif(action == commands.PlaceFreeStreetCommand or action == commands.PlaceStreetCommand or action == commands.PlaceInitialStreetCommand or action == commands.PlaceColonyCommand or action == commands.UseRoadBuildingCardCommand):
+        elif(action == commands.PlaceStreetCommand or action == commands.PlaceInitialStreetCommand or action == commands.PlaceColonyCommand or action == commands.UseRoadBuildingCardCommand):
             ctr.execute(action(self, thingNeeded)) # action(self, thingNeeded, False, True)
             toRet = Gnn.Gnn().evaluatePosition(self) 
             ctr.undo() # action(self, thingNeeded, True, True) 
 
-        elif(action == commands.placeInitialColony):
+        elif(action == commands.PlaceInitialColonyCommand):
             ctr.execute(action(self, thingNeeded)) # action(self, thingNeeded)
             toRet = Gnn.Gnn().evaluatePosition(self) 
             ctr.undo() # action(self, thingNeeded, True) 

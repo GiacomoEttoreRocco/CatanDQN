@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 import Classes.PlayerWithCommands as Player
+import Classes.GameWithCommands as Game
 import Classes.Board as Board
 import Classes.CatanGraph as cg
 import Classes.Bank as Bank
@@ -244,8 +245,8 @@ class PassTurnCommand:
 class StealResourceCommand:
     player: Player
     tile: cg.Tile
-    chosenPlayer: Player
-    takenResource: str
+    chosenPlayer: Player = field(default_factory = Player.Player(0, Game.Game()))
+    takenResource: str = field(default_factory = "")
 
     def execute(self):
         playersInTile = []
@@ -270,8 +271,8 @@ class StealResourceCommand:
 class UseRobberCommand:
     player: Player
     tilePosition: int
-    previousPosition: int
-    stealCommand: StealResourceCommand
+    previousPosition: int = field(default_factory = 0)
+    stealCommand: StealResourceCommand = None
 
     def execute(self):
         self.previousPosition = Board.Board().robberTile
@@ -290,10 +291,10 @@ class UseRobberCommand:
 class UseKnightCommand:
     player: Player
     tilePosition: cg.Tile
-    previousPosition: int
-    stealCommand: StealResourceCommand
-    previousLargestArmy : Player = field(default_factory = player.game.dummy())
-    postMoveLargArmy : Player = field(default_factory = player.game.dummy()) 
+    previousPosition: int = field(default_factory = 0)
+    stealCommand: StealResourceCommand = None
+    previousLargestArmy : Player = field(default_factory = Player.Player(0, Game.Game()))
+    postMoveLargArmy : Player = field(default_factory = Player.Player(0, Game.Game())) 
 
     def execute(self):
 
@@ -374,7 +375,7 @@ class UseMonopolyCardCommand:
 @dataclass
 class UseRoadBuildingCardCommand:
     player: Player
-    edges: tuple(tuple(), tuple())
+    edges: tuple()
     placeStreetCommand: PlaceStreetCommand
 
     def execute(self):

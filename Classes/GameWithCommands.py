@@ -13,7 +13,7 @@ import os
 class Game:
     def __init__(self, num_players = 4):
 
-        ctr = controller.ActionController()
+        self.ctr = controller.ActionController()
         ########################################## dummy is necessary: debugging and functioning reason. 
         self.dummy = Player.Player(0, self)
         self.dummy.victoryPoints = 4
@@ -119,6 +119,11 @@ class Game:
 
     def rollDice(self): 
         return random.randint(1,6) + random.randint(1,6)    
+
+    def fillDices(self):
+        for i in range(1000):
+            dice = self.rollDice()
+            self.dices.append(dice)
 
     def doTurn(self, player: Player):
         turnCardUsed = False
