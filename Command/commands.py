@@ -248,6 +248,9 @@ class StealResourceCommand:
     chosenPlayer: Player = field(default_factory = Player.Player(0, Game.Game()))
     takenResource: str = field(default_factory = "")
 
+    def __post_init__(self):
+        self.chosenPlayer = self.player.game.dummy
+
     def execute(self):
         playersInTile = []
         for place in self.tile.associatedPlaces:
@@ -274,9 +277,12 @@ class UseRobberCommand:
     previousPosition: int = field(default_factory = 0)
     stealCommand: StealResourceCommand = None
 
+    def __post_init__(self):
+        self.stealCommand = StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])
+
     def execute(self):
         self.previousPosition = Board.Board().robberTile
-        self.stealCommand = StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])
+        #self.stealCommand = StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])
         self.stealCommand.execute()        
         Board.Board().robberTile = self.tilePosition
 
@@ -296,13 +302,16 @@ class UseKnightCommand:
     previousLargestArmy : Player = field(default_factory = Player.Player(0, Game.Game()))
     postMoveLargArmy : Player = field(default_factory = Player.Player(0, Game.Game())) 
 
+    def __post_init__(self):
+        self.stealCommand = StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])
+
     def execute(self):
 
         self.previousLargestArmy = self.player.game.largestArmy()   
 
         self.previousPosition = Board.Board().robberTile
         Board.Board().robberTile = self.tilePosition
-        self.stealCommand = StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])
+        #self.stealCommand = StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])
         self.stealCommand.execute()  
         self.player.unusedKnights -= 1
         self.player.usedKnights += 1
