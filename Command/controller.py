@@ -1,23 +1,26 @@
+from dataclasses import dataclass, field
+from action import Action
+
 @dataclass
 class MoveController:
     undoStack: list[Action] = field(default_factory = list)
     redoStack: list[Action] = field(default_factory = list)
 
-    def execute(self, moveCommand: MoveCommand):
-        moveCommand.execute()
+    def execute(self, action: Action):
+        action.execute()
         self.undoStack.clear()
-        self.redoStack.append(moveCommand)
+        self.redoStack.append(action)
 
     def undo(self) -> None:
         if not self.undoStack:
             return
-        moveCommand = self.undoStack.pop()
-        moveCommand.undo()
-        self.redoStack.append(moveCommand)
+        action = self.undoStack.pop()
+        action.undo()
+        self.redoStack.append(action)
 
     def redo(self) -> None:
         if not self.redoStack:
             return
-        moveCommand = self.redoStack.pop()
-        moveCommand.redo()
-        self.undoStack.append(moveCommand)
+        action = self.redoStack.pop()
+        action.redo()
+        self.undoStack.append(action)

@@ -1,25 +1,28 @@
+from dataclasses import dataclass
 import Classes.Player as Player
 import Classes.Board as Board
 import Classes.CatanGraph as cg
+import Classes.Bank as Bank
+import random
 
 @dataclass
 class PlaceStreetCommand:
     player: Player
-    edge: (int, int)
+    edge: tuple()
     withCost: bool
 
     def execute(self):
         if self.withCost:
             self.player.useResource("wood")
             self.player.useResource("clay")
-        Board.Board().edges[edge] = self.player.id
+        Board.Board().edges[self.edge] = self.player.id
         self.player.nStreets+=1
-        self.player.ownedStreets.append(edge)
+        self.player.ownedStreets.append(self.edge)
 
     def undo(self):
         Bank.Bank().giveResource(self.player, "wood")   
         Bank.Bank().giveResource(self.player, "clay")    
-        Board.Board().edges[edge] = 0
+        Board.Board().edges[self.edge] = 0
         self.player.nStreets-=1
         del self.player.ownedStreets[-1]
 
@@ -38,7 +41,7 @@ class PlaceStreetCommand:
 class placeColonyCommand:
     withCost: bool
     player: Player
-    place: Place
+    place: cg.Place
 
     def execute(self):
         if self.withCost:
@@ -90,8 +93,8 @@ class PlaceCityCommand:
             self.player.useResource("crop")
             self.player.useResource("crop")
 
-        Board.Board().places[place.id].isColony = False
-        Board.Board().places[place.id].isCity = True
+        Board.Board().places[self.place.id].isColony = False
+        Board.Board().places[self.place.id].isCity = True
         self.player.victoryPoints+=1
         self.player.nCities+=1
         self.player.nColonies-=1
@@ -105,8 +108,8 @@ class PlaceCityCommand:
             Bank.Bank().giveResource(self.player, "crop")
             Bank.Bank().giveResource(self.player, "crop")
 
-        Board.Board().places[place.id].isColony = True
-        Board.Board().places[place.id].isCity = False
+        Board.Board().places[self.place.id].isColony = True
+        Board.Board().places[self.place.id].isCity = False
         self.player.victoryPoints-=1
         self.player.nCities-=1
         self.player.nColonies+=1
@@ -151,7 +154,7 @@ class BuyDevCardCommand:
 @dataclass
 class DiscardResourceCommand:
     player: Player
-    resource: String
+    resource: str
     withCost: bool
 
     def execute(self):
@@ -181,11 +184,11 @@ class StealResourceCommand:
     player: Player
     tile: cg.Tile
     chosenPlayer: Player
-    takenResource: String
+    takenResource: str
 
     def execute(self):
         playersInTile = []
-        for place in tile.associatedPlaces:
+        for place in self.tile.associatedPlaces:
             owner = self.player.game.players[Board.Board().places[place].owner-1]
             if owner not in playersInTile and owner.id != 0 and owner != self.player and owner.resourceCount() > 0: 
                 playersInTile.append(owner)
@@ -262,15 +265,16 @@ class UseKnightCommand:
 @dataclass
 class TradeBankCommand:
     player: Player
-    coupleOfResources: (String, String)
+    coupleOfResources: tuple()
 
     def execute(self):
-        toTake, toGive = coupleOfResources
+        toTake, toGive = self.coupleOfResources
         Bank.Bank().giveResource(self.player, toTake)
         for _ in range(0, Bank.Bank().resourceToAsk(self.player, toGive)):
             self.player.useResource(toGive)
 
     def undo(self):
+        toTake, toGive = self.coupleOfResources
         self.player.useResource(toTake)
         for i in range(0, Bank.Bank().resourceToAsk(self.player, toGive)):
             Bank.Bank().giveResource(self.player, toGive)
@@ -281,8 +285,8 @@ class TradeBankCommand:
 @dataclass
 class UseMonopolyCardCommand:
     player: Player
-    resource: String
-    previousPlayersResources: [int]
+    resource: str
+    previousPlayersResources: list() # [2,3,4,5] -> [0,14,0,0]
 
     def execute(self):
         self.player.monopolyCard -= 1
@@ -299,19 +303,18 @@ class UseMonopolyCardCommand:
         for p, i in enumerate(self.player.game.players):
             p.resources[self.resource] = self.previousPlayersResources[i]
 
-
     def redo(self):
         self.execute()
 
 @dataclass
 class useRoadBuildingCardCommand:
     player: Player
-    edges: ((int, int),(int, int))
+    edges: tuple(tuple(), tuple())
     placeStreetCommand: PlaceStreetCommand
 
     def execute(self):
         self.player.roadBuildingCard -= 1
-        e1, e2 = edges
+        e1, e2 = self.edges
         if e1 is not None:
             self.placeStreetCommand = PlaceStreetCommand(self.player, e1, False)
             self.placeStreetCommand.execute()
@@ -330,17 +333,17 @@ class useRoadBuildingCardCommand:
 @dataclass
 class UseYearOfPlentyCardCommand:
     player: Player
-    resources: [String]
+    resources: list()
 
     def execute(self):
         self.player.yearOfPlentyCard -= 1
-        Bank.Bank().giveResource(self.player, resources[0])
-        Bank.Bank().giveResource(self.player, resources[1])
+        Bank.Bank().giveResource(self.player, self.resources[0])
+        Bank.Bank().giveResource(self.player, self.resources[1])
 
     def undo(self):
         self.player.yearOfPlentyCard += 1
-        self.player.useResource(resources[0])
-        self.player.useResource(resources[1])
+        self.player.useResource(self.resources[0])
+        self.player.useResource(self.resources[1])
 
     def redo(self):
         self.execute()
