@@ -1,9 +1,60 @@
-from dataclasses import dataclass
-import Classes.Player as Player
+from dataclasses import dataclass, field
+import Classes.PlayerWithCommands as Player
 import Classes.Board as Board
 import Classes.CatanGraph as cg
 import Classes.Bank as Bank
 import random
+
+@dataclass
+class PlaceInitialStreetCommand:
+    player: Player
+    edge: tuple()
+    def execute(self):
+        Board.Board().edges[self.edge] = self.player.id
+        self.player.nStreets+=1
+        self.player.ownedStreets.append(self.edge)
+
+    def undo(self):
+        Board.Board().edges[self.edge] = 0
+        self.player.nStreets-=1
+        del self.player.ownedStreets[-1]
+
+    def redo(self):
+        self.execute()
+
+    #previousLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
+    # actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
+    # if(previousLongestStreetOwner != actualLongestStreetOwner):
+    #     player.game.longestStreetOwner = actualLongestStreetOwner
+    #     actualLongestStreetOwner.victoryPoints += 2
+    #     #print("-2 riga 21")
+    #     previousLongestStreetOwner.victoryPoints -= 2
+
+@dataclass
+class PlaceInitialColonyCommand:
+    player: Player
+    place: cg.Place
+
+    def execute(self):
+        Board.Board().places[self.place.id].owner = self.player.id
+        Board.Board().places[self.place.id].isColony = True
+        self.player.victoryPoints+=1
+        self.player.nColonies+=1
+        self.player.ownedColonies.append(self.place.id)
+        if(self.place.harbor != ""):
+            self.player.ownedHarbors.append(self.place.harbor)
+
+    def undo(self):
+        Board.Board().places[self.place.id].owner = 0
+        Board.Board().places[self.place.id].isColony = False
+        self.player.victoryPoints-=1
+        self.player.nColonies-=1
+        del self.player.ownedColonies[-1]
+        if(self.place.harbor != ""):
+            del self.player.ownedHarbors[-1]
+
+    def redo(self):
+        self.execute()
 
 @dataclass
 class PlaceStreetCommand:
@@ -38,7 +89,7 @@ class PlaceStreetCommand:
             #previousLongestStreetOwner.victoryPoints -= 2
 
 @dataclass
-class placeColonyCommand:
+class PlaceColonyCommand:
     withCost: bool
     player: Player
     place: cg.Place
@@ -119,6 +170,7 @@ class PlaceCityCommand:
 class BuyDevCardCommand:
     withCost: bool
     player: Player
+    card: str
 
     def execute(self):
         if self.withCost:
@@ -126,28 +178,39 @@ class BuyDevCardCommand:
             self.player.useResource("crop")
             self.player.useResource("sheep")
 
-        card = Board.Board().deck[0] ##### IL DECK VIENE TOCCATO QUA
+        self.card = Board.Board().deck[0] ##### IL DECK VIENE TOCCATO QUA
 
-        if(card == "knight"):
+        if(self.card == "knight"):
             self.player.justBoughtKnights += 1
-        if(card == "monopoly"):
+        if(self.card == "monopoly"):
             self.player.justBoughtMonopolyCard += 1
-        if(card == "road_building"):
+        if(self.card == "road_building"):
             self.player.justBoughtRoadBuildingCard += 1
-        if(card == "year_of_plenty"):
+        if(self.card == "year_of_plenty"):
             self.player.justBoughtYearOfPlentyCard += 1
-        if(card == "victory_point"):
+        if(self.card == "victory_point"):
             self.player.victoryPoints += 1
             self.player.victoryPointsCards += 1
         Board.Board().deck = Board.Board().deck[1:] 
 
     def undo(self):
-        print("Debug: BUG wrong way. (riga 114 move")
         if self.withCost:
             Bank.Bank().giveResource(self.player, "iron")
             Bank.Bank().giveResource(self.player, "crop")
             Bank.Bank().giveResource(self.player, "sheep")
-
+        if(self.card == "knight"):
+            self.player.justBoughtKnights -= 1
+        if(self.card == "monopoly"):
+            self.player.justBoughtMonopolyCard -= 1
+        if(self.card == "road_building"):
+            self.player.justBoughtRoadBuildingCard -= 1
+        if(self.card == "year_of_plenty"):
+            self.player.justBoughtYearOfPlentyCard -= 1
+        if(self.card == "victory_point"):
+            self.player.victoryPoints -= 1
+            self.player.victoryPointsCards -= 1
+        Board.Board().deck.insert(0, self.card)
+        
     def redo(self):
         self.execute()
 
@@ -158,12 +221,10 @@ class DiscardResourceCommand:
     withCost: bool
 
     def execute(self):
-        if self.withCost:
-            self.player.useResource(self.resource)
+        self.player.useResource(self.resource)
 
     def undo(self):
-        if self.withCost:
-            Bank.Bank().giveResource(self.player, self.resource)
+        Bank.Bank().giveResource(self.player, self.resource)
 
     def redo(self):
         self.execute()
@@ -231,9 +292,12 @@ class UseKnightCommand:
     tilePosition: cg.Tile
     previousPosition: int
     stealCommand: StealResourceCommand
+    previousLargestArmy : Player = field(default_factory = player.game.dummy())
+    postMoveLargArmy : Player = field(default_factory = player.game.dummy()) 
 
     def execute(self):
-        #largestArmy = player.game.largestArmy(justCheck)   
+
+        self.previousLargestArmy = self.player.game.largestArmy()   
 
         self.previousPosition = Board.Board().robberTile
         Board.Board().robberTile = self.tilePosition
@@ -242,25 +306,26 @@ class UseKnightCommand:
         self.player.unusedKnights -= 1
         self.player.usedKnights += 1
 
-        #postMoveLargArmy = player.game.largestArmy(justCheck)
+        self.postMoveLargArmy = self.player.game.largestArmy()
 
-        # if(largestArmy != postMoveLargArmy):
-        #     postMoveLargArmy.victoryPoints += 2 
-        #     #print("-2 riga 207")
-        #     largestArmy.victoryPoints -= 2
+        self.postMoveLargArmy.victoryPoints += 2 
+        self.previousLargestArmy.victoryPoints -= 2
 
     def undo(self):
+        self.player.game.largestArmyPlayer = self.previousLargestArmy
+
         self.player.unusedKnights += 1
         self.player.usedKnights -= 1
+
         Board.Board().robberTile = self.previousPosition
+
+        self.postMoveLargArmy.victoryPoints -= 2 
+        self.previousLargestArmy.victoryPoints += 2
+
         self.stealCommand.undo()
 
     def redo(self):
-        self.previousPosition = Board.Board().robberTile
-        Board.Board().robberTile = self.tilePosition
-        self.stealCommand.redo() 
-        self.player.unusedKnights -= 1
-        self.player.usedKnights += 1
+        self.execute()
 
 @dataclass
 class TradeBankCommand:
@@ -307,7 +372,7 @@ class UseMonopolyCardCommand:
         self.execute()
 
 @dataclass
-class useRoadBuildingCardCommand:
+class UseRoadBuildingCardCommand:
     player: Player
     edges: tuple(tuple(), tuple())
     placeStreetCommand: PlaceStreetCommand
@@ -348,6 +413,9 @@ class UseYearOfPlentyCardCommand:
     def redo(self):
         self.execute()
 
+
+def cardCommands():
+    return [UseMonopolyCardCommand, UseKnightCommand, UseYearOfPlentyCardCommand, UseRoadBuildingCardCommand]
 
 
 

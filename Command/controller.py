@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from action import Action
 
 @dataclass
-class MoveController:
+class ActionController:
     undoStack: list[Action] = field(default_factory = list)
     redoStack: list[Action] = field(default_factory = list)
 
