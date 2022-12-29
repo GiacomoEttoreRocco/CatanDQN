@@ -171,7 +171,7 @@ class PlaceCityCommand:
 class BuyDevCardCommand:
     withCost: bool
     player: Player
-    card: str
+    card: str = field(default_factory = "")
 
     def execute(self):
         if self.withCost:
@@ -361,7 +361,7 @@ class TradeBankCommand:
 class UseMonopolyCardCommand:
     player: Player
     resource: str
-    previousPlayersResources: list() # [2,3,4,5] -> [0,14,0,0]
+    previousPlayersResources: list() = field(default_factory = list) # [2,3,4,5] -> [0,14,0,0]
 
     def execute(self):
         self.player.monopolyCard -= 1
@@ -385,7 +385,7 @@ class UseMonopolyCardCommand:
 class UseRoadBuildingCardCommand:
     player: Player
     edges: tuple()
-    placeStreetCommand: PlaceStreetCommand
+    placeStreetCommand: PlaceStreetCommand = None
 
     def execute(self):
         self.player.roadBuildingCard -= 1

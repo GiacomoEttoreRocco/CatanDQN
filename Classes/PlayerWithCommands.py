@@ -96,7 +96,7 @@ class Player:
     def printResources(self):
          print("Print resources of player:  ", self.id," ", self.resources, "\n")
 
-    def availableactions(self, turnCardUsed):
+    def availableActions(self, turnCardUsed):
         availableactions = [commands.PassTurnCommand]
         if(self.resources["crop"] >= 1 and self.resources["iron"] >= 1 and self.resources["sheep"] >= 1 and len(Board.Board().deck) > 0):
             availableactions.append(commands.BuyDevCardCommand)
