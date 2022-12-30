@@ -86,7 +86,7 @@ class Game:
             max = -1
             thingsNeeded = None
             bestAction = commands.PassTurnCommand
-            for action in actions:
+            for action in actions: 
                 evaluation, tempInput = player.evaluate(action)
                 if(max <= evaluation):
                     max = evaluation

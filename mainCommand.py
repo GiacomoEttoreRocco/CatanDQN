@@ -99,25 +99,29 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
     else:
         game.dice_production(dicesValue)
     action, thingNeeded = game.bestAction(player, turnCardUsed)
-    ctr.execute(action(player, thingNeeded))
-    if(action == commands.BuyDevCardCommand):
+    if action == commands.PlaceStreetCommand:
+        ctr.execute(action(player, thingNeeded, True))
+    else:
+        ctr.execute(action(player, thingNeeded))
+    if(action == commands.BuyDevCardCommand or action == commands.PlaceCityCommand or action == commands.PlaceColonyCommand):
         devCardsBought[player.id-1] += 1
     saveMove(save, player) ######################################################
     goNextIfInvio()
     # print("Player ", player.id, " mossa: ", move, " ")
     if(game.checkWon(player)):
         return
-    if(command in commands.cardCommands()):
+    if(action in commands.cardCommands()):
             turnCardUsed = True
     while(action != commands.PassTurnCommand and not game.checkWon(player)): # move è una funzione 
         action, thingNeeded = game.bestAction(player, turnCardUsed)
+        print("ACTION: ", action, "thingneeded: ", thingNeeded)
         ctr.execute(action(player, thingNeeded))
         if(action == commands.BuyDevCardCommand):
             devCardsBought[player.id-1] += 1
         saveMove(save, player) ######################################################
         goNextIfInvio()
         #print("Player ", player.id, " mossa: ", move, " ")
-        if(command in commands.cardCommands()):
+        if(action in commands.cardCommands()):
             turnCardUsed = True
 
 def playGameWithGraphic(game: c.GameWithCommands, view=None):

@@ -91,9 +91,9 @@ class PlaceStreetCommand:
 
 @dataclass
 class PlaceColonyCommand:
-    withCost: bool
     player: Player
     place: cg.Place
+    withCost: bool
 
     def execute(self):
         if self.withCost:
@@ -133,9 +133,9 @@ class PlaceColonyCommand:
 
 @dataclass
 class PlaceCityCommand:
-    withCost: bool
     player: Player
     place: cg.Place
+    withCost: bool
 
     def execute(self):
         if self.withCost:
@@ -219,7 +219,6 @@ class BuyDevCardCommand:
 class DiscardResourceCommand:
     player: Player
     resource: str
-    withCost: bool
 
     def execute(self):
         self.player.useResource(self.resource)
@@ -232,6 +231,8 @@ class DiscardResourceCommand:
 
 @dataclass
 class PassTurnCommand:
+    player: Player
+    temp: any
     def execute(self):
         pass
 
