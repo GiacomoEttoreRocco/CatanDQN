@@ -88,7 +88,6 @@ class Game:
             bestAction = commands.PassTurnCommand
             for action in actions: 
                 evaluation, tempInput = player.evaluate(action)
-                print("action ", action)
                 if(max <= evaluation):
                     max = evaluation
                     thingsNeeded = tempInput
@@ -175,9 +174,7 @@ class Game:
 
     def doInitialChoise(self, player: Player, giveResources = False):
         if(player.AI or player.RANDOM):
-            print("doinichoice")
             evaluation, colonyChoosen = player.evaluate(commands.PlaceInitialColonyCommand)
-            print("after")
             self.ctr.execute(commands.PlaceInitialColonyCommand(player, colonyChoosen))
             if(giveResources):
                 for touchedResource in Board.Board().places[colonyChoosen.id].touchedResourses:

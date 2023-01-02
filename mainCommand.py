@@ -114,7 +114,6 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
             turnCardUsed = True
     while(action != commands.PassTurnCommand and not game.checkWon(player)):
         action, thingNeeded = game.bestAction(player, turnCardUsed)
-        print("ACTION: ", action, "thingneeded: ", thingNeeded)
         if action == commands.PlaceStreetCommand or action == commands.PlaceCityCommand or action == commands.PlaceColonyCommand or action == commands.BuyDevCardCommand:
             ctr.execute(action(player, thingNeeded, True))
         else:
@@ -147,7 +146,6 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None):
     # game.players[3].RANDOM = True
     
     for p in game.players:
-        print("current player ", p.id)
         game.doInitialChoise(p)
         saveMove(save, p) #################
         goNextIfInvio()

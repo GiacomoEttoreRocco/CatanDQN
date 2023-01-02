@@ -291,7 +291,6 @@ class Player:
             return max, candidateEdge
 
         if(action == commands.PlaceInitialColonyCommand):
-            print("qui1")
             possibleColony = self.calculatePossibleInitialColony()
             candidateColony = None
             max = -1
@@ -513,20 +512,23 @@ class Player:
 
         #elif(action == commands.PlaceFreeStreetCommand or action == commands.PlaceStreetCommand or action == commands.PlaceInitialStreetCommand or action == commands.PlaceColonyCommand or action == commands.UseRoadBuildingCardCommand):
         elif(action == commands.PlaceStreetCommand or action == commands.PlaceInitialStreetCommand or action == commands.PlaceColonyCommand or action == commands.UseRoadBuildingCardCommand):
-            ctr.execute(action(self, thingNeeded)) # action(self, thingNeeded, False, True)
+            if action == commands.PlaceStreetCommand or action == commands.PlaceColonyCommand:
+                ctr.execute(action(self, thingNeeded, True))
+            else:
+                ctr.execute(action(self, thingNeeded)) # action(self, thingNeeded, False, True)
             toRet = Gnn.Gnn().evaluatePosition(self) 
             ctr.undo() # action(self, thingNeeded, True, True) 
 
         elif(action == commands.PlaceInitialColonyCommand):
-            print("qui2")
             ctr.execute(action(self, thingNeeded)) # action(self, thingNeeded)
             toRet = Gnn.Gnn().evaluatePosition(self) 
-            print("TORET: ", toRet)
             ctr.undo() # action(self, thingNeeded, True) 
-            print("undodone")
 
         else:
-            ctr.execute(action(self, thingNeeded)) # action(self, thingNeeded)
+            if action == commands.PlaceStreetCommand  or action == commands.PlaceCityCommand or action == commands.PlaceColonyCommand or action == commands.BuyDevCardCommand:
+                ctr.execute(action(self, thingNeeded, True)) # action(self, thingNeeded)
+            else:
+                ctr.execute(action(self, thingNeeded)) # action(self, thingNeeded)
             toRet = Gnn.Gnn().evaluatePosition(self)
             ctr.undo() # action(self, thingNeeded, undo=True)
 
@@ -536,4 +538,3 @@ class Player:
         return {'player_id': self.id,'victory_points': self.victoryPoints,\
             'used_knights': self.usedKnights, 'crop': self.resources["crop"], 'iron': self.resources["iron"],\
             'wood': self.resources["wood"], 'clay': self.resources["clay"], 'sheep': self.resources["sheep"], 'winner':None}
-

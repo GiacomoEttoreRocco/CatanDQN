@@ -39,7 +39,6 @@ class PlaceInitialColonyCommand:
     def execute(self):
         Board.Board().places[self.place.id].owner = self.player.id
         Board.Board().places[self.place.id].isColony = True
-        print("PLaced colony for player ", self.player.id, " in place ", self.place)
         self.player.victoryPoints+=1
         self.player.nColonies+=1
         self.player.ownedColonies.append(self.place.id)
@@ -243,54 +242,71 @@ class PassTurnCommand:
     def redo(self):
         pass
 
-@dataclass
-class StealResourceCommand:
-    player: Player
-    tile: cg.Tile
-    chosenPlayer: Player = Player.Player(0, Game.Game())
-    takenResource: str = ""
 
-    def __post_init__(self):
-        self.chosenPlayer = self.player.game.dummy
+def stealResource(player, tile: cg.Tile):
+    playersInTile = []
+    chosenPlayer = None
+    takenResource = None
+    for place in tile.associatedPlaces:
+        owner = player.game.players[Board.Board().places[place].owner-1]
+        if owner not in playersInTile and owner.id != 0 and owner != player and owner.resourceCount() > 0: 
+            playersInTile.append(owner)
+    if len(playersInTile) > 0:
+        chosenPlayer = playersInTile[random.randint(0,len(playersInTile)-1)]
+        takenResource = chosenPlayer.stealFromMe(player)
+    return chosenPlayer, takenResource
 
-    def execute(self):
-        playersInTile = []
-        for place in self.tile.associatedPlaces:
-            owner = self.player.game.players[Board.Board().places[place].owner-1]
-            if owner not in playersInTile and owner.id != 0 and owner != self.player and owner.resourceCount() > 0: 
-                playersInTile.append(owner)
-        if len(playersInTile) > 0:
-            chosenPlayer = playersInTile[random.randint(0,len(playersInTile)-1)]
-            self.takenResource = chosenPlayer.stealFromMe(self.player)
-        return
+# @dataclass
+# class StealResourceCommand:
+#     player: Player
+#     tile: cg.Tile
+#     chosenPlayer: Player = Player.Player(0, Game.Game())
+#     takenResource: str = ""
 
-    def undo(self):
-        self.chosenPlayer.resources[self.takenResource] += 1
-        self.player.resources[self.takenResource] -= 1
+#     def __post_init__(self):
+#         self.chosenPlayer = self.player.game.dummy
 
-    def redo(self):
-        self.chosenPlayer.resources[self.takenResource] -= 1
-        self.player.resources[self.takenResource] += 1
+#     def execute(self):
+#         print("qui exe")
+#         playersInTile = []
+#         for place in self.tile.associatedPlaces:
+#             owner = self.player.game.players[Board.Board().places[place].owner-1]
+#             if owner not in playersInTile and owner.id != 0 and owner != self.player and owner.resourceCount() > 0: 
+#                 playersInTile.append(owner)
+#         if len(playersInTile) > 0:
+#             print("qui exe 2")
+#             self.chosenPlayer = playersInTile[random.randint(0,len(playersInTile)-1)]
+#             self.takenResource = self.chosenPlayer.stealFromMe(self.player)
+#             print("taken res exe ", self.takenResource)
+#         return
+
+#     def undo(self):
+#         print("taken res undo ", self.takenResource)
+#         self.chosenPlayer.resources[self.takenResource] += 1
+#         self.player.resources[self.takenResource] -= 1
+
+#     def redo(self):
+#         self.chosenPlayer.resources[self.takenResource] -= 1
+#         self.player.resources[self.takenResource] += 1
 
 @dataclass
 class UseRobberCommand:
     player: Player
     tilePosition: int
     previousPosition: int = 0
-    stealCommand: StealResourceCommand = None
-
-    def __post_init__(self):
-        self.stealCommand = StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])
+    chosenPlayer: Player = Player.Player(0, Game.Game())
+    takenResource: str = ""
 
     def execute(self):
-        self.previousPosition = Board.Board().robberTile
-        #self.stealCommand = StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])
-        self.stealCommand.execute()        
+        self.previousPosition = Board.Board().robberTile        
         Board.Board().robberTile = self.tilePosition
+        self.chosenPlayer, self.takenResource = stealResource(self.player, Board.Board().tiles[self.tilePosition])
 
     def undo(self):
         Board.Board().robberTile = self.previousPosition
-        self.stealCommand.undo()
+        if self.chosenPlayer is not None and self.takenResource is not None:
+            self.chosenPlayer.resources[self.takenResource] += 1
+            self.player.resources[self.takenResource] -= 1
     
     def redo(self):
         self.execute()
@@ -300,12 +316,10 @@ class UseKnightCommand:
     player: Player
     tilePosition: cg.Tile
     previousPosition: int = 0
-    stealCommand: StealResourceCommand = None
     previousLargestArmy : Player = Player.Player(0, Game.Game())
     postMoveLargArmy : Player = Player.Player(0, Game.Game())
-
-    def __post_init__(self):
-        self.stealCommand = StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])
+    chosenPlayer: Player = Player.Player(0, Game.Game())
+    takenResource: str = ""
 
     def execute(self):
 
@@ -314,7 +328,7 @@ class UseKnightCommand:
         self.previousPosition = Board.Board().robberTile
         Board.Board().robberTile = self.tilePosition
         #self.stealCommand = StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])
-        self.stealCommand.execute()  
+        self.chosenPlayer, self.takenResource = stealResource(self.player, Board.Board().tiles[self.tilePosition])
         self.player.unusedKnights -= 1
         self.player.usedKnights += 1
 
@@ -334,7 +348,9 @@ class UseKnightCommand:
         self.postMoveLargArmy.victoryPoints -= 2 
         self.previousLargestArmy.victoryPoints += 2
 
-        self.stealCommand.undo()
+        if self.chosenPlayer is not None and self.takenResource is not None:
+            self.chosenPlayer.resources[self.takenResource] += 1
+            self.player.resources[self.takenResource] -= 1
 
     def redo(self):
         self.execute()
