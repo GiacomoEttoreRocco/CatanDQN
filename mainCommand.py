@@ -99,11 +99,11 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
     else:
         game.dice_production(dicesValue)
     action, thingNeeded = game.bestAction(player, turnCardUsed)
-    if action == commands.PlaceStreetCommand:
+    if action == commands.PlaceStreetCommand  or action == commands.PlaceCityCommand or action == commands.PlaceColonyCommand:
         ctr.execute(action(player, thingNeeded, True))
     else:
         ctr.execute(action(player, thingNeeded))
-    if(action == commands.BuyDevCardCommand or action == commands.PlaceCityCommand or action == commands.PlaceColonyCommand):
+    if(action == commands.BuyDevCardCommand):
         devCardsBought[player.id-1] += 1
     saveMove(save, player) ######################################################
     goNextIfInvio()
@@ -115,7 +115,10 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
     while(action != commands.PassTurnCommand and not game.checkWon(player)): # move è una funzione 
         action, thingNeeded = game.bestAction(player, turnCardUsed)
         print("ACTION: ", action, "thingneeded: ", thingNeeded)
-        ctr.execute(action(player, thingNeeded))
+        if action == commands.PlaceStreetCommand or action == commands.PlaceCityCommand or action == commands.PlaceColonyCommand:
+            ctr.execute(action(player, thingNeeded, True))
+        else:
+            ctr.execute(action(player, thingNeeded))
         if(action == commands.BuyDevCardCommand):
             devCardsBought[player.id-1] += 1
         saveMove(save, player) ######################################################
