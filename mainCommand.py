@@ -103,7 +103,7 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
         previousLongestStreetOwner = player.game.longestStreetPlayer(False)
         ctr.execute(action(player, thingNeeded, True))
         checkLongestStreetOwner(previousLongestStreetOwner, player)
-    elif action == commands.PlaceCityCommand or action == commands.BuyDevCardCommand:
+    elif action == commands.PlaceCityCommand:
         ctr.execute(action(player, thingNeeded, True))
     else:
         ctr.execute(action(player, thingNeeded))
@@ -115,14 +115,14 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
     if(game.checkWon(player)):
         return
     if(action in commands.cardCommands()):
-            turnCardUsed = True
+        turnCardUsed = True
     while(action != commands.PassTurnCommand and not game.checkWon(player)):
         action, thingNeeded = game.bestAction(player, turnCardUsed)
         if action == commands.PlaceStreetCommand  or action == commands.PlaceColonyCommand:
             previousLongestStreetOwner = player.game.longestStreetPlayer(False)
             ctr.execute(action(player, thingNeeded, True))
             checkLongestStreetOwner(previousLongestStreetOwner, player)
-        elif action == commands.PlaceCityCommand or action == commands.BuyDevCardCommand:
+        elif action == commands.PlaceCityCommand:
             ctr.execute(action(player, thingNeeded, True))
         else:
             ctr.execute(action(player, thingNeeded))

@@ -170,14 +170,12 @@ class PlaceCityCommand:
 @dataclass
 class BuyDevCardCommand:
     player: Player
-    withCost: bool
     card: str = ""
 
     def execute(self):
-        if self.withCost:
-            self.player.useResource("iron")
-            self.player.useResource("crop")
-            self.player.useResource("sheep")
+        self.player.useResource("iron")
+        self.player.useResource("crop")
+        self.player.useResource("sheep")
 
         self.card = Board.Board().deck[0] ##### IL DECK VIENE TOCCATO QUA
 
@@ -192,7 +190,8 @@ class BuyDevCardCommand:
         if(self.card == "victory_point"):
             self.player.victoryPoints += 1
             self.player.victoryPointsCards += 1
-        Board.Board().deck = Board.Board().deck[1:] 
+        Board.Board().deck = Board.Board().deck[1:]
+        #print("Deck after exe ", Board.Board().deck) 
 
     def undo(self):
         if self.withCost:

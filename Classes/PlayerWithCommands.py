@@ -468,8 +468,8 @@ class Player:
             toRet = 100.0
             #ctr.undo()
             return toRet
-
-        if(action == commands.PlaceStreetCommand or action == commands.PlaceStreetCommand or action == commands.PlaceInitialStreetCommand or action == commands.PlaceColonyCommand):
+        #placeFreeStreet missing
+        if(action == commands.PlaceStreetCommand or action == commands.PlaceInitialStreetCommand or action == commands.PlaceColonyCommand):
             #action(self, thingNeeded, False, True)
             if(action == commands.PlaceColonyCommand):
                 toRet = 90
@@ -525,7 +525,7 @@ class Player:
             ctr.undo() # action(self, thingNeeded, True) 
 
         else:
-            if action == commands.PlaceStreetCommand  or action == commands.PlaceCityCommand or action == commands.PlaceColonyCommand or action == commands.BuyDevCardCommand:
+            if action == commands.PlaceStreetCommand  or action == commands.PlaceCityCommand or action == commands.PlaceColonyCommand:
                 ctr.execute(action(self, thingNeeded, True)) # action(self, thingNeeded)
             else:
                 ctr.execute(action(self, thingNeeded)) # action(self, thingNeeded)
