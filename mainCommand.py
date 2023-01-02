@@ -10,7 +10,7 @@ import time
 import AI.Gnn as Gnn
 
 speed = True
-withDelay = False
+withDelay = True
 realPlayer = False
 save = True
 ctr = controller.ActionController()
@@ -99,7 +99,11 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
     else:
         game.dice_production(dicesValue)
     action, thingNeeded = game.bestAction(player, turnCardUsed)
-    if action == commands.PlaceStreetCommand  or action == commands.PlaceCityCommand or action == commands.PlaceColonyCommand or action == commands.BuyDevCardCommand:
+    if action == commands.PlaceStreetCommand  or action == commands.PlaceColonyCommand:
+        previousLongestStreetOwner = player.game.longestStreetPlayer(False)
+        ctr.execute(action(player, thingNeeded, True))
+        checkLongestStreetOwner(previousLongestStreetOwner, player)
+    elif action == commands.PlaceCityCommand or action == commands.BuyDevCardCommand:
         ctr.execute(action(player, thingNeeded, True))
     else:
         ctr.execute(action(player, thingNeeded))
@@ -114,7 +118,11 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
             turnCardUsed = True
     while(action != commands.PassTurnCommand and not game.checkWon(player)):
         action, thingNeeded = game.bestAction(player, turnCardUsed)
-        if action == commands.PlaceStreetCommand or action == commands.PlaceCityCommand or action == commands.PlaceColonyCommand or action == commands.BuyDevCardCommand:
+        if action == commands.PlaceStreetCommand  or action == commands.PlaceColonyCommand:
+            previousLongestStreetOwner = player.game.longestStreetPlayer(False)
+            ctr.execute(action(player, thingNeeded, True))
+            checkLongestStreetOwner(previousLongestStreetOwner, player)
+        elif action == commands.PlaceCityCommand or action == commands.BuyDevCardCommand:
             ctr.execute(action(player, thingNeeded, True))
         else:
             ctr.execute(action(player, thingNeeded))
@@ -136,14 +144,14 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None):
     turn = 0 
     won = False
     # START INIZIALE
-    game.players[0].AI = True
-    game.players[1].AI = True
-    game.players[2].AI = True
-    game.players[3].AI = True
-    # game.players[0].RANDOM = True
-    # game.players[1].RANDOM = True
-    # game.players[2].RANDOM = True
-    # game.players[3].RANDOM = True
+    # game.players[0].AI = True
+    # game.players[1].AI = True
+    # game.players[2].AI = True
+    # game.players[3].AI = True
+    game.players[0].RANDOM = True
+    game.players[1].RANDOM = True
+    game.players[2].RANDOM = True
+    game.players[3].RANDOM = True
     
     for p in game.players:
         game.doInitialChoise(p)
@@ -190,6 +198,14 @@ def saveToCsv(victoryPlayer):
     print(len(total))
     global allGames
     allGames = pd.concat([allGames, total], ignore_index=True)
+
+def checkLongestStreetOwner(previousLongestStreetOwner: c.PlayerWithCommands, player: c.PlayerWithCommands):
+    actualLongestStreetOwner = player.game.longestStreetPlayer(False)
+    if(previousLongestStreetOwner != actualLongestStreetOwner):
+        player.game.longestStreetOwner = actualLongestStreetOwner
+        actualLongestStreetOwner.victoryPoints += 2
+        #print("-2 riga 21")
+        previousLongestStreetOwner.victoryPoints -= 2
 
 ###########################################################################################################################
 
