@@ -291,6 +291,7 @@ class Player:
             return max, candidateEdge
 
         if(action == commands.PlaceInitialColonyCommand):
+            print("qui1")
             possibleColony = self.calculatePossibleInitialColony()
             candidateColony = None
             max = -1
@@ -503,9 +504,7 @@ class Player:
         ctr = controller.ActionController()
 
         if(action == commands.PassTurnCommand or action == commands.BuyDevCardCommand or action == commands.UseMonopolyCardCommand):
-            ctr.execute(action(self, thingNeeded))
             toRet = Gnn.Gnn().evaluatePosition(self)
-            ctr.undo()
 
         elif(action == commands.UseKnightCommand or action == commands.UseRobberCommand):
             previousTilePos = ctr.execute(action(self, thingNeeded)) # action(self, thingNeeded, False, True)
@@ -519,9 +518,12 @@ class Player:
             ctr.undo() # action(self, thingNeeded, True, True) 
 
         elif(action == commands.PlaceInitialColonyCommand):
+            print("qui2")
             ctr.execute(action(self, thingNeeded)) # action(self, thingNeeded)
             toRet = Gnn.Gnn().evaluatePosition(self) 
+            print("TORET: ", toRet)
             ctr.undo() # action(self, thingNeeded, True) 
+            print("undodone")
 
         else:
             ctr.execute(action(self, thingNeeded)) # action(self, thingNeeded)

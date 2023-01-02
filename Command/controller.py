@@ -8,8 +8,8 @@ class ActionController:
 
     def execute(self, action: action.Action):
         action.execute()
-        self.undoStack.clear()
-        self.redoStack.append(action)
+        self.redoStack.clear()
+        self.undoStack.append(action)
 
     def undo(self) -> None:
         if not self.undoStack:
