@@ -39,6 +39,7 @@ class PlaceInitialColonyCommand:
     def execute(self):
         Board.Board().places[self.place.id].owner = self.player.id
         Board.Board().places[self.place.id].isColony = True
+        print("PLaced colony for player ", self.player.id, " in place ", self.place)
         self.player.victoryPoints+=1
         self.player.nColonies+=1
         self.player.ownedColonies.append(self.place.id)
@@ -169,9 +170,9 @@ class PlaceCityCommand:
 
 @dataclass
 class BuyDevCardCommand:
-    withCost: bool
     player: Player
-    card: str = field(default_factory = "")
+    withCost: bool
+    card: str = ""
 
     def execute(self):
         if self.withCost:
@@ -246,8 +247,8 @@ class PassTurnCommand:
 class StealResourceCommand:
     player: Player
     tile: cg.Tile
-    chosenPlayer: Player = field(default_factory = Player.Player(0, Game.Game()))
-    takenResource: str = field(default_factory = "")
+    chosenPlayer: Player = Player.Player(0, Game.Game())
+    takenResource: str = ""
 
     def __post_init__(self):
         self.chosenPlayer = self.player.game.dummy
@@ -275,7 +276,7 @@ class StealResourceCommand:
 class UseRobberCommand:
     player: Player
     tilePosition: int
-    previousPosition: int = field(default_factory = 0)
+    previousPosition: int = 0
     stealCommand: StealResourceCommand = None
 
     def __post_init__(self):
@@ -298,10 +299,10 @@ class UseRobberCommand:
 class UseKnightCommand:
     player: Player
     tilePosition: cg.Tile
-    previousPosition: int = field(default_factory = 0)
+    previousPosition: int = 0
     stealCommand: StealResourceCommand = None
-    previousLargestArmy : Player = field(default_factory = Player.Player(0, Game.Game()))
-    postMoveLargArmy : Player = field(default_factory = Player.Player(0, Game.Game())) 
+    previousLargestArmy : Player = Player.Player(0, Game.Game())
+    postMoveLargArmy : Player = Player.Player(0, Game.Game())
 
     def __post_init__(self):
         self.stealCommand = StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])

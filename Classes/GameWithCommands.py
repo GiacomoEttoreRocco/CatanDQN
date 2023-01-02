@@ -175,6 +175,7 @@ class Game:
     def doInitialChoise(self, player: Player, giveResources = False):
         if(player.AI or player.RANDOM):
             evaluation, colonyChoosen = player.evaluate(commands.PlaceInitialColonyCommand)
+            print("CC1 ", colonyChoosen)
             self.ctr.execute(commands.PlaceInitialColonyCommand(player, colonyChoosen))
             if(giveResources):
                 for touchedResource in Board.Board().places[colonyChoosen.id].touchedResourses:

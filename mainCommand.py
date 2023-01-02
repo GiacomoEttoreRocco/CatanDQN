@@ -99,7 +99,7 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
     else:
         game.dice_production(dicesValue)
     action, thingNeeded = game.bestAction(player, turnCardUsed)
-    if action == commands.PlaceStreetCommand  or action == commands.PlaceCityCommand or action == commands.PlaceColonyCommand:
+    if action == commands.PlaceStreetCommand  or action == commands.PlaceCityCommand or action == commands.PlaceColonyCommand or action == commands.BuyDevCardCommand:
         ctr.execute(action(player, thingNeeded, True))
     else:
         ctr.execute(action(player, thingNeeded))
@@ -112,10 +112,10 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
         return
     if(action in commands.cardCommands()):
             turnCardUsed = True
-    while(action != commands.PassTurnCommand and not game.checkWon(player)): # move è una funzione 
+    while(action != commands.PassTurnCommand and not game.checkWon(player)):
         action, thingNeeded = game.bestAction(player, turnCardUsed)
         print("ACTION: ", action, "thingneeded: ", thingNeeded)
-        if action == commands.PlaceStreetCommand or action == commands.PlaceCityCommand or action == commands.PlaceColonyCommand:
+        if action == commands.PlaceStreetCommand or action == commands.PlaceCityCommand or action == commands.PlaceColonyCommand or action == commands.BuyDevCardCommand:
             ctr.execute(action(player, thingNeeded, True))
         else:
             ctr.execute(action(player, thingNeeded))
@@ -137,16 +137,17 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None):
     turn = 0 
     won = False
     # START INIZIALE
-    #game.players[0].AI = True
-    #game.players[1].AI = True
-    #game.players[2].AI = True
-    #game.players[3].AI = True
-    game.players[0].RANDOM = True
-    game.players[1].RANDOM = True
-    game.players[2].RANDOM = True
-    game.players[3].RANDOM = True
+    game.players[0].AI = True
+    game.players[1].AI = True
+    game.players[2].AI = True
+    game.players[3].AI = True
+    # game.players[0].RANDOM = True
+    # game.players[1].RANDOM = True
+    # game.players[2].RANDOM = True
+    # game.players[3].RANDOM = True
     
     for p in game.players:
+        print("current player ", p.id)
         game.doInitialChoise(p)
         saveMove(save, p) #################
         goNextIfInvio()
