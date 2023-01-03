@@ -10,7 +10,7 @@ import time
 import AI.Gnn as Gnn
 
 speed = True
-withDelay = True
+withDelay = False
 realPlayer = False
 save = True
 ctr = controller.ActionController()
@@ -60,11 +60,11 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
                 actions = [(commands.PassTurnCommand, None)]
                 for i in range(0, 17):
                     actions.append((commands.UseKnightCommand, i))  
-                for i, move in enumerate(moves):
+                for i, move in enumerate(actions):
                     print("Move ", i, ": ", move)  
                 toDo = int(input("Insert the move index of the move you want to play: "))
                 if(toDo != 0):
-                    ctr.execute(commands.UseKnightCommand(player, moves[todo][1]))
+                    ctr.execute(commands.UseKnightCommand(player, actions[toDo][1]))
                     saveMove(save, player) ######################################################
                 else:
                     ctr.execute(commands.PassTurnCommand())
@@ -94,7 +94,7 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
             for i, action in enumerate(actions):
                 print("Move ", i, ": ", action)  
             toDo = int(input("Inserisci l'indice della mossa che vuoi eseguire: "))
-            ctr.execute(commands.UseRobberCommand(player, moves[toDo][1]))
+            ctr.execute(commands.UseRobberCommand(player, actions[toDo][1]))
             saveMove(save, player) ######################################################
     else:
         game.dice_production(dicesValue)
@@ -222,7 +222,7 @@ def printWinners():
 
 ###########################################################################################################################
 
-epochs = 3
+epochs = 1
 batchs = 1
 
 for epoch in range(epochs):
