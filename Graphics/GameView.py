@@ -14,6 +14,7 @@ class GameView:
         pygame.init()
         self.width = 1200
         self.height = 800
+        self.sprlist = pygame.sprite.Group()
         self.sourceFileDir = os.path.dirname(os.path.abspath(__file__))
         self.robberImgPath = os.path.join(self.sourceFileDir, "imgs/robber.png")
         self.tempRobberTile = -1 # per motivi di efficienza.
@@ -198,9 +199,8 @@ class GameView:
 
     def drawPlace(self, graphicPlace):
         graphicPlace.setupSprite()
-        sprlist = pygame.sprite.Group()
-        sprlist.add(graphicPlace.sprite)
-        sprlist.draw(self.screen)
+        self.sprlist.add(graphicPlace.sprite)
+        self.sprlist.draw(self.screen)
 
     def drawStreet(self, edge, color):
         startPos = edge[0]

@@ -44,5 +44,7 @@ class PlaceSprite(pygame.sprite.Sprite):
             self.rect.centerx = coords[0]
             self.rect.centery = coords[1]
 
+    def erase(self):
+        self.image.fill((0, 0, 0, 0))
 
 
