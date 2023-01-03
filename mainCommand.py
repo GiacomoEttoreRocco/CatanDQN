@@ -9,7 +9,7 @@ import pandas as pd
 import time
 import AI.Gnn as Gnn
 
-speed = True #False
+speed = False
 withDelay = False
 realPlayer = False
 save = True
@@ -48,24 +48,26 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
             afterKnight, tilePosition = player.evaluate(commands.UseKnightCommand)
             if(afterKnight > actualEvaluation):
                 ctr.execute(commands.UseKnightCommand(player, tilePosition))
+                goNext()
+                ctr.execute(commands.StealResourceCommand(player, c.Board.Board().tiles[self.tilePosition]))
                 saveMove(save, player) ######################################################
                 view.updateGameScreen()
                 turnCardUsed = True 
-        else:
-            view.updateGameScreen() 
-            if(player.unusedKnights >= 1 and not turnCardUsed):
-                # print("Mosse disponibili: ")
-                actions = [(commands.PassTurnCommand, None)]
-                for i in range(0, 17):
-                    actions.append((commands.UseKnightCommand, i))  
-                for i, move in enumerate(actions):
-                    print("Move ", i, ": ", move)  
-                toDo = int(input("Insert the move index of the move you want to play: "))
-                if(toDo != 0):
-                    ctr.execute(commands.UseKnightCommand(player, actions[toDo][1]))
-                    saveMove(save, player) ######################################################
-                else:
-                    ctr.execute(commands.PassTurnCommand())
+        # else:
+        #     view.updateGameScreen() 
+        #     if(player.unusedKnights >= 1 and not turnCardUsed):
+        #         # print("Mosse disponibili: ")
+        #         actions = [(commands.PassTurnCommand, None)]
+        #         for i in range(0, 17):
+        #             actions.append((commands.UseKnightCommand, i))  
+        #         for i, move in enumerate(actions):
+        #             print("Move ", i, ": ", move)  
+        #         toDo = int(input("Insert the move index of the move you want to play: "))
+        #         if(toDo != 0):
+        #             ctr.execute(commands.UseKnightCommand(player, actions[toDo][1]))
+        #             saveMove(save, player) ######################################################
+        #         else:
+        #             ctr.execute(commands.PassTurnCommand())
                 
     if(game.checkWon(player)):
         return
@@ -77,6 +79,8 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
         if(player.AI or player.RANDOM):
             ev, pos = player.evaluate(commands.UseRobberCommand)
             ctr.execute(commands.UseRobberCommand(player, pos))
+            goNext()
+            ctr.execute(commands.StealResourceCommand(player, c.Board.Board().tiles[pos]))
             saveMove(save, player) 
         else:
             actions = []
@@ -89,14 +93,19 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
             ctr.execute(commands.UseRobberCommand(player, actions[toDo][1]))
             saveMove(save, player) 
     else:
-        game.dice_production(dicesValue)
+        #game.dice_production(dicesValue)
+        ctr.execute(commands.DiceProductionCommand(dicesValue, game))
         view.updateGameScreen()
-
+    goNext()
     action, thingNeeded = game.bestAction(player, turnCardUsed)
     if action == commands.PlaceStreetCommand  or action == commands.PlaceColonyCommand:
         previousLongestStreetOwner = player.game.longestStreetPlayer(False)
         ctr.execute(action(player, thingNeeded, True))
-        checkLongestStreetOwner(previousLongestStreetOwner, player)
+        checkLongestStreetOwner(previousLongestStreetOwner, player)  
+    elif action == commands.UseKnightCommand:
+        ctr.execute(action(player, thingNeeded))
+        goNext()
+        ctr.execute(commands.StealResourceCommand(player, c.Board.Board().tiles[thingNeeded]))  
     elif action == commands.PlaceCityCommand:
         ctr.execute(action(player, thingNeeded, True))
     else:
@@ -109,12 +118,18 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
         return
     if(action in commands.cardCommands()):
         turnCardUsed = True
+    #La prima mossa è stata fatta
+    goNext()
     while(action != commands.PassTurnCommand and not game.checkWon(player)):
         action, thingNeeded = game.bestAction(player, turnCardUsed)
         if action == commands.PlaceStreetCommand  or action == commands.PlaceColonyCommand:
             previousLongestStreetOwner = player.game.longestStreetPlayer(False)
             ctr.execute(action(player, thingNeeded, True))
             checkLongestStreetOwner(previousLongestStreetOwner, player)
+        elif action == commands.UseKnightCommand:
+            ctr.execute(action(player, thingNeeded))
+            goNext()
+            ctr.execute(commands.StealResourceCommand(player, c.Board.Board().tiles[thingNeeded]))
         elif action == commands.PlaceCityCommand:
             ctr.execute(action(player, thingNeeded, True))
         else:

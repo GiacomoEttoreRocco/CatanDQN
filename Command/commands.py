@@ -255,38 +255,35 @@ def stealResource(player, tile: cg.Tile):
         takenResource = chosenPlayer.stealFromMe(player)
     return chosenPlayer, takenResource
 
-# @dataclass
-# class StealResourceCommand:
-#     player: Player
-#     tile: cg.Tile
-#     chosenPlayer: Player = Player.Player(0, Game.Game())
-#     takenResource: str = ""
+@dataclass
+class StealResourceCommand:
+    player: Player
+    tile: cg.Tile
+    chosenPlayer: Player = Player.Player(0, Game.Game())
+    takenResource: str = ""
 
-#     def __post_init__(self):
-#         self.chosenPlayer = self.player.game.dummy
+    def __post_init__(self):
+        self.chosenPlayer = self.player.game.dummy
 
-#     def execute(self):
-#         print("qui exe")
-#         playersInTile = []
-#         for place in self.tile.associatedPlaces:
-#             owner = self.player.game.players[Board.Board().places[place].owner-1]
-#             if owner not in playersInTile and owner.id != 0 and owner != self.player and owner.resourceCount() > 0: 
-#                 playersInTile.append(owner)
-#         if len(playersInTile) > 0:
-#             print("qui exe 2")
-#             self.chosenPlayer = playersInTile[random.randint(0,len(playersInTile)-1)]
-#             self.takenResource = self.chosenPlayer.stealFromMe(self.player)
-#             print("taken res exe ", self.takenResource)
-#         return
+    def execute(self):
+        playersInTile = []
+        for place in self.tile.associatedPlaces:
+            owner = self.player.game.players[Board.Board().places[place].owner-1]
+            if owner not in playersInTile and owner.id != 0 and owner != self.player and owner.resourceCount() > 0: 
+                playersInTile.append(owner)
+        if len(playersInTile) > 0:
+            self.chosenPlayer = playersInTile[random.randint(0,len(playersInTile)-1)]
+            self.takenResource = self.chosenPlayer.stealFromMe(self.player)
+        return
 
-#     def undo(self):
-#         print("taken res undo ", self.takenResource)
-#         self.chosenPlayer.resources[self.takenResource] += 1
-#         self.player.resources[self.takenResource] -= 1
+    def undo(self):
+        if self.chosenPlayer is not None and self.takenResource is not None:
+            self.chosenPlayer.resources[self.takenResource] += 1
+            self.player.resources[self.takenResource] -= 1
 
-#     def redo(self):
-#         self.chosenPlayer.resources[self.takenResource] -= 1
-#         self.player.resources[self.takenResource] += 1
+    def redo(self):
+        self.chosenPlayer.resources[self.takenResource] -= 1
+        self.player.resources[self.takenResource] += 1
 
 @dataclass
 class UseRobberCommand:
@@ -295,17 +292,21 @@ class UseRobberCommand:
     previousPosition: int = 0
     chosenPlayer: Player = Player.Player(0, Game.Game())
     takenResource: str = ""
+    srCommand = None
 
     def execute(self):
         self.previousPosition = Board.Board().robberTile        
         Board.Board().robberTile = self.tilePosition
-        self.chosenPlayer, self.takenResource = stealResource(self.player, Board.Board().tiles[self.tilePosition])
+        #self.chosenPlayer, self.takenResource = stealResource(self.player, Board.Board().tiles[self.tilePosition])
+        # self.srCommand = StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])
+        # self.srCommand.execute()
 
     def undo(self):
         Board.Board().robberTile = self.previousPosition
-        if self.chosenPlayer is not None and self.takenResource is not None:
-            self.chosenPlayer.resources[self.takenResource] += 1
-            self.player.resources[self.takenResource] -= 1
+        # if self.chosenPlayer is not None and self.takenResource is not None:
+        #     self.chosenPlayer.resources[self.takenResource] += 1
+        #     self.player.resources[self.takenResource] -= 1
+        #self.srCommand.undo()
     
     def redo(self):
         self.execute()
@@ -327,7 +328,7 @@ class UseKnightCommand:
         self.previousPosition = Board.Board().robberTile
         Board.Board().robberTile = self.tilePosition
         #self.stealCommand = StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])
-        self.chosenPlayer, self.takenResource = stealResource(self.player, Board.Board().tiles[self.tilePosition])
+        #self.chosenPlayer, self.takenResource = stealResource(self.player, Board.Board().tiles[self.tilePosition])
         self.player.unusedKnights -= 1
         self.player.usedKnights += 1
 
@@ -347,9 +348,9 @@ class UseKnightCommand:
         self.postMoveLargArmy.victoryPoints -= 2 
         self.previousLargestArmy.victoryPoints += 2
 
-        if self.chosenPlayer is not None and self.takenResource is not None:
-            self.chosenPlayer.resources[self.takenResource] += 1
-            self.player.resources[self.takenResource] -= 1
+        # if self.chosenPlayer is not None and self.takenResource is not None:
+        #     self.chosenPlayer.resources[self.takenResource] += 1
+        #     self.player.resources[self.takenResource] -= 1
 
     def redo(self):
         self.execute()
@@ -436,6 +437,36 @@ class UseYearOfPlentyCardCommand:
         self.player.yearOfPlentyCard += 1
         self.player.useResource(self.resources[0])
         self.player.useResource(self.resources[1])
+
+    def redo(self):
+        self.execute()
+
+@dataclass
+class DiceProductionCommand:
+    number: int
+    game: Game
+
+    def execute(self):
+        for tile in Board.Board().tiles:
+            if tile.number == self.number and tile != Board.Board().robberTile:
+                for p in tile.associatedPlaces:
+                    if(Board.Board().places[p].owner != 0):
+                        if(Board.Board().places[p].isColony):
+                            Bank.Bank().giveResource(self.game.players[Board.Board().places[p].owner-1], tile.resource)
+                        elif(Board.Board().places[p].isCity):
+                            Bank.Bank().giveResource(self.game.players[Board.Board().places[p].owner-1], tile.resource)
+                            Bank.Bank().giveResource(self.game.players[Board.Board().places[p].owner-1], tile.resource)
+
+    def undo(self):
+        for tile in Board.Board().tiles:
+            if tile.number == self.number and tile != Board.Board().robberTile:
+                for p in tile.associatedPlaces:
+                    if(Board.Board().places[p].owner != 0):
+                        if(Board.Board().places[p].isColony):
+                            self.game.players[Board.Board().places[p].owner-1].useResource(tile.resource)
+                        elif(Board.Board().places[p].isCity):
+                            self.game.players[Board.Board().places[p].owner-1].useResource(tile.resource)
+                            self.game.players[Board.Board().places[p].owner-1].useResource(tile.resource)
 
     def redo(self):
         self.execute()
