@@ -9,7 +9,7 @@ import pandas as pd
 import time
 import AI.Gnn as Gnn
 
-speed = False
+speed = True #False
 withDelay = False
 realPlayer = False
 save = True
@@ -136,14 +136,14 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None):
     game.actualTurn = 0 
     won = False
     # START INIZIALE
-    # game.players[0].AI = True
-    # game.players[1].AI = True
-    # game.players[2].AI = True
-    # game.players[3].AI = True
-    game.players[0].RANDOM = True
-    game.players[1].RANDOM = True
-    game.players[2].RANDOM = True
-    game.players[3].RANDOM = True
+    game.players[0].AI = True
+    game.players[1].AI = True
+    game.players[2].AI = True
+    game.players[3].AI = True
+    # game.players[0].RANDOM = True
+    # game.players[1].RANDOM = True
+    # game.players[2].RANDOM = True
+    # game.players[3].RANDOM = True
     
     for p in game.players:
         game.doInitialChoise(p)

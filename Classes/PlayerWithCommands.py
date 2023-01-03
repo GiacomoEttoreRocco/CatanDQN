@@ -502,35 +502,34 @@ class Player:
     def aiActionValue(self, action, thingNeeded = None):
         ctr = controller.ActionController()
 
-        if(action == commands.PassTurnCommand or action == commands.BuyDevCardCommand or action == commands.UseMonopolyCardCommand):
+        if(action == commands.PassTurnCommand): 
             toRet = Gnn.Gnn().evaluatePosition(self)
 
         elif(action == commands.UseKnightCommand or action == commands.UseRobberCommand):
-            previousTilePos = ctr.execute(action(self, thingNeeded)) # action(self, thingNeeded, False, True)
+            previousTilePos = ctr.execute(action(self, thingNeeded)) 
             toRet = Gnn.Gnn().evaluatePosition(self)
-            ctr.undo() # action(self, previousTilePos, True, True) 
+            ctr.undo() 
 
-        #elif(action == commands.PlaceFreeStreetCommand or action == commands.PlaceStreetCommand or action == commands.PlaceInitialStreetCommand or action == commands.PlaceColonyCommand or action == commands.UseRoadBuildingCardCommand):
         elif(action == commands.PlaceStreetCommand or action == commands.PlaceInitialStreetCommand or action == commands.PlaceColonyCommand or action == commands.UseRoadBuildingCardCommand):
             if action == commands.PlaceStreetCommand or action == commands.PlaceColonyCommand:
                 ctr.execute(action(self, thingNeeded, True))
             else:
-                ctr.execute(action(self, thingNeeded)) # action(self, thingNeeded, False, True)
+                ctr.execute(action(self, thingNeeded)) 
             toRet = Gnn.Gnn().evaluatePosition(self) 
-            ctr.undo() # action(self, thingNeeded, True, True) 
+            ctr.undo() 
 
-        elif(action == commands.PlaceInitialColonyCommand):
-            ctr.execute(action(self, thingNeeded)) # action(self, thingNeeded)
+        elif(action == commands.PlaceInitialColonyCommand or action == commands.UseMonopolyCardCommand or action == commands.BuyDevCardCommand):
+            ctr.execute(action(self, thingNeeded)) 
             toRet = Gnn.Gnn().evaluatePosition(self) 
-            ctr.undo() # action(self, thingNeeded, True) 
+            ctr.undo() 
 
         else:
             if action == commands.PlaceStreetCommand  or action == commands.PlaceCityCommand or action == commands.PlaceColonyCommand:
-                ctr.execute(action(self, thingNeeded, True)) # action(self, thingNeeded)
+                ctr.execute(action(self, thingNeeded, True)) 
             else:
-                ctr.execute(action(self, thingNeeded)) # action(self, thingNeeded)
+                ctr.execute(action(self, thingNeeded)) 
             toRet = Gnn.Gnn().evaluatePosition(self)
-            ctr.undo() # action(self, thingNeeded, undo=True)
+            ctr.undo() 
 
         return toRet + random.uniform(0.00001,0.00002)
 

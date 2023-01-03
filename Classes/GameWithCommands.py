@@ -18,10 +18,8 @@ class Game:
         self.dummy = Player.Player(0, self)
         self.dummy.victoryPoints = 4
         ##########################################
-
         self.nplayer = num_players
         self.players = [Player.Player(i+1, self) for i in range(0, num_players)]
-
         self.largestArmyPlayer = self.dummy
         self.longestStreetOwner = self.dummy
         self.longestStreetLength = 4
@@ -92,9 +90,9 @@ class Game:
                     thingsNeeded = tempInput
                     bestAction = action
             return bestAction, thingsNeeded
-        else:
-            actions = player.availableActionsWithInput(usedCard)
-            return player.chooseAction(actions)
+        # else:
+        #     actions = player.availableActionsWithInput(usedCard)
+        #     return player.chooseAction(actions)
 
     def sevenOnDices(self):
         #ctr = controller.ActionController()
@@ -106,14 +104,14 @@ class Game:
                     for i in range(0, half):
                         eval, resource = pyr.evaluate(commands.DiscardResourceCommand)
                         self.ctr.execute(commands.DiscardResourceCommand(pyr, resource))
-                else:
-                    for i in range(0, half):
-                        actions = []
-                        for res in pyr.resources.keys():
-                            if(pyr.resources[res] > 0):
-                                actions.append((commands.DiscardResourceCommand, res))
-                        action, resource = pyr.chooseAction(actions)
-                        self.ctr.execute(action(pyr, resource))
+                # else:
+                #     for i in range(0, half):
+                #         actions = []
+                #         for res in pyr.resources.keys():
+                #             if(pyr.resources[res] > 0):
+                #                 actions.append((commands.DiscardResourceCommand, res))
+                #         action, resource = pyr.chooseAction(actions)
+                #         self.ctr.execute(action(pyr, resource))
 
     def rollDice(self): 
         return random.randint(1,6) + random.randint(1,6)    
@@ -175,20 +173,20 @@ class Game:
             # print("Initial choise, colony: ", str(colonyChoosen.id))
             evaluation, edgeChoosen = player.evaluate(commands.PlaceInitialStreetCommand)
             self.ctr.execute(commands.PlaceInitialStreetCommand(player, edgeChoosen))
-        else:
-            actions = []
-            for colony in player.calculatePossibleInitialColony():
-                actions.append((commands.PlaceInitialColonyCommand, colony))
-            action, colonyChoosen = player.chooseAction(actions)
-            self.ctr.execute(action(player, colonyChoosen))
-            if(giveResources):
-                for touchedResource in Board.Board().places[colonyChoosen.id].touchedResourses:
-                    Bank.Bank().giveResource(player, touchedResource)
-            actions = []
-            for street in player.calculatePossibleInitialStreets():
-                actions.append((commands.PlaceInitialStreetCommand, street))
-            action, edgeChoosen = player.chooseAction(actions)
-            self.ctr.execute(action(player, edgeChoosen))
+        # else:
+        #     actions = []
+        #     for colony in player.calculatePossibleInitialColony():
+        #         actions.append((commands.PlaceInitialColonyCommand, colony))
+        #     action, colonyChoosen = player.chooseAction(actions)
+        #     self.ctr.execute(action(player, colonyChoosen))
+        #     if(giveResources):
+        #         for touchedResource in Board.Board().places[colonyChoosen.id].touchedResourses:
+        #             Bank.Bank().giveResource(player, touchedResource)
+        #     actions = []
+        #     for street in player.calculatePossibleInitialStreets():
+        #         actions.append((commands.PlaceInitialStreetCommand, street))
+        #     action, edgeChoosen = player.chooseAction(actions)
+        #     self.ctr.execute(action(player, edgeChoosen))
 
     def totalKnightsUsed(self):
         totKnightUsed = 0

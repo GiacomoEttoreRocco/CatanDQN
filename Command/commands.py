@@ -5,6 +5,7 @@ import Classes.Board as Board
 import Classes.CatanGraph as cg
 import Classes.Bank as Bank
 import random
+import numpy as np
 
 @dataclass
 class PlaceInitialStreetCommand:
@@ -194,10 +195,9 @@ class BuyDevCardCommand:
         #print("Deck after exe ", Board.Board().deck) 
 
     def undo(self):
-        if self.withCost:
-            Bank.Bank().giveResource(self.player, "iron")
-            Bank.Bank().giveResource(self.player, "crop")
-            Bank.Bank().giveResource(self.player, "sheep")
+        Bank.Bank().giveResource(self.player, "iron")
+        Bank.Bank().giveResource(self.player, "crop")
+        Bank.Bank().giveResource(self.player, "sheep")
         if(self.card == "knight"):
             self.player.justBoughtKnights -= 1
         if(self.card == "monopoly"):
@@ -209,7 +209,7 @@ class BuyDevCardCommand:
         if(self.card == "victory_point"):
             self.player.victoryPoints -= 1
             self.player.victoryPointsCards -= 1
-        Board.Board().deck.insert(0, self.card)
+        Board.Board().deck = np.insert(Board.Board().deck, 0, self.card)
         
     def redo(self):
         self.execute()
@@ -392,7 +392,7 @@ class UseMonopolyCardCommand:
 
     def undo(self):
         self.player.monopolyCard += 1
-        for p, i in enumerate(self.player.game.players):
+        for i, p in enumerate(self.player.game.players):
             p.resources[self.resource] = self.previousPlayersResources[i]
 
     def redo(self):
