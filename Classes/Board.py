@@ -92,8 +92,8 @@ class Board: # deve diventare un singleton
             s = s + "Place: "+ str(p) + "\n"
         return s
 
-    def actualEvaluation(cls):
-        return 2
+    # def actualEvaluation(cls):
+    #     return 2
 
     def dicesOfPlace(cls, place):
         numbers = []

@@ -9,7 +9,9 @@ import pandas as pd
 import time
 import AI.Gnn as Gnn
 
-speed = False
+# speed = False
+speed = True
+
 withDelay = False
 realPlayer = False
 save = True
@@ -44,12 +46,14 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
     view.updateGameScreen() 
     if(player.unusedKnights > 0 and not turnCardUsed):
         if(player.AI or player.RANDOM):
-            actualEvaluation = c.Board.Board().actualEvaluation()
+            actualEvaluation, thingNeeded = player.evaluate(commands.PassTurnCommand)
             afterKnight, tilePosition = player.evaluate(commands.UseKnightCommand)
+            print("Actual evaluation: ", actualEvaluation, " After knight: ", afterKnight)
             if(afterKnight > actualEvaluation):
+                print("pre dice roll knight")
                 ctr.execute(commands.UseKnightCommand(player, tilePosition))
                 goNext()
-                ctr.execute(commands.StealResourceCommand(player, c.Board.Board().tiles[self.tilePosition]))
+                ctr.execute(commands.StealResourceCommand(player, c.Board.Board().tiles[tilePosition]))
                 saveMove(save, player) ######################################################
                 view.updateGameScreen()
                 turnCardUsed = True 
