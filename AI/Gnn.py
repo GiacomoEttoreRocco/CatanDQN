@@ -44,11 +44,19 @@ class Gnn():
                 optimizer.step()
         cls.saveWeights()       
 
-    def evaluatePosition(cls, player):
+    def evaluatePositionForPlayer(cls, player):
         globalFeats = player.globalFeaturesToDict()
         graph = cls.fromDictsToGraph(Board.Board().placesToDict(player), Board.Board().edgesToDict(player)).to(cls.device)
         glob = torch.tensor(list(globalFeats.values())[:-1]).float().to(cls.device)
         return cls.model(graph, glob)[player.id-1]
+
+    def evaluatePosition(cls, player):
+        #print(player.id)
+        globalFeats = player.globalFeaturesToDict()
+        graph = cls.fromDictsToGraph(Board.Board().placesToDict(player), Board.Board().edgesToDict(player)).to(cls.device)
+        glob = torch.tensor(list(globalFeats.values())[:-1]).float().to(cls.device)
+        return cls.model(graph, glob)
+
 
     def extractInputFeaturesMove(cls, moveIndex):
         places = cls.moves.iloc[moveIndex].places

@@ -503,11 +503,11 @@ class Player:
         ctr = controller.ActionController()
 
         if(action == commands.PassTurnCommand): 
-            toRet = Gnn.Gnn().evaluatePosition(self)
+            toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
 
         elif(action == commands.UseKnightCommand or action == commands.UseRobberCommand):
             previousTilePos = ctr.execute(action(self, thingNeeded)) 
-            toRet = Gnn.Gnn().evaluatePosition(self)
+            toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
             ctr.undo() 
 
         elif(action == commands.PlaceStreetCommand or action == commands.PlaceInitialStreetCommand or action == commands.PlaceColonyCommand or action == commands.UseRoadBuildingCardCommand):
@@ -515,12 +515,12 @@ class Player:
                 ctr.execute(action(self, thingNeeded, True))
             else:
                 ctr.execute(action(self, thingNeeded)) 
-            toRet = Gnn.Gnn().evaluatePosition(self) 
+            toRet = Gnn.Gnn().evaluatePositionForPlayer(self) 
             ctr.undo() 
 
         elif(action == commands.PlaceInitialColonyCommand or action == commands.UseMonopolyCardCommand or action == commands.BuyDevCardCommand):
             ctr.execute(action(self, thingNeeded)) 
-            toRet = Gnn.Gnn().evaluatePosition(self) 
+            toRet = Gnn.Gnn().evaluatePositionForPlayer(self) 
             ctr.undo() 
 
         else:
@@ -528,7 +528,7 @@ class Player:
                 ctr.execute(action(self, thingNeeded, True)) 
             else:
                 ctr.execute(action(self, thingNeeded)) 
-            toRet = Gnn.Gnn().evaluatePosition(self)
+            toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
             ctr.undo() 
 
         return toRet + random.uniform(0.00001,0.00002)

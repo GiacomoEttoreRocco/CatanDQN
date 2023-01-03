@@ -5,6 +5,7 @@ import Graphics.geomlib as geomlib
 import Classes.CatanGraph  as cg
 import Classes.Board as Board
 import Graphics.PlaceCoordinates as pc
+import AI.Gnn as Gnn
 import os
 import time
 
@@ -83,7 +84,6 @@ class GameView:
 
     def blit(self, player, x, y):
         playerBox = pygame.Rect(x-5, y-5, 150, 350)
-
         if self.game.currentTurnPlayer == player:
             self.screen.fill(self.bgScoreColorHighlited, playerBox)
         else:
@@ -153,20 +153,25 @@ class GameView:
                             self.checkAndDrawHarbors(placeToAdd)
                             alreadyFound.append(el)
 
-    def displayGameScreen(self):
-        self.setupAndDisplayBoard()
-        self.setupPlaces()
-        self.updateGameScreen()
-        pygame.display.update()
-        print("Line 169, gameView, event wait()...")
-        event = pygame.event.wait()
-        return
+    def updateScoreGNN(self, player):
+        scores_string = "Scores: "
+        for v in Gnn.Gnn().evaluatePosition(player):
+            scores_string += '%.2f '%v.item()
+        scores = self.font_resourceSmallest.render(scores_string, False, self.playerColorDict[player.id])
+        playersScores = pygame.Rect(self.width/2-125, 0, 250, 50)
+
+        self.screen.fill(self.bgScoreColor, playersScores)
+        self.screen.blit(scores, (self.width/2-120, 5))
+        #dare il valore ai font
+        #faccio un box
+        #update
 
     def updateGameScreen(self):
         self.drawRobber()
         self.checkAndDrawStreets()
         self.checkAndDrawPlaces()
         self.updateStats()
+        self.updateScoreGNN(self.game.currentTurnPlayer)
         self.blit(self.game.players[0], 5, 5)
         self.blit(self.game.players[1], 5, self.height-345)
         self.blit(self.game.players[2], self.width-145, 5)
@@ -187,7 +192,6 @@ class GameView:
         font_dice = self.font_resourceSmaller.render(str(self.game.dices[self.game.actualTurn]), False, pygame.Color('white'))
         diceRoll = pygame.Rect(170, 0, 50, 50)
         self.screen.fill(self.bgScoreColor, diceRoll)
-        # pygame.display.update(diceRoll)
         self.screen.blit(font_dice, (175, 5))
         pygame.display.update()
 

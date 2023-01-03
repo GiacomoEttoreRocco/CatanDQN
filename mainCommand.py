@@ -155,21 +155,23 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None):
     game.actualTurn = 0 
     won = False
     # START INIZIALE
-    game.players[0].AI = True
-    game.players[1].AI = True
-    game.players[2].AI = True
-    game.players[3].AI = True
-    # game.players[0].RANDOM = True
-    # game.players[1].RANDOM = True
-    # game.players[2].RANDOM = True
-    # game.players[3].RANDOM = True
+    # game.players[0].AI = True
+    # game.players[1].AI = True
+    # game.players[2].AI = True
+    # game.players[3].AI = True
+    game.players[0].RANDOM = True
+    game.players[1].RANDOM = True
+    game.players[2].RANDOM = True
+    game.players[3].RANDOM = True
     
     for p in game.players:
         game.doInitialChoise(p)
+        GameView.GameView.updateGameScreen(view)
         saveMove(save, p) #################
         goNext()
     for p in sorted(game.players, reverse=True):
         game.doInitialChoise(p, giveResources = True)
+        GameView.GameView.updateGameScreen(view)
         saveMove(save, p) #################
         goNext()
 
@@ -226,9 +228,9 @@ def printWinners():
 ###########################################################################################################################
 
 epochs = 1
-batchs = 5
+batchs = 1
 
-train = False
+train = True
 
 for epoch in range(epochs):
     print('Iteration: ', epoch+1, "/", epochs)
