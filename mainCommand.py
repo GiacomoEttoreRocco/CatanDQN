@@ -9,16 +9,16 @@ import pandas as pd
 import time
 import AI.Gnn as Gnn
 
-speed = True
+speed = False
 withDelay = False
 realPlayer = False
 save = True
 ctr = controller.ActionController()
 
-WINNERS = [0.0,0.0,0.0,0.0]
+WINNERS = [0.0, 0.0, 0.0, 0.0]
 devCardsBought = [0.0, 0.0, 0.0, 0.0]
 
-def goNextIfInvio():
+def goNext():
     if(not speed):
         event = pygame.event.wait()
         while event.type != pygame.KEYDOWN:
@@ -27,8 +27,7 @@ def goNextIfInvio():
         event = pygame.event.get()
     pygame.display.update()
     view.updateGameScreen()
-    if(withDelay):
-        time.sleep(0.05)
+
 
 def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
 
@@ -50,7 +49,6 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
             if(afterKnight > actualEvaluation):
                 ctr.execute(commands.UseKnightCommand(player, tilePosition))
                 saveMove(save, player) ######################################################
-                # print("BEFORE ROLL DICE: ", c.Move.useKnight, "\n")
                 view.updateGameScreen()
                 turnCardUsed = True 
         else:
@@ -72,21 +70,15 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
     if(game.checkWon(player)):
         return
     ####################################################################### ROLL DICES #####################################################################   
-    dicesValue = game.rollDice()
-    game.dice = dicesValue
-    #game.fillDices()   game.dice has to become game.dices 
-    #dicesValue = game.dices.pop()
-    ########################################################################################################################################################
-    # print("Dice value: ", dicesValue)
+    dicesValue = game.dices[game.actualTurn]
+
     if(dicesValue == 7):
         game.sevenOnDices()
-        # print("############# SEVEN! #############")
         if(player.AI or player.RANDOM):
             ev, pos = player.evaluate(commands.UseRobberCommand)
             ctr.execute(commands.UseRobberCommand(player, pos))
-            saveMove(save, player) ######################################################
+            saveMove(save, player) 
         else:
-            # print("Mosse disponibili: ")
             actions = []
             for i in range(0, 19):
                 if(i != c.Board.Board().robberTile):
@@ -95,9 +87,11 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
                 print("Move ", i, ": ", action)  
             toDo = int(input("Inserisci l'indice della mossa che vuoi eseguire: "))
             ctr.execute(commands.UseRobberCommand(player, actions[toDo][1]))
-            saveMove(save, player) ######################################################
+            saveMove(save, player) 
     else:
         game.dice_production(dicesValue)
+        view.updateGameScreen()
+
     action, thingNeeded = game.bestAction(player, turnCardUsed)
     if action == commands.PlaceStreetCommand  or action == commands.PlaceColonyCommand:
         previousLongestStreetOwner = player.game.longestStreetPlayer(False)
@@ -109,9 +103,8 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
         ctr.execute(action(player, thingNeeded))
     if(action == commands.BuyDevCardCommand):
         devCardsBought[player.id-1] += 1
-    saveMove(save, player) ######################################################
-    goNextIfInvio()
-    # print("Player ", player.id, " mossa: ", move, " ")
+    saveMove(save, player) 
+    goNext()
     if(game.checkWon(player)):
         return
     if(action in commands.cardCommands()):
@@ -128,9 +121,8 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
             ctr.execute(action(player, thingNeeded))
         if(action == commands.BuyDevCardCommand):
             devCardsBought[player.id-1] += 1
-        saveMove(save, player) ######################################################
-        goNextIfInvio()
-        #print("Player ", player.id, " mossa: ", move, " ")
+        saveMove(save, player) 
+        goNext()
         if(action in commands.cardCommands()):
             turnCardUsed = True
 
@@ -141,7 +133,7 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None):
     GameView.GameView.setupPlaces(view)
     GameView.GameView.updateGameScreen(view)
     pygame.display.update()
-    turn = 0 
+    game.actualTurn = 0 
     won = False
     # START INIZIALE
     # game.players[0].AI = True
@@ -156,33 +148,25 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None):
     for p in game.players:
         game.doInitialChoise(p)
         saveMove(save, p) #################
-        goNextIfInvio()
+        goNext()
     for p in sorted(game.players, reverse=True):
         game.doInitialChoise(p, giveResources = True)
         saveMove(save, p) #################
-        # INITIAL CHOISE TERMINATED
-        goNextIfInvio()
+        goNext()
+
     while won == False:
-        playerTurn = game.players[turn%game.nplayer]
-        #print(turn%game.nplayer)
-        game.currentTurn = playerTurn
-        turn += 1
+        playerTurn = game.players[game.actualTurn%game.nplayer]
+        game.currentTurnPlayer = playerTurn
+        game.actualTurn += 1
         doTurnGraphic(game, playerTurn)
         if(playerTurn.victoryPoints >= 10):
             WINNERS[playerTurn.id-1] += 1
             s = 'Winner: ' + str(playerTurn.id) + "\n"
             game.printVictoryPointsOfAll(devCardsBought)
-            #time.sleep(15)
             saveToCsv(playerTurn)
             print(s) 
             won = True
-            # if(turn > 0):
-            #     print(turn)
-            #     os.system("pause")
-            #return playerTurn
-        # if(turn % 4 == 0):
-            # print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
-    goNextIfInvio()
+    goNext()
     pygame.quit()
 
 def saveMove(save, player):
@@ -223,7 +207,9 @@ def printWinners():
 ###########################################################################################################################
 
 epochs = 1
-batchs = 1
+batchs = 5
+
+train = False
 
 for epoch in range(epochs):
     print('Iteration: ', epoch+1, "/", epochs)
@@ -231,13 +217,14 @@ for epoch in range(epochs):
     for batch in range(batchs): 
         print('game: ', batch+1, "/", batchs) 
         total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
-        c.Board.Board().reset()
-        c.Bank.Bank().reset()
         #g = c.Game.Game()
         g = c.GameWithCommands.Game()
         view = GameView.GameView(g)
         playGameWithGraphic(g, view)
+        c.Board.Board().reset()
+        c.Bank.Bank().reset()
 
-    allGames.to_json("./json/game.json")
-    Gnn.Gnn().trainModel()
-    printWinners()
+    if(train):
+        allGames.to_json("./json/game.json")
+        Gnn.Gnn().trainModel()
+        printWinners()

@@ -50,8 +50,6 @@ class GameView:
         self.roadBuildingCards = []
         self.yearOfPlentyCards = []
 
-
-        self.turns = []
         self.bgScoreColor = pygame.Color("grey18")
         self.bgScoreColorHighlited = pygame.Color('grey64')
 
@@ -83,12 +81,10 @@ class GameView:
             self.roadBuildingCards[i] = self.font_resourceSmallest.render("RoadBuilding: " + str(self.game.players[i].roadBuildingCard), False, self.playerColorDict[i+1])
             self.yearOfPlentyCards[i] = self.font_resourceSmallest.render("YearOfPlenty: " + str(self.game.players[i].yearOfPlentyCard), False, self.playerColorDict[i+1])
 
-
-
     def blit(self, player, x, y):
         playerBox = pygame.Rect(x-5, y-5, 150, 350)
 
-        if self.game.currentTurn == player:
+        if self.game.currentTurnPlayer == player:
             self.screen.fill(self.bgScoreColorHighlited, playerBox)
         else:
             self.screen.fill(self.bgScoreColor, playerBox)
@@ -188,7 +184,7 @@ class GameView:
         font_largest_army = self.font_resourceSmaller.render('LA: '+ str(self.game.largestArmyPlayer.id), False, pygame.Color('white'))
         self.screen.blit(font_largest_army, (self.width-170-100+5, self.height - 45))
 
-        font_dice = self.font_resourceSmaller.render(str(self.game.dice), False, pygame.Color('white'))
+        font_dice = self.font_resourceSmaller.render(str(self.game.dices[self.game.actualTurn]), False, pygame.Color('white'))
         diceRoll = pygame.Rect(170, 0, 50, 50)
         self.screen.fill(self.bgScoreColor, diceRoll)
         # pygame.display.update(diceRoll)

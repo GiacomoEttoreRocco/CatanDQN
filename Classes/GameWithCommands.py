@@ -26,8 +26,9 @@ class Game:
         self.longestStreetOwner = self.dummy
         self.longestStreetLength = 4
         self.tmpVisitedEdges = []
-        self.dice = 0
-        self.currentTurn = self.dummy
+        self.dices = [self.rollDice() for _ in range(1000)]
+        self.actualTurn = 0
+        self.currentTurnPlayer = self.dummy
         self.order = 0
 
         for i in range(num_players):
@@ -41,7 +42,6 @@ class Game:
             assert self.players[i].nColonies == 0
             assert self.players[i].nStreets == 0
             assert self.players[i].unusedKnights == 0
-
 
     def printVictoryPointsOfAll(self, nDevCardsBought: list):
         for player in self.players:
@@ -67,7 +67,6 @@ class Game:
 
         assert self.dummy.victoryPoints >= 0, s+"\nError, fake player weird behaviour: less then 0 points."
         assert self.dummy.victoryPoints <= 4, s+"\nError: fake player weird behaviour: more then 4 points."
-
 
     def dice_production(self, number):
         for tile in Board.Board().tiles:
@@ -107,7 +106,6 @@ class Game:
                     for i in range(0, half):
                         eval, resource = pyr.evaluate(commands.DiscardResourceCommand)
                         self.ctr.execute(commands.DiscardResourceCommand(pyr, resource))
-                        #Action.discardResource(pyr, card)
                 else:
                     for i in range(0, half):
                         actions = []
@@ -120,52 +118,47 @@ class Game:
     def rollDice(self): 
         return random.randint(1,6) + random.randint(1,6)    
 
-    def fillDices(self):
-        for i in range(1000):
-            dice = self.rollDice()
-            self.dices.append(dice)
+    # def doTurn(self, player: Player):
+    #     turnCardUsed = False
+    #     player.unusedKnights = player.unusedKnights + player.justBoughtKnights
+    #     player.justBoughtKnights = 0
+    #     player.monopolyCard += player.justBoughtMonopolyCard
+    #     player.justBoughtMonopolyCard = 0
+    #     player.roadBuildingCard += player.justBoughtRoadBuildingCard
+    #     player.justBoughtRoadBuildingCard = 0
+    #     player.yearOfPlentyCard += player.justBoughtYearOfPlentyCard
+    #     player.justBoughtYearOfPlentyCard = 0
+    #     if(player.unusedKnights > 0 and not turnCardUsed):
+    #         actualEvaluation = Board.Board().actualEvaluation()
+    #         afterKnightEvaluation, tilePos = player.evaluate(commands.UseKnightCommand)
+    #         if(afterKnightEvaluation > actualEvaluation):
+    #             self.ctr.execute(commands.UseKnightCommand(player, tilePos))
+    #             turnCardUsed = True 
+    #     if(self.checkWon(player)):
+    #         print("outside the box n2?")
+    #         return
+    #     ####################################################################### ROLL DICES #####################################################################   
+    #     dicesValue = self.dices[actualTurn] #self.rollDice()
+    #     ########################################################################################################################################################
+    #     if(dicesValue == 7):
+    #         self.sevenOnDices(player)
+    #         ev, tilePos = player.evaluate(commands.UseRobberCommand)
+    #         self.ctr.execute(commands.UseRobberCommand(player, tilePos))
+    #     else:
+    #         self.dice_production(dicesValue)
 
-    def doTurn(self, player: Player):
-        turnCardUsed = False
-        player.unusedKnights = player.unusedKnights + player.justBoughtKnights
-        player.justBoughtKnights = 0
-        player.monopolyCard += player.justBoughtMonopolyCard
-        player.justBoughtMonopolyCard = 0
-        player.roadBuildingCard += player.justBoughtRoadBuildingCard
-        player.justBoughtRoadBuildingCard = 0
-        player.yearOfPlentyCard += player.justBoughtYearOfPlentyCard
-        player.justBoughtYearOfPlentyCard = 0
-        if(player.unusedKnights > 0 and not turnCardUsed):
-            actualEvaluation = Board.Board().actualEvaluation()
-            afterKnightEvaluation, tilePos = player.evaluate(commands.UseKnightCommand)
-            if(afterKnightEvaluation > actualEvaluation):
-                self.ctr.execute(commands.UseKnightCommand(player, tilePos))
-                turnCardUsed = True 
-        if(self.checkWon(player)):
-            print("outside the box n2?")
-            return
-        ####################################################################### ROLL DICES #####################################################################   
-        dicesValue = self.rollDice()
-        ########################################################################################################################################################
-        if(dicesValue == 7):
-            self.sevenOnDices(player)
-            ev, tilePos = player.evaluate(commands.UseRobberCommand)
-            self.ctr.execute(commands.UseRobberCommand(player, tilePos))
-        else:
-            self.dice_production(dicesValue)
-
-        action, thingNeeded = self.bestAction(player, turnCardUsed)
-        action(player, thingNeeded)
-        if(self.checkWon(player)):
-            print("outside the box n3?")
-            return
-        if(action in commands.cardCommands()):
-                turnCardUsed = True
-        while(action != commands.PassTurnCommand and not self.checkWon(player)): 
-            action, thingNeeded = self.bestAction(player, turnCardUsed)
-            self.ctr.execute(action(player, thingNeeded))
-            if(action in commands.cardCommands()):
-                turnCardUsed = True
+    #     action, thingNeeded = self.bestAction(player, turnCardUsed)
+    #     action(player, thingNeeded)
+    #     if(self.checkWon(player)):
+    #         print("outside the box n3?")
+    #         return
+    #     if(action in commands.cardCommands()):
+    #             turnCardUsed = True
+    #     while(action != commands.PassTurnCommand and not self.checkWon(player)): 
+    #         action, thingNeeded = self.bestAction(player, turnCardUsed)
+    #         self.ctr.execute(action(player, thingNeeded))
+    #         if(action in commands.cardCommands()):
+    #             turnCardUsed = True
 
     def checkWon(self, player):
         if(player.victoryPoints >= 10):
@@ -255,7 +248,6 @@ class Game:
                     max = length2
         return max - 1 
         
-
     def explorePlace(self, player, place, visited):
         self.order +=1
         max = 0
@@ -293,25 +285,25 @@ class Game:
                     toRet.append(adjPlace)
         return toRet
 
-    def playGame(self):
-        Board.Board().reset()
-        Bank.Bank().reset()
-        turn = 1 
-        won = False
-        for p in self.players:
-            self.doInitialChoise(p)
-        for p in sorted(self.players, reverse=True):
-            self.doInitialChoise(p, giveResources=True)
-        while won == False:
-            playerTurn = self.players[turn%self.nplayer]
-            turn += 1
-            self.doTurn(playerTurn)
-            if(playerTurn.victoryPoints >= 10):
-                print("The winner is: ", playerTurn, "!")
-                # time.sleep(5)
-                return playerTurn
-            if(turn % 4 == 0):
-                print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
+    # def playGame(self):
+    #     Board.Board().reset()
+    #     Bank.Bank().reset()
+    #     turn = 1 
+    #     won = False
+    #     for p in self.players:
+    #         self.doInitialChoise(p)
+    #     for p in sorted(self.players, reverse=True):
+    #         self.doInitialChoise(p, giveResources=True)
+    #     while won == False:
+    #         playerTurn = self.players[turn%self.nplayer]
+    #         turn += 1
+    #         self.doTurn(playerTurn)
+    #         if(playerTurn.victoryPoints >= 10):
+    #             print("The winner is: ", playerTurn, "!")
+    #             # time.sleep(5)
+    #             return playerTurn
+    #         if(turn % 4 == 0):
+    #             print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
 
 
 
