@@ -48,9 +48,9 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
         if(player.AI or player.RANDOM):
             actualEvaluation, thingNeeded = player.evaluate(commands.PassTurnCommand)
             afterKnight, tilePosition = player.evaluate(commands.UseKnightCommand)
-            print("Actual evaluation: ", actualEvaluation, " After knight: ", afterKnight)
+            #print("Actual evaluation: ", actualEvaluation, " After knight: ", afterKnight)
             if(afterKnight > actualEvaluation):
-                print("pre dice roll knight")
+                #print("pre dice roll knight")
                 ctr.execute(commands.UseKnightCommand(player, tilePosition))
                 goNext()
                 ctr.execute(commands.StealResourceCommand(player, c.Board.Board().tiles[tilePosition]))
@@ -86,16 +86,16 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
             goNext()
             ctr.execute(commands.StealResourceCommand(player, c.Board.Board().tiles[pos]))
             saveMove(save, player) 
-        else:
-            actions = []
-            for i in range(0, 19):
-                if(i != c.Board.Board().robberTile):
-                    actions.append((commands.UseRobberCommand, i))  
-            for i, action in enumerate(actions):
-                print("Move ", i, ": ", action)  
-            toDo = int(input("Inserisci l'indice della mossa che vuoi eseguire: "))
-            ctr.execute(commands.UseRobberCommand(player, actions[toDo][1]))
-            saveMove(save, player) 
+        # else:
+        #     actions = []
+        #     for i in range(0, 19):
+        #         if(i != c.Board.Board().robberTile):
+        #             actions.append((commands.UseRobberCommand, i))  
+        #     for i, action in enumerate(actions):
+        #         print("Move ", i, ": ", action)  
+        #     toDo = int(input("Inserisci l'indice della mossa che vuoi eseguire: "))
+        #     ctr.execute(commands.UseRobberCommand(player, actions[toDo][1]))
+        #     saveMove(save, player) 
     else:
         #game.dice_production(dicesValue)
         ctr.execute(commands.DiceProductionCommand(dicesValue, game))
@@ -228,7 +228,7 @@ def printWinners():
 ###########################################################################################################################
 
 epochs = 1
-batchs = 1
+batchs = 10
 
 train = True
 

@@ -237,7 +237,6 @@ class Player:
                                 available = False
                         if(available and Board.Board().places[p_adj].owner == 0 and self.nColonies < 5): 
                             possibleColonies.append(Board.Board().places[p_adj])
-        #print("POSSIBLE COLONIES: ", possibleColonies)
         return possibleColonies
 
     def calculatePossibleCity(self):
