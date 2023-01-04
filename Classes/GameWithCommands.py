@@ -80,6 +80,9 @@ class Game:
     def bestAction(self, player: Player, usedCard):
         if(player.AI or player.RANDOM):
             actions = player.availableActions(usedCard)
+            #if(len(actions) == 1):
+            #    print("avrebbe senso.")
+            lengthActions = len(actions)
             max = -1
             thingsNeeded = None
             bestAction = commands.PassTurnCommand
@@ -89,7 +92,7 @@ class Game:
                     max = evaluation
                     thingsNeeded = tempInput
                     bestAction = action
-            return bestAction, thingsNeeded
+            return bestAction, thingsNeeded, lengthActions
         # else:
         #     actions = player.availableActionsWithInput(usedCard)
         #     return player.chooseAction(actions)

@@ -101,7 +101,7 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
         ctr.execute(commands.DiceProductionCommand(dicesValue, game))
         view.updateGameScreen()
     goNext()
-    action, thingNeeded = game.bestAction(player, turnCardUsed)
+    action, thingNeeded, lengthActions = game.bestAction(player, turnCardUsed)
     if action == commands.PlaceStreetCommand  or action == commands.PlaceColonyCommand:
         previousLongestStreetOwner = player.game.longestStreetPlayer(False)
         ctr.execute(action(player, thingNeeded, True))
@@ -116,7 +116,13 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
         ctr.execute(action(player, thingNeeded))
     if(action == commands.BuyDevCardCommand):
         devCardsBought[player.id-1] += 1
-    saveMove(save, player) 
+
+    if(lengthActions > 1):
+        print("Move saved.")
+        saveMove(save, player) 
+    else:
+        print("Move not saved.")
+
     goNext()
     if(game.checkWon(player)):
         return
@@ -125,7 +131,7 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
     #La prima mossa è stata fatta
     goNext()
     while(action != commands.PassTurnCommand and not game.checkWon(player)):
-        action, thingNeeded = game.bestAction(player, turnCardUsed)
+        action, thingNeeded, lengthActions = game.bestAction(player, turnCardUsed)
         if action == commands.PlaceStreetCommand  or action == commands.PlaceColonyCommand:
             previousLongestStreetOwner = player.game.longestStreetPlayer(False)
             ctr.execute(action(player, thingNeeded, True))
@@ -140,7 +146,11 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
             ctr.execute(action(player, thingNeeded))
         if(action == commands.BuyDevCardCommand):
             devCardsBought[player.id-1] += 1
-        saveMove(save, player) 
+        if(lengthActions > 1):
+            print("Move saved.")
+            saveMove(save, player) 
+        else:
+            print("Move not saved.")
         goNext()
         if(action in commands.cardCommands()):
             turnCardUsed = True
