@@ -166,31 +166,6 @@ class Game:
             return True
         return False
 
-    def doInitialChoise(self, player: Player, giveResources = False):
-        if(player.AI or player.RANDOM):
-            evaluation, colonyChoosen = player.evaluate(commands.PlaceInitialColonyCommand)
-            self.ctr.execute(commands.PlaceInitialColonyCommand(player, colonyChoosen))
-            if(giveResources):
-                for touchedResource in Board.Board().places[colonyChoosen.id].touchedResourses:
-                    Bank.Bank().giveResource(player, touchedResource)
-            # print("Initial choise, colony: ", str(colonyChoosen.id))
-            evaluation, edgeChoosen = player.evaluate(commands.PlaceInitialStreetCommand)
-            self.ctr.execute(commands.PlaceInitialStreetCommand(player, edgeChoosen))
-        # else:
-        #     actions = []
-        #     for colony in player.calculatePossibleInitialColony():
-        #         actions.append((commands.PlaceInitialColonyCommand, colony))
-        #     action, colonyChoosen = player.chooseAction(actions)
-        #     self.ctr.execute(action(player, colonyChoosen))
-        #     if(giveResources):
-        #         for touchedResource in Board.Board().places[colonyChoosen.id].touchedResourses:
-        #             Bank.Bank().giveResource(player, touchedResource)
-        #     actions = []
-        #     for street in player.calculatePossibleInitialStreets():
-        #         actions.append((commands.PlaceInitialStreetCommand, street))
-        #     action, edgeChoosen = player.chooseAction(actions)
-        #     self.ctr.execute(action(player, edgeChoosen))
-
     def totalKnightsUsed(self):
         totKnightUsed = 0
         for p in self.players:

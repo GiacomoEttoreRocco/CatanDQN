@@ -242,7 +242,7 @@ def stealResource(player, tile: cg.Tile):
 class StealResourceCommand:
     player: Player
     tile: cg.Tile
-    chosenPlayer: Player = Player.Player(0, Game.Game())
+    chosenPlayer: Player = None # Player.Player(0, Game.Game())
     takenResource: str = ""
 
     def __post_init__(self):
@@ -273,9 +273,12 @@ class UseRobberCommand:
     player: Player
     tilePosition: int
     previousPosition: int = 0
-    chosenPlayer: Player = Player.Player(0, Game.Game())
+    chosenPlayer: Player = None # Player.Player(0, Game.Game())
     takenResource: str = ""
     srCommand = None
+
+    def __post_init__(self):
+        self.chosenPlayer = self.player.game.dummy
 
     def execute(self):
         self.previousPosition = Board.Board().robberTile        
@@ -299,15 +302,18 @@ class UseKnightCommand:
     player: Player
     tilePosition: cg.Tile
     previousPosition: int = 0
-    previousLargestArmy : Player = Player.Player(0, Game.Game())
-    postMoveLargArmy : Player = Player.Player(0, Game.Game())
-    chosenPlayer: Player = Player.Player(0, Game.Game())
+    previousLargestArmy : Player = None # Player.Player(0, Game.Game())
+    postMoveLargArmy : Player = None #Player.Player(0, Game.Game())
+    chosenPlayer: Player = None #Player.Player(0, Game.Game())
     takenResource: str = ""
 
+    def __post_init__(self):
+        self.previousLargestArmy = self.player.game.dummy
+        self.postMoveLargArmy = self.player.game.dummy
+        self.chosenPlayer = self.player.game.dummy
+
     def execute(self):
-
         self.previousLargestArmy = self.player.game.largestArmy()   
-
         self.previousPosition = Board.Board().robberTile
         Board.Board().robberTile = self.tilePosition
         #self.stealCommand = StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])
@@ -453,17 +459,6 @@ class DiceProductionCommand:
 
     def redo(self):
         self.execute()
-
-@dataclass
-class RollDiceCommand:
-    game: Game
-
-    def execute(self):
-    
-    def undo(self):
-
-    def redo(self):
-
 
 def cardCommands():
     return [UseMonopolyCardCommand, UseKnightCommand, UseYearOfPlentyCardCommand, UseRoadBuildingCardCommand]
