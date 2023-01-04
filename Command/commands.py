@@ -24,14 +24,6 @@ class PlaceInitialStreetCommand:
     def redo(self):
         self.execute()
 
-    #previousLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
-    # actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
-    # if(previousLongestStreetOwner != actualLongestStreetOwner):
-    #     player.game.longestStreetOwner = actualLongestStreetOwner
-    #     actualLongestStreetOwner.victoryPoints += 2
-    #     #print("-2 riga 21")
-    #     previousLongestStreetOwner.victoryPoints -= 2
-
 @dataclass
 class PlaceInitialColonyCommand:
     player: Player
@@ -62,7 +54,7 @@ class PlaceInitialColonyCommand:
 class PlaceStreetCommand:
     player: Player
     edge: tuple()
-    withCost: bool
+    withCost: bool = True
 
     def execute(self):
         if self.withCost:
@@ -82,19 +74,11 @@ class PlaceStreetCommand:
     def redo(self):
         self.execute()
 
-        #previousLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
-        #actualLongestStreetOwner = player.game.longestStreetPlayer(justCheck)
-
-        # if(previousLongestStreetOwner.id != actualLongestStreetOwner.id): 
-        #     player.game.longestStreetOwner = actualLongestStreetOwner
-        #     actualLongestStreetOwner.victoryPoints += 2
-            #previousLongestStreetOwner.victoryPoints -= 2
-
 @dataclass
 class PlaceColonyCommand:
     player: Player
     place: cg.Place
-    withCost: bool
+    withCost: bool = True
 
     def execute(self):
         if self.withCost:
@@ -136,7 +120,7 @@ class PlaceColonyCommand:
 class PlaceCityCommand:
     player: Player
     place: cg.Place
-    withCost: bool
+    withCost: bool = True
 
     def execute(self):
         if self.withCost:
@@ -192,7 +176,6 @@ class BuyDevCardCommand:
             self.player.victoryPoints += 1
             self.player.victoryPointsCards += 1
         Board.Board().deck = Board.Board().deck[1:]
-        #print("Deck after exe ", Board.Board().deck) 
 
     def undo(self):
         Bank.Bank().giveResource(self.player, "iron")
@@ -470,6 +453,16 @@ class DiceProductionCommand:
 
     def redo(self):
         self.execute()
+
+@dataclass
+class RollDiceCommand:
+    game: Game
+
+    def execute(self):
+    
+    def undo(self):
+
+    def redo(self):
 
 
 def cardCommands():
