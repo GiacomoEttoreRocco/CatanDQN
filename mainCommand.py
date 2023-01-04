@@ -118,10 +118,10 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
         devCardsBought[player.id-1] += 1
 
     if(lengthActions > 1):
-        print("Move saved.")
+        #print("Move saved.")
         saveMove(save, player) 
-    else:
-        print("Move not saved.")
+    #else:
+        #print("Move not saved.")
 
     goNext()
     if(game.checkWon(player)):
@@ -147,10 +147,10 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
         if(action == commands.BuyDevCardCommand):
             devCardsBought[player.id-1] += 1
         if(lengthActions > 1):
-            print("Move saved.")
+            #print("Move saved.")
             saveMove(save, player) 
-        else:
-            print("Move not saved.")
+        #else:
+            #print("Move not saved.")
         goNext()
         if(action in commands.cardCommands()):
             turnCardUsed = True
@@ -210,9 +210,10 @@ def saveMove(save, player):
 def saveToCsv(victoryPlayer):
     for i in range(len(total)):
         total.globals[i]['winner'] = victoryPlayer.id
-    print(len(total))
+    print("Length of total moves of this game: ", len(total))
     global allGames
     allGames = pd.concat([allGames, total], ignore_index=True)
+    print("Length of total moves of allGames: ", len(allGames))
 
 def checkLongestStreetOwner(previousLongestStreetOwner: c.PlayerWithCommands, player: c.PlayerWithCommands):
     actualLongestStreetOwner = player.game.longestStreetPlayer(False)
