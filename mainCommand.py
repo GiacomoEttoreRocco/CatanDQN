@@ -11,7 +11,6 @@ import AI.Gnn as Gnn
 
 # speed = False
 speed = True
-
 withDelay = False
 realPlayer = False
 save = True
@@ -30,9 +29,22 @@ def goNext():
     pygame.display.update()
     view.updateGameScreen()
 
+def decisionManager(player):
+    event = pygame.event.wait()
+    while event.type != pygame.KEYDOWN:
+        if(event.key == pygame.K_a):
+            player.AI = True
+            player.RANDOM = False
+        elif(event.key == pygame.K_r):
+            player.AI = False
+            player.RANDOM = True
+        else:
+            event = pygame.event.wait()
+    pygame.display.update()
+    view.updateGameScreen()
+
 
 def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
-
     global devCardsBought
     turnCardUsed = False 
     player.unusedKnights = player.unusedKnights + player.justBoughtKnights
@@ -72,7 +84,6 @@ def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
         #             saveMove(save, player) ######################################################
         #         else:
         #             ctr.execute(commands.PassTurnCommand())
-                
     if(game.checkWon(player)):
         return
     ####################################################################### ROLL DICES #####################################################################   
@@ -165,11 +176,11 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None):
     game.actualTurn = 0 
     won = False
     # START INIZIALE
-    # game.players[0].AI = True
+    game.players[0].AI = True
     # game.players[1].AI = True
     # game.players[2].AI = True
     # game.players[3].AI = True
-    game.players[0].RANDOM = True
+    # game.players[0].RANDOM = True
     game.players[1].RANDOM = True
     game.players[2].RANDOM = True
     game.players[3].RANDOM = True
@@ -210,6 +221,12 @@ def saveMove(save, player):
 def saveToCsv(victoryPlayer):
     for i in range(len(total)):
         total.globals[i]['winner'] = victoryPlayer.id
+        #print("Winner saved: ", str(victoryPlayer.id))
+    print(total.globals[0])
+    print(total.globals[1])
+    print(total.globals[2])
+    print(total.globals[3])
+
     print("Length of total moves of this game: ", len(total))
     global allGames
     allGames = pd.concat([allGames, total], ignore_index=True)
