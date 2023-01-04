@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 import Command.action as action
+import os
 
 @dataclass
 class ActionController:
@@ -10,6 +11,11 @@ class ActionController:
         action.execute()
         self.redoStack.clear()
         self.undoStack.append(action)
+        # os.system("cls")
+        # s = "UNDO STACK, chiamato da execute: "
+        # for a in self.undoStack:
+        #     s += a.__class__.__name__ + " "
+        # print(s)
 
     def undo(self) -> None:
         if not self.undoStack:
@@ -17,6 +23,12 @@ class ActionController:
         action = self.undoStack.pop()
         action.undo()
         self.redoStack.append(action)
+        # os.system("cls")
+        # s = "UNDO STACK, chiamato da undo, post pop(): "
+        # for a in self.undoStack:
+        #     s += a.__class__.__name__ + " "
+        # print(s)
+
 
     def redo(self) -> None:
         if not self.redoStack:

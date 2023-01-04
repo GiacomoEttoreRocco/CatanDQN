@@ -167,6 +167,7 @@ class GameView:
         #update
 
     def updateGameScreen(self):
+        self.setupAndDisplayBoard() # recently added
         self.drawRobber()
         self.checkAndDrawStreets()
         self.checkAndDrawPlaces()
@@ -255,16 +256,16 @@ class GameView:
 
     def drawRobber(self):
         robberImg = pygame.image.load(self.robberImgPath).convert_alpha()
-        if(self.tempRobberTile != Board.Board().robberTile):
-            # print("drowing robber...")
-            robTile = Board.Board().robberTile
-            for graphicTile in self.graphicTileList:
-                if(graphicTile.index == robTile):
-                    robberCoords = (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y-30)
-                    self.screen.blit(robberImg, robberCoords)
-                elif(self.tempRobberTile != -1 and self.tempRobberTile == graphicTile.index):
-                    self.drawGraphicTile(graphicTile)
-            self.tempRobberTile = robTile           
+        #if(self.tempRobberTile != Board.Board().robberTile):
+        #    print("drowing robber...")
+        robTile = Board.Board().robberTile
+        for graphicTile in self.graphicTileList:
+            if(graphicTile.index == robTile):
+                robberCoords = (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y-30)
+                self.screen.blit(robberImg, robberCoords)
+            elif(self.tempRobberTile != -1 and self.tempRobberTile == graphicTile.index):
+                self.drawGraphicTile(graphicTile)
+        self.tempRobberTile = robTile           
 
     def getHexCoords(self, hex_i):
         coordDict = {0: geomlib.Axial_Point(0, -2), 1: geomlib.Axial_Point(1, -2), 2: geomlib.Axial_Point(2, -2),

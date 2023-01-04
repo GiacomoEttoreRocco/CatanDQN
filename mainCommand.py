@@ -9,8 +9,8 @@ import pandas as pd
 import time
 import AI.Gnn as Gnn
 
-# speed = False
-speed = True
+speed = False
+# speed = True
 withDelay = False
 realPlayer = False
 save = True
@@ -19,34 +19,43 @@ ctr = controller.ActionController()
 WINNERS = [0.0, 0.0, 0.0, 0.0]
 devCardsBought = [0.0, 0.0, 0.0, 0.0]
 
-def goNext():
+# def goNext():
+#     if(not speed):
+#         event = pygame.event.wait()
+#         while event.type != pygame.KEYDOWN:
+#             event = pygame.event.wait()
+#     else:
+#         event = pygame.event.get()
+#     pygame.display.update()
+#     view.updateGameScreen()
+
+def decisionManager(player, action):
     if(not speed):
         event = pygame.event.wait()
         while event.type != pygame.KEYDOWN:
             event = pygame.event.wait()
+        if(event.key == pygame.K_a):
+            print("The player", str(player.id), "is going to do an AI move.")
+            player.AI = True
+            player.RANDOM = False
+            ctr.execute(action)
+        elif(event.key == pygame.K_r):
+            print("The player", str(player.id), "is going to do a random move.")
+            player.AI = False
+            player.RANDOM = True
+            ctr.execute(action)
+        elif(event.key == pygame.K_u):
+            ctr.undo()
+        elif(event.key == pygame.K_k):
+            ctr.redo()
+        else:
+            print(event.key)
     else:
+        ctr.execute(action)
         event = pygame.event.get()
-    pygame.display.update()
-    view.updateGameScreen()
 
-def decisionManager(player, action):
-    event = pygame.event.wait()
-    while event.type != pygame.KEYDOWN:
-        event = pygame.event.wait()
-    if(event.key == pygame.K_a):
-        player.AI = True
-        player.RANDOM = False
-        ctr.execute(action)
-    elif(event.key == pygame.K_r):
-        player.AI = False
-        player.RANDOM = True
-        ctr.execute(action)
-    elif(event.key == pygame.K_u):
-        ctr.undo()
-    else:
-        print(event.key)
-    pygame.display.update()
     view.updateGameScreen()
+    pygame.display.update()
 
 def doInitialChoice(player: c.PlayerWithCommands, giveResources = False):
     if(player.AI or player.RANDOM):
@@ -76,255 +85,33 @@ def doInitialChoice(player: c.PlayerWithCommands, giveResources = False):
     #     action, edgeChoosen = player.chooseAction(actions)
     #     self.ctr.execute(action(player, edgeChoosen))
 
-def doTurnGraphic(game: c.GameWithCommands, player: c.PlayerWithCommands):
-    global devCardsBought
-    turnCardUsed = False 
-    player.unusedKnights = player.unusedKnights + player.justBoughtKnights
-    player.justBoughtKnights = 0
-    player.monopolyCard += player.justBoughtMonopolyCard
-    player.justBoughtMonopolyCard = 0
-    player.roadBuildingCard += player.justBoughtRoadBuildingCard
-    player.justBoughtRoadBuildingCard = 0
-    player.yearOfPlentyCard += player.justBoughtYearOfPlentyCard
-    player.justBoughtYearOfPlentyCard = 0
-    view.updateGameScreen() 
-    if(player.unusedKnights > 0 and not turnCardUsed):
-        if(player.AI or player.RANDOM):
-            actualEvaluation, thingNeeded = player.evaluate(commands.PassTurnCommand)
-            afterKnight, tilePosition = player.evaluate(commands.UseKnightCommand)
-            #print("Actual evaluation: ", actualEvaluation, " After knight: ", afterKnight)
-            if(afterKnight > actualEvaluation):
-                #print("pre dice roll knight")
-                ctr.execute(commands.UseKnightCommand(player, tilePosition))
-                goNext()
-                ctr.execute(commands.StealResourceCommand(player, c.Board.Board().tiles[tilePosition]))
-                saveMove(save, player) ######################################################
-                view.updateGameScreen()
-                turnCardUsed = True 
-        # else:
-        #     view.updateGameScreen() 
-        #     if(player.unusedKnights >= 1 and not turnCardUsed):
-        #         # print("Mosse disponibili: ")
-        #         actions = [(commands.PassTurnCommand, None)]
-        #         for i in range(0, 17):
-        #             actions.append((commands.UseKnightCommand, i))  
-        #         for i, move in enumerate(actions):
-        #             print("Move ", i, ": ", move)  
-        #         toDo = int(input("Insert the move index of the move you want to play: "))
-        #         if(toDo != 0):
-        #             ctr.execute(commands.UseKnightCommand(player, actions[toDo][1]))
-        #             saveMove(save, player) ######################################################
-        #         else:
-        #             ctr.execute(commands.PassTurnCommand())
+def doActionDecisions(game: c.GameWithCommands, player: c.PlayerWithCommands):
     if(game.checkWon(player)):
         return
-    ####################################################################### ROLL DICES #####################################################################   
-    dicesValue = game.dices[game.actualTurn]
-
-    if(dicesValue == 7):
-        game.sevenOnDices()
-        if(player.AI or player.RANDOM):
-            ev, pos = player.evaluate(commands.UseRobberCommand)
-            ctr.execute(commands.UseRobberCommand(player, pos))
-            goNext()
-            ctr.execute(commands.StealResourceCommand(player, c.Board.Board().tiles[pos]))
-            saveMove(save, player) 
-        # else:
-        #     actions = []
-        #     for i in range(0, 19):
-        #         if(i != c.Board.Board().robberTile):
-        #             actions.append((commands.UseRobberCommand, i))  
-        #     for i, action in enumerate(actions):
-        #         print("Move ", i, ": ", action)  
-        #     toDo = int(input("Inserisci l'indice della mossa che vuoi eseguire: "))
-        #     ctr.execute(commands.UseRobberCommand(player, actions[toDo][1]))
-        #     saveMove(save, player) 
-    else:
-        #game.dice_production(dicesValue)
-        ctr.execute(commands.DiceProductionCommand(dicesValue, game))
-        view.updateGameScreen()
-    goNext()
-    action, thingNeeded, lengthActions = game.bestAction(player, turnCardUsed)
+    view.updateGameScreen()
+    action, thingNeeded, lengthActions = game.bestAction(player, player.turnCardUsed)
     if action == commands.PlaceStreetCommand  or action == commands.PlaceColonyCommand:
         previousLongestStreetOwner = player.game.longestStreetPlayer(False)
-        ctr.execute(action(player, thingNeeded, True))
-        checkLongestStreetOwner(previousLongestStreetOwner, player)  
-    elif action == commands.UseKnightCommand:
-        ctr.execute(action(player, thingNeeded))
-        goNext()
-        ctr.execute(commands.StealResourceCommand(player, c.Board.Board().tiles[thingNeeded]))  
-    elif action == commands.PlaceCityCommand:
-        ctr.execute(action(player, thingNeeded, True))
-    else:
-        ctr.execute(action(player, thingNeeded))
-    if(action == commands.BuyDevCardCommand):
-        devCardsBought[player.id-1] += 1
-
-    if(lengthActions > 1):
-        #print("Move saved.")
-        saveMove(save, player) 
-    #else:
-        #print("Move not saved.")
-
-    goNext()
-    if(game.checkWon(player)):
-        return
-    if(action in commands.cardCommands()):
-        turnCardUsed = True
-    #La prima mossa è stata fatta
-    goNext()
-    while(action != commands.PassTurnCommand and not game.checkWon(player)):
-        action, thingNeeded, lengthActions = game.bestAction(player, turnCardUsed)
-        if action == commands.PlaceStreetCommand  or action == commands.PlaceColonyCommand:
-            previousLongestStreetOwner = player.game.longestStreetPlayer(False)
-            ctr.execute(action(player, thingNeeded, True))
-            checkLongestStreetOwner(previousLongestStreetOwner, player)
-        elif action == commands.UseKnightCommand:
-            ctr.execute(action(player, thingNeeded))
-            goNext()
-            ctr.execute(commands.StealResourceCommand(player, c.Board.Board().tiles[thingNeeded]))
-        elif action == commands.PlaceCityCommand:
-            ctr.execute(action(player, thingNeeded, True))
-        else:
-            ctr.execute(action(player, thingNeeded))
-        if(action == commands.BuyDevCardCommand):
-            devCardsBought[player.id-1] += 1
-        if(lengthActions > 1):
-            #print("Move saved.")
-            saveMove(save, player) 
-        #else:
-            #print("Move not saved.")
-        goNext()
-        if(action in commands.cardCommands()):
-            turnCardUsed = True
-
-def doTurnDecisions(game: c.GameWithCommands, player: c.PlayerWithCommands):
-    global devCardsBought
-    turnCardUsed = False 
-    player.unusedKnights = player.unusedKnights + player.justBoughtKnights
-    player.justBoughtKnights = 0
-    player.monopolyCard += player.justBoughtMonopolyCard
-    player.justBoughtMonopolyCard = 0
-    player.roadBuildingCard += player.justBoughtRoadBuildingCard
-    player.justBoughtRoadBuildingCard = 0
-    player.yearOfPlentyCard += player.justBoughtYearOfPlentyCard
-    player.justBoughtYearOfPlentyCard = 0
-    view.updateGameScreen() 
-    if(player.unusedKnights > 0 and not turnCardUsed):
-        if(player.AI or player.RANDOM):
-            actualEvaluation, thingNeeded = player.evaluate(commands.PassTurnCommand)
-            afterKnight, tilePosition = player.evaluate(commands.UseKnightCommand)
-            #print("Actual evaluation: ", actualEvaluation, " After knight: ", afterKnight)
-            if(afterKnight > actualEvaluation):
-                #print("pre dice roll knight")
-                #ctr.execute(commands.UseKnightCommand(player, tilePosition))
-                decisionManager(player, commands.UseKnightCommand(player, tilePosition))
-                goNext()
-                # ctr.execute(commands.StealResourceCommand(player, c.Board.Board().tiles[tilePosition]))
-                decisionManager(player, commands.StealResourceCommand(player, c.Board.Board().tiles[tilePosition]))
-                saveMove(save, player) ######################################################
-                view.updateGameScreen()
-                turnCardUsed = True 
-        # else:
-        #     view.updateGameScreen() 
-        #     if(player.unusedKnights >= 1 and not turnCardUsed):
-        #         # print("Mosse disponibili: ")
-        #         actions = [(commands.PassTurnCommand, None)]
-        #         for i in range(0, 17):
-        #             actions.append((commands.UseKnightCommand, i))  
-        #         for i, move in enumerate(actions):
-        #             print("Move ", i, ": ", move)  
-        #         toDo = int(input("Insert the move index of the move you want to play: "))
-        #         if(toDo != 0):
-        #             ctr.execute(commands.UseKnightCommand(player, actions[toDo][1]))
-        #             saveMove(save, player) ######################################################
-        #         else:
-        #             ctr.execute(commands.PassTurnCommand())
-    if(game.checkWon(player)):
-        return
-    ####################################################################### ROLL DICES #####################################################################   
-    dicesValue = game.dices[game.actualTurn]
-
-    if(dicesValue == 7):
-        game.sevenOnDices()
-        if(player.AI or player.RANDOM):
-            ev, pos = player.evaluate(commands.UseRobberCommand)
-            #ctr.execute(commands.UseRobberCommand(player, pos))
-            decisionManager(player, commands.UseRobberCommand(player, pos))
-            goNext()
-            # ctr.execute(commands.StealResourceCommand(player, c.Board.Board().tiles[pos]))
-            decisionManager(player, commands.StealResourceCommand(player, c.Board.Board().tiles[pos]))
-
-            saveMove(save, player) 
-        # else:
-        #     actions = []
-        #     for i in range(0, 19):
-        #         if(i != c.Board.Board().robberTile):
-        #             actions.append((commands.UseRobberCommand, i))  
-        #     for i, action in enumerate(actions):
-        #         print("Move ", i, ": ", action)  
-        #     toDo = int(input("Inserisci l'indice della mossa che vuoi eseguire: "))
-        #     ctr.execute(commands.UseRobberCommand(player, actions[toDo][1]))
-        #     saveMove(save, player) 
-    else:
-        #game.dice_production(dicesValue)
-        #ctr.execute(commands.DiceProductionCommand(dicesValue, game))
-        decisionManager(player, commands.DiceProductionCommand(dicesValue, game))
-        view.updateGameScreen()
-    goNext()
-    action, thingNeeded, lengthActions = game.bestAction(player, turnCardUsed)
-    if action == commands.PlaceStreetCommand  or action == commands.PlaceColonyCommand:
-        previousLongestStreetOwner = player.game.longestStreetPlayer(False)
-        # ctr.execute(action(player, thingNeeded, True))
         decisionManager(player, action(player, thingNeeded))
         checkLongestStreetOwner(previousLongestStreetOwner, player)  
     elif action == commands.UseKnightCommand:
+        decisionManager(player, action(player, thingNeeded))
+        decisionManager(player, commands.StealResourceCommand(player, c.Board.Board().tiles[thingNeeded]))  
+    else:
         # ctr.execute(action(player, thingNeeded))
         decisionManager(player, action(player, thingNeeded))
-        goNext()
-        # ctr.execute(commands.StealResourceCommand(player, c.Board.Board().tiles[thingNeeded]))  
-        decisionManager(player, commands.StealResourceCommand(player, c.Board.Board().tiles[thingNeeded]))  
-    # elif action == commands.PlaceCityCommand:
-    #     ctr.execute(action(player, thingNeeded, True))
-    else:
-        ctr.execute(action(player, thingNeeded))
 
     if(action == commands.BuyDevCardCommand):
         devCardsBought[player.id-1] += 1
     if(lengthActions > 1):
         saveMove(save, player) 
-    goNext()
     if(game.checkWon(player)):
         return
     if(action in commands.cardCommands()):
-        turnCardUsed = True
-    #La prima mossa è stata fatta
-    goNext()
-    while(action != commands.PassTurnCommand and not game.checkWon(player)):
-        action, thingNeeded, lengthActions = game.bestAction(player, turnCardUsed)
-        if action == commands.PlaceStreetCommand  or action == commands.PlaceColonyCommand:
-            previousLongestStreetOwner = player.game.longestStreetPlayer()
-            # ctr.execute(action(player, thingNeeded, True))
-            decisionManager(player, action(player, thingNeeded))
-            checkLongestStreetOwner(previousLongestStreetOwner, player)
-        elif action == commands.UseKnightCommand:
-            # ctr.execute(action(player, thingNeeded))
-            decisionManager(player, action(player, thingNeeded))
-            goNext()
-            # ctr.execute(commands.StealResourceCommand(player, c.Board.Board().tiles[thingNeeded]))
-            decisionManager(player, commands.StealResourceCommand(player, c.Board.Board().tiles[thingNeeded]))
-        else:
-            # ctr.execute(action(player, thingNeeded))
-            decisionManager(player, action(player, thingNeeded))
-        if(action == commands.BuyDevCardCommand):
-            devCardsBought[player.id-1] += 1
-        if(lengthActions > 1):
-            saveMove(save, player) 
-        goNext()
-        if(action in commands.cardCommands()):
-            turnCardUsed = True
+        player.turnCardUsed = True
 
 def playGameWithGraphic(game: c.GameWithCommands, view=None):
+    oldPlayerTurnId = 0
     global devCardsBought
     devCardsBought = [0.0, 0.0, 0.0, 0.0]
     GameView.GameView.setupAndDisplayBoard(view)
@@ -334,6 +121,7 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None):
     game.actualTurn = 0 
     won = False
     # START INIZIALE
+    #if(speed):
     game.players[0].AI = True
     # game.players[1].AI = True
     # game.players[2].AI = True
@@ -347,19 +135,28 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None):
         doInitialChoice(p)
         GameView.GameView.updateGameScreen(view)
         saveMove(save, p) #################
-        goNext()
+        #goNext()
     for p in sorted(game.players, reverse=True):
         doInitialChoice(p, giveResources = True)
         GameView.GameView.updateGameScreen(view)
         saveMove(save, p) #################
-        goNext()
+        #goNext()
 
     while won == False:
         playerTurn = game.players[game.actualTurn%game.nplayer]
+        if(oldPlayerTurnId != playerTurn.id):
+            decisionManager(playerTurn, commands.InitialTurnSetupCommand(playerTurn))
+            dicesValue = playerTurn.game.dices[playerTurn.game.actualTurn]
+            if(dicesValue == 7):
+                playerTurn.game.sevenOnDices()
+                ev, pos = playerTurn.evaluate(commands.UseRobberCommand)
+                decisionManager(playerTurn, commands.UseRobberCommand(playerTurn, pos))
+                #goNext()
+                decisionManager(playerTurn, commands.StealResourceCommand(playerTurn, c.Board.Board().tiles[pos]))
+            else:
+                decisionManager(playerTurn, commands.DiceProductionCommand(dicesValue, game))
         game.currentTurnPlayer = playerTurn
-        game.actualTurn += 1
-        #doTurnGraphic(game, playerTurn)
-        doTurnDecisions(game, playerTurn)
+        doActionDecisions(game, playerTurn)
         if(playerTurn.victoryPoints >= 10):
             WINNERS[playerTurn.id-1] += 1
             s = 'Winner: ' + str(playerTurn.id) + "\n"
@@ -367,7 +164,8 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None):
             saveToCsv(playerTurn)
             print(s) 
             won = True
-    goNext()
+        oldPlayerTurnId = playerTurn.id
+    #goNext()
     pygame.quit()
 
 def saveMove(save, player):

@@ -216,13 +216,14 @@ class PassTurnCommand:
     player: Player
     temp: any
     def execute(self):
-        pass
+        self.player.game.actualTurn += 1
 
     def undo(self):
-        pass
+        self.player.game.actualTurn -= 1
 
     def redo(self):
-        pass
+        self.player.game.actualTurn += 1
+
 
 
 def stealResource(player, tile: cg.Tile):
@@ -243,7 +244,7 @@ class StealResourceCommand:
     player: Player
     tile: cg.Tile
     chosenPlayer: Player = None # Player.Player(0, Game.Game())
-    takenResource: str = ""
+    takenResource: str = None
 
     def __post_init__(self):
         self.chosenPlayer = self.player.game.dummy
@@ -392,22 +393,24 @@ class UseMonopolyCardCommand:
 class UseRoadBuildingCardCommand:
     player: Player
     edges: tuple()
-    placeStreetCommand: PlaceStreetCommand = None
+    placeStreetCommand1: PlaceStreetCommand = None
+    placeStreetCommand2: PlaceStreetCommand = None
 
     def execute(self):
         self.player.roadBuildingCard -= 1
         e1, e2 = self.edges
         if e1 is not None:
-            self.placeStreetCommand = PlaceStreetCommand(self.player, e1, False)
-            self.placeStreetCommand.execute()
+            self.placeStreetCommand1 = PlaceStreetCommand(self.player, e1, False)
+            self.placeStreetCommand1.execute()
 
         if e2 is not None:
-            self.placeStreetCommand = PlaceStreetCommand(self.player, e2, False)
-            self.placeStreetCommand.execute()
+            self.placeStreetCommand2 = PlaceStreetCommand(self.player, e2, False)
+            self.placeStreetCommand2.execute()
 
     def undo(self):
         self.player.roadBuildingCard += 1
-        self.placeStreetCommand.undo()
+        self.placeStreetCommand1.undo()
+        self.placeStreetCommand2.undo()
 
     def redo(self):
         self.execute()
@@ -456,6 +459,69 @@ class DiceProductionCommand:
                         elif(Board.Board().places[p].isCity):
                             self.game.players[Board.Board().places[p].owner-1].useResource(tile.resource)
                             self.game.players[Board.Board().places[p].owner-1].useResource(tile.resource)
+
+    def redo(self):
+        self.execute()
+
+@dataclass
+class InitialTurnSetupCommand:
+    player: Player #c.PlayerWithCommands
+
+    oldUnusedKnights : int = 0
+    oldJustBoughtKnights : int = 0
+    oldMonopolyCard : int = 0
+    oldJustBoughtMonopolyCard : int = 0
+    oldRoadBuildingCard : int = 0
+    oldJustBoughtRoadBuildingCard : int = 0
+    oldYearOfPlentyCard : int = 0
+    oldJustBoughtYearOfPlentyCard : int = 0
+    oldTurnCardUsed : bool = False
+
+    def execute(self):
+        self.oldUnusedKnights = self.player.unusedKnights 
+        self.oldJustBoughtKnights = self.player.justBoughtKnights
+        self.oldMonopolyCard = self.player.monopolyCard 
+        self.oldJustBoughtMonopolyCard = self.player.justBoughtMonopolyCard
+        self.oldRoadBuildingCard = self.player.roadBuildingCard
+        self.oldJustBoughtRoadBuildingCard = self.player.justBoughtRoadBuildingCard
+        self.oldYearOfPlentyCard = self.player.yearOfPlentyCard
+        self.oldJustBoughtYearOfPlentyCard = self.player.justBoughtYearOfPlentyCard
+        self.oldTurnCardUsed = self.player.turnCardUsed
+
+        #global devCardsBought
+        #turnCardUsed = False 
+        self.player.unusedKnights = self.player.unusedKnights + self.player.justBoughtKnights
+        self.player.justBoughtKnights = 0
+        self.player.monopolyCard += self.player.justBoughtMonopolyCard
+        self.player.justBoughtMonopolyCard = 0
+        self.player.roadBuildingCard += self.player.justBoughtRoadBuildingCard
+        self.player.justBoughtRoadBuildingCard = 0
+        self.player.yearOfPlentyCard += self.player.justBoughtYearOfPlentyCard
+        self.player.justBoughtYearOfPlentyCard = 0
+        self.player.turnCardUsed = False
+        #view.updateGameScreen() 
+        #dicesValue = self.player.game.dices[self.player.game.actualTurn]
+        # if(dicesValue == 7):
+        #     self.player.game.sevenOnDices()
+        #     ev, pos = self.player.evaluate(UseRobberCommand)
+        #     decisionManager(player, commands.UseRobberCommand(player, pos))
+        #     goNext()
+        #     decisionManager(player, commands.StealResourceCommand(player, c.Board.Board().tiles[pos]))
+
+        #     saveMove(save, player) 
+        # else:
+        #     decisionManager(player, commands.DiceProductionCommand(dicesValue, game))
+        #     view.updateGameScreen()
+    def undo(self):
+        self.player.unusedKnights = self.oldUnusedKnights
+        self.player.justBoughtKnights = self.oldJustBoughtKnights 
+        self.player.monopolyCard = self.oldMonopolyCard
+        self.player.justBoughtMonopolyCard = self.oldJustBoughtMonopolyCard
+        self.player.roadBuildingCard = self.oldRoadBuildingCard
+        self.player.justBoughtRoadBuildingCard = self.oldJustBoughtRoadBuildingCard
+        self.player.yearOfPlentyCard = self.oldYearOfPlentyCard
+        self.player.justBoughtYearOfPlentyCard = self.oldJustBoughtYearOfPlentyCard
+        self.player.turnCardUsed = self.oldTurnCardUsed 
 
     def redo(self):
         self.execute()

@@ -40,6 +40,8 @@ class Player:
         self.yearOfPlentyCard = 0
         self.justBoughtYearOfPlentyCard = 0
 
+        self.turnCardUsed = False
+
         # RESOURCES:
         self.resources = {"wood" : 0, "clay" : 0, "crop": 0, "sheep": 0, "iron": 0}
 
@@ -530,7 +532,7 @@ class Player:
             toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
             ctr.undo() 
 
-        return toRet + random.uniform(0.00001,0.00002)
+        return toRet #+ random.uniform(0.00001,0.00002)
 
     def globalFeaturesToDict(self):
         return {'player_id': self.id,'victory_points': self.victoryPoints,\
