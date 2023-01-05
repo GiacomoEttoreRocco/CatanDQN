@@ -90,7 +90,8 @@ def doActionDecisions(game: c.GameWithCommands, player: c.PlayerWithCommands):
         return
     view.updateGameScreen()
     action, thingNeeded, lengthActions = game.bestAction(player, player.turnCardUsed)
-    if action == commands.PlaceStreetCommand  or action == commands.PlaceColonyCommand:
+    if action == commands.PlaceStreetCommand  or action == commands.PlaceColonyCommand or action == commands.UseRoadBuildingCardCommand:
+        print("Action: ", action)
         previousLongestStreetOwner = player.game.longestStreetPlayer(False)
         decisionManager(player, action(player, thingNeeded))
         checkLongestStreetOwner(previousLongestStreetOwner, player)  
@@ -215,7 +216,7 @@ def printWinners():
 epochs = 1
 batchs = 10
 
-train = True
+train = False
 
 for epoch in range(epochs):
     print('Iteration: ', epoch+1, "/", epochs)
