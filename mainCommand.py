@@ -9,8 +9,8 @@ import pandas as pd
 import time
 import AI.Gnn as Gnn
 
-speed = False
-withGraphics = True
+speed = True
+withGraphics = False
 withDelay = False
 realPlayer = False
 save = True
@@ -184,7 +184,7 @@ def printWinners():
 
 ###########################################################################################################################
 
-epochs = 1
+epochs = 10
 batchs = 10
 
 for epoch in range(epochs):
