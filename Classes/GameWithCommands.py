@@ -26,7 +26,7 @@ class Game:
         self.tmpVisitedEdges = []
         self.dices = [self.rollDice() for _ in range(1000)]
         self.actualTurn = 0
-        self.currentTurnPlayer = self.dummy
+        self.currentTurnPlayer = self.players[0] #self.dummy
         self.order = 0
 
         for i in range(num_players):

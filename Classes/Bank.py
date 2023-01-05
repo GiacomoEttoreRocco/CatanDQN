@@ -27,8 +27,6 @@ class Bank:
             else:
                 print("Bank does not have this resource anymore.")
                 g = player.game
-                # for p in g.players:
-                #     print(p.id, "has ", p.resources[resource], " ", resource)
 
     def reset(cls):
         Bank.instance = None

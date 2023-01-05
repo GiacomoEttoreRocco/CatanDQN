@@ -100,8 +100,9 @@ class GameView:
         self.screen.blit(self.roadBuildingCards[player.id-1], (x, y+275))
         self.screen.blit(self.yearOfPlentyCards[player.id-1], (x, y+305))
 
-    def setupAndDisplayBoard(self):
-        pygame.draw.rect(self.screen, pygame.Color('cadetblue1'),(0, 0, self.width, self.height))
+    def setupAndDisplayBoard(self, bg = True):
+        if(bg):
+            pygame.draw.rect(self.screen, pygame.Color('cadetblue1'),(0, 0, self.width, self.height))
         #hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(80, 80), geomlib.Point(500, 400))
         hex_i = 0
         for boardtile in Board.Board().tiles:
@@ -167,7 +168,7 @@ class GameView:
         #update
 
     def updateGameScreen(self):
-        self.setupAndDisplayBoard() # recently added
+        self.setupAndDisplayBoard(False) # recently added
         self.drawRobber()
         self.checkAndDrawStreets()
         self.checkAndDrawPlaces()

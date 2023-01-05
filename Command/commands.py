@@ -8,6 +8,22 @@ import random
 import numpy as np
 
 @dataclass
+class PassTurnCommand:
+    player: Player
+    importantTemp: any = None # serve per prendere il secondo elemento di thing needed (che è un None)
+    def execute(self):
+        self.player.game.actualTurn += 1
+        self.player.game.currentTurnPlayer = self.player.game.players[self.player.game.actualTurn%4]
+
+    def undo(self):
+        self.player.game.actualTurn -= 1
+        self.player.game.currentTurnPlayer = self.player.game.players[self.player.game.actualTurn%4]
+
+    def redo(self):
+        self.player.game.actualTurn += 1
+        self.player.game.currentTurnPlayer = self.player.game.players[self.player.game.actualTurn%4]
+
+@dataclass
 class PlaceInitialStreetCommand:
     player: Player
     edge: tuple()
@@ -28,6 +44,7 @@ class PlaceInitialStreetCommand:
 class PlaceInitialColonyCommand:
     player: Player
     place: cg.Place
+    isSecond: bool = False
 
     def execute(self):
         Board.Board().places[self.place.id].owner = self.player.id
@@ -37,6 +54,9 @@ class PlaceInitialColonyCommand:
         self.player.ownedColonies.append(self.place.id)
         if(self.place.harbor != ""):
             self.player.ownedHarbors.append(self.place.harbor)
+        if(self.isSecond):
+            for touchedResource in Board.Board().places[self.place.id].touchedResourses:
+                Bank.Bank().giveResource(self.player, touchedResource)
 
     def undo(self):
         Board.Board().places[self.place.id].owner = 0
@@ -46,9 +66,41 @@ class PlaceInitialColonyCommand:
         del self.player.ownedColonies[-1]
         if(self.place.harbor != ""):
             del self.player.ownedHarbors[-1]
+        if(self.isSecond):
+            for touchedResource in Board.Board().places[self.place.id].touchedResourses:
+                self.player.useResource(touchedResource)
 
     def redo(self):
         self.execute()
+
+@dataclass
+class InitialChoiseCommand:
+    player: Player
+    # place : cg.Place = None
+    # edge : tuple() = None
+    # isSecond: bool = False
+    placeInitialColony: PlaceInitialColonyCommand
+    placeInitialStreet: PlaceInitialStreetCommand = None
+    passturn: PassTurnCommand = None
+
+    def execute(self):
+        #self.placeInitialColony = PlaceInitialColonyCommand(self.player, self.place, self.isSecond)
+        #self.placeInitialStreet = PlaceInitialStreetCommand(self.player, self.edge)
+        self.placeInitialColony.execute()
+        evaluation, edgeChoosen = self.player.evaluate(PlaceInitialStreetCommand)
+        self.placeInitialStreet = PlaceInitialStreetCommand(self.player, edgeChoosen)
+        self.placeInitialStreet.execute()
+        self.passTurnCommand = PassTurnCommand(self.player)
+        self.passTurnCommand.execute()
+
+    def undo(self):
+        self.placeInitialColony.undo()
+        self.placeInitialStreet.undo()
+        self.passTurnCommand.undo()
+
+    def redo(self):
+        self.execute()
+
 
 @dataclass
 class PlaceStreetCommand:
@@ -211,21 +263,6 @@ class DiscardResourceCommand:
     def redo(self):
         self.execute()
 
-@dataclass
-class PassTurnCommand:
-    player: Player
-    temp: any
-    def execute(self):
-        self.player.game.actualTurn += 1
-
-    def undo(self):
-        self.player.game.actualTurn -= 1
-
-    def redo(self):
-        self.player.game.actualTurn += 1
-
-
-
 def stealResource(player, tile: cg.Tile):
     playersInTile = []
     chosenPlayer = None
@@ -353,14 +390,20 @@ class TradeBankCommand:
     def execute(self):
         toTake, toGive = self.coupleOfResources
         Bank.Bank().giveResource(self.player, toTake)
+        print(self.player.id, " take ", toTake, " from the bank. ")
+
         for _ in range(0, Bank.Bank().resourceToAsk(self.player, toGive)):
             self.player.useResource(toGive)
+            print(self.player.id, " give ", toGive, "to the bank. ", _)
 
     def undo(self):
         toTake, toGive = self.coupleOfResources
         self.player.useResource(toTake)
-        for i in range(0, Bank.Bank().resourceToAsk(self.player, toGive)):
+        print(self.player.id, " give ", toTake, "to the bank. ")
+
+        for _ in range(0, Bank.Bank().resourceToAsk(self.player, toGive)):
             Bank.Bank().giveResource(self.player, toGive)
+            print(self.player.id, " take ", toGive, " from the bank. ", _)
 
     def redo(self):
         self.execute()

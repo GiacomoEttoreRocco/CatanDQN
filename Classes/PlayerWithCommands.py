@@ -18,6 +18,10 @@ class Player:
         self.ownedCities = []
 
         self.id = id
+
+        print("I'm ", self.id, " an AI ", AI)
+        print("I'm ", self.id, " a RANDOM ", RANDOM)
+
         self.victoryPoints = 0
         self.victoryPointsCards = 0
 
@@ -437,8 +441,10 @@ class Player:
 
     def actionValue(self, action, thingNeeded = None):
         if self.AI:
+            #print("AI")
             return self.aiActionValue(action, thingNeeded)
         elif self.RANDOM:
+            #print("RANDOM")
             return self.randomActionValue(action, thingNeeded)
         
     def randomActionValue(self, action, thingNeeded = None):
