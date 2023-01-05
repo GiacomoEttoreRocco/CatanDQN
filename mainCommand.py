@@ -59,54 +59,27 @@ def decisionManager(player, action):
     view.updateGameScreen()
     pygame.display.update()
 
-# def doInitialChoice(player: c.PlayerWithCommands, giveResources = False):
-#     if(player.AI or player.RANDOM):
-#         evaluation, colonyChoosen = player.evaluate(commands.PlaceInitialColonyCommand)
-#         # ctr.execute(commands.PlaceInitialColonyCommand(player, colonyChoosen))
-#         decisionManager(player, commands.PlaceInitialColonyCommand(player, colonyChoosen))
-#         if(giveResources):
-#             for touchedResource in c.Board.Board().places[colonyChoosen.id].touchedResourses:
-#                 c.Bank.Bank().giveResource(player, touchedResource)
-#         # print("Initial choise, colony: ", str(colonyChoosen.id))
-#         evaluation, edgeChoosen = player.evaluate(commands.PlaceInitialStreetCommand)
-#         # ctr.execute(commands.PlaceInitialStreetCommand(player, edgeChoosen))
-#         decisionManager(player, commands.PlaceInitialStreetCommand(player, edgeChoosen))
-
-    # else:
-    #     actions = []
-    #     for colony in player.calculatePossibleInitialColony():
-    #         actions.append((commands.PlaceInitialColonyCommand, colony))
-    #     action, colonyChoosen = player.chooseAction(actions)
-    #     self.ctr.execute(action(player, colonyChoosen))
-    #     if(giveResources):
-    #         for touchedResource in Board.Board().places[colonyChoosen.id].touchedResourses:
-    #             Bank.Bank().giveResource(player, touchedResource)
-    #     actions = []
-    #     for street in player.calculatePossibleInitialStreets():
-    #         actions.append((commands.PlaceInitialStreetCommand, street))
-    #     action, edgeChoosen = player.chooseAction(actions)
-    #     self.ctr.execute(action(player, edgeChoosen))
-
 def doActionDecisions(game: c.GameWithCommands, player: c.PlayerWithCommands):
     if(game.checkWon(player)):
         return
     view.updateGameScreen()
-    action, thingNeeded, lengthActions = game.bestAction(player, player.turnCardUsed)
+    action, thingNeeded, lengthActions = game.bestAction(player, player.turnCardUsed) # questo deve essere fatto dentro il decision manager, 
+    # altirmenti la valutazione della mossa migliore non viene fatta secondo ciò che dice il dm.
     print("Action: ", action)
     if action == commands.PlaceStreetCommand  or action == commands.PlaceColonyCommand or action == commands.UseRoadBuildingCardCommand:
         previousLongestStreetOwner = player.game.longestStreetPlayer(False)
-        decisionManager(player, action(player, thingNeeded))
-        checkLongestStreetOwner(previousLongestStreetOwner, player)  
+        decisionManager(player, action(player, thingNeeded)) # questo non deve essere fatto, se ne occupa il decision manager sopra.
+        checkLongestStreetOwner(previousLongestStreetOwner, player) # questo non deve essere fatto, se ne occupa il decision manager sopra.
     elif action == commands.UseKnightCommand:
-        decisionManager(player, action(player, thingNeeded))
-        decisionManager(player, commands.StealResourceCommand(player, c.Board.Board().tiles[thingNeeded]))  
+        decisionManager(player, action(player, thingNeeded)) # questo non deve essere fatto, se ne occupa il decision manager sopra.
+        decisionManager(player, commands.StealResourceCommand(player, c.Board.Board().tiles[thingNeeded])) # questo non deve essere fatto, se ne occupa il decision manager sopra.
     else:
         # ctr.execute(action(player, thingNeeded))
-        decisionManager(player, action(player, thingNeeded))
+        decisionManager(player, action(player, thingNeeded)) # questo non deve essere fatto, se ne occupa il decision manager sopra.
 
     if(action == commands.BuyDevCardCommand):
         devCardsBought[player.id-1] += 1
-    if(lengthActions > 1):
+    if(lengthActions > 1): # se il decision manager si occupa di fare best move, non avremo più la lunghezza delle available moves. 
         saveMove(save, player) 
     if(game.checkWon(player)):
         return
@@ -140,7 +113,7 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None):
         print("CURRENT TURN: ", game.actualTurn)
         if(game.actualTurn < 8):
             playerTurn = game.players[reverseTurnOffSet[game.actualTurn]]     
-            evaluation, colonyChoosen = playerTurn.evaluate(commands.PlaceInitialColonyCommand)
+            evaluation, colonyChoosen = playerTurn.evaluate(commands.PlaceInitialColonyCommand) # questo deve essere fatto dentro il decision manager
             if(game.actualTurn < 4):
                 decisionManager(playerTurn, commands.InitialChoiseCommand(playerTurn, commands.PlaceInitialColonyCommand(playerTurn, colonyChoosen)))
             else:
@@ -151,16 +124,16 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None):
             playerTurn = game.players[game.actualTurn%game.nplayer]
             game.currentTurnPlayer = playerTurn
             if(oldPlayerTurnId != playerTurn.id):
-                decisionManager(playerTurn, commands.InitialTurnSetupCommand(playerTurn))
+                decisionManager(playerTurn, commands.InitialTurnSetupCommand(playerTurn)) # questo è strano
                 dicesValue = playerTurn.game.dices[playerTurn.game.actualTurn]
                 if(dicesValue == 7):
                     playerTurn.game.sevenOnDices()
-                    ev, pos = playerTurn.evaluate(commands.UseRobberCommand)
+                    ev, pos = playerTurn.evaluate(commands.UseRobberCommand) # questo deve essere fatto dentro il decision manager
                     decisionManager(playerTurn, commands.UseRobberCommand(playerTurn, pos))
                     #goNext()
-                    decisionManager(playerTurn, commands.StealResourceCommand(playerTurn, c.Board.Board().tiles[pos]))
+                    decisionManager(playerTurn, commands.StealResourceCommand(playerTurn, c.Board.Board().tiles[pos])) # questo deve essere fatto dentro use robber
                 else:
-                    decisionManager(playerTurn, commands.DiceProductionCommand(dicesValue, game))
+                    decisionManager(playerTurn, commands.DiceProductionCommand(dicesValue, game)) # questo deve essere fatto dentro l'initial turn setup
             doActionDecisions(game, playerTurn)
             if(playerTurn.victoryPoints >= 10):
                 WINNERS[playerTurn.id-1] += 1
