@@ -13,8 +13,8 @@ speed = True
 withGraphics = False
 withDelay = False
 realPlayer = False
-save = False
-train = False
+save = True
+train = True
 ctr = controller.ActionController()
 
 WINNERS = [0.0, 0.0, 0.0, 0.0]
