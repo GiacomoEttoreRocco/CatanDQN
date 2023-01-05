@@ -102,16 +102,16 @@ class Game:
         #     actions = player.availableActionsWithInput(usedCard)
         #     return player.chooseAction(actions)
 
-    def sevenOnDices(self):
-        #ctr = controller.ActionController()
-        for pyr in self.players:
-            # print("Resource count: ", pyr.resourceCount())
-            half = int(pyr.resourceCount()/2)
-            if(pyr.resourceCount() >= 7):
-                if(pyr.AI or pyr.RANDOM):
-                    for i in range(0, half):
-                        eval, resource = pyr.evaluate(commands.DiscardResourceCommand)
-                        self.ctr.execute(commands.DiscardResourceCommand(pyr, resource))
+    # def sevenOnDices(self):
+    #     #ctr = controller.ActionController()
+    #     for pyr in self.players:
+    #         # print("Resource count: ", pyr.resourceCount())
+    #         half = int(pyr.resourceCount()/2)
+    #         if(pyr.resourceCount() >= 7):
+    #             if(pyr.AI or pyr.RANDOM):
+    #                 for i in range(0, half):
+    #                     eval, resource = pyr.evaluate(commands.DiscardResourceCommand)
+    #                     self.ctr.execute(commands.DiscardResourceCommand(pyr, resource))
 
     def rollDice(self): 
         return random.randint(1,6) + random.randint(1,6)    

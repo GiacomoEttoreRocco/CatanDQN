@@ -9,8 +9,8 @@ import pandas as pd
 import time
 import AI.Gnn as Gnn
 
-speed = True
-withGraphics = False
+speed = False
+withGraphics = True
 withDelay = False
 realPlayer = False
 save = True
@@ -20,8 +20,10 @@ ctr = controller.ActionController()
 WINNERS = [0.0, 0.0, 0.0, 0.0]
 devCardsBought = [0.0, 0.0, 0.0, 0.0]
 
-def decisionManager(self, player):
+def decisionManager(player):
     #print("Decision manager working on player ", player.id)
+    onlyPassTurn = True # if undo, we don't want them to be saved
+
     if(not speed):
         if(withGraphics):
             event = pygame.event.wait()
@@ -55,7 +57,7 @@ def decisionManager(self, player):
         view.updateGameScreen()
         pygame.display.update()
     if(not onlyPassTurn): # se il decision manager si occupa di fare best move, non avremo più la lunghezza delle available moves. 
-        self.saveMove(save, player) 
+        saveMove(save, player) 
 
 def doActionDecisions(game: c.GameWithCommands, player: c.PlayerWithCommands, withGraphics = True):
     if(game.checkWon(player)):
@@ -65,7 +67,7 @@ def doActionDecisions(game: c.GameWithCommands, player: c.PlayerWithCommands, wi
 
     previousLongestStreetOwner = player.game.longestStreetOwner
     action = decisionManager(player)
-    if action == commands.PlaceStreetommand  or action == commands.PlaceColonyCommand or action == commands.UseRoadBuildingCardCommand:  
+    if action == commands.PlaceStreetCommand  or action == commands.PlaceColonyCommand or action == commands.UseRoadBuildingCardCommand:  
         checkLongestStreetOwner(previousLongestStreetOwner, player) 
 
     if(action == commands.BuyDevCardCommand):
@@ -114,18 +116,19 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
             saveMove(save, playerTurn) 
         else:
             playerTurn = game.players[game.actualTurn%game.nplayer]
-            game.currentTurnPlayer = playerTurn
+            #game.currentTurnPlayer = playerTurn
             # if(oldPlayerTurnId != playerTurn.id):
                 # decisionManager(playerTurn, commands.InitialTurnSetupCommand(playerTurn)) # questo è strano
-                dicesValue = playerTurn.game.dices[playerTurn.game.actualTurn]
+            #dicesValue = playerTurn.game.dices[playerTurn.game.actualTurn]
                 # if(dicesValue == 7):
-                    playerTurn.game.sevenOnDices()
-                    # ev, pos = playerTurn.evaluate(commands.UseRobberCommand) # questo deve essere fatto dentro il decision manager
-                    # decisionManager(playerTurn, commands.UseRobberCommand(playerTurn, pos))
-                    # decisionManager(playerTurn, commands.StealResourceCommand(playerTurn, c.Board.Board().tiles[pos])) # questo deve essere fatto dentro use robber
-                else:
-                    decisionManager(playerTurn, commands.DiceProductionCommand(dicesValue, game)) # questo deve essere fatto dentro l'initial turn setup
+            #playerTurn.game.sevenOnDices()
+                # ev, pos = playerTurn.evaluate(commands.UseRobberCommand) # questo deve essere fatto dentro il decision manager
+                # decisionManager(playerTurn, commands.UseRobberCommand(playerTurn, pos))
+                # decisionManager(playerTurn, commands.StealResourceCommand(playerTurn, c.Board.Board().tiles[pos])) # questo deve essere fatto dentro use robber
+            #else:
+            #decisionManager(playerTurn, commands.DiceProductionCommand(dicesValue, game)) 
             doActionDecisions(game, playerTurn, withGraphics)
+
             if(playerTurn.victoryPoints >= 10):
                 WINNERS[playerTurn.id-1] += 1
                 s = 'Winner: ' + str(playerTurn.id) + "\n"
@@ -133,7 +136,7 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
                 saveToCsv(playerTurn)
                 print(s) 
                 won = True
-            oldPlayerTurnId = playerTurn.id
+            #ldPlayerTurnId = playerTurn.id
         #print("Player who did this turn: ", playerTurn.id)
     if(withGraphics):
         pygame.quit()

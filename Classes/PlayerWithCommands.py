@@ -443,21 +443,24 @@ class Player:
 
         if(action == commands.PlaceInitialColonyCommand):
             toRet = 10.0
-        if(action == commands.PlaceStreetCommand):  #placefreestreet
+        elif(action == commands.PlaceStreetCommand):  #placefreestreet
             toRet = 10.0
-        if(action == commands.PlaceCityCommand):
+        elif(action == commands.PlaceCityCommand):
             toRet = 100.0
-        if(action == commands.TradeBankCommand):
+        elif(action == commands.TradeBankCommand):
             toRet = 15.0
-        if(action == commands.UseRoadBuildingCardCommand):
+        elif(action == commands.UseRoadBuildingCardCommand):
             toRet = 2.0
-        if(action == commands.UseYearOfPlentyCardCommand):
+        elif(action == commands.UseYearOfPlentyCardCommand):
             toRet = 200.0
-        if(action == commands.DiscardResourceCommand):
+        elif(action == commands.DiscardResourceCommand):
             toRet = 1.0 
+        else:
+            toRet = 0.5
+        
 
         #ctr.undo() #  action(self, thingNeeded, undo=True)
-
+        #print(action)
         return toRet + random.uniform(0,2)
 
     def aiActionValue(self, action, thingNeeded = None):

@@ -72,15 +72,72 @@ class InitialTurnSetupCommand:
         self.execute()
 
 @dataclass
-class DiceProductionCommand:
-    game: Game
+class UseRobberCommand:
+    player: Player
+    tilePosition: cg.Tile
+    previousPosition: int = 0
+    chosenPlayer: Player = None #Player.Player(0, Game.Game())
+    takenResource: str = ""
+
+    def __post_init__(self):
+        self.chosenPlayer = self.player.game.dummy
 
     def execute(self):
-        if(self.game.dices[self.game.currentTurn] == 7):
-            self.game.sevenOnDices()
+        self.previousPosition = Board.Board().robberTile
+        Board.Board().robberTile = self.tilePosition
+        self.stealCommand = StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])
+        self.stealCommand.execute()
+        
+    def undo(self):
+        self.stealCommand.undo()
+        Board.Board().robberTile = self.previousPosition
+
+    def redo(self):
+        self.execute()
+
+@dataclass
+class SevenOnDicesCommand:
+    # game: Game
+    player: Player
+    discardCommands: list[Action] = field(default_factory=list)
+    robberCommand: UseRobberCommand = None
+
+    def execute(self):
+        for pyr in self.player.game.players:
+            half = int(pyr.resourceCount()/2)
+            if(pyr.resourceCount() >= 7):
+                if(pyr.AI or pyr.RANDOM):
+                    for i in range(0, half):
+                        eval, resource = pyr.evaluate(DiscardResourceCommand)
+                        self.discardCommands.append(DiscardResourceCommand(pyr, resource))
+                        #self.ctr.execute(DiscardResourceCommand(pyr, resource))
+                        DiscardResourceCommand(pyr, resource).execute()
+        ev, pos = self.player.evaluate(UseRobberCommand) 
+        self.robberCommand = UseRobberCommand(self.player, pos)
+        self.robberCommand.execute()
+
+    def undo(self):
+        self.robberCommand.undo()
+        for command in reversed(self.discardCommands):
+            command.undo()
+
+    def redo(self):
+        for command in reversed(self.discardCommands):
+            command.redo()
+        self.robberCommand.redo()
+
+@dataclass
+class DiceProductionCommand:
+    game: Game
+    sevenOnDices: SevenOnDicesCommand = None
+
+    def execute(self):
+        if(self.game.dices[self.game.actualTurn] == 7):
+            self.sevenOnDices = SevenOnDicesCommand(self.game.currentTurnPlayer)
+            self.sevenOnDices.execute()
         else:
             for tile in Board.Board().tiles:
-                if tile.number == self.game.dices[self.game.currentTurn] and tile != Board.Board().robberTile:
+                if tile.number == self.game.dices[self.game.actualTurn] and tile != Board.Board().robberTile:
                     for p in tile.associatedPlaces:
                         if(Board.Board().places[p].owner != 0):
                             if(Board.Board().places[p].isColony):
@@ -91,11 +148,11 @@ class DiceProductionCommand:
         
 
     def undo(self):
-        if(self.game.dices[self.game.currentTurn] == 7):
-            self.game.sevenOnDices()
+        if(self.game.dices[self.game.actualTurn] == 7):
+            self.sevenOnDices.undo()
         else:
             for tile in Board.Board().tiles:
-                if tile.number == self.game.dices[self.game.currentTurn] and tile != Board.Board().robberTile:
+                if tile.number == self.game.dices[self.game.actualTurn] and tile != Board.Board().robberTile:
                     for p in tile.associatedPlaces:
                         if(Board.Board().places[p].owner != 0):
                             if(Board.Board().places[p].isColony):
@@ -196,7 +253,8 @@ class PlaceInitialColonyCommand:
             del self.player.ownedHarbors[-1]
         if(self.isSecond):
             for touchedResource in Board.Board().places[self.place.id].touchedResourses:
-                self.player.useResource(touchedResource)
+                if(touchedResource != "desert"):
+                    self.player.useResource(touchedResource)
 
     def redo(self):
         self.execute()
@@ -499,30 +557,6 @@ class StealResourceCommand:
         if self.chosenPlayer is not None and self.takenResource is not None:
             self.chosenPlayer.resources[self.takenResource] -= 1
             self.player.resources[self.takenResource] += 1
-
-@dataclass
-class UseRobberCommand:
-    player: Player
-    tilePosition: cg.Tile
-    previousPosition: int = 0
-    chosenPlayer: Player = None #Player.Player(0, Game.Game())
-    takenResource: str = ""
-
-    def __post_init__(self):
-        self.chosenPlayer = self.player.game.dummy
-
-    def execute(self):
-        self.previousPosition = Board.Board().robberTile
-        Board.Board().robberTile = self.tilePosition
-        self.stealCommand = StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])
-        self.stealCommand.execute()
-        
-    def undo(self):
-        self.stealCommand.undo()
-        Board.Board().robberTile = self.previousPosition
-
-    def redo(self):
-        self.execute()
 
 @dataclass
 class UseKnightCommand:

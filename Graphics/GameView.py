@@ -166,7 +166,8 @@ class GameView:
         self.screen.blit(scores, (self.width/2-120, 5))
 
     def updateGameScreen(self):
-        self.setupAndDisplayBoard(False) # recently added
+        self.setupAndDisplayBoard() # recently added
+        self.setupPlaces()
         self.drawRobber()
         self.checkAndDrawStreets()
         self.checkAndDrawPlaces()
