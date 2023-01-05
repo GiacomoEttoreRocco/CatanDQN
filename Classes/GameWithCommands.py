@@ -77,22 +77,27 @@ class Game:
                             Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
                             Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
 
-    def bestAction(self, player: Player, usedCard):
+    def bestAction(self, player: Player):
         if(player.AI or player.RANDOM):
-            actions = player.availableActions(usedCard)
-            #if(len(actions) == 1):
-            #    print("avrebbe senso.")
-            lengthActions = len(actions)
+            if(self.actualTurn<4):
+                actions = [commands.FirstChoiseCommand]
+            elif(self.actualTurn<8):
+                actions = [commands.SecondChoiseCommand]
+            else:
+                actions = player.availableActions(player.turnCardUsed)
+
             max = -1
             thingsNeeded = None
-            bestAction = commands.PassTurnCommand
+            bestAction = actions[0]
             for action in actions: 
                 evaluation, tempInput = player.evaluate(action)
                 if(max <= evaluation):
                     max = evaluation
                     thingsNeeded = tempInput
                     bestAction = action
-            return bestAction, thingsNeeded, lengthActions
+
+            onlyPassTurn = commands.PassTurnCommand in actions and len(actions)==1
+            return bestAction, thingsNeeded, onlyPassTurn
         # else:
         #     actions = player.availableActionsWithInput(usedCard)
         #     return player.chooseAction(actions)
@@ -133,7 +138,7 @@ class Game:
             self.largestArmyPlayer = self.players[belonger.id-1]
         return belonger
 
-    def longestStreetPlayer(self, justCheck = False):
+    def longestStreetPlayer(self):
         maxLength = max([self.longest(self.longestStreetOwner), 4])
         if(maxLength > 4):
             belonger = self.longestStreetOwner
@@ -145,10 +150,9 @@ class Game:
                 if(maxLength < actual):
                     maxLength = actual
                     belonger = p
-        if(not justCheck):
-            if(belonger != self.longestStreetOwner):
-                self.longestStreetOwner = belonger
-            self.longestStreetLength = maxLength
+        
+        self.longestStreetOwner = belonger
+        self.longestStreetLength = maxLength
         return belonger
 
     def longest(self, player):

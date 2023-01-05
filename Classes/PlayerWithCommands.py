@@ -249,7 +249,7 @@ class Player:
                     candidateEdge = edge
             return max, candidateEdge
 
-        if(action == commands.PlaceInitialColonyCommand):
+        if(action == commands.PlaceInitialColonyCommand or action == commands.FirstChoiseCommand or action == commands.SecondChoiseCommand):
             possibleColony = self.calculatePossibleInitialColony()
             candidateColony = None
             max = -1
