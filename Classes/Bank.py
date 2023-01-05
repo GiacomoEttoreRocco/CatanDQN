@@ -26,7 +26,6 @@ class Bank:
                 cls.resources[resource] -= 1
             else:
                 print("Bank does not have this resource anymore.")
-                g = player.game
 
     def reset(cls):
         Bank.instance = None

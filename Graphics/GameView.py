@@ -101,6 +101,7 @@ class GameView:
         self.screen.blit(self.yearOfPlentyCards[player.id-1], (x, y+305))
 
     def setupAndDisplayBoard(self, bg = True):
+        self.graphicTileList = [] # recently added
         if(bg):
             pygame.draw.rect(self.screen, pygame.Color('cadetblue1'),(0, 0, self.width, self.height))
         #hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(80, 80), geomlib.Point(500, 400))
@@ -139,11 +140,12 @@ class GameView:
                 self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-10, graphicTile.pixelCenter.y))
 
     def setupPlaces(self):
+        self.graphicPlaceList = [] # recently added
         for place in Board.Board().places:
             self.graphicPlaceList.append(GraphicPlace.GraphicPlace(place))
-        #Each tile has 6 places, so here it reads which places belong to a tile and then assigns them and gives them coordinates
         alreadyFound = []
         for gtile in self.graphicTileList:
+            gtile.places = [] # recently added
             for k, v in cg.tilePlaces.items():
                 if gtile.index == k:
                     for el in v:
@@ -160,12 +162,8 @@ class GameView:
             scores_string += '%.2f '%v.item()
         scores = self.font_resourceSmallest.render(scores_string, False, self.playerColorDict[player.id])
         playersScores = pygame.Rect(self.width/2-125, 0, 250, 50)
-
         self.screen.fill(self.bgScoreColor, playersScores)
         self.screen.blit(scores, (self.width/2-120, 5))
-        #dare il valore ai font
-        #faccio un box
-        #update
 
     def updateGameScreen(self):
         self.setupAndDisplayBoard(False) # recently added

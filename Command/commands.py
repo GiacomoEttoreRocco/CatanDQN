@@ -390,20 +390,20 @@ class TradeBankCommand:
     def execute(self):
         toTake, toGive = self.coupleOfResources
         Bank.Bank().giveResource(self.player, toTake)
-        print(self.player.id, " take ", toTake, " from the bank. ")
+        #print(self.player.id, " take ", toTake, " from the bank. ")
 
         for _ in range(0, Bank.Bank().resourceToAsk(self.player, toGive)):
             self.player.useResource(toGive)
-            print(self.player.id, " give ", toGive, "to the bank. ", _)
+            #print(self.player.id, " give ", toGive, "to the bank. ", _)
 
     def undo(self):
         toTake, toGive = self.coupleOfResources
         self.player.useResource(toTake)
-        print(self.player.id, " give ", toTake, "to the bank. ")
+        #print(self.player.id, " give ", toTake, "to the bank. ")
 
         for _ in range(0, Bank.Bank().resourceToAsk(self.player, toGive)):
             Bank.Bank().giveResource(self.player, toGive)
-            print(self.player.id, " take ", toGive, " from the bank. ", _)
+            #print(self.player.id, " take ", toGive, " from the bank. ", _)
 
     def redo(self):
         self.execute()

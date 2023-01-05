@@ -128,52 +128,6 @@ class Player:
             availableactions.append(commands.UseYearOfPlentyCardCommand)
         return availableactions
 
-    # def availableactionsWithInput(self, turnCardUsed):
-    #     availableactions = [(commands.passTurn, None)]
-    #     if(self.resources["crop"] >= 1 and self.resources["iron"] >= 1 and self.resources["sheep"] >= 1 and len(Board.Board().deck) > 0):
-    #         availableactions.append((commands.buyDevCard, None))
-    #     if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.calculatePossibleColony() == [] and self.nStreets < 15 and self.calculatePossibleEdges() != None): # TEMPORANEAMENTE
-    #         for street in self.calculatePossibleEdges():
-    #             availableactions.append((commands.placeStreet, street))
-    #     if(self.resources["wood"] >= 1  and self.resources["clay"] >= 1 and self.resources["sheep"] >= 1 and self.resources["crop"] >= 1):
-    #         for colony in self.calculatePossibleColony():
-    #             availableactions.append((commands.placeColony, colony))
-    #     if(self.resources["iron"] >= 3 and self.resources["crop"] >= 2):
-    #         for city in self.calculatePossibleCity():
-    #             availableactions.append((commands.placeCity, city))
-    #     for resource in self.resources.keys():
-    #         if(Bank.Bank().resourceToAsk(self, resource) <= self.resources[resource]):
-    #             for res in self.resources.keys():
-    #                 if(resource != res):
-    #                     availableactions.append((commands.tradeBank, (res, resource)))
-    #     if(self.unusedKnights >= 1 and not turnCardUsed):
-    #         for i in range(0, 19):
-    #             if(i != Board.Board().robberTile):
-    #                 availableactions.append((commands.useKnight, i))    
-    #     if(self.monopolyCard >= 1 and not turnCardUsed):
-    #         for res in self.resources.keys():
-    #             availableactions.append((commands.useMonopolyCard, res))
-    #     if(self.roadBuildingCard >= 1 and not turnCardUsed):
-    #         cpe = self.calculatePossibleEdges()
-    #         if(len(cpe) < 1):
-    #             availableactions.append((commands.useRoadBuildingCard, (None, None)))
-    #         if(len(cpe) < 2):
-    #             availableactions.append((commands.useRoadBuildingCard, (cpe[0], None)))
-    #         else:
-    #             for is1 in range(0, len(cpe)):
-    #                 street1 = cpe[is1]
-    #                 for is2 in range(is1+1, len(cpe)):
-    #                     street2 = cpe[is2]
-    #                     availableactions.append((commands.useRoadBuildingCard, (street1, street2)))
-
-    #     if(self.yearOfPlentyCard >= 1 and not turnCardUsed):
-    #         ress = list(self.resources.keys())
-    #         for ires1 in range(0, len(ress)):
-    #             for ires2 in range(ires1, len(ress)):
-    #                 if(Bank.Bank().resources[ires1] > 0 and Bank.Bank().resources[ires2] > 0):
-    #                     availableactions.append((commands.useYearOfPlentyCard, (ress[ires1], ress[ires2])))
-    #     return availableactions
-
     def connectedEmptyEdges(self, edge):
         p1 = edge[0]
         p2 = edge[1]

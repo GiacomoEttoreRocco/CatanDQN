@@ -107,59 +107,9 @@ class Game:
                     for i in range(0, half):
                         eval, resource = pyr.evaluate(commands.DiscardResourceCommand)
                         self.ctr.execute(commands.DiscardResourceCommand(pyr, resource))
-                # else:
-                #     for i in range(0, half):
-                #         actions = []
-                #         for res in pyr.resources.keys():
-                #             if(pyr.resources[res] > 0):
-                #                 actions.append((commands.DiscardResourceCommand, res))
-                #         action, resource = pyr.chooseAction(actions)
-                #         self.ctr.execute(action(pyr, resource))
 
     def rollDice(self): 
         return random.randint(1,6) + random.randint(1,6)    
-
-    # def doTurn(self, player: Player):
-    #     turnCardUsed = False
-    #     player.unusedKnights = player.unusedKnights + player.justBoughtKnights
-    #     player.justBoughtKnights = 0
-    #     player.monopolyCard += player.justBoughtMonopolyCard
-    #     player.justBoughtMonopolyCard = 0
-    #     player.roadBuildingCard += player.justBoughtRoadBuildingCard
-    #     player.justBoughtRoadBuildingCard = 0
-    #     player.yearOfPlentyCard += player.justBoughtYearOfPlentyCard
-    #     player.justBoughtYearOfPlentyCard = 0
-    #     if(player.unusedKnights > 0 and not turnCardUsed):
-    #         actualEvaluation = Board.Board().actualEvaluation()
-    #         afterKnightEvaluation, tilePos = player.evaluate(commands.UseKnightCommand)
-    #         if(afterKnightEvaluation > actualEvaluation):
-    #             self.ctr.execute(commands.UseKnightCommand(player, tilePos))
-    #             turnCardUsed = True 
-    #     if(self.checkWon(player)):
-    #         print("outside the box n2?")
-    #         return
-    #     ####################################################################### ROLL DICES #####################################################################   
-    #     dicesValue = self.dices[actualTurn] #self.rollDice()
-    #     ########################################################################################################################################################
-    #     if(dicesValue == 7):
-    #         self.sevenOnDices(player)
-    #         ev, tilePos = player.evaluate(commands.UseRobberCommand)
-    #         self.ctr.execute(commands.UseRobberCommand(player, tilePos))
-    #     else:
-    #         self.dice_production(dicesValue)
-
-    #     action, thingNeeded = self.bestAction(player, turnCardUsed)
-    #     action(player, thingNeeded)
-    #     if(self.checkWon(player)):
-    #         print("outside the box n3?")
-    #         return
-    #     if(action in commands.cardCommands()):
-    #             turnCardUsed = True
-    #     while(action != commands.PassTurnCommand and not self.checkWon(player)): 
-    #         action, thingNeeded = self.bestAction(player, turnCardUsed)
-    #         self.ctr.execute(action(player, thingNeeded))
-    #         if(action in commands.cardCommands()):
-    #             turnCardUsed = True
 
     def checkWon(self, player):
         if(player.victoryPoints >= 10):
