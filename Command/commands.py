@@ -122,7 +122,7 @@ class SevenOnDicesCommand:
             command.undo()
 
     def redo(self):
-        for command in reversed(self.discardCommands):
+        for command in self.discardCommands:
             command.redo()
         self.robberCommand.redo()
 
@@ -155,10 +155,10 @@ class DiceProductionCommand:
                     for p in tile.associatedPlaces:
                         if(Board.Board().places[p].owner != 0):
                             if(Board.Board().places[p].isColony):
-                                print("Is this one? Line 158 commands")
+                                # print("Is this one? Line 158 commands")
                                 self.game.players[Board.Board().places[p].owner-1].useResource(tile.resource)
                             elif(Board.Board().places[p].isCity):
-                                print("Is this one? Line 161 commands")
+                                # print("Is this one? Line 161 commands")
                                 self.game.players[Board.Board().places[p].owner-1].useResource(tile.resource)
                                 self.game.players[Board.Board().places[p].owner-1].useResource(tile.resource)
 
@@ -619,7 +619,7 @@ class TradeBankCommand:
 
     def undo(self):
         toTake, toGive = self.coupleOfResources
-        print(self.player.id, ", is this one? line 620 commands.", toTake, toGive)
+        # print(self.player.id, ", is this one? line 620 commands.", toTake, toGive)
         self.player.useResource(toTake)
         #print(self.player.id, " give ", toTake, "to the bank. ")
 
@@ -692,19 +692,15 @@ class UseYearOfPlentyCardCommand:
 
     def undo(self):
         self.player.yearOfPlentyCard += 1
-        print("Is this one? Line 693 commands")
+        # print("Is this one? Line 693 commands")
         self.player.useResource(self.resources[0])
         self.player.useResource(self.resources[1])
 
     def redo(self):
         self.execute()
 
-
-
 def cardCommands():
     return [UseMonopolyCardCommand, UseKnightCommand, UseYearOfPlentyCardCommand, UseRoadBuildingCardCommand]
-
-
 
 @dataclass
 class Batch:
