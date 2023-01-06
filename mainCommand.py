@@ -9,8 +9,8 @@ import pandas as pd
 import time
 import AI.Gnn as Gnn
 
-speed = True
-withGraphics = False
+speed = False
+withGraphics = True
 withDelay = False
 realPlayer = False
 save = True
@@ -84,10 +84,14 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
         pygame.display.update()
     game.actualTurn = 0 
     won = False
-    game.players[0].RANDOM = True
-    game.players[1].RANDOM = True
-    game.players[2].RANDOM = True
-    game.players[3].RANDOM = True
+    game.players[0].AI = True
+    game.players[1].AI = True
+    game.players[2].AI = True
+    game.players[3].AI = True
+    # game.players[0].RANDOM = True
+    # game.players[1].RANDOM = True
+    # game.players[2].RANDOM = True
+    # game.players[3].RANDOM = True
     
     reverseTurnOffSet = {0 : 0, 1 : 1, 2 : 2, 3 : 3, 4 : 3, 5 : 2, 6 : 1, 7 : 0}
 
