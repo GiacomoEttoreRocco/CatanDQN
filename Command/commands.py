@@ -163,7 +163,7 @@ class PlayerSpendResourceCommand:
     def execute(self):
         if(self.player.resources[self.resource] <= 0):
             print("This should be after a - Bank does not have this resorce anymore - , if not, you may have a problem sir.")
-            Bank.Bank().printBank()
+            #Bank.Bank().printBank()
             os.system("pause")
         else:
             self.player.resources[self.resource] -= 1
@@ -603,26 +603,24 @@ class StealFromMeCommand:
     resource: str = None
 
     def execute(self):
-        resourcesOfPlayer = []
-        for keyRes in self.victim.resources.keys():
-            resourcesOfPlayer.extend([keyRes] * self.victim.resources[keyRes])
-        randomTake = random.randint(0, len(resourcesOfPlayer)-1)
-        self.resource = resourcesOfPlayer[randomTake]
-        self.victim.resources[self.resource] -= 1
-        self.thief.resources[self.resource] += 1
+        if len(self.victim.resources) > 0:
+            resourcesOfPlayer = []
+            for keyRes in self.victim.resources.keys():
+                resourcesOfPlayer.extend([keyRes] * self.victim.resources[keyRes])
+            randomTake = random.randint(0, len(resourcesOfPlayer)-1)
+            self.resource = resourcesOfPlayer[randomTake]
+            self.victim.resources[self.resource] -= 1
+            self.thief.resources[self.resource] += 1
 
     def undo(self):
         self.victim.resources[self.resource] += 1
         self.thief.resources[self.resource] -= 1
-    
-
 
 @dataclass
 class StealResourceCommand:
     player: Player
     tile: cg.Tile
     chosenPlayer: Player = None
-    takenResource: str = None
     stealFromMe : StealFromMeCommand = None
 
     def execute(self):
@@ -634,14 +632,15 @@ class StealResourceCommand:
         if len(playersInTile) > 0:
             self.chosenPlayer = playersInTile[random.randint(0,len(playersInTile)-1)]
             self.stealFromMe = StealFromMeCommand(self.chosenPlayer, self.player)
+            self.stealFromMe.execute()
 
     def undo(self):
-        self.stealFromMe.undo()
+        if self.stealFromMe is not None:    #This happens if len(playersInTile) <= 0 and so stealFromMe is never set
+            self.stealFromMe.undo()
 
     def redo(self):
-        if self.chosenPlayer is not None and self.takenResource is not None:
-            self.chosenPlayer.resources[self.takenResource] -= 1
-            self.player.resources[self.takenResource] += 1
+        if self.stealFromMe is not None: 
+            self.stealFromMe.redo()
 
 @dataclass
 class UseKnightCommand:
