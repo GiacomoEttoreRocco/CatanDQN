@@ -109,9 +109,10 @@ class SevenOnDicesCommand:
                 if(pyr.AI or pyr.RANDOM):
                     for i in range(0, half):
                         eval, resource = pyr.evaluate(DiscardResourceCommand)
-                        self.discardCommands.append(DiscardResourceCommand(pyr, resource))
+                        tmp = DiscardResourceCommand(pyr, resource)
+                        self.discardCommands.append(tmp)
                         #self.ctr.execute(DiscardResourceCommand(pyr, resource))
-                        DiscardResourceCommand(pyr, resource).execute()
+                        tmp.execute()
         ev, pos = self.player.evaluate(UseRobberCommand) 
         self.robberCommand = UseRobberCommand(self.player, pos)
         self.robberCommand.execute()
@@ -127,9 +128,57 @@ class SevenOnDicesCommand:
         self.robberCommand.redo()
 
 @dataclass
+class BankGiveResourceCommand:
+    player: Player
+    resource: str
+    bankEmptyFlag: bool = False
+
+    def execute(self):
+        if self.resource != "desert":
+            if Bank.Bank().resources[self.resource] > 0:
+                self.player.resources[self.resource] += 1
+                Bank.Bank().resources[self.resource] -= 1
+            else:
+                print("Bank does not have this resource anymore.")
+                self.bankEmptyFlag = True
+
+    def undo(self):
+        if self.bankEmptyFlag:
+            print("Bank is empty, undoing")
+            return
+        else:
+            if self.resource != "desert":
+                self.player.resources[self.resource] -= 1
+                Bank.Bank().resources[self.resource] += 1
+    
+    def redo(self):
+        self.execute()
+
+
+@dataclass
+class PlayerSpendResourceCommand:
+    player: Player
+    resource: str
+
+    def execute(self):
+        if(self.player.resources[self.resource] <= 0):
+            print("This should be after a - Bank does not have this resorce anymore - , if not, you may have a problem sir.")
+        #if(self.player.resources[resource] > 0):
+        self.player.resources[self.resource] -= 1
+        Bank.Bank().resources[self.resource] += 1
+
+    def undo(self):
+        self.player.resources[self.resource] += 1
+        Bank.Bank().resources[self.resource] -= 1
+
+    def redo(self):
+        self.execute()
+
+@dataclass
 class DiceProductionCommand:
     game: Game
     sevenOnDices: SevenOnDicesCommand = None
+    resourceOperations: list[Action] = field(default_factory=list)
 
     def execute(self):
         if(self.game.dices[self.game.actualTurn] == 7):
@@ -141,29 +190,43 @@ class DiceProductionCommand:
                     for p in tile.associatedPlaces:
                         if(Board.Board().places[p].owner != 0):
                             if(Board.Board().places[p].isColony):
-                                Bank.Bank().giveResource(self.game.players[Board.Board().places[p].owner-1], tile.resource)
+                                #Bank.Bank().giveResource(self.game.players[Board.Board().places[p].owner-1], tile.resource)
+                                tmp = BankGiveResourceCommand(self.game.players[Board.Board().places[p].owner-1], tile.resource)
+                                self.resourceOperations.append(tmp)
+                                tmp.execute()
+
+
                             elif(Board.Board().places[p].isCity):
-                                Bank.Bank().giveResource(self.game.players[Board.Board().places[p].owner-1], tile.resource)
-                                Bank.Bank().giveResource(self.game.players[Board.Board().places[p].owner-1], tile.resource)
+                                # Bank.Bank().giveResource(self.game.players[Board.Board().places[p].owner-1], tile.resource)
+                                # Bank.Bank().giveResource(self.game.players[Board.Board().places[p].owner-1], tile.resource)
+                                tmp1 = BankGiveResourceCommand(self.game.players[Board.Board().places[p].owner-1], tile.resource)
+                                tmp2 = BankGiveResourceCommand(self.game.players[Board.Board().places[p].owner-1], tile.resource)
+                                self.resourceOperations.append(tmp1)
+                                self.resourceOperations.append(tmp2)
+                                tmp1.execute()
+                                tmp2.execute()
         
     def undo(self):
         if(self.game.dices[self.game.actualTurn] == 7):
             self.sevenOnDices.undo()
         else:
-            for tile in Board.Board().tiles:
-                if tile.number == self.game.dices[self.game.actualTurn] and tile != Board.Board().robberTile:
-                    for p in tile.associatedPlaces:
-                        if(Board.Board().places[p].owner != 0):
-                            if(Board.Board().places[p].isColony):
-                                # print("Is this one? Line 158 commands")
-                                self.game.players[Board.Board().places[p].owner-1].useResource(tile.resource)
-                            elif(Board.Board().places[p].isCity):
-                                # print("Is this one? Line 161 commands")
-                                self.game.players[Board.Board().places[p].owner-1].useResource(tile.resource)
-                                self.game.players[Board.Board().places[p].owner-1].useResource(tile.resource)
+            # for tile in Board.Board().tiles:
+            #     if tile.number == self.game.dices[self.game.actualTurn] and tile != Board.Board().robberTile:
+            #         for p in tile.associatedPlaces:
+            #             if(Board.Board().places[p].owner != 0):
+                            # if(Board.Board().places[p].isColony):
+                            #     # print("Is this one? Line 158 commands")
+                            #     self.game.players[Board.Board().places[p].owner-1].useResource(tile.resource)
+                            # elif(Board.Board().places[p].isCity):
+                            #     # print("Is this one? Line 161 commands")
+                            #     self.game.players[Board.Board().places[p].owner-1].useResource(tile.resource)
+                            #     self.game.players[Board.Board().places[p].owner-1].useResource(tile.resource)
+            for operation in reversed(self.resourceOperations):
+                operation.undo()
 
     def redo(self):
-        self.execute()
+        for operation in self.resourceOperations:
+            operation.redo()
 
 @dataclass
 class InitialPassTurnCommand:
@@ -231,6 +294,7 @@ class PlaceInitialColonyCommand:
     player: Player
     place: cg.Place
     isSecond: bool = False
+    resourceOperations: list[Action] = field(default_factory=list)
 
     def execute(self):
         Board.Board().places[self.place.id].owner = self.player.id
@@ -242,7 +306,10 @@ class PlaceInitialColonyCommand:
             self.player.ownedHarbors.append(self.place.harbor)
         if(self.isSecond):
             for touchedResource in Board.Board().places[self.place.id].touchedResourses:
-                Bank.Bank().giveResource(self.player, touchedResource)
+                #Bank.Bank().giveResource(self.player, touchedResource)
+                tmp = BankGiveResourceCommand(self.player, touchedResource)
+                self.resourceOperations.append(tmp)
+                tmp.execute()
 
     def undo(self):
         Board.Board().places[self.place.id].owner = 0
@@ -252,13 +319,16 @@ class PlaceInitialColonyCommand:
         del self.player.ownedColonies[-1]
         if(self.place.harbor != ""):
             del self.player.ownedHarbors[-1]
-        if(self.isSecond):
-            for touchedResource in Board.Board().places[self.place.id].touchedResourses:
-                if(touchedResource != "desert"):
-                    self.player.useResource(touchedResource)
+        # if(self.isSecond):
+        #     for touchedResource in Board.Board().places[self.place.id].touchedResourses:
+        #         if(touchedResource != "desert"):
+        #self.player.useResource(touchedResource)
+        for operation in reversed(self.resourceOperations):
+            operation.undo()
 
     def redo(self):
-        self.execute()
+        for operation in self.resourceOperations:
+            operation.redo()
 
 @dataclass
 class FirstChoiseCommand:
@@ -347,12 +417,20 @@ class PlaceStreetCommand:
     withCost: bool = True
     previousStreetOwner: Player = None
     checkLongestStreet: CheckLongestStreetCommand = None
+    resourceOperations: list[Action] = field(default_factory=list)
 
     def execute(self):
         self.previousStreetOwner = self.player.game.longestStreetOwner
         if self.withCost:
-            self.player.useResource("wood")
-            self.player.useResource("clay")
+            # self.player.useResource("wood")
+            # self.player.useResource("clay")
+            tmp1 = PlayerSpendResourceCommand(self.player, "wood")
+            tmp2 = PlayerSpendResourceCommand(self.player, "clay")
+            self.resourceOperations.append(tmp1)
+            self.resourceOperations.append(tmp2)
+            tmp1.execute()
+            tmp2.execute()
+
         Board.Board().edges[self.edge] = self.player.id
         self.player.nStreets+=1
         self.player.ownedStreets.append(self.edge)
@@ -360,8 +438,10 @@ class PlaceStreetCommand:
         self.checkLongestStreet.execute()
 
     def undo(self):
-        Bank.Bank().giveResource(self.player, "wood")   
-        Bank.Bank().giveResource(self.player, "clay")    
+        # Bank.Bank().giveResource(self.player, "wood")   
+        # Bank.Bank().giveResource(self.player, "clay")   
+        for operation in reversed(self.resourceOperations):
+            operation.undo() 
         Board.Board().edges[self.edge] = 0
         self.player.nStreets-=1
         del self.player.ownedStreets[-1]
@@ -378,14 +458,19 @@ class PlaceColonyCommand:
     withCost: bool = True
     previousStreetOwner: Player = None
     checkLongestStreet: CheckLongestStreetCommand = None
+    resourceOperations: list[Action] = field(default_factory=list)
 
     def execute(self):
         self.previousStreetOwner = self.player.game.longestStreetOwner
         if self.withCost:
-            self.player.useResource("wood")
-            self.player.useResource("clay")
-            self.player.useResource("crop")
-            self.player.useResource("sheep")
+            self.resourceOperations.extend([PlayerSpendResourceCommand(self.player, "wood"), PlayerSpendResourceCommand(self.player, "clay"), 
+                                            PlayerSpendResourceCommand(self.player, "crop"), PlayerSpendResourceCommand(self.player, "sheep")])
+            # self.player.useResource("wood")
+            # self.player.useResource("clay")
+            # self.player.useResource("crop")
+            # self.player.useResource("sheep")
+            for operation in self.resourceOperations:
+                operation.execute()
 
         self.place.owner = self.player.id
         self.place.isColony = True
@@ -401,11 +486,13 @@ class PlaceColonyCommand:
         self.checkLongestStreet.execute()
 
     def undo(self):
-        if self.withCost:
-            Bank.Bank().giveResource(self.player, "wood")   
-            Bank.Bank().giveResource(self.player, "clay")  
-            Bank.Bank().giveResource(self.player, "crop")   
-            Bank.Bank().giveResource(self.player, "sheep")  
+        #if self.withCost:
+            # Bank.Bank().giveResource(self.player, "wood")   
+            # Bank.Bank().giveResource(self.player, "clay")  
+            # Bank.Bank().giveResource(self.player, "crop")   
+            # Bank.Bank().giveResource(self.player, "sheep")  
+        for operation in reversed(self.resourceOperations):
+            operation.undo() 
 
         self.place.owner = 0
         self.place.isColony = False
@@ -426,14 +513,19 @@ class PlaceCityCommand:
     player: Player
     place: cg.Place
     withCost: bool = True
+    resourceOperations: list[Action] = field(default_factory=list)
 
     def execute(self):
         if self.withCost:
-            self.player.useResource("iron")
-            self.player.useResource("iron")
-            self.player.useResource("iron")
-            self.player.useResource("crop")
-            self.player.useResource("crop")
+            self.resourceOperations.extend([PlayerSpendResourceCommand(self.player, "iron"), PlayerSpendResourceCommand(self.player, "iron"), 
+                                PlayerSpendResourceCommand(self.player, "iron"), PlayerSpendResourceCommand(self.player, "crop"), PlayerSpendResourceCommand(self.player, "crop")])
+            # self.player.useResource("iron")
+            # self.player.useResource("iron")
+            # self.player.useResource("iron")
+            # self.player.useResource("crop")
+            # self.player.useResource("crop")
+            for operation in self.resourceOperations:
+                operation.execute()
 
         Board.Board().places[self.place.id].isColony = False
         Board.Board().places[self.place.id].isCity = True
@@ -443,12 +535,14 @@ class PlaceCityCommand:
         self.player.ownedCities.append(self.place.id)
 
     def undo(self):
-        if self.withCost:
-            Bank.Bank().giveResource(self.player, "iron")
-            Bank.Bank().giveResource(self.player, "iron")
-            Bank.Bank().giveResource(self.player, "iron")
-            Bank.Bank().giveResource(self.player, "crop")
-            Bank.Bank().giveResource(self.player, "crop")
+        # if self.withCost:
+        #     Bank.Bank().giveResource(self.player, "iron")
+        #     Bank.Bank().giveResource(self.player, "iron")
+        #     Bank.Bank().giveResource(self.player, "iron")
+        #     Bank.Bank().giveResource(self.player, "crop")
+        #     Bank.Bank().giveResource(self.player, "crop")
+        for operation in self.resourceOperations:
+            operation.undo()
 
         Board.Board().places[self.place.id].isColony = True
         Board.Board().places[self.place.id].isCity = False
@@ -457,15 +551,22 @@ class PlaceCityCommand:
         self.player.nColonies+=1
         del self.player.ownedCities[-1]
 
+    def redo(self):
+        self.execute()
+
 @dataclass
 class BuyDevCardCommand:
     player: Player
     card: str = ""
+    resourceOperations: list[Action] = field(default_factory=list)
 
     def execute(self):
-        self.player.useResource("iron")
-        self.player.useResource("crop")
-        self.player.useResource("sheep")
+        self.resourceOperations.extend([PlayerSpendResourceCommand(self.player, "iron"), PlayerSpendResourceCommand(self.player, "crop"), PlayerSpendResourceCommand(self.player, "sheep")])
+        # self.player.useResource("iron")
+        # self.player.useResource("crop")
+        # self.player.useResource("sheep")
+        for operation in self.resourceOperations:
+            operation.execute()
 
         self.card = Board.Board().deck[0] ##### IL DECK VIENE TOCCATO QUA
 
@@ -483,9 +584,11 @@ class BuyDevCardCommand:
         Board.Board().deck = Board.Board().deck[1:]
 
     def undo(self):
-        Bank.Bank().giveResource(self.player, "iron")
-        Bank.Bank().giveResource(self.player, "crop")
-        Bank.Bank().giveResource(self.player, "sheep")
+        # Bank.Bank().giveResource(self.player, "iron")
+        # Bank.Bank().giveResource(self.player, "crop")
+        # Bank.Bank().giveResource(self.player, "sheep")
+        for operation in reversed(self.resourceOperations):
+            operation.undo()
         if(self.card == "knight"):
             self.player.justBoughtKnights -= 1
         if(self.card == "monopoly"):
@@ -506,15 +609,19 @@ class BuyDevCardCommand:
 class DiscardResourceCommand:
     player: Player
     resource: str
+    playerSpendResource: PlayerSpendResourceCommand = None
 
     def execute(self):
-        self.player.useResource(self.resource)
+        self.playerSpendResource = PlayerSpendResourceCommand(self.player, self.resource)
+        self.playerSpendResource.execute()
+        #self.player.useResource(self.resource)
 
     def undo(self):
-        Bank.Bank().giveResource(self.player, self.resource)
+        #Bank.Bank().giveResource(self.player, self.resource)
+        self.playerSpendResource.undo()
 
     def redo(self):
-        self.execute()
+        self.playerSpendResource.redo()
 
 def stealResource(player, tile: cg.Tile):
     playersInTile = []
@@ -533,7 +640,7 @@ def stealResource(player, tile: cg.Tile):
 class StealResourceCommand:
     player: Player
     tile: cg.Tile
-    chosenPlayer: Player = None # Player.Player(0, Game.Game())
+    chosenPlayer: Player = None
     takenResource: str = None
 
     def __post_init__(self):
@@ -601,34 +708,47 @@ class UseKnightCommand:
         self.previousLargestArmy.victoryPoints += 2
 
     def redo(self):
-        self.execute()
+        self.execute()        
 
 @dataclass
 class TradeBankCommand:
     player: Player
     coupleOfResources: tuple()
+    tradeOperations: list[Action] = field(default_factory=list)
 
     def execute(self):
         toTake, toGive = self.coupleOfResources
-        Bank.Bank().giveResource(self.player, toTake)
+        #Bank.Bank().giveResource(self.player, toTake)
+        print("Trading with bank")
+        tmp = BankGiveResourceCommand(self.player, toTake)
+        self.tradeOperations.append(tmp)
+        tmp.execute()
+        
         #print(self.player.id, " take ", toTake, " from the bank. ")
 
         for _ in range(0, Bank.Bank().resourceToAsk(self.player, toGive)):
-            self.player.useResource(toGive)
+            #self.player.useResource(toGive)
+            tmp = PlayerSpendResourceCommand(self.player, toGive)
+            self.tradeOperations.append(tmp)
+            tmp.execute()
             #print(self.player.id, " give ", toGive, "to the bank. ", _)
 
     def undo(self):
-        toTake, toGive = self.coupleOfResources
+        #toTake, toGive = self.coupleOfResources
         # print(self.player.id, ", is this one? line 620 commands.", toTake, toGive)
-        self.player.useResource(toTake)
+        #self.player.useResource(toTake)
+        for operation in reversed(self.tradeOperations):
+            operation.undo()
+
         #print(self.player.id, " give ", toTake, "to the bank. ")
 
-        for _ in range(0, Bank.Bank().resourceToAsk(self.player, toGive)):
-            Bank.Bank().giveResource(self.player, toGive)
-            #print(self.player.id, " take ", toGive, " from the bank. ", _)
+        # for _ in range(0, Bank.Bank().resourceToAsk(self.player, toGive)):
+        #     Bank.Bank().giveResource(self.player, toGive)
+        #     #print(self.player.id, " take ", toGive, " from the bank. ", _)
 
     def redo(self):
-        self.execute()
+        for operation in self.tradeOperations:
+            operation.redo()
 
 @dataclass
 class UseMonopolyCardCommand:
@@ -684,17 +804,25 @@ class UseRoadBuildingCardCommand:
 class UseYearOfPlentyCardCommand:
     player: Player
     resources: list()
+    resourceOperations: list[Action] = field(default_factory=list)
 
     def execute(self):
         self.player.yearOfPlentyCard -= 1
-        Bank.Bank().giveResource(self.player, self.resources[0])
-        Bank.Bank().giveResource(self.player, self.resources[1])
+        tmp1 = BankGiveResourceCommand(self.player, self.resources[0])
+        tmp2 = BankGiveResourceCommand(self.player, self.resources[1])
+        self.resourceOperations.extend([tmp1, tmp2])
+        # Bank.Bank().giveResource(self.player, self.resources[0])
+        # Bank.Bank().giveResource(self.player, self.resources[1])
+        tmp1.execute()
+        tmp2.execute()
 
     def undo(self):
         self.player.yearOfPlentyCard += 1
         # print("Is this one? Line 693 commands")
-        self.player.useResource(self.resources[0])
-        self.player.useResource(self.resources[1])
+        # self.player.useResource(self.resources[0])
+        # self.player.useResource(self.resources[1])
+        for operation in reversed(self.resourceOperations):
+            operation.undo()
 
     def redo(self):
         self.execute()

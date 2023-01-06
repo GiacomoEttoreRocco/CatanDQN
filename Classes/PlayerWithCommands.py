@@ -64,14 +64,14 @@ class Player:
     def __le__(self, other):
         return self.id <= other.id
         
-    def useResource(self, resource):
-        # assert self.resources[resource] >= 0, "FATAL ERROR. You should not be able to use this method."
-        # temporary solution:
-        if(self.resources[resource] > 0):
-            self.resources[resource] -= 1
-            Bank.Bank().resources[resource] += 1
-        else:
-            print("This should be after a - Bank does not have this resorce anymore - , if not, you may have a problem sir.")
+    # def useResource(self, resource):
+    #     # assert self.resources[resource] >= 0, "FATAL ERROR. You should not be able to use this method."
+    #     # temporary solution:
+    #     if(self.resources[resource] > 0):
+    #         self.resources[resource] -= 1
+    #         Bank.Bank().resources[resource] += 1
+    #     else:
+    #         print("This should be after a - Bank does not have this resorce anymore - , if not, you may have a problem sir.")
 
     def chooseAction(self, actions):
         print("Mosse disponibili: ")
