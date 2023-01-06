@@ -21,28 +21,23 @@ WINNERS = [0.0, 0.0, 0.0, 0.0]
 devCardsBought = [0.0, 0.0, 0.0, 0.0]
 
 def decisionManager(player):
-    #print("Decision manager working on player ", player.id)
     onlyPassTurn = True # if undo, we don't want them to be saved
-
     if(not speed):
         if(withGraphics):
             event = pygame.event.wait()
             while event.type != pygame.KEYDOWN:
                 event = pygame.event.wait()
             if(event.key == pygame.K_a):
-                #print("The player", str(player.id), "is going to do an AI move.")
                 player.AI = True
                 player.RANDOM = False
                 action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
                 ctr.execute(action(player, thingNeeded))
             elif(event.key == pygame.K_r):
-                #print("The player", str(player.id), "is going to do a random move.")
                 player.AI = False
                 player.RANDOM = True
                 action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
                 ctr.execute(action(player, thingNeeded))
             elif(event.key == pygame.K_u):
-                #print("UNDO ", action.__class__.__name__)
                 ctr.undo()
             elif(event.key == pygame.K_k):
                 ctr.redo()
@@ -56,7 +51,7 @@ def decisionManager(player):
     if(withGraphics):
         view.updateGameScreen()
         pygame.display.update()
-    if(not onlyPassTurn): # se il decision manager si occupa di fare best move, non avremo più la lunghezza delle available moves. 
+    if(not onlyPassTurn):  
         saveMove(save, player) 
 
 def doActionDecisions(game: c.GameWithCommands, player: c.PlayerWithCommands, withGraphics = True):
@@ -79,7 +74,7 @@ def doActionDecisions(game: c.GameWithCommands, player: c.PlayerWithCommands, wi
         player.turnCardUsed = True
 
 def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True):
-    oldPlayerTurnId = 0
+    # oldPlayerTurnId = 0
     global devCardsBought
     devCardsBought = [0.0, 0.0, 0.0, 0.0]
     if(withGraphics):
@@ -89,12 +84,6 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
         pygame.display.update()
     game.actualTurn = 0 
     won = False
-    # START INIZIALE
-    #if(speed):
-    # game.players[0].AI = True
-    # game.players[1].AI = True
-    # game.players[2].AI = True
-    # game.players[3].AI = True
     game.players[0].RANDOM = True
     game.players[1].RANDOM = True
     game.players[2].RANDOM = True
@@ -105,39 +94,20 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
     while won == False:
         if(game.actualTurn < 8):
             playerTurn = game.players[reverseTurnOffSet[game.actualTurn]]     
-            # evaluation, colonyChoosen = playerTurn.evaluate(commands.PlaceInitialColonyCommand) # questo deve essere fatto dentro il decision manager
-            # if(game.actualTurn < 4):
-            #     decisionManager(playerTurn, commands.FirstChoiseCommand)
-            # else:
-            #     decisionManager(playerTurn, commands.SecondChoiseCommand)
             decisionManager(playerTurn)
             if(withGraphics):    
                 GameView.GameView.updateGameScreen(view)
             saveMove(save, playerTurn) 
         else:
             playerTurn = game.players[game.actualTurn%game.nplayer]
-            #game.currentTurnPlayer = playerTurn
-            # if(oldPlayerTurnId != playerTurn.id):
-                # decisionManager(playerTurn, commands.InitialTurnSetupCommand(playerTurn)) # questo è strano
-            #dicesValue = playerTurn.game.dices[playerTurn.game.actualTurn]
-                # if(dicesValue == 7):
-            #playerTurn.game.sevenOnDices()
-                # ev, pos = playerTurn.evaluate(commands.UseRobberCommand) # questo deve essere fatto dentro il decision manager
-                # decisionManager(playerTurn, commands.UseRobberCommand(playerTurn, pos))
-                # decisionManager(playerTurn, commands.StealResourceCommand(playerTurn, c.Board.Board().tiles[pos])) # questo deve essere fatto dentro use robber
-            #else:
-            #decisionManager(playerTurn, commands.DiceProductionCommand(dicesValue, game)) 
             doActionDecisions(game, playerTurn, withGraphics)
-
             if(playerTurn.victoryPoints >= 10):
                 WINNERS[playerTurn.id-1] += 1
                 s = 'Winner: ' + str(playerTurn.id) + "\n"
-                game.printVictoryPointsOfAll(devCardsBought)
+                # game.printVictoryPointsOfAll(devCardsBought)
                 saveToCsv(playerTurn)
                 print(s) 
                 won = True
-            #ldPlayerTurnId = playerTurn.id
-        #print("Player who did this turn: ", playerTurn.id)
     if(withGraphics):
         pygame.quit()
 
@@ -152,11 +122,6 @@ def saveToCsv(victoryPlayer):
     if(save):
         for i in range(len(total)):
             total.globals[i]['winner'] = victoryPlayer.id
-            #print("Winner saved: ", str(victoryPlayer.id))
-        print(total.globals[0])
-        print(total.globals[1])
-        print(total.globals[2])
-        print(total.globals[3])
         print("Length of total moves of this game: ", len(total))
         global allGames
         allGames = pd.concat([allGames, total], ignore_index=True)
@@ -169,8 +134,6 @@ def checkLongestStreetOwner(previousLongestStreetOwner: c.PlayerWithCommands, pl
         actualLongestStreetOwner.victoryPoints += 2
         previousLongestStreetOwner.victoryPoints -= 2
 
-###########################################################################################################################
-
 def printWinners():
     normValue = sum(WINNERS)
     toPrint = [0.0, 0.0, 0.0, 0.0]
@@ -182,10 +145,8 @@ def printWinners():
     print(s)
     print(WINNERS)
 
-###########################################################################################################################
-
-epochs = 10
-batchs = 10
+epochs = 1
+batchs = 1
 
 for epoch in range(epochs):
     print('Iteration: ', epoch+1, "/", epochs)

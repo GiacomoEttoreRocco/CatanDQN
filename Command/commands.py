@@ -146,7 +146,6 @@ class DiceProductionCommand:
                                 Bank.Bank().giveResource(self.game.players[Board.Board().places[p].owner-1], tile.resource)
                                 Bank.Bank().giveResource(self.game.players[Board.Board().places[p].owner-1], tile.resource)
         
-
     def undo(self):
         if(self.game.dices[self.game.actualTurn] == 7):
             self.sevenOnDices.undo()

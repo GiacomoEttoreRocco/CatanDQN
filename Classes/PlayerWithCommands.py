@@ -19,8 +19,8 @@ class Player:
 
         self.id = id
 
-        print("I'm ", self.id, " an AI ", AI)
-        print("I'm ", self.id, " a RANDOM ", RANDOM)
+        # print("I'm ", self.id, " an AI ", AI)
+        # print("I'm ", self.id, " a RANDOM ", RANDOM)
 
         self.victoryPoints = 0
         self.victoryPointsCards = 0
@@ -65,9 +65,13 @@ class Player:
         return self.id <= other.id
         
     def useResource(self, resource):
-        assert self.resources[resource] >= 0, "FATAL ERROR. You should not be able to use this method."
-        self.resources[resource] -= 1
-        Bank.Bank().resources[resource] += 1
+        # assert self.resources[resource] >= 0, "FATAL ERROR. You should not be able to use this method."
+        # temporary solution:
+        if(self.resources[resource] > 0):
+            self.resources[resource] -= 1
+            Bank.Bank().resources[resource] += 1
+        else:
+            print("This should be after a - Bank does not have this resorce anymore - , if not, you may have a problem sir.")
 
     def chooseAction(self, actions):
         print("Mosse disponibili: ")
@@ -388,7 +392,6 @@ class Player:
         assert(len(resourcesOfPlayer) > 0)
         randomTake = random.randint(0, len(resourcesOfPlayer)-1)
         resourceTaken = resourcesOfPlayer[randomTake]
-        # print("RESOURCE TAKEN ---------------------------------------------------->", resourceTaken)
         self.resources[resourceTaken] -= 1
         player.resources[resourceTaken] += 1
         return resourceTaken
@@ -403,21 +406,15 @@ class Player:
         
     def randomActionValue(self, action, thingNeeded = None):
 
-        #ctr = controller.ActionController()
-
         if(action == commands.PassTurnCommand):
             return 0.2 + random.uniform(0, 1)
 
         if(action == commands.UseKnightCommand):
-            #ctr.execute(action(self, thingNeeded))
             toRet = 1.5
-            #ctr.undo() 
             return toRet + random.uniform(0,2)
 
         if(action == commands.UseRobberCommand):
-            #ctr.execute(action(self, thingNeeded)) 
             toRet = 1.5
-            #ctr.undo() 
             return toRet + random.uniform(0,2)
 
         if(action == commands.BuyDevCardCommand):
@@ -425,25 +422,18 @@ class Player:
             return toRet + random.uniform(0,5)
 
         if(action == commands.UseMonopolyCardCommand):
-            #ctr.execute(action(self, thingNeeded))
             toRet = 100.0
-            #ctr.undo()
             return toRet
-        #placeFreeStreet missing
         if(action == commands.PlaceStreetCommand or action == commands.PlaceInitialStreetCommand or action == commands.PlaceColonyCommand):
-            #action(self, thingNeeded, False, True)
             if(action == commands.PlaceColonyCommand):
                 toRet = 90
             else:
                 toRet = 16
-            #action(self, thingNeeded, True, True) 
-            return toRet + random.uniform(0,2)
+            return toRet 
         
-        #ctr.execute(action(self, thingNeeded))
-
         if(action == commands.PlaceInitialColonyCommand):
             toRet = 10.0
-        elif(action == commands.PlaceStreetCommand):  #placefreestreet
+        elif(action == commands.PlaceStreetCommand): 
             toRet = 10.0
         elif(action == commands.PlaceCityCommand):
             toRet = 100.0
@@ -458,9 +448,6 @@ class Player:
         else:
             toRet = 0.5
         
-
-        #ctr.undo() #  action(self, thingNeeded, undo=True)
-        #print(action)
         return toRet + random.uniform(0,2)
 
     def aiActionValue(self, action, thingNeeded = None):
@@ -495,7 +482,7 @@ class Player:
             toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
             ctr.undo() 
 
-        return toRet #+ random.uniform(0.00001,0.00002)
+        return toRet + random.uniform(0.00001,0.00002)
 
     def globalFeaturesToDict(self):
         return {'player_id': self.id,'victory_points': self.victoryPoints,\
