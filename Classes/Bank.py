@@ -19,13 +19,10 @@ class Bank:
         else: 
              return 4
 
-    # def giveResource(cls, player: Player, resource):
-    #     if resource != "desert":
-    #         if cls.resources[resource] > 0:
-    #             player.resources[resource] += 1
-    #             cls.resources[resource] -= 1
-    #         else:
-    #             print("Bank does not have this resource anymore.")
+    def printBank(cls):
+        print("Bank situation: \n")
+        for res in cls.resources:
+            print(res + " " + str(cls.resources[res]) + "\n")
 
     def reset(cls):
         Bank.instance = None

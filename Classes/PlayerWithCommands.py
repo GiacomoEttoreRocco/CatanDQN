@@ -385,16 +385,16 @@ class Player:
     def resourceCount(self):
         return sum(self.resources.values())
 
-    def stealFromMe(self, player):
-        resourcesOfPlayer = []
-        for keyRes in self.resources.keys():
-            resourcesOfPlayer.extend([keyRes] * self.resources[keyRes])
-        assert(len(resourcesOfPlayer) > 0)
-        randomTake = random.randint(0, len(resourcesOfPlayer)-1)
-        resourceTaken = resourcesOfPlayer[randomTake]
-        self.resources[resourceTaken] -= 1
-        player.resources[resourceTaken] += 1
-        return resourceTaken
+    # def stealFromMe(self, player):
+    #     resourcesOfPlayer = []
+    #     for keyRes in self.resources.keys():
+    #         resourcesOfPlayer.extend([keyRes] * self.resources[keyRes])
+    #     assert(len(resourcesOfPlayer) > 0)
+    #     randomTake = random.randint(0, len(resourcesOfPlayer)-1)
+    #     resourceTaken = resourcesOfPlayer[randomTake]
+    #     self.resources[resourceTaken] -= 1
+    #     player.resources[resourceTaken] += 1
+    #     return resourceTaken
 
     def actionValue(self, action, thingNeeded = None):
         if self.AI:
@@ -460,25 +460,17 @@ class Player:
             previousTilePos = ctr.execute(action(self, thingNeeded)) 
             toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
             ctr.undo() 
+        # elif(action == commands.PlaceStreetCommand or action == commands.PlaceInitialStreetCommand or action == commands.PlaceColonyCommand or action == commands.UseRoadBuildingCardCommand):
+        #     ctr.execute(action(self, thingNeeded)) 
+        #     toRet = Gnn.Gnn().evaluatePositionForPlayer(self) 
+        #     ctr.undo() 
 
-        elif(action == commands.PlaceStreetCommand or action == commands.PlaceInitialStreetCommand or action == commands.PlaceColonyCommand or action == commands.UseRoadBuildingCardCommand):
-            if action == commands.PlaceStreetCommand or action == commands.PlaceColonyCommand:
-                ctr.execute(action(self, thingNeeded, True))
-            else:
-                ctr.execute(action(self, thingNeeded)) 
-            toRet = Gnn.Gnn().evaluatePositionForPlayer(self) 
-            ctr.undo() 
-
-        elif(action == commands.PlaceInitialColonyCommand or action == commands.UseMonopolyCardCommand or action == commands.BuyDevCardCommand):
-            ctr.execute(action(self, thingNeeded)) 
-            toRet = Gnn.Gnn().evaluatePositionForPlayer(self) 
-            ctr.undo() 
-
+        # elif(action == commands.PlaceInitialColonyCommand or action == commands.UseMonopolyCardCommand or action == commands.BuyDevCardCommand):
+        #     ctr.execute(action(self, thingNeeded)) 
+        #     toRet = Gnn.Gnn().evaluatePositionForPlayer(self) 
+        #     ctr.undo() 
         else:
-            if action == commands.PlaceStreetCommand  or action == commands.PlaceCityCommand or action == commands.PlaceColonyCommand:
-                ctr.execute(action(self, thingNeeded, True)) 
-            else:
-                ctr.execute(action(self, thingNeeded)) 
+            ctr.execute(action(self, thingNeeded)) 
             toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
             ctr.undo() 
 

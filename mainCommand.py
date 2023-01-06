@@ -9,8 +9,8 @@ import pandas as pd
 import time
 import AI.Gnn as Gnn
 
-speed = False
-withGraphics = True
+speed = True
+withGraphics = False # True
 withDelay = False
 realPlayer = False
 save = True
@@ -45,6 +45,7 @@ def decisionManager(player):
                 print(event.key)
     else:
         action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
+        # print("Player: ", player.id, "Action: ", action, "\nThing needed: ", thingNeeded)
         ctr.execute(action(player, thingNeeded))
         if(withGraphics):
             event = pygame.event.get()
@@ -63,7 +64,7 @@ def doActionDecisions(game: c.GameWithCommands, player: c.PlayerWithCommands, wi
     previousLongestStreetOwner = player.game.longestStreetOwner
     action = decisionManager(player)
     if action == commands.PlaceStreetCommand  or action == commands.PlaceColonyCommand or action == commands.UseRoadBuildingCardCommand:  
-        checkLongestStreetOwner(previousLongestStreetOwner, player) 
+        ctr.execute(commands.CheckLongestStreetCommand(previousLongestStreetOwner, player))
 
     if(action == commands.BuyDevCardCommand):
         devCardsBought[player.id-1] += 1
@@ -131,12 +132,12 @@ def saveToCsv(victoryPlayer):
         allGames = pd.concat([allGames, total], ignore_index=True)
         print("Length of total moves of allGames: ", len(allGames))
 
-def checkLongestStreetOwner(previousLongestStreetOwner: c.PlayerWithCommands, player: c.PlayerWithCommands):
-    actualLongestStreetOwner = player.game.longestStreetPlayer()
-    if(previousLongestStreetOwner != actualLongestStreetOwner):
-        player.game.longestStreetOwner = actualLongestStreetOwner
-        actualLongestStreetOwner.victoryPoints += 2
-        previousLongestStreetOwner.victoryPoints -= 2
+# def checkLongestStreetOwner(previousLongestStreetOwner: c.PlayerWithCommands, player: c.PlayerWithCommands):
+#     actualLongestStreetOwner = player.game.longestStreetPlayer()
+#     if(previousLongestStreetOwner != actualLongestStreetOwner):
+#         player.game.longestStreetOwner = actualLongestStreetOwner
+#         actualLongestStreetOwner.victoryPoints += 2
+#         previousLongestStreetOwner.victoryPoints -= 2
 
 def printWinners():
     normValue = sum(WINNERS)
