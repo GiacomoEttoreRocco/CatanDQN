@@ -9,8 +9,8 @@ import pandas as pd
 import time
 import AI.Gnn as Gnn
 
-speed = True
-withGraphics = False # True
+speed = False
+withGraphics = True
 withDelay = False
 realPlayer = False
 save = True
@@ -45,7 +45,6 @@ def decisionManager(player):
                 print(event.key)
     else:
         action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
-        # print("Player: ", player.id, "Action: ", action, "\nThing needed: ", thingNeeded)
         ctr.execute(action(player, thingNeeded))
         if(withGraphics):
             event = pygame.event.get()
@@ -61,11 +60,8 @@ def doActionDecisions(game: c.GameWithCommands, player: c.PlayerWithCommands, wi
     if(withGraphics):
         view.updateGameScreen()
 
-    previousLongestStreetOwner = player.game.longestStreetOwner
     action = decisionManager(player)
-    if action == commands.PlaceStreetCommand  or action == commands.PlaceColonyCommand or action == commands.UseRoadBuildingCardCommand:  
-        ctr.execute(commands.CheckLongestStreetCommand(previousLongestStreetOwner, player))
-
+    
     if(action == commands.BuyDevCardCommand):
         devCardsBought[player.id-1] += 1
 
@@ -85,18 +81,21 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
         pygame.display.update()
     game.actualTurn = 0 
     won = False
-    game.players[0].AI = True
-    game.players[1].AI = True
-    game.players[2].AI = True
-    game.players[3].AI = True
-    # game.players[0].RANDOM = True
-    # game.players[1].RANDOM = True
-    # game.players[2].RANDOM = True
-    # game.players[3].RANDOM = True
+    # game.players[0].AI = True
+    # game.players[1].AI = True
+    # game.players[2].AI = True
+    # game.players[3].AI = True
+    game.players[0].RANDOM = True
+    game.players[1].RANDOM = True
+    game.players[2].RANDOM = True
+    game.players[3].RANDOM = True
     
     reverseTurnOffSet = {0 : 0, 1 : 1, 2 : 2, 3 : 3, 4 : 3, 5 : 2, 6 : 1, 7 : 0}
 
     while won == False:
+        # print('\nSTACK')
+        # for action in ctr.undoStack[-5:-1]:
+        #     print(f'action: {action.__class__}')
         if(game.actualTurn < 8):
             playerTurn = game.players[reverseTurnOffSet[game.actualTurn]]     
             decisionManager(playerTurn)
@@ -113,6 +112,19 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
                 saveToCsv(playerTurn)
                 print(s) 
                 won = True
+    
+    # print("UNDO")
+    # while(len(ctr.undoStack)>0):
+    #     ctr.undo()
+    #     if(withGraphics):    
+    #         GameView.GameView.updateGameScreen(view)
+
+    # print("REDO")
+    # while(len(ctr.redoStack)>0):
+    #     ctr.redo()
+    #     if(withGraphics):    
+    #         GameView.GameView.updateGameScreen(view)
+
     if(withGraphics):
         pygame.quit()
 

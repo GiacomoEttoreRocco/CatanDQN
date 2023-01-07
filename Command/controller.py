@@ -9,7 +9,6 @@ class ActionController:
 
     def execute(self, action: action.Action):
         action.execute()
-        print(action)
         self.redoStack.clear()
         self.undoStack.append(action)
 

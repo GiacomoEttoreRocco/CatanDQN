@@ -127,15 +127,13 @@ class Game:
             totKnightUsed = totKnightUsed + p.usedKnights
         return totKnightUsed
     
-    def largestArmy(self, justCheck = False):
+    def largestArmy(self):
         max = self.largestArmyPlayer.usedKnights
         belonger = self.largestArmyPlayer
         for p in self.players:
             if(p.usedKnights >= 3 and p.usedKnights > max):
                 max = p.usedKnights 
                 belonger = p
-        if(not justCheck and max >= 3):
-            self.largestArmyPlayer = self.players[belonger.id-1]
         return belonger
 
     def longestStreetPlayer(self):
@@ -150,10 +148,7 @@ class Game:
                 if(maxLength < actual):
                     maxLength = actual
                     belonger = p
-        
-        self.longestStreetOwner = belonger
-        self.longestStreetLength = maxLength
-        return belonger
+        return belonger, maxLength
 
     def longest(self, player):
         max = 0
