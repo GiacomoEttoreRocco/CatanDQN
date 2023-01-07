@@ -35,16 +35,16 @@ class GameView:
 
         self.manager = pygame_gui.UIManager(windowSize)
 
-        self.aiButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((0, 200), (100, 50)),
+        self.aiButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.width/2 - self.height//10 * 2, self.height - self.height//20), (self.height//10, self.height//20)),
                                              text='Move AI',
                                              manager=self.manager)
-        self.randomButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
+        self.randomButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.width/2 - self.height//10, self.height - self.height//20), (self.height//10, self.height//20)),
                                              text='Move random',
                                              manager=self.manager)
-        self.undoButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
+        self.undoButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.width/2, self.height - self.height//20), (self.height//10, self.height//20)),
                                              text='UNDO',
                                              manager=self.manager)
-        self.redoButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
+        self.redoButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.width/2 + self.height//10, self.height - self.height//20), (self.height//10, self.height//20)),
                                              text='REDO',
                                              manager=self.manager)
 
@@ -166,7 +166,7 @@ class GameView:
                         if el not in alreadyFound:
                             placeToAdd = self.graphicPlaceList[el]
                             placeToAdd.setupCoords(pc.getCoords(self, placeToAdd.index))
-                            placeToAdd.setupSize((self.height // 17, self.height // 17))
+                            placeToAdd.setupSize((self.height // 20, self.height // 20))
                             gtile.places.append(placeToAdd)
                             self.checkAndDrawHarbors(placeToAdd)
                             alreadyFound.append(el)

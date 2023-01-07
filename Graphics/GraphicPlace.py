@@ -41,7 +41,7 @@ class PlaceSprite(pygame.sprite.Sprite):
             self.rect.centerx = coords[0]
             self.rect.centery = coords[1]-5
         else:
-            self.image = pygame.transform.scale(self.image, size * 1.2)
+            self.image = pygame.transform.scale(self.image, (size[0] * 1.5, size[1]*1.5))
             self.rect = self.image.get_rect()
             self.rect.centerx = coords[0]
             self.rect.centery = coords[1]
