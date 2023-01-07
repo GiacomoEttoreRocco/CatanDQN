@@ -3,7 +3,7 @@ import Command.controller as controller
 import Command.commands as commands
 import Command.action as action
 import pygame
-import Graphics.GameView as GameView
+import Graphics.GameViewTK as GameView
 import os
 import pandas as pd
 import time
@@ -28,6 +28,7 @@ def decisionManager(player):
             while event.type != pygame.KEYDOWN:
                 event = pygame.event.wait()
             if(event.key == pygame.K_a):
+                view.sgWindow.read()
                 player.AI = True
                 player.RANDOM = False
                 action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
@@ -41,8 +42,11 @@ def decisionManager(player):
                 ctr.undo()
             elif(event.key == pygame.K_k):
                 ctr.redo()
+            elif(event == 'Draw'):
+                print("drawing...")
             else:
                 print(event.key)
+            pygame.display.update()
     else:
         action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
         ctr.execute(action(player, thingNeeded))
@@ -175,6 +179,7 @@ for epoch in range(epochs):
         g = c.GameWithCommands.Game()
         if(withGraphics):
             view = GameView.GameView(g)
+            view.sgWindow.read()
             playGameWithGraphic(g, view, withGraphics)
         else:
             playGameWithGraphic(g, None, withGraphics)
