@@ -48,7 +48,7 @@ class GameView:
         graph = self.sgWindow['GRAPH']
         embed = graph.TKCanvas
         os.environ['SDL_WINDOWID'] = str(embed.winfo_id())
-        os.environ['SDL_VIDEODRIVER'] = 'x11'
+        os.environ['SDL_VIDEODRIVER'] = 'windib' if os.name =='nt' else 'x11'
         ##########
         pygame.init()
         self.width = 1200
