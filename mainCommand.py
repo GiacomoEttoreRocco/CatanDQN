@@ -3,11 +3,12 @@ import Command.controller as controller
 import Command.commands as commands
 import Command.action as action
 import pygame
-import Graphics.GameViewTK as GameView
+import Graphics.GameView as GameView
 import os
 import pandas as pd
 import time
 import AI.Gnn as Gnn
+import pygame_gui
 
 speed = False
 withGraphics = True
@@ -22,36 +23,32 @@ devCardsBought = [0.0, 0.0, 0.0, 0.0]
 
 def decisionManager(player):
     onlyPassTurn = True # if undo, we don't want them to be saved
-    if(not speed):
-        if(withGraphics):
+    assert not(not speed and not withGraphics)
+    if(not speed and withGraphics):
+        event = pygame.event.wait()
+        while event.type != pygame_gui.UI_BUTTON_PRESSED:
             event = pygame.event.wait()
-            while event.type != pygame.KEYDOWN:
-                event = pygame.event.wait()
-            if(event.key == pygame.K_a):
-                view.sgWindow.read()
-                player.AI = True
-                player.RANDOM = False
-                action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
-                ctr.execute(action(player, thingNeeded))
-            elif(event.key == pygame.K_r):
-                player.AI = False
-                player.RANDOM = True
-                action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
-                ctr.execute(action(player, thingNeeded))
-            elif(event.key == pygame.K_u):
-                ctr.undo()
-            elif(event.key == pygame.K_k):
-                ctr.redo()
-            elif(event == 'Draw'):
-                print("drawing...")
-            else:
-                print(event.key)
-            pygame.display.update()
+            if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                if(event.ui_element == view.aiButton):
+                    player.AI = True
+                    player.RANDOM = False
+                    action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
+                    ctr.execute(action(player, thingNeeded))
+                elif(event.ui_element == view.randomButton):
+                    player.AI = False
+                    player.RANDOM = True
+                    action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
+                    ctr.execute(action(player, thingNeeded))
+                elif(event.ui_element == view.undoButton):
+                    ctr.undo()
+                elif(event.ui_element == view.redoButton):
+                    ctr.redo()
+                else:
+                    print("Nothing clicked")
+            view.manager.process_events(event)          
     else:
         action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
         ctr.execute(action(player, thingNeeded))
-        if(withGraphics):
-            event = pygame.event.get()
     if(withGraphics):
         view.updateGameScreen()
         pygame.display.update()
@@ -59,11 +56,6 @@ def decisionManager(player):
         saveMove(save, player) 
 
 def doActionDecisions(game: c.GameWithCommands, player: c.PlayerWithCommands, withGraphics = True):
-    if(game.checkWon(player)):
-        return
-    if(withGraphics):
-        view.updateGameScreen()
-
     action = decisionManager(player)
     
     if(action == commands.BuyDevCardCommand):
@@ -75,14 +67,12 @@ def doActionDecisions(game: c.GameWithCommands, player: c.PlayerWithCommands, wi
         player.turnCardUsed = True
 
 def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True):
-    # oldPlayerTurnId = 0
     global devCardsBought
     devCardsBought = [0.0, 0.0, 0.0, 0.0]
     if(withGraphics):
         GameView.GameView.setupAndDisplayBoard(view)
         GameView.GameView.setupPlaces(view)
         GameView.GameView.updateGameScreen(view)
-        pygame.display.update()
     game.actualTurn = 0 
     won = False
     # game.players[0].AI = True
@@ -97,15 +87,9 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
     reverseTurnOffSet = {0 : 0, 1 : 1, 2 : 2, 3 : 3, 4 : 3, 5 : 2, 6 : 1, 7 : 0}
 
     while won == False:
-        # print('\nSTACK')
-        # for action in ctr.undoStack[-5:-1]:
-        #     print(f'action: {action.__class__}')
         if(game.actualTurn < 8):
             playerTurn = game.players[reverseTurnOffSet[game.actualTurn]]     
             decisionManager(playerTurn)
-            if(withGraphics):    
-                GameView.GameView.updateGameScreen(view)
-            saveMove(save, playerTurn) 
         else:
             playerTurn = game.players[game.actualTurn%game.nplayer]
             doActionDecisions(game, playerTurn, withGraphics)
@@ -113,22 +97,12 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
                 WINNERS[playerTurn.id-1] += 1
                 s = 'Winner: ' + str(playerTurn.id) + "\n"
                 # game.printVictoryPointsOfAll(devCardsBought)
-                saveToCsv(playerTurn)
+                saveToJson(playerTurn)
                 print(s) 
                 won = True
+        if(withGraphics):    
+            GameView.GameView.updateGameScreen(view)
     
-    # print("UNDO")
-    # while(len(ctr.undoStack)>0):
-    #     ctr.undo()
-    #     if(withGraphics):    
-    #         GameView.GameView.updateGameScreen(view)
-
-    # print("REDO")
-    # while(len(ctr.redoStack)>0):
-    #     ctr.redo()
-    #     if(withGraphics):    
-    #         GameView.GameView.updateGameScreen(view)
-
     if(withGraphics):
         pygame.quit()
 
@@ -139,7 +113,7 @@ def saveMove(save, player):
         globals = player.globalFeaturesToDict()
         total.loc[len(total)] = [places, edges, globals]
 
-def saveToCsv(victoryPlayer):
+def saveToJson(victoryPlayer):
     if(save):
         for i in range(len(total)):
             total.globals[i]['winner'] = victoryPlayer.id
@@ -179,7 +153,7 @@ for epoch in range(epochs):
         g = c.GameWithCommands.Game()
         if(withGraphics):
             view = GameView.GameView(g)
-            view.sgWindow.read()
+            # view.sgWindow.read()
             playGameWithGraphic(g, view, withGraphics)
         else:
             playGameWithGraphic(g, None, withGraphics)

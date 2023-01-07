@@ -1,4 +1,5 @@
 import pygame
+import pygame_gui
 import Graphics.GraphicTile as GraphicTile
 import Graphics.GraphicPlace as GraphicPlace
 import Graphics.geomlib as geomlib
@@ -31,6 +32,22 @@ class GameView:
         self.graphicTileList = []
         self.graphicPlaceList = []
         self.screen = pygame.display.set_mode(windowSize)
+
+        self.manager = pygame_gui.UIManager(windowSize)
+
+        self.aiButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((0, 200), (100, 50)),
+                                             text='Move AI',
+                                             manager=self.manager)
+        self.randomButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
+                                             text='Move random',
+                                             manager=self.manager)
+        self.undoButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
+                                             text='UNDO',
+                                             manager=self.manager)
+        self.redoButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
+                                             text='REDO',
+                                             manager=self.manager)
+
         self.font_resource = pygame.font.SysFont('tahoma', 55)
         self.font_resourceSmaller = pygame.font.SysFont('tahoma', 35)
         self.font_resourceSmallest = pygame.font.SysFont('tahoma', 17, bold=True)
@@ -115,7 +132,7 @@ class GameView:
         return None
 
     def drawGraphicTile(self, graphicTile):
-        hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(80, 80), geomlib.Point(self.width/2, self.height/2))
+        hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(self.height//12, self.height//12), geomlib.Point(self.width/2, self.height/2))
         hexTileCorners = geomlib.polygon_corners(hexLayout, graphicTile.hex)
         tileColorRGB = self.tileColorDict[graphicTile.resource]
         pygame.draw.polygon(self.screen, pygame.Color(tileColorRGB[0], tileColorRGB[1], tileColorRGB[2]),
@@ -151,7 +168,7 @@ class GameView:
                     for el in v:
                         if el not in alreadyFound:
                             placeToAdd = self.graphicPlaceList[el]
-                            placeToAdd.setupCoords(pc.scaleCoords(self.width, self.height, placeToAdd.index))
+                            placeToAdd.setupCoords(pc.getCoords(self, placeToAdd.index))
                             gtile.places.append(placeToAdd)
                             self.checkAndDrawHarbors(placeToAdd)
                             alreadyFound.append(el)
@@ -194,6 +211,10 @@ class GameView:
         diceRoll = pygame.Rect(170, 0, 50, 50)
         self.screen.fill(self.bgScoreColor, diceRoll)
         self.screen.blit(font_dice, (175, 5))
+
+        self.manager.update(0)
+        self.manager.draw_ui(self.screen)
+
         pygame.display.update()
 
     def drawPlace(self, graphicPlace):
