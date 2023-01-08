@@ -141,7 +141,7 @@ def printWinners():
     print(WINNERS)
 
 epochs = 1
-batchs = 10
+batchs = 100
 
 for epoch in range(epochs):
     print('Iteration: ', epoch+1, "/", epochs)

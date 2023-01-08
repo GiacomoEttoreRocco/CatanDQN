@@ -612,10 +612,10 @@ class StealResourceCommand:
                 playersInTile.append(owner)
         if len(playersInTile) > 0:
             self.chosenPlayer = playersInTile[random.randint(0,len(playersInTile)-1)]
-            print("I'm the one who is stealing: ", self.player.id)
+            # print("I'm the one who is stealing: ", self.player.id)
             self.takenResource = self.chosenPlayer.stealFromMe()
         else:
-            print("Robber placed in a free of player tile.")
+            # print("Robber placed in a free of player tile.")
             self.chosenPlayer = None
             self.takenResource = None
 
