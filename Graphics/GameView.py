@@ -11,15 +11,18 @@ import os
 import time
 
 class GameView:
-    def __init__(self, game):
+    def __init__(self, game, controller):
         pygame.init()
-        self.width = 1200
-        self.height = 800
+        self.width = 1400
+        self.moveListWidth = self.width//5
+        self.gameWidth = self.width - self.moveListWidth
+        self.height = 700
         self.sourceFileDir = os.path.dirname(os.path.abspath(__file__))
         self.robberImgPath = os.path.join(self.sourceFileDir, "imgs/robber.png")
         self.tempRobberTile = -1 # per motivi di efficienza.
         # #Use pygame to display the board
         self.game = game #?????
+        self.controller = controller
         windowSize = self.width, self.height
         self.playerColorDict = {0: pygame.Color('grey'), 1: pygame.Color('red'), 2: pygame.Color('yellow'),
                            3: pygame.Color('blueviolet'), 4:  pygame.Color('blue')}
@@ -35,18 +38,21 @@ class GameView:
 
         self.manager = pygame_gui.UIManager(windowSize)
 
-        self.aiButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.width/2 - self.height//10 * 2, self.height - self.height//20), (self.height//10, self.height//20)),
+        self.aiButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.gameWidth/2 - self.height//10 * 2, self.height - self.height//20), (self.height//10, self.height//20)),
                                              text='Move AI',
                                              manager=self.manager)
-        self.randomButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.width/2 - self.height//10, self.height - self.height//20), (self.height//10, self.height//20)),
+        self.randomButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.gameWidth/2 - self.height//10, self.height - self.height//20), (self.height//10, self.height//20)),
                                              text='Move random',
                                              manager=self.manager)
-        self.undoButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.width/2, self.height - self.height//20), (self.height//10, self.height//20)),
+        self.undoButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.gameWidth/2, self.height - self.height//20), (self.height//10, self.height//20)),
                                              text='UNDO',
                                              manager=self.manager)
-        self.redoButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.width/2 + self.height//10, self.height - self.height//20), (self.height//10, self.height//20)),
+        self.redoButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.gameWidth/2 + self.height//10, self.height - self.height//20), (self.height//10, self.height//20)),
                                              text='REDO',
                                              manager=self.manager)
+        self.stack = pygame_gui.elements.UISelectionList(relative_rect=pygame.Rect((self.gameWidth,0),(self.moveListWidth,self.height)),
+                                            item_list=[("player.id", "action")],
+                                            manager=self.manager )
 
         self.font_resource = pygame.font.SysFont('tahoma', self.height//18)
         self.font_resourceSmaller = pygame.font.SysFont('tahoma', self.height//28)
@@ -117,7 +123,7 @@ class GameView:
     def setupAndDisplayBoard(self, bg = True):
         self.graphicTileList = [] # recently added
         if(bg):
-            pygame.draw.rect(self.screen, pygame.Color('cadetblue1'),(0, 0, self.width, self.height))
+            pygame.draw.rect(self.screen, pygame.Color('cadetblue1'),(0, 0, self.gameWidth, self.height))
         #hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(80, 80), geomlib.Point(500, 400))
         hex_i = 0
         for boardtile in Board.Board().tiles:
@@ -129,11 +135,11 @@ class GameView:
         return None
 
     def drawGraphicTile(self, graphicTile):
-        hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(self.height//12, self.height//12), geomlib.Point(self.width/2, self.height/2))
+        hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(self.height//12, self.height//12), geomlib.Point(self.gameWidth/2, self.height/2))
         hexTileCorners = geomlib.polygon_corners(hexLayout, graphicTile.hex)
         tileColorRGB = self.tileColorDict[graphicTile.resource]
         pygame.draw.polygon(self.screen, pygame.Color(tileColorRGB[0], tileColorRGB[1], tileColorRGB[2]),
-                            hexTileCorners, self.width == 0)
+                            hexTileCorners, self.gameWidth == 0)
         pygame.draw.polygon(self.screen, pygame.Color('black'), hexTileCorners, self.height//200)
         graphicTile.pixelCenter = geomlib.hex_to_pixel(hexLayout, graphicTile.hex)
         imgPath = os.path.join(self.sourceFileDir, self.imgDict[graphicTile.resource])
@@ -146,8 +152,8 @@ class GameView:
     def drawNumberCircle(self, graphicTile):
         tileNumberText = self.font_resourceSmaller.render(str(graphicTile.number), False, pygame.Color("black"))
         if graphicTile.resource != 'desert':
-            pygame.draw.circle(self.screen, pygame.Color("black"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+(self.height//40)), self.height//37, self.width==0)
-            pygame.draw.circle(self.screen, pygame.Color("white"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+(self.height//40)), self.height//43, self.width==0)
+            pygame.draw.circle(self.screen, pygame.Color("black"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+(self.height//40)), self.height//37, self.gameWidth==0)
+            pygame.draw.circle(self.screen, pygame.Color("white"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+(self.height//40)), self.height//43, self.gameWidth==0)
             if(graphicTile.number >= 10):
                 self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-self.height//50, graphicTile.pixelCenter.y))
             else:
@@ -176,9 +182,9 @@ class GameView:
         for v in Gnn.Gnn().evaluatePosition(player):
             scores_string += '%.2f '%v.item()
         scores = self.font_resourceSmallest.render(scores_string, False, self.playerColorDict[player.id])
-        playersScores = pygame.Rect(self.width/2-self.height//8, 0, self.height//4, self.height//20)
+        playersScores = pygame.Rect(self.gameWidth/2-self.height//8, 0, self.height//4, self.height//20)
         self.screen.fill(self.bgScoreColor, playersScores)
-        self.screen.blit(scores, (self.width/2-self.height//8.3, self.height//200))
+        self.screen.blit(scores, (self.gameWidth/2-self.height//8.3, self.height//200))
 
     def updateGameScreen(self):
         self.setupAndDisplayBoard() # recently added
@@ -190,26 +196,33 @@ class GameView:
         self.updateScoreGNN(self.game.currentTurnPlayer)
         self.blit(self.game.players[0], self.height//200, self.height//200)
         self.blit(self.game.players[1], self.height//200, self.height-self.height//2.9)
-        self.blit(self.game.players[2], self.width-self.height//6.9, self.height//200)
-        self.blit(self.game.players[3], self.width-self.height//6.9, self.height-self.height//2.9)
+        self.blit(self.game.players[2], self.gameWidth-self.height//6.9, self.height//200)
+        self.blit(self.game.players[3], self.gameWidth-self.height//6.9, self.height-self.height//2.9)
 
-        longestStreetBox = pygame.Rect(self.height//5.8, self.height-self.height//10, self.width * 0.1, self.height//10)
+        longestStreetBox = pygame.Rect(self.height//5.8, self.height-self.height//10, self.gameWidth * 0.1, self.height//10)
         self.screen.fill(self.bgScoreColor, longestStreetBox)
         font_longest_street = self.font_resourceSmaller.render('LS: '+ str(self.game.longestStreetOwner.id), False, pygame.Color('white'))
         self.screen.blit(font_longest_street, (self.height//5.7, self.height - self.height//10.5))
         font_longest_street_length = self.font_resourceSmaller.render('len: '+ str(self.game.longestStreetLength), False, pygame.Color('white'))
         self.screen.blit(font_longest_street_length, (self.height//5.7, self.height - self.height//22.2))
         
-        largestArmyBox = pygame.Rect(self.width-self.height//3.7, self.height-self.height//20, self.height//10, self.height//20)
+        largestArmyBox = pygame.Rect(self.gameWidth-self.height//3.7, self.height-self.height//20, self.height//10, self.height//20)
         self.screen.fill(self.bgScoreColor, largestArmyBox)
         font_largest_army = self.font_resourceSmaller.render('LA: '+ str(self.game.largestArmyPlayer.id), False, pygame.Color('white'))
-        self.screen.blit(font_largest_army, (self.width-self.height//3.77, self.height - self.height//22.2))
+        self.screen.blit(font_largest_army, (self.gameWidth-self.height//3.77, self.height - self.height//22.2))
 
         font_dice = self.font_resourceSmaller.render(str(self.game.dices[self.game.actualTurn]), False, pygame.Color('white'))
         diceRoll = pygame.Rect(self.height//5.8, 0, self.height//20, self.height//20)
         self.screen.fill(self.bgScoreColor, diceRoll)
         self.screen.blit(font_dice, (self.height//5.7, self.height//200))
 
+        undoStack = self.controller.summaryUndoStack()
+        redoStack = self.controller.summaryRedoStack()
+        print(self.stack.get_single_selection())
+        self.stack.set_item_list(["Redo list"])
+        self.stack.add_items(redoStack)
+        self.stack.add_items(["Undo list"])
+        self.stack.add_items(reversed(undoStack))
         self.manager.update(0)
         self.manager.draw_ui(self.screen)
 

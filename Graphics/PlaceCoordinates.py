@@ -2,7 +2,7 @@ import Graphics.geomlib as geomlib
 
 def getCoords(view, i):
     tile, place = placeCoordinates[i]
-    hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(view.height//12, view.height//12), geomlib.Point(view.width/2, view.height/2))
+    hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(view.height//12, view.height//12), geomlib.Point(view.gameWidth/2, view.height/2))
     return geomlib.polygon_corners(hexLayout, view.graphicTileList[tile].hex)[place]
 
 placeCoordinates = { 

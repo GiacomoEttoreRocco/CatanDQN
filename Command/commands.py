@@ -58,6 +58,9 @@ class InitialTurnSetupCommand:
     def redo(self):
         self.execute()
 
+    def __repr__(self) -> str:
+        return self.__class__.__name__
+
 @dataclass
 class SetRobberTile:
     tilePosition: cg.Tile
@@ -70,6 +73,8 @@ class SetRobberTile:
         Board.Board().robberTile = self.previousPosition
     def redo(self):
         self.execute()
+    def __repr__(self) -> str:
+        return f'{self.__class__.__name__} tile: {self.tilePosition}'
 
 
 @dataclass
@@ -88,6 +93,11 @@ class UseRobberCommand:
     def redo(self):
         for action in self.actions:
             action.redo()
+    def __repr__(self) -> str:
+        s = f'{self.__class__.__name__}'
+        for action in self.actions:
+            s+=f'\n\t{action}'
+        return s
 
 @dataclass
 class SevenOnDicesCommand:
@@ -115,6 +125,11 @@ class SevenOnDicesCommand:
     def redo(self):
         for action in self.actions:
             action.redo()
+    def __repr__(self) -> str:
+        s = f'{self.__class__.__name__}'
+        for action in self.actions:
+            s+=f'\n\t{action}'
+        return s
 
 @dataclass
 class AddResourceToPlayer:
@@ -127,6 +142,8 @@ class AddResourceToPlayer:
         self.player.resources[self.resource] -= 1
     def redo(self):
         self.player.resources[self.resource] += 1
+    def __repr__(self) -> str:
+        return f'{self.__class__.__name__} res: {self.resource}'
 
 @dataclass
 class RemoveResourceToPlayer:
@@ -140,6 +157,8 @@ class RemoveResourceToPlayer:
     def redo(self):
         assert self.player.resources[self.resource]>0, f"Player {self.player.id} can't UNDO this action becouse it has not {self.resource}"
         self.player.resources[self.resource] -= 1
+    def __repr__(self) -> str:
+        return f'{self.__class__.__name__} res: {self.resource}'
 
 @dataclass
 class AddResourceToBank:
@@ -151,6 +170,8 @@ class AddResourceToBank:
         Bank.Bank().resources[self.resource] -= 1
     def redo(self):
         Bank.Bank().resources[self.resource] += 1
+    def __repr__(self) -> str:
+        return f'{self.__class__.__name__} res: {self.resource}'
 
 @dataclass
 class RemoveResourceToBank:
@@ -162,6 +183,8 @@ class RemoveResourceToBank:
         Bank.Bank().resources[self.resource] += 1
     def redo(self):
         Bank.Bank().resources[self.resource] -= 1
+    def __repr__(self) -> str:
+        return f'{self.__class__.__name__} res: {self.resource}'
 
 
 @dataclass
@@ -186,6 +209,11 @@ class BankGiveResourceCommand:
     def redo(self):
         for action in self.actions:
             action.redo()
+    def __repr__(self) -> str:
+        s = f'{self.__class__.__name__}'
+        for action in self.actions:
+            s+=f'\n\t{action}'
+        return s
 
 
 @dataclass
@@ -206,19 +234,28 @@ class PlayerSpendResourceCommand:
     def redo(self):
         for action in self.actions:
             action.redo()
+    def __repr__(self) -> str:
+        s = f'{self.__class__.__name__}'
+        for action in self.actions:
+            s+=f'\n\t{action}'
+        return s
 
 @dataclass
 class DiceProductionCommand:
     game: Game
+    dice: int = None
     sevenOnDices: SevenOnDicesCommand = None
     actions: list[Action] = field(default_factory=list)
 
+    def __post_init__(self):
+        self.dice = self.game.dices[self.game.actualTurn]
+
     def execute(self):
-        if(self.game.dices[self.game.actualTurn] == 7):
+        if(self.dice == 7):
             self.actions.append(SevenOnDicesCommand(self.game.currentTurnPlayer))
         else:
             for tile in Board.Board().tiles:
-                if tile.number == self.game.dices[self.game.actualTurn] and tile != Board.Board().robberTile:
+                if tile.number == self.dice and tile != Board.Board().robberTile:
                     for p in tile.associatedPlaces:
                         if(Board.Board().places[p].owner != 0):
                             if(Board.Board().places[p].isColony):
@@ -236,6 +273,11 @@ class DiceProductionCommand:
     def redo(self):
         for action in self.actions:
             action.redo()
+    def __repr__(self) -> str:
+        s = f'{self.__class__.__name__} dice: {self.dice}'
+        for action in self.actions:
+            s+=f'\n\t{action}'
+        return s
 
 @dataclass
 class DefaultPassTurnCommand:
@@ -252,6 +294,8 @@ class DefaultPassTurnCommand:
     def redo(self):
         self.player.game.actualTurn += 1
         self.player.game.currentTurnPlayer = self.player.game.players[self.player.game.actualTurn%4]
+    def __repr__(self) -> str:
+        return f'{self.__class__.__name__}'
 
 @dataclass
 class PassTurnCommand:
@@ -272,7 +316,27 @@ class PassTurnCommand:
     def redo(self):
         for action in self.actions:
             action.redo()
+    def __repr__(self) -> str:
+        return f'{self.__class__.__name__}'
 
+@dataclass
+class PlaceFreeStreetCommand:
+    player: Player
+    edge: tuple()
+    def execute(self):
+        Board.Board().edges[self.edge] = self.player.id
+        self.player.nStreets+=1
+        self.player.ownedStreets.append(self.edge)
+
+    def undo(self):
+        Board.Board().edges[self.edge] = 0
+        self.player.nStreets-=1
+        del self.player.ownedStreets[-1]
+
+    def redo(self):
+        self.execute()
+    def __repr__(self) -> str:
+        return f'{self.__class__.__name__}'
 
 @dataclass
 class PlaceInitialStreetCommand:
@@ -290,6 +354,8 @@ class PlaceInitialStreetCommand:
 
     def redo(self):
         self.execute()
+    def __repr__(self) -> str:
+        return f'{self.__class__.__name__}'
 
 @dataclass
 class PlaceInitialColonyCommand:
@@ -315,6 +381,8 @@ class PlaceInitialColonyCommand:
 
     def redo(self):
         self.execute()
+    def __repr__(self) -> str:
+        return f'{self.__class__.__name__}'
 
 @dataclass
 class PlaceDefaultCityCommand:
@@ -339,6 +407,8 @@ class PlaceDefaultCityCommand:
 
     def redo(self):
         self.execute()
+    def __repr__(self) -> str:
+        return f'{self.__class__.__name__}'
 
 @dataclass
 class PlaceSecondColonyCommand:
@@ -360,6 +430,12 @@ class PlaceSecondColonyCommand:
     def redo(self):
         for action in self.actions:
             action.redo()
+    def __repr__(self) -> str:
+        s = f'{self.__class__.__name__}'
+        for action in self.actions:
+            s+=f'\n\t{action}'
+        return s
+    
 
 @dataclass
 class FirstChoiseCommand:
@@ -386,6 +462,11 @@ class FirstChoiseCommand:
     def redo(self):
         for action in self.actions:
             action.redo()
+    def __repr__(self) -> str:
+        s = f'{self.__class__.__name__}'
+        for action in self.actions:
+            s+=f'\n\t{action}'
+        return s
 
 @dataclass
 class SecondChoiseCommand:
@@ -411,6 +492,11 @@ class SecondChoiseCommand:
     def redo(self):
         for action in self.actions:
             action.redo()
+    def __repr__(self) -> str:
+        s = f'{self.__class__.__name__}'
+        for action in self.actions:
+            s+=f'\n\t{action}'
+        return s
 
 @dataclass
 class CheckLongestStreetCommand:
@@ -444,6 +530,8 @@ class CheckLongestStreetCommand:
             self.game.longestStreetLength = self.previousMaxLength
             self.actualLongestStreetOwner.victoryPoints += 2
             self.previousLongestStreetOwner.victoryPoints -= 2
+    def __repr__(self) -> str:
+        return f'{self.__class__.__name__}'
 
 
 @dataclass
@@ -468,6 +556,11 @@ class PlaceStreetCommand:
     def redo(self):
         for action in self.actions:
             action.redo()
+    def __repr__(self) -> str:
+        s = f'{self.__class__.__name__}'
+        for action in self.actions:
+            s+=f'\n\t{action}'
+        return s
 
 @dataclass
 class PlaceColonyCommand:
@@ -491,6 +584,11 @@ class PlaceColonyCommand:
     def redo(self):
         for action in self.actions:
             action.redo()
+    def __repr__(self) -> str:
+        s = f'{self.__class__.__name__}'
+        for action in self.actions:
+            s+=f'\n\t{action}'
+        return s
         
 
 @dataclass
@@ -516,19 +614,24 @@ class PlaceCityCommand:
     def redo(self):
         for action in self.actions:
             action.redo()
+    def __repr__(self) -> str:
+        s = f'{self.__class__.__name__}'
+        for action in self.actions:
+            s+=f'\n\t{action}'
+        return s
 
 @dataclass
 class BuyDevCardCommand:
     player: Player
     card: str = ""
-    resourceOperations: list[Action] = field(default_factory=list)
+    actions: list[Action] = field(default_factory=list)
 
     def execute(self):
-        self.resourceOperations.extend([PlayerSpendResourceCommand(self.player, "iron"),
+        self.actions.extend([PlayerSpendResourceCommand(self.player, "iron"),
                                         PlayerSpendResourceCommand(self.player, "crop"),
                                         PlayerSpendResourceCommand(self.player, "sheep")])
 
-        for operation in self.resourceOperations:
+        for operation in self.actions:
             operation.execute()
 
         self.card = Board.Board().deck[0]
@@ -546,7 +649,7 @@ class BuyDevCardCommand:
         Board.Board().deck = Board.Board().deck[1:]
 
     def undo(self):
-        for operation in reversed(self.resourceOperations):
+        for operation in reversed(self.actions):
             operation.undo()
 
         if(self.card == "knight"):
@@ -563,7 +666,7 @@ class BuyDevCardCommand:
         Board.Board().deck = np.insert(Board.Board().deck, 0, self.card)
         
     def redo(self):
-        for operation in self.resourceOperations:
+        for operation in self.actions:
             operation.redo()
 
         self.card = Board.Board().deck[0]
@@ -579,6 +682,11 @@ class BuyDevCardCommand:
             self.player.victoryPoints += 1
             self.player.victoryPointsCards += 1
         Board.Board().deck = Board.Board().deck[1:]
+    def __repr__(self) -> str:
+        s = f'{self.__class__.__name__}'
+        for action in self.actions:
+            s+=f'\n\t{action}'
+        return s
 
 @dataclass
 class DiscardResourceCommand:
@@ -595,6 +703,10 @@ class DiscardResourceCommand:
 
     def redo(self):
         self.playerSpendResource.redo()
+    def __repr__(self) -> str:
+        s = f'{self.__class__.__name__}'
+        s+=f'\n\t{self.playerSpendResource}'
+        return s
 
 @dataclass
 class StealResourceCommand:
@@ -632,6 +744,11 @@ class StealResourceCommand:
     def redo(self):
         for action in self.actions:
             action.redo()
+    def __repr__(self) -> str:
+        s = f'{self.__class__.__name__}'
+        for action in self.actions:
+            s+=f'\n\t{action}'
+        return s
 
 @dataclass
 class CheckLargestArmyCommand:
@@ -658,6 +775,8 @@ class CheckLargestArmyCommand:
             self.game.largestArmyPlayer = self.actualLargestArmyOwner
             self.actualLargestArmyOwner.victoryPoints += 2 
             self.previousLargestArmyOwner.victoryPoints -= 2
+    def __repr__(self) -> str:
+        return f'{self.__class__.__name__}'
 
 @dataclass
 class UseKnightCommand:
@@ -681,7 +800,12 @@ class UseKnightCommand:
         self.player.unusedKnights -= 1
         self.player.usedKnights += 1
         for action in self.actions:
-            action.redo()    
+            action.redo()   
+    def __repr__(self) -> str:
+        s = f'{self.__class__.__name__}'
+        for action in self.actions:
+            s+=f'\n\t{action}'
+        return s 
 
 @dataclass
 class TradeBankCommand:
@@ -701,6 +825,11 @@ class TradeBankCommand:
     def redo(self):
         for action in self.actions:
             action.redo()
+    def __repr__(self) -> str:
+        s = f'{self.__class__.__name__}'
+        for action in self.actions:
+            s+=f'\n\t{action}'
+        return s
 
 @dataclass
 class UseMonopolyCardCommand:
@@ -725,6 +854,11 @@ class UseMonopolyCardCommand:
         self.player.monopolyCard -= 1
         for action in self.actions:
             action.redo()
+    def __repr__(self) -> str:
+        s = f'{self.__class__.__name__}'
+        for action in self.actions:
+            s+=f'\n\t{action}'
+        return s
 
 @dataclass
 class UseRoadBuildingCardCommand:
@@ -752,6 +886,11 @@ class UseRoadBuildingCardCommand:
         self.player.roadBuildingCard += 1
         for action in self.actions:
             action.redo()
+    def __repr__(self) -> str:
+        s = f'{self.__class__.__name__}'
+        for action in self.actions:
+            s+=f'\n\t{action}'
+        return s
 
 @dataclass
 class UseYearOfPlentyCardCommand:
@@ -773,6 +912,11 @@ class UseYearOfPlentyCardCommand:
         self.player.yearOfPlentyCard -= 1
         for action in self.actions:
             action.redo()
+    def __repr__(self) -> str:
+        s = f'{self.__class__.__name__}'
+        for action in self.actions:
+            s+=f'\n\t{action}'
+        return s
 
 def cardCommands():
     return [UseMonopolyCardCommand, UseKnightCommand, UseYearOfPlentyCardCommand, UseRoadBuildingCardCommand]

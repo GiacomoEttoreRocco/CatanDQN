@@ -25,3 +25,16 @@ class ActionController:
         action = self.redoStack.pop()
         action.redo()
         self.undoStack.append(action)
+
+    def summaryUndoStack(self):
+        l = []
+        for action in self.undoStack:
+            for x in repr(action).split("\n\t"):
+                l.append(f'{action.player.id}:{x}')
+        return l
+    def summaryRedoStack(self):
+        l = []
+        for action in self.redoStack:
+            for x in repr(action).split("\n\t"):
+                l.append(f'{action.player.id}:{x}')
+        return l

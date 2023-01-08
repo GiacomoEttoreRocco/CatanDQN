@@ -10,7 +10,7 @@ import time
 import AI.Gnn as Gnn
 import pygame_gui
 
-speed = True
+speed = False
 withGraphics = True
 withDelay = False
 realPlayer = False
@@ -21,8 +21,21 @@ ctr = controller.ActionController()
 WINNERS = [0.0, 0.0, 0.0, 0.0]
 devCardsBought = [0.0, 0.0, 0.0, 0.0]
 
+def doActionWithGraphics(player):
+    action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
+    ctr.execute(action(player, thingNeeded))
+    view.updateGameScreen()
+    if(not onlyPassTurn):  
+        saveMove(save, player)
+def undoActionWithGraphics():
+    ctr.undo()
+    view.updateGameScreen()
+def redoActionWithGraphics():
+    ctr.redo()
+    view.updateGameScreen()
+
+
 def decisionManager(player):
-    onlyPassTurn = True # if undo, we don't want them to be saved
     assert not(not speed and not withGraphics)
     if(not speed and withGraphics):
         event = pygame.event.wait()
@@ -31,17 +44,15 @@ def decisionManager(player):
             if(event.ui_element == view.aiButton):
                 player.AI = True
                 player.RANDOM = False
-                action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
-                ctr.execute(action(player, thingNeeded))
+                doActionWithGraphics(player)
             elif(event.ui_element == view.randomButton):
                 player.AI = False
                 player.RANDOM = True
-                action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
-                ctr.execute(action(player, thingNeeded))
+                doActionWithGraphics(player)
             elif(event.ui_element == view.undoButton):
-                ctr.undo()
+                undoActionWithGraphics()
             elif(event.ui_element == view.redoButton):
-                ctr.redo()
+                redoActionWithGraphics()
             else:
                 print("Nothing clicked")
         if event.type == pygame.KEYDOWN:
@@ -50,21 +61,29 @@ def decisionManager(player):
             elif event.key == pygame.K_a:
                 player.AI = True
                 player.RANDOM = False
-                action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
-                ctr.execute(action(player, thingNeeded))
+                doActionWithGraphics(player)
             else:
                 print(f'Key {event.key} pressed')
+        if event.type == pygame.QUIT:
+            print("Quitting")
+            pygame.quit()
 
         view.manager.process_events(event) 
+    
+    elif (speed and withGraphics):
+        events = pygame.event.get()
+        for event in events:
+            if event.type == pygame.QUIT:
+                pygame.quit()
+        doActionWithGraphics(player)
+        
     else:
         action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
         ctr.execute(action(player, thingNeeded))
-    
-    if(withGraphics):
-        view.updateGameScreen()
+        if(not onlyPassTurn):  
+            saveMove(save, player) 
 
-    if(not onlyPassTurn):  
-        saveMove(save, player) 
+    
 
 # def doActionDecisions(game: c.GameWithCommands, player: c.PlayerWithCommands, withGraphics = True):
 #     action = decisionManager(player)
@@ -112,7 +131,7 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
                 saveToJson(playerTurn)
                 print(s) 
                 won = True
-                
+
     if(withGraphics):
         pygame.quit()
 
@@ -156,8 +175,7 @@ for epoch in range(epochs):
         #g = c.Game.Game()
         g = c.GameWithCommands.Game()
         if(withGraphics):
-            view = GameView.GameView(g)
-            # view.sgWindow.read()
+            view = GameView.GameView(g, ctr)
             playGameWithGraphic(g, view, withGraphics)
         else:
             playGameWithGraphic(g, None, withGraphics)

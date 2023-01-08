@@ -231,7 +231,7 @@ class Player:
                     candidateCard = card
             return max, candidateCard
        
-        if(action == commands.PlaceStreetCommand):
+        if(action == commands.PlaceStreetCommand or action == commands.PlaceFreeStreetCommand):
             possibleEdges = self.calculatePossibleEdges()
             candidateEdge = None
             max = -1
@@ -365,7 +365,7 @@ class Player:
                 possibleEdges = self.calculatePossibleEdges()
                 max1 = -1
                 for edge in possibleEdges: 
-                    valutation = self.actionValue(commands.PlaceInitialStreetCommand, edge)
+                    valutation = self.actionValue(commands.PlaceFreeStreetCommand, edge)
                     if(max1 < valutation):
                         max1 = valutation
                         candidateEdge1 = edge
@@ -375,7 +375,7 @@ class Player:
                 max2 = -1
                 for edge in possibleEdges: 
                     if(edge != candidateEdge1):
-                        valutation = self.actionValue(commands.PlaceInitialStreetCommand, edge)
+                        valutation = self.actionValue(commands.PlaceFreeStreetCommand, edge)
                         if(max2 < valutation):
                             max2 = valutation
                             candidateEdge2 = edge
