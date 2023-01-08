@@ -132,13 +132,13 @@ class AddResourceToPlayer:
 class RemoveResourceToPlayer:
     player: Player
     resource: str
-
     def execute(self):
-        assert self.player.resources[self.resource]>0
+        assert self.player.resources[self.resource]>0, f"Player {self.player.id} can't EXECUTE this action becouse it has not {self.resource}"
         self.player.resources[self.resource] -= 1
     def undo(self):
         self.player.resources[self.resource] += 1
     def redo(self):
+        assert self.player.resources[self.resource]>0, f"Player {self.player.id} can't UNDO this action becouse it has not {self.resource}"
         self.player.resources[self.resource] -= 1
 
 @dataclass
@@ -178,7 +178,7 @@ class BankGiveResourceCommand:
             else:
                 print("Bank does not have this resource anymore.")
         for action in self.actions:
-            action.redo()
+            action.execute()
 
     def undo(self):
         for action in reversed(self.actions):
@@ -596,26 +596,6 @@ class DiscardResourceCommand:
     def redo(self):
         self.playerSpendResource.redo()
 
-# @dataclass
-# class StealFromMeCommand:
-#     victim: Player
-#     thief: Player
-#     resource: str = None
-
-#     def execute(self):
-#         if len(self.victim.resources) > 0:
-#             resourcesOfPlayer = []
-#             for keyRes in self.victim.resources.keys():
-#                 resourcesOfPlayer.extend([keyRes] * self.victim.resources[keyRes])
-#             randomTake = random.randint(0, len(resourcesOfPlayer)-1)
-#             self.resource = resourcesOfPlayer[randomTake]
-#             self.victim.resources[self.resource] -= 1
-#             self.thief.resources[self.resource] += 1
-
-#     def undo(self):
-#         self.victim.resources[self.resource] += 1
-#         self.thief.resources[self.resource] -= 1
-
 @dataclass
 class StealResourceCommand:
     player: Player
@@ -625,7 +605,19 @@ class StealResourceCommand:
     actions: list[Action] = field(default_factory=list)
 
     def __post_init__(self):
-        self.chosenPlayer, self.takenResource = self.stealResource(self.player, self.tile)
+        playersInTile = []
+        for place in self.tile.associatedPlaces:
+            owner = self.player.game.players[Board.Board().places[place].owner-1]
+            if owner not in playersInTile and owner.id != 0 and owner != self.player and owner.resourceCount() > 0: 
+                playersInTile.append(owner)
+        if len(playersInTile) > 0:
+            self.chosenPlayer = playersInTile[random.randint(0,len(playersInTile)-1)]
+            print("I'm the one who is stealing: ", self.player.id)
+            self.takenResource = self.chosenPlayer.stealFromMe()
+        else:
+            print("Robber placed in a free of player tile.")
+            self.chosenPlayer = None
+            self.takenResource = None
 
     def execute(self):
         if self.chosenPlayer is not None and self.takenResource is not None:
@@ -640,19 +632,6 @@ class StealResourceCommand:
     def redo(self):
         for action in self.actions:
             action.redo()
-
-    def stealResource(self, player: Player, tile: cg.Tile):
-        playersInTile = []
-        
-        for place in tile.associatedPlaces:
-            owner = player.game.players[Board.Board().places[place].owner-1]
-            if owner not in playersInTile and owner.id != 0 and owner != player and owner.resourceCount() > 0: 
-                playersInTile.append(owner)
-        if len(playersInTile) > 0:
-            chosenPlayer = playersInTile[random.randint(0,len(playersInTile)-1)]
-            takenResource = chosenPlayer.stealFromMe(player)
-            return chosenPlayer, takenResource
-        return None, None
 
 @dataclass
 class CheckLargestArmyCommand:

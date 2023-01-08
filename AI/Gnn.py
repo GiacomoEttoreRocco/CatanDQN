@@ -32,7 +32,7 @@ class Gnn():
         optimizer = torch.optim.Adam(cls.model.parameters(), lr=cls.learningRate)
         permutationIndexMoves = np.random.permutation([x for x in range(len(cls.moves))])
         for epoch in range(cls.epochs):
-            print('epochOnOneGame: ', epoch+1, "/", cls.epochs)
+            print('epoch: ', epoch+1, "/", cls.epochs)
             for i, idx in enumerate(permutationIndexMoves):
                 g = cls.extractInputFeaturesMove(idx).to(cls.device)
                 glob = torch.tensor(list(cls.moves.iloc[idx].globals.values())[:-1]).to(cls.device).float()

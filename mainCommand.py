@@ -14,8 +14,8 @@ speed = True
 withGraphics = False
 withDelay = False
 realPlayer = False
-save = True
-train = True
+save = False
+train = False
 ctr = controller.ActionController()
 
 WINNERS = [0.0, 0.0, 0.0, 0.0]
@@ -141,7 +141,7 @@ def printWinners():
     print(WINNERS)
 
 epochs = 1
-batchs = 1
+batchs = 10
 
 for epoch in range(epochs):
     print('Iteration: ', epoch+1, "/", epochs)

@@ -385,15 +385,14 @@ class Player:
     def resourceCount(self):
         return sum(self.resources.values())
 
-    def stealFromMe(self, player):
+    def stealFromMe(self):
         resourcesOfPlayer = []
         for keyRes in self.resources.keys():
             resourcesOfPlayer.extend([keyRes] * self.resources[keyRes])
         assert(len(resourcesOfPlayer) > 0)
         randomTake = random.randint(0, len(resourcesOfPlayer)-1)
         resourceTaken = resourcesOfPlayer[randomTake]
-        # self.resources[resourceTaken] -= 1
-        # player.resources[resourceTaken] += 1
+        print("Steal: ",resourceTaken, "from player ", self.id, "which has ", self.resources[resourceTaken])
         return resourceTaken
 
     def actionValue(self, action, thingNeeded = None):
