@@ -11,7 +11,7 @@ import AI.Gnn as Gnn
 import pygame_gui
 
 speed = True
-withGraphics = False
+withGraphics = True
 withDelay = False
 realPlayer = False
 save = False
@@ -26,45 +26,56 @@ def decisionManager(player):
     assert not(not speed and not withGraphics)
     if(not speed and withGraphics):
         event = pygame.event.wait()
-        while event.type != pygame_gui.UI_BUTTON_PRESSED:
-            event = pygame.event.wait()
-            if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                if(event.ui_element == view.aiButton):
-                    player.AI = True
-                    player.RANDOM = False
-                    action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
-                    ctr.execute(action(player, thingNeeded))
-                elif(event.ui_element == view.randomButton):
-                    player.AI = False
-                    player.RANDOM = True
-                    action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
-                    ctr.execute(action(player, thingNeeded))
-                elif(event.ui_element == view.undoButton):
-                    ctr.undo()
-                elif(event.ui_element == view.redoButton):
-                    ctr.redo()
-                else:
-                    print("Nothing clicked")
-            view.manager.process_events(event)          
+        # while event.type != pygame_gui.UI_BUTTON_PRESSED and event.type != pygame.KEYDOWN:
+        if event.type == pygame_gui.UI_BUTTON_PRESSED:
+            if(event.ui_element == view.aiButton):
+                player.AI = True
+                player.RANDOM = False
+                action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
+                ctr.execute(action(player, thingNeeded))
+            elif(event.ui_element == view.randomButton):
+                player.AI = False
+                player.RANDOM = True
+                action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
+                ctr.execute(action(player, thingNeeded))
+            elif(event.ui_element == view.undoButton):
+                ctr.undo()
+            elif(event.ui_element == view.redoButton):
+                ctr.redo()
+            else:
+                print("Nothing clicked")
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                print("Escape")
+            elif event.key == pygame.K_a:
+                player.AI = True
+                player.RANDOM = False
+                action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
+                ctr.execute(action(player, thingNeeded))
+            else:
+                print(f'Key {event.key} pressed')
+
+        view.manager.process_events(event) 
     else:
         action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
         ctr.execute(action(player, thingNeeded))
+    
     if(withGraphics):
         view.updateGameScreen()
-        pygame.display.update()
+
     if(not onlyPassTurn):  
         saveMove(save, player) 
 
-def doActionDecisions(game: c.GameWithCommands, player: c.PlayerWithCommands, withGraphics = True):
-    action = decisionManager(player)
+# def doActionDecisions(game: c.GameWithCommands, player: c.PlayerWithCommands, withGraphics = True):
+#     action = decisionManager(player)
     
-    if(action == commands.BuyDevCardCommand):
-        devCardsBought[player.id-1] += 1
+#     if(action == commands.BuyDevCardCommand):
+#         devCardsBought[player.id-1] += 1
 
-    if(game.checkWon(player)):
-        return
-    if(action in commands.cardCommands()):
-        player.turnCardUsed = True
+#     if(game.checkWon(player)):
+#         return
+#     if(action in commands.cardCommands()):
+#         player.turnCardUsed = True
 
 def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True):
     global devCardsBought
@@ -92,7 +103,8 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
             decisionManager(playerTurn)
         else:
             playerTurn = game.players[game.actualTurn%game.nplayer]
-            doActionDecisions(game, playerTurn, withGraphics)
+            # doActionDecisions(game, playerTurn, withGraphics)
+            decisionManager(playerTurn)
             if(playerTurn.victoryPoints >= 10):
                 WINNERS[playerTurn.id-1] += 1
                 s = 'Winner: ' + str(playerTurn.id) + "\n"
@@ -100,9 +112,7 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
                 saveToJson(playerTurn)
                 print(s) 
                 won = True
-        if(withGraphics):    
-            GameView.GameView.updateGameScreen(view)
-    
+                
     if(withGraphics):
         pygame.quit()
 
@@ -122,12 +132,6 @@ def saveToJson(victoryPlayer):
         allGames = pd.concat([allGames, total], ignore_index=True)
         print("Length of total moves of allGames: ", len(allGames))
 
-# def checkLongestStreetOwner(previousLongestStreetOwner: c.PlayerWithCommands, player: c.PlayerWithCommands):
-#     actualLongestStreetOwner = player.game.longestStreetPlayer()
-#     if(previousLongestStreetOwner != actualLongestStreetOwner):
-#         player.game.longestStreetOwner = actualLongestStreetOwner
-#         actualLongestStreetOwner.victoryPoints += 2
-#         previousLongestStreetOwner.victoryPoints -= 2
 
 def printWinners():
     normValue = sum(WINNERS)
