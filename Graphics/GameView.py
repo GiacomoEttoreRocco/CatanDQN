@@ -219,10 +219,17 @@ class GameView:
         undoStack = self.controller.summaryUndoStack()
         redoStack = self.controller.summaryRedoStack()
         print(self.stack.get_single_selection())
-        self.stack.set_item_list(["Redo list"])
-        self.stack.add_items(redoStack)
-        self.stack.add_items(["Undo list"])
-        self.stack.add_items(reversed(undoStack))
+        # self.stack.set_item_list(["Redo list"])
+        # self.stack.add_items(redoStack)
+        # self.stack.add_items(["Undo list"])
+        # self.stack.add_items(reversed(undoStack))
+        moveStack = undoStack + redoStack
+        self.stack.set_item_list(["Move list"])
+        self.stack.add_items(reversed(moveStack))
+        highlightStep = len(moveStack)-len(undoStack)
+        #Needed to avoid index out of range, because item_list also includes the title
+        highlightedElement = self.stack.item_list[highlightStep]['button_element'] if len(moveStack) == 0 else self.stack.item_list[highlightStep+1]['button_element']
+        pygame.draw.rect(highlightedElement.image, pygame.Color('red'), [0, 0, self.moveListWidth-self.height//140, self.height//35], 2)
         self.manager.update(0)
         self.manager.draw_ui(self.screen)
 
