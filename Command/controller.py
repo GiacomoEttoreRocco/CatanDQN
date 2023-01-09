@@ -35,6 +35,6 @@ class ActionController:
     def summaryRedoStack(self):
         l = []
         for action in self.redoStack:
-            for x in repr(action).split("\n\t"):
+            for x in reversed(repr(action).split("\n\t")):
                 l.append(f'{action.player.id}:{x}')
         return l

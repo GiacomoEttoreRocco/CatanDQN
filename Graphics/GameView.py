@@ -13,7 +13,7 @@ import time
 class GameView:
     def __init__(self, game, controller):
         pygame.init()
-        self.width = 1400
+        self.width = 1200
         self.moveListWidth = self.width//5
         self.gameWidth = self.width - self.moveListWidth
         self.height = 700
@@ -52,7 +52,7 @@ class GameView:
                                              manager=self.manager)
         self.stack = pygame_gui.elements.UISelectionList(relative_rect=pygame.Rect((self.gameWidth,0),(self.moveListWidth,self.height)),
                                             item_list=[("player.id", "action")],
-                                            manager=self.manager )
+                                            manager=self.manager)
 
         self.font_resource = pygame.font.SysFont('tahoma', self.height//18)
         self.font_resourceSmaller = pygame.font.SysFont('tahoma', self.height//28)
@@ -124,7 +124,6 @@ class GameView:
         self.graphicTileList = [] # recently added
         if(bg):
             pygame.draw.rect(self.screen, pygame.Color('cadetblue1'),(0, 0, self.gameWidth, self.height))
-        #hexLayout = geomlib.Layout(geomlib.layout_pointy, geomlib.Point(80, 80), geomlib.Point(500, 400))
         hex_i = 0
         for boardtile in Board.Board().tiles:
             hexCoords = self.getHexCoords(hex_i)
@@ -218,18 +217,11 @@ class GameView:
 
         undoStack = self.controller.summaryUndoStack()
         redoStack = self.controller.summaryRedoStack()
-        print(self.stack.get_single_selection())
-        # self.stack.set_item_list(["Redo list"])
-        # self.stack.add_items(redoStack)
-        # self.stack.add_items(["Undo list"])
-        # self.stack.add_items(reversed(undoStack))
-        moveStack = undoStack + list(reversed(redoStack))
-        self.stack.set_item_list(["Move list"])
-        self.stack.add_items(reversed(moveStack))
-        highlightStep = len(moveStack)-len(undoStack)
-        #Needed to avoid index out of range, because item_list also includes the title
-        if len(moveStack) != 0 and len(undoStack) != 0:
-            pygame.draw.rect(self.stack.item_list[highlightStep+1]['button_element'].image, pygame.Color('red'), [0, 0, self.moveListWidth-self.height//140, self.height//35], 2)
+        self.stack.set_item_list(["MOVES LIST"])
+        self.stack.add_items(redoStack)
+        self.stack.add_items(reversed(undoStack))
+        if len(self.stack.item_list) > 1 and len(undoStack)>0 :
+            pygame.draw.rect(self.stack.item_list[len(redoStack)+1]['button_element'].image, pygame.Color('red'), [0, 0, self.moveListWidth-self.height//140, self.height//35], 2)
         self.manager.update(0)
         self.manager.draw_ui(self.screen)
 
@@ -296,8 +288,6 @@ class GameView:
     def drawRobber(self):
         robberImg = pygame.image.load(self.robberImgPath).convert_alpha()
         robberImg = pygame.transform.scale(robberImg, (self.height//15, self.height//15))
-        #if(self.tempRobberTile != Board.Board().robberTile):
-        #    print("drowing robber...")
         robTile = Board.Board().robberTile
         for graphicTile in self.graphicTileList:
             if(graphicTile.index == robTile):
