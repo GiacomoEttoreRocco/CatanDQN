@@ -34,7 +34,6 @@ def redoActionWithGraphics():
     ctr.redo()
     view.updateGameScreen()
 
-
 def decisionManager(player):
     assert not(not speed and not withGraphics)
     if(not speed and withGraphics):
