@@ -517,6 +517,7 @@ class CheckLongestStreetCommand:
             self.game.longestStreetLength = self.actualMaxLength
             self.actualLongestStreetOwner.victoryPoints += 2
             self.previousLongestStreetOwner.victoryPoints -= 2
+        self.game.longestStreetLength = self.actualMaxLength
 
     def undo(self):
         if(self.previousLongestStreetOwner != self.actualLongestStreetOwner):
@@ -524,12 +525,16 @@ class CheckLongestStreetCommand:
             self.game.longestStreetLength = self.previousMaxLength
             self.actualLongestStreetOwner.victoryPoints -= 2
             self.previousLongestStreetOwner.victoryPoints += 2
+        self.game.longestStreetLength = self.previousMaxLength
+        
     def redo(self):
         if(self.previousLongestStreetOwner != self.actualLongestStreetOwner):
             self.game.longestStreetOwner = self.actualLongestStreetOwner
             self.game.longestStreetLength = self.previousMaxLength
             self.actualLongestStreetOwner.victoryPoints += 2
             self.previousLongestStreetOwner.victoryPoints -= 2
+        self.game.longestStreetLength = self.actualMaxLength
+        
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}'
 
