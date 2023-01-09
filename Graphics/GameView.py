@@ -36,7 +36,7 @@ class GameView:
         self.graphicPlaceList = []
         self.screen = pygame.display.set_mode(windowSize)
 
-        self.manager = pygame_gui.UIManager(windowSize)
+        self.manager = pygame_gui.UIManager(windowSize, 'Graphics/style/vertical_bar.json')
 
         self.aiButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.gameWidth/2 - self.height//10 * 2, self.height - self.height//20), (self.height//10, self.height//20)),
                                              text='Move AI',
@@ -50,9 +50,12 @@ class GameView:
         self.redoButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.gameWidth/2 + self.height//10, self.height - self.height//20), (self.height//10, self.height//20)),
                                              text='REDO',
                                              manager=self.manager)
-        self.stack = pygame_gui.elements.UISelectionList(relative_rect=pygame.Rect((self.gameWidth,0),(self.moveListWidth,self.height)),
-                                            item_list=[("player.id", "action")],
-                                            manager=self.manager)
+        # self.stack = pygame_gui.elements.UISelectionList(relative_rect=pygame.Rect((self.gameWidth,0),(self.moveListWidth,self.height)),
+        #                                     item_list=[("player.id", "action")],
+        #                                     manager=self.manager)
+        self.stack = pygame_gui.elements.UITextBox(relative_rect=pygame.Rect((self.gameWidth,0),(self.moveListWidth,self.height)),
+                                             html_text='REDO',
+                                             manager=self.manager)
 
         self.font_resource = pygame.font.SysFont('tahoma', self.height//18)
         self.font_resourceSmaller = pygame.font.SysFont('tahoma', self.height//28)
@@ -217,11 +220,18 @@ class GameView:
 
         undoStack = self.controller.summaryUndoStack()
         redoStack = self.controller.summaryRedoStack()
-        self.stack.set_item_list(["MOVES LIST"])
-        self.stack.add_items(redoStack)
-        self.stack.add_items(reversed(undoStack))
-        if len(self.stack.item_list) > 1 and len(undoStack)>0 :
-            pygame.draw.rect(self.stack.item_list[len(redoStack)+1]['button_element'].image, pygame.Color('red'), [0, 0, self.moveListWidth-self.height//140, self.height//35], 2)
+        s = "MOVES LIST\n"
+        for item in redoStack:
+            s+=item+"\n"
+        for item in reversed(undoStack):
+            s+=item+"\n"
+        
+        self.stack.set_text(s)
+        # self.stack.set_item_list(["MOVES LIST"])
+        # self.stack.add_items(redoStack)
+        # self.stack.add_items(reversed(undoStack))
+        # if len(self.stack.item_list) > 1 and len(undoStack)>0 :
+        #     pygame.draw.rect(self.stack.item_list[len(redoStack)+1]['button_element'].image, pygame.Color('red'), [0, 0, self.moveListWidth-self.height//140, self.height//35], 2)
         self.manager.update(0)
         self.manager.draw_ui(self.screen)
 
