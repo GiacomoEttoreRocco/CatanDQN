@@ -83,8 +83,6 @@ def decisionManager(player):
         if(not onlyPassTurn):  
             saveMove(save, player) 
 
-    
-
 # def doActionDecisions(game: c.GameWithCommands, player: c.PlayerWithCommands, withGraphics = True):
 #     action = decisionManager(player)
     
