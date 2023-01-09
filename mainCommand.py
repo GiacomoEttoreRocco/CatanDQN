@@ -54,27 +54,11 @@ def decisionManager(player):
             elif(event.ui_element == view.redoButton):
                 redoActionWithGraphics()
             elif(event.ui_element == view.stack.scroll_bar.bottom_button):
-                print("Scroll")
-                print(view.stack.scroll_bar.scroll_position)
-                print(event)
-                if view.stack.scroll_bar:
-                    scroll_bar = view.stack.scroll_bar
-                    scroll_bar.scroll_wheel_down = False
-                    scroll_bar.scroll_position += (250 * 1)
-                    scroll_bar.scroll_position = min(scroll_bar.scroll_position,
-                                                scroll_bar.bottom_limit - scroll_bar.sliding_button.rect.height)
-                    x_pos = scroll_bar.rect.x + scroll_bar.shadow_width + scroll_bar.border_width
-                    y_pos = scroll_bar.scroll_position + scroll_bar.rect.y + scroll_bar.shadow_width + \
-                            scroll_bar.border_width + scroll_bar.button_height
-                    scroll_bar.sliding_button.set_position(pygame.math.Vector2(x_pos, y_pos))
-
-                    scroll_bar.start_percentage = scroll_bar.scroll_position / scroll_bar.scrollable_height
-                    if not scroll_bar.has_moved_recently:
-                        scroll_bar.has_moved_recently = True
+                view.stack.scroll_bar.set_scroll_from_start_percentage(view.stack.scroll_bar.start_percentage+0.1)
+                view.updateGameScreen(True)
             elif(event.ui_element == view.stack.scroll_bar.top_button):
-                print("Scroll")
-                print(event)
-                # view.stack.scroll_bar.change_layer(0)
+                view.stack.scroll_bar.set_scroll_from_start_percentage(view.stack.scroll_bar.start_percentage-0.1)
+                view.updateGameScreen(True)
                 
             else:
                 print("Nothing clicked")

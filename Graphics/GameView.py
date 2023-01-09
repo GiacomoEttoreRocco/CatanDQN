@@ -188,7 +188,7 @@ class GameView:
         self.screen.fill(self.bgScoreColor, playersScores)
         self.screen.blit(scores, (self.gameWidth/2-self.height//8.3, self.height//200))
 
-    def updateGameScreen(self):
+    def updateGameScreen(self, flag=False):
         self.setupAndDisplayBoard() # recently added
         self.setupPlaces()
         self.drawRobber()
@@ -225,8 +225,8 @@ class GameView:
             s+=item+"\n"
         for item in reversed(undoStack):
             s+=item+"\n"
-        
-        self.stack.set_text(s)
+        if not flag:
+            self.stack.set_text(s)
         # self.stack.set_item_list(["MOVES LIST"])
         # self.stack.add_items(redoStack)
         # self.stack.add_items(reversed(undoStack))
