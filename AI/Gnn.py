@@ -20,7 +20,7 @@ class Gnn():
             cls.epochs = epochs
             cls.learningRate = learningRate
             cls.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
-            cls.model = Net(12, 8, 3, 7).to(cls.device)
+            cls.model = Net(9, 8, 3, 7).to(cls.device)
             if os.path.exists('./AI/model_weights.pth'):
                 cls.model.load_state_dict(torch.load('./AI/model_weights.pth', map_location=cls.device))
                 print('Weights loaded..')
@@ -45,7 +45,6 @@ class Gnn():
         cls.saveWeights()       
 
     def evaluatePositionForPlayer(cls, player):
-        # print(player.id)
         globalFeats = player.globalFeaturesToDict()
         del globalFeats['player_id']
         graph = cls.fromDictsToGraph(Board.Board().placesToDict(player), Board.Board().edgesToDict(player)).to(cls.device)
@@ -67,7 +66,7 @@ class Gnn():
     def fromDictsToGraph(cls, places, edges):
         u = torch.tensor(edges['place_1'])
         v = torch.tensor(edges['place_2'])
-        w = torch.tensor(edges['edge_owner'])
+        w = torch.tensor(edges['is_owned_edge'])
         g = dgl.graph((torch.cat([u, v], dim=0) , torch.cat([v, u], dim=0)))
         g.edata['weight'] = torch.cat([w, w], dim=0).float()
         g.ndata['feat'] = torch.tensor(np.transpose(list(places.values()))).float()

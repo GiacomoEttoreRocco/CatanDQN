@@ -100,7 +100,7 @@ def decisionManager(player):
 #     if(action in commands.cardCommands()):
 #         player.turnCardUsed = True
 
-def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True):
+def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True, AIid = None):
     global devCardsBought
     devCardsBought = [0.0, 0.0, 0.0, 0.0]
     if(withGraphics):
@@ -109,14 +109,17 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
         GameView.GameView.updateGameScreen(view)
     game.actualTurn = 0 
     won = False
+
     game.players[0].AI = True
-    # game.players[1].AI = True
-    game.players[2].AI = True
-    # game.players[3].AI = True
-    # game.players[0].RANDOM = True
     game.players[1].RANDOM = True
-    # game.players[2].RANDOM = True
+    game.players[2].RANDOM = True
     game.players[3].RANDOM = True
+    # game.players[0].AI = True
+    # game.players[1].AI = True
+    # game.players[2].AI = True
+    # game.players[3].AI = True
+    # game.players[AIid].RANDOM = False
+    # game.players[AIid].AI = True
     
     reverseTurnOffSet = {0 : 0, 1 : 1, 2 : 2, 3 : 3, 4 : 3, 5 : 2, 6 : 1, 7 : 0}
 
@@ -168,7 +171,7 @@ def printWinners():
     print(s)
     print(WINNERS)
 
-epochs = 10
+epochs = 1
 batchs = 10
 
 for epoch in range(epochs):
@@ -177,13 +180,16 @@ for epoch in range(epochs):
     for batch in range(batchs): 
         print('game: ', batch+1, "/", batchs) 
         total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
-        #g = c.Game.Game()
         g = c.GameWithCommands.Game()
+
         if(withGraphics):
             view = GameView.GameView(g, ctr)
-            playGameWithGraphic(g, view, withGraphics)
+            # print("player with brain-AI: ", batch%4)
+            playGameWithGraphic(g, view, withGraphics, batch%4)
         else:
-            playGameWithGraphic(g, None, withGraphics)
+            # print("player with brain-AI: ", batch%4)
+            playGameWithGraphic(g, None, withGraphics, batch%4)
+
         c.Board.Board().reset()
         c.Bank.Bank().reset()
 
