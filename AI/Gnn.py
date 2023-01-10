@@ -8,12 +8,13 @@ import numpy as np
 import pandas as pd
 import os as os
 import Classes.Board as Board
+from statistics import mean
 
 
 
 class Gnn():
     instance = None
-    def __new__(cls, epochs=10, learningRate=0.0001): # precedente 0.03
+    def __new__(cls, epochs=250, learningRate=0.0001): # precedente 0.03
         if cls.instance is None:
             cls.instance = super(Gnn, cls).__new__(cls)
             cls.moves = None
@@ -26,23 +27,60 @@ class Gnn():
                 print('Weights loaded..')
         return cls.instance
 
-    def trainModel(cls):
-        cls.moves = pd.read_json('./json/game.json')
-        loss = nn.MSELoss()
+    def trainModel(cls, validate = False):
+        trainingDataFrame = pd.read_json('./json/training_game.json')
+        testingDataFrame = pd.read_json('./json/testing_game.json')
+        trainingSetLength = len(trainingDataFrame)
+        testingSetLength = len(testingDataFrame)
+        cls.moves = pd.concat([trainingDataFrame, testingDataFrame], ignore_index=True)
+
+        lossFunction = nn.MSELoss()
         optimizer = torch.optim.Adam(cls.model.parameters(), lr=cls.learningRate)
-        permutationIndexMoves = np.random.permutation([x for x in range(len(cls.moves))])
+        
+        trainingSet = np.random.permutation([x for x in range(trainingSetLength)])
+        testingSet = np.random.permutation([x for x in range(trainingSetLength, trainingSetLength+testingSetLength)])
+
+        previousTestingLossMean = 10
+        delta = 0.001
+        counter = 0
         for epoch in range(cls.epochs):
+            trainingLoss = []
             print('epoch: ', epoch+1, "/", cls.epochs)
-            for i, idx in enumerate(permutationIndexMoves):
+            for i, idx in enumerate(trainingSet):
                 g = cls.extractInputFeaturesMove(idx).to(cls.device)
                 glob = torch.tensor(list(cls.moves.iloc[idx].globals.values())[:-1]).to(cls.device).float()
                 labels = torch.tensor([list(cls.moves.iloc[idx].globals.values())[-1]], device=cls.device).float()
                 optimizer.zero_grad()
                 outputs = cls.model(g, glob)
-                outputs = loss(outputs, labels)
-                outputs.backward()
+                loss = lossFunction(outputs, labels)
+                loss.backward()
                 optimizer.step()
-        cls.saveWeights()       
+                trainingLoss.append(loss.item())
+            if validate:
+                testingLoss = []
+                with torch.no_grad():
+                    for i, idx in enumerate(testingSet):
+                        g = cls.extractInputFeaturesMove(idx).to(cls.device)
+                        glob = torch.tensor(list(cls.moves.iloc[idx].globals.values())[:-1]).to(cls.device).float()
+                        labels = torch.tensor([list(cls.moves.iloc[idx].globals.values())[-1]], device=cls.device).float()
+                        outputs = cls.model(g, glob)
+                        loss = lossFunction(outputs, labels)
+                        testingLoss.append(loss.item())
+                
+                testingLossMean = mean(testingLoss)
+                print(f'Training loss: {mean(trainingLoss)} Testing loss: {mean(testingLoss)}')
+                if testingLossMean < previousTestingLossMean + delta:
+                    previousTestingLossMean = testingLossMean
+                    cls.saveWeights()
+                    counter = 0
+                elif counter<2:
+                    counter+=1
+                else:
+                    return
+            else:
+                cls.saveWeights()
+
+
 
     def evaluatePositionForPlayer(cls, player):
         globalFeats = player.globalFeaturesToDict()

@@ -11,7 +11,7 @@ import AI.Gnn as Gnn
 import pygame_gui
 
 speed = True
-withGraphics = True
+withGraphics = False
 withDelay = False
 realPlayer = False
 save = True
@@ -110,7 +110,7 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
     game.actualTurn = 0 
     won = False
 
-    game.players[0].AI = True
+    game.players[0].RANDOM = True
     game.players[1].RANDOM = True
     game.players[2].RANDOM = True
     game.players[3].RANDOM = True
@@ -171,29 +171,48 @@ def printWinners():
     print(s)
     print(WINNERS)
 
-epochs = 1
-batchs = 10
+iterations = 1
+numberTrainGame = 1000
+numberTestGame = 200
 
-for epoch in range(epochs):
-    print('Iteration: ', epoch+1, "/", epochs)
+for epoch in range(iterations):
+    print('Iteration: ', epoch+1, "/", iterations)
     allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})   
-    for batch in range(batchs): 
-        print('game: ', batch+1, "/", batchs) 
+    for batch in range(numberTrainGame): 
+        print('game: ', batch+1, "/", numberTrainGame) 
         total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
         g = c.GameWithCommands.Game()
 
         if(withGraphics):
             view = GameView.GameView(g, ctr)
-            # print("player with brain-AI: ", batch%4)
-            playGameWithGraphic(g, view, withGraphics, batch%4)
+            playGameWithGraphic(g, view, withGraphics)
         else:
-            # print("player with brain-AI: ", batch%4)
-            playGameWithGraphic(g, None, withGraphics, batch%4)
+            playGameWithGraphic(g, None, withGraphics)
 
         c.Board.Board().reset()
         c.Bank.Bank().reset()
 
     if(train):
-        allGames.to_json("./json/game.json")
-        Gnn.Gnn().trainModel()
         printWinners()
+        allGames.to_json("./json/training_game.json")
+
+    allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})   
+    for batch in range(numberTestGame): 
+        print('game: ', batch+1, "/", numberTestGame) 
+        total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
+        g = c.GameWithCommands.Game()
+
+        if(withGraphics):
+            view = GameView.GameView(g, ctr)
+            playGameWithGraphic(g, view, withGraphics)
+        else:
+            playGameWithGraphic(g, None, withGraphics)
+
+        c.Board.Board().reset()
+        c.Bank.Bank().reset()
+
+    if(train):
+        printWinners()
+        allGames.to_json("./json/testing_game.json")
+        Gnn.Gnn().trainModel(validate=True)
+        
