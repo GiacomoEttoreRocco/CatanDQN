@@ -10,12 +10,12 @@ import time
 import AI.Gnn as Gnn
 import pygame_gui
 
-speed = False
-withGraphics = True
+speed = True
+withGraphics = False
 withDelay = False
 realPlayer = False
-save = False
-train = False
+save = True
+train = True
 ctr = controller.ActionController()
 
 WINNERS = [0.0, 0.0, 0.0, 0.0]
@@ -168,7 +168,7 @@ def printWinners():
     print(WINNERS)
 
 epochs = 1
-batchs = 100
+batchs = 10
 
 for epoch in range(epochs):
     print('Iteration: ', epoch+1, "/", epochs)
