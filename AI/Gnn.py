@@ -104,5 +104,5 @@ class Net(nn.Module):
 
     output = F.relu(self.OutputLayer1(torch.cat([embeds, globalFeats])))
     output = self.OutputLayer2(output)
-    return F.sigmoid(output)
+    return torch.sigmoid(output)
         

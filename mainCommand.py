@@ -11,7 +11,7 @@ import AI.Gnn as Gnn
 import pygame_gui
 
 speed = True
-withGraphics = False
+withGraphics = True
 withDelay = False
 realPlayer = False
 save = True
@@ -109,13 +109,13 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
         GameView.GameView.updateGameScreen(view)
     game.actualTurn = 0 
     won = False
-    # game.players[0].AI = True
+    game.players[0].AI = True
     # game.players[1].AI = True
-    # game.players[2].AI = True
+    game.players[2].AI = True
     # game.players[3].AI = True
-    game.players[0].RANDOM = True
+    # game.players[0].RANDOM = True
     game.players[1].RANDOM = True
-    game.players[2].RANDOM = True
+    # game.players[2].RANDOM = True
     game.players[3].RANDOM = True
     
     reverseTurnOffSet = {0 : 0, 1 : 1, 2 : 2, 3 : 3, 4 : 3, 5 : 2, 6 : 1, 7 : 0}
@@ -169,7 +169,7 @@ def printWinners():
     print(WINNERS)
 
 epochs = 10
-batchs = 50
+batchs = 10
 
 for epoch in range(epochs):
     print('Iteration: ', epoch+1, "/", epochs)
