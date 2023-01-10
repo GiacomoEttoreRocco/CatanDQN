@@ -28,17 +28,16 @@ class Board: # deve diventare un singleton
             cls.tiles = cls.graph.tiles
             cls.places = cls.graph.places
             cls.edges = cls.graph.edges
-
+            
+            np.random.seed(1996)
             #   PERMUTATIONS: 
             cls.numbers = np.random.permutation(cls.graph.numbers)
             cls.resources = np.random.permutation(cls.graph.resources)
             cls.harbors = np.random.permutation(cls.graph.harbors)
             cls.EdgesOnTheSea = np.random.permutation(cls.graph.EdgesOnTheSea)
-
             if(doPlacement):
                 # print("\n Tiles placement...\n")
                 cls.tilesPlacement(cls)
-
         return cls.instance
 
     def reset(cls):

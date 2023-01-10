@@ -124,7 +124,6 @@ class CatanGraph:
         self.edges = dict.copy(ListOfEdges)
         self.listOfAdj = ListOfAdj
         self.places = [Place(x) for x in range(0, 54)] # vanno inseriti per fare in modo che le tiles li condividano.
-        #self.tilesOnTheSea = [0,1,2,6,11,15,18,17,16,12,7,3]
         self.numbers = [2,3,3,4,4,5,5,6,6,8,8,9,9,10,10,11,11,12] # 18 numeri + 7 (deserto)
         self.resources = ["wood","wood","wood","wood","crop","crop","crop","crop","sheep","sheep","sheep","sheep","iron","iron","iron","clay","clay","clay","desert"]
         self.harbors = ["2:1 wood", "2:1 crop", "2:1 sheep", "2:1 iron", "2:1 clay", "3:1", "3:1", "3:1", "3:1"] # 9 porti, REGOLA: non possono esserci due porti nella stessa tile.
