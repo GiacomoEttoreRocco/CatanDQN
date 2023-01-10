@@ -457,9 +457,8 @@ class Player:
         else:
             ctr.execute(action(self, thingNeeded)) 
             toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
-            ctr.undo() 
-
-        return toRet + random.uniform(0.00001,0.00002)
+            ctr.undo()
+        return toRet # + random.uniform(0.00001,0.00002)
 
     def globalFeaturesToDict(self):
         return {'player_id': self.id,'victory_points': self.victoryPoints,\

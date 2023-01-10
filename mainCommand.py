@@ -10,12 +10,12 @@ import time
 import AI.Gnn as Gnn
 import pygame_gui
 
-speed = False
-withGraphics = True
+speed = True
+withGraphics = False
 withDelay = False
 realPlayer = False
-save = False
-train = False
+save = True
+train = True
 ctr = controller.ActionController()
 
 WINNERS = [0.0, 0.0, 0.0, 0.0]
@@ -109,14 +109,14 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
         GameView.GameView.updateGameScreen(view)
     game.actualTurn = 0 
     won = False
-    game.players[0].AI = True
-    game.players[1].AI = True
-    game.players[2].AI = True
-    game.players[3].AI = True
-    # game.players[0].RANDOM = True
-    # game.players[1].RANDOM = True
-    # game.players[2].RANDOM = True
-    # game.players[3].RANDOM = True
+    # game.players[0].AI = True
+    # game.players[1].AI = True
+    # game.players[2].AI = True
+    # game.players[3].AI = True
+    game.players[0].RANDOM = True
+    game.players[1].RANDOM = True
+    game.players[2].RANDOM = True
+    game.players[3].RANDOM = True
     
     reverseTurnOffSet = {0 : 0, 1 : 1, 2 : 2, 3 : 3, 4 : 3, 5 : 2, 6 : 1, 7 : 0}
 
@@ -149,7 +149,8 @@ def saveMove(save, player):
 def saveToJson(victoryPlayer):
     if(save):
         for i in range(len(total)):
-            total.globals[i]['winner'] = victoryPlayer.id
+            total.globals[i]['winner'] = 1 if total.globals[i]['player_id'] == victoryPlayer.id else 0
+            del total.globals[i]['player_id']
         print("Length of total moves of this game: ", len(total))
         global allGames
         allGames = pd.concat([allGames, total], ignore_index=True)
@@ -167,8 +168,8 @@ def printWinners():
     print(s)
     print(WINNERS)
 
-epochs = 1
-batchs = 100
+epochs = 10
+batchs = 50
 
 for epoch in range(epochs):
     print('Iteration: ', epoch+1, "/", epochs)

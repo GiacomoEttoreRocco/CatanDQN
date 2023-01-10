@@ -20,7 +20,7 @@ class Gnn():
             cls.epochs = epochs
             cls.learningRate = learningRate
             cls.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
-            cls.model = Net(12, 8, 3, 8).to(cls.device)
+            cls.model = Net(12, 8, 3, 7).to(cls.device)
             if os.path.exists('./AI/model_weights.pth'):
                 cls.model.load_state_dict(torch.load('./AI/model_weights.pth', map_location=cls.device))
                 print('Weights loaded..')
@@ -28,7 +28,7 @@ class Gnn():
 
     def trainModel(cls):
         cls.moves = pd.read_json('./json/game.json')
-        loss = nn.CrossEntropyLoss()
+        loss = nn.MSELoss()
         optimizer = torch.optim.Adam(cls.model.parameters(), lr=cls.learningRate)
         permutationIndexMoves = np.random.permutation([x for x in range(len(cls.moves))])
         for epoch in range(cls.epochs):
@@ -36,7 +36,7 @@ class Gnn():
             for i, idx in enumerate(permutationIndexMoves):
                 g = cls.extractInputFeaturesMove(idx).to(cls.device)
                 glob = torch.tensor(list(cls.moves.iloc[idx].globals.values())[:-1]).to(cls.device).float()
-                labels = torch.tensor(list(cls.moves.iloc[idx].globals.values())[-1]).to(cls.device)-1
+                labels = torch.tensor([list(cls.moves.iloc[idx].globals.values())[-1]], device=cls.device).float()
                 optimizer.zero_grad()
                 outputs = cls.model(g, glob)
                 outputs = loss(outputs, labels)
@@ -45,14 +45,16 @@ class Gnn():
         cls.saveWeights()       
 
     def evaluatePositionForPlayer(cls, player):
+        # print(player.id)
         globalFeats = player.globalFeaturesToDict()
+        del globalFeats['player_id']
         graph = cls.fromDictsToGraph(Board.Board().placesToDict(player), Board.Board().edgesToDict(player)).to(cls.device)
         glob = torch.tensor(list(globalFeats.values())[:-1]).float().to(cls.device)
-        return cls.model(graph, glob)[player.id-1]
+        return cls.model(graph, glob).item()
 
     def evaluatePosition(cls, player):
-        #print(player.id)
         globalFeats = player.globalFeaturesToDict()
+        del globalFeats['player_id']
         graph = cls.fromDictsToGraph(Board.Board().placesToDict(player), Board.Board().edgesToDict(player)).to(cls.device)
         glob = torch.tensor(list(globalFeats.values())[:-1]).float().to(cls.device)
         return cls.model(graph, glob)
@@ -88,7 +90,7 @@ class Net(nn.Module):
 
 
     self.OutputLayer1 = nn.Linear(54*gnnOutputDim+globInputDim, 85)
-    self.OutputLayer2 = nn.Linear(85, 4)
+    self.OutputLayer2 = nn.Linear(85, 1)
 
   def forward(self, graph, globalFeats):
     graph.ndata['feat'] = F.relu(self.GNN1(graph, graph.ndata['feat']))
@@ -102,5 +104,5 @@ class Net(nn.Module):
 
     output = F.relu(self.OutputLayer1(torch.cat([embeds, globalFeats])))
     output = self.OutputLayer2(output)
-    return nn.Softmax(dim=0)(output)
+    return F.sigmoid(output)
         
