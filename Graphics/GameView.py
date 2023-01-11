@@ -182,8 +182,19 @@ class GameView:
 
     def updateScoreGNN(self, player):
         scores_string = "Scores: "
-        for evaluatePlayer in player.game.players:
-            scores_string += '%.2f '% Gnn.Gnn().evaluatePositionForPlayer(evaluatePlayer)
+        normalizedScores = [0,0,0,0]
+        sum = 0
+        for i, evaluatePlayer in enumerate(player.game.players):
+            normalizedScores[i] = Gnn.Gnn().evaluatePositionForPlayer(evaluatePlayer)
+            sum += normalizedScores[i]
+
+        # scores_string += '%.2f '% Gnn.Gnn().evaluatePositionForPlayer(evaluatePlayer)
+        for i, evaluatePlayer in enumerate(player.game.players):
+            if(sum == 0):
+                scores_string += '%.2f '% 0 #normalizedScores[i]/sum
+            else:
+                scores_string += '%.2f '% (normalizedScores[i]/sum)
+
         scores = self.font_resourceSmallest.render(scores_string, False, self.playerColorDict[player.id])
         playersScores = pygame.Rect(self.gameWidth/2-self.height//8, 0, self.height//4, self.height//20)
         self.screen.fill(self.bgScoreColor, playersScores)

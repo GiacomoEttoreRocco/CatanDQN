@@ -40,8 +40,19 @@ class Gnn():
         trainingSet = np.random.permutation([x for x in range(trainingSetLength)])
         testingSet = np.random.permutation([x for x in range(trainingSetLength, trainingSetLength+testingSetLength)])
 
-        previousTestingLossMean = 10
-        delta = 0.001
+        previousTestingLoss = []
+        with torch.no_grad():
+            for i, idx in enumerate(testingSet):
+                g = cls.extractInputFeaturesMove(idx).to(cls.device)
+                glob = torch.tensor(list(cls.moves.iloc[idx].globals.values())[:-1]).to(cls.device).float()
+                labels = torch.tensor([list(cls.moves.iloc[idx].globals.values())[-1]], device=cls.device).float()
+                outputs = cls.model(g, glob)
+                loss = lossFunction(outputs, labels)
+                previousTestingLoss.append(loss.item())
+        previousTestingLossMean = mean(previousTestingLoss)
+        print(f'Training loss: - Testing loss: {previousTestingLossMean}')
+
+
         counter = 0
         for epoch in range(cls.epochs):
             trainingLoss = []
@@ -69,7 +80,7 @@ class Gnn():
                 
                 testingLossMean = mean(testingLoss)
                 print(f'Training loss: {mean(trainingLoss)} Testing loss: {mean(testingLoss)}')
-                if testingLossMean < previousTestingLossMean + delta:
+                if testingLossMean <= previousTestingLossMean:
                     previousTestingLossMean = testingLossMean
                     cls.saveWeights()
                     counter = 0

@@ -5,8 +5,8 @@ import csv
 from csv import QUOTE_NONE
 import pandas as pd
 
-dictCsvResources = {None: -20, "desert": -10, "crop": 0, "iron": 10, "wood": 20, "clay": 30, "sheep": 40}
-dictCsvHarbor = {"" : 0, "3:1" : 10, "2:1 crop" : 20, "2:1 iron" : 30, "2:1 wood" : 40, "2:1 clay" : 50, "2:1 sheep" : 60}  # incrementato il peso!
+dictCsvResources = {None: 0, "desert": 0, "crop": 1, "iron": 2, "wood": 3, "clay": 4, "sheep": 5}
+dictCsvHarbor = {"" : 0, "3:1" : 1, "2:1 crop" : 2, "2:1 iron" : 3, "2:1 wood" : 4, "2:1 clay" : 5, "2:1 sheep" : 6}  # incrementato il peso!
 
 class Board: # deve diventare un singleton
     instance = None
@@ -94,12 +94,12 @@ class Board: # deve diventare un singleton
             if place.id in CatanGraph.tilePlaces[tile.identificator]:
                 numbers.append(tile.number)
         if(len(numbers) < 1):
-            return [-1, -1, -1]
+            return [0, 0, 0]
         elif(len(numbers) < 2):
-            numbers.append(-1)
-            numbers.append(-1)
+            numbers.append(0)
+            numbers.append(0)
         elif(len(numbers) < 3):
-            numbers.append(-1)
+            numbers.append(0)
         return numbers
 
     def robberOfPlace(cls, place):
@@ -115,40 +115,30 @@ class Board: # deve diventare un singleton
 ###########################################################################################################################################################################################################################
 
     def placesToDict(cls, playerInTurn) :
-        # data={'id':[], 'place_owner':[], 'is_owned_place': [], 'type':[], 'resource_1':[],'dice_1':[],'resource_2':[],'dice_2':[],'resource_3':[],'dice_3':[], 'harbor':[], 'robber_tile':[]}
-        # data={'place_owner':[], 'is_owned_place': [], 'type':[], 'resource_1':[],'dice_1':[],'resource_2':[],'dice_2':[],'resource_3':[],'dice_3':[], 'harbor':[]} #, 'robber_tile':[]}
         data={'is_owned_place': [], 'type':[], 'resource_1':[],'dice_1':[],'resource_2':[],'dice_2':[],'resource_3':[],'dice_3':[], 'harbor':[]} #, 'robber_tile':[]}
     
         for p in cls.places:
 
             resorceBlockedId = cls.robberOfPlace(p)    
 
-            # if p.owner == playerInTurn.id:
-            #     data['place_owner'].append(1)
-            # elif p.owner == 0:
-            #     data['place_owner'].append(0)
-            # else:
-            #     data['place_owner'].append(-1)
-            # data['place_owner'].append(p.owner)
-
             if p.owner == playerInTurn.id:
                 data['is_owned_place'].append(1)
             elif p.owner == 0:
-                data['is_owned_place'].append(0)
-            else:
                 data['is_owned_place'].append(-1)
+            else:
+                data['is_owned_place'].append(0)
 
             if(p.isCity):
-                data['type'].append(100) # incrementato il peso!
+                data['type'].append(2) # incrementato il peso!
             elif(p.isColony):
-                data['type'].append(50) # incrementato il peso!
+                data['type'].append(1) # incrementato il peso!
             else:
                 data['type'].append(0)
             
             dices = cls.dicesOfPlace(p)
             if(len(p.touchedResourses) < 1):
                 data['resource_1'].append(dictCsvResources[None])
-                data['dice_1'].append(-10) # incrementato il peso!
+                data['dice_1'].append(0) # incrementato il peso!
             else:
                 if(resorceBlockedId != 0):
                     data['resource_1'].append(dictCsvResources[p.touchedResourses[0]])
@@ -158,7 +148,7 @@ class Board: # deve diventare un singleton
 
             if(len(p.touchedResourses) < 2):
                 data['resource_2'].append(dictCsvResources[None])
-                data['dice_2'].append(-10) # incrementato il peso!
+                data['dice_2'].append(0) # incrementato il peso!
             else:
                 if(resorceBlockedId != 1):
                     data['resource_2'].append(dictCsvResources[p.touchedResourses[1]])
@@ -168,7 +158,7 @@ class Board: # deve diventare un singleton
 
             if(len(p.touchedResourses) < 3):
                 data['resource_3'].append(dictCsvResources[None])
-                data['dice_3'].append(-10)  # incrementato il peso!
+                data['dice_3'].append(0)  # incrementato il peso!
             else:
                 if(resorceBlockedId != 2):
                     data['resource_3'].append(dictCsvResources[p.touchedResourses[2]])
@@ -178,7 +168,6 @@ class Board: # deve diventare un singleton
                 data['dice_3'].append(dices[2])
             data['harbor'].append(dictCsvHarbor[p.harbor])
             
-            # data['robber_tile'].append(cls.robberOfPlace(p))    
         return data
 
     def edgesToDict(cls, playerInTurn):
@@ -189,9 +178,9 @@ class Board: # deve diventare un singleton
             if cls.edges[edge] == playerInTurn.id:
                 data['is_owned_edge'].append(1)
             elif cls.edges[edge] == 0:
-                data['is_owned_edge'].append(0)
-            else:
                 data['is_owned_edge'].append(-1)
+            else:
+                data['is_owned_edge'].append(0)
         return data
             
 # Nodes: 

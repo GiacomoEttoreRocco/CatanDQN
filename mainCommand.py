@@ -11,11 +11,13 @@ import AI.Gnn as Gnn
 import pygame_gui
 
 speed = True
-withGraphics = False
+withGraphics = True
 withDelay = False
 realPlayer = False
-save = True
-train = True
+# save = True
+# train = True
+save = False
+train = False
 ctr = controller.ActionController()
 
 WINNERS = [0.0, 0.0, 0.0, 0.0]
@@ -110,14 +112,14 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
     game.actualTurn = 0 
     won = False
 
-    game.players[0].RANDOM = True
-    game.players[1].RANDOM = True
-    game.players[2].RANDOM = True
-    game.players[3].RANDOM = True
-    # game.players[0].AI = True
-    # game.players[1].AI = True
-    # game.players[2].AI = True
-    # game.players[3].AI = True
+    # game.players[0].RANDOM = True
+    # game.players[1].RANDOM = True
+    # game.players[2].RANDOM = True
+    # game.players[3].RANDOM = True
+    game.players[0].AI = True
+    game.players[1].AI = True
+    game.players[2].AI = True
+    game.players[3].AI = True
     # game.players[AIid].RANDOM = False
     # game.players[AIid].AI = True
     
@@ -171,9 +173,9 @@ def printWinners():
     print(s)
     print(WINNERS)
 
-iterations = 1
-numberTrainGame = 1000
-numberTestGame = 200
+iterations = 5
+numberTrainGame = 2
+numberTestGame = 4
 
 for epoch in range(iterations):
     print('Iteration: ', epoch+1, "/", iterations)
