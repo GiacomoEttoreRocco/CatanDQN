@@ -11,13 +11,13 @@ import AI.Gnn as Gnn
 import pygame_gui
 
 speed = True
-withGraphics = True
+withGraphics = False
 withDelay = False
 realPlayer = False
-# save = True
-# train = True
-save = False
-train = False
+save = True
+train = True
+# save = False
+# train = False
 ctr = controller.ActionController()
 
 WINNERS = [0.0, 0.0, 0.0, 0.0]
@@ -112,14 +112,14 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
     game.actualTurn = 0 
     won = False
 
-    # game.players[0].RANDOM = True
-    # game.players[1].RANDOM = True
-    # game.players[2].RANDOM = True
-    # game.players[3].RANDOM = True
-    game.players[0].AI = True
-    game.players[1].AI = True
-    game.players[2].AI = True
-    game.players[3].AI = True
+    game.players[0].RANDOM = True
+    game.players[1].RANDOM = True
+    game.players[2].RANDOM = True
+    game.players[3].RANDOM = True
+    # game.players[0].AI = True
+    # game.players[1].AI = True
+    # game.players[2].AI = True
+    # game.players[3].AI = True
     # game.players[AIid].RANDOM = False
     # game.players[AIid].AI = True
     
