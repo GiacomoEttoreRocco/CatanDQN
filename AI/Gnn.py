@@ -47,7 +47,7 @@ class Gnn():
                 g = cls.extractInputFeaturesMove(idx).to(cls.device)
                 glob = torch.tensor(list(cls.moves.iloc[idx].globals.values())[:-1]).to(cls.device).float()
                 labels = torch.tensor([list(cls.moves.iloc[idx].globals.values())[-1]], device=cls.device).float()
-                outputs = cls.model(g, glob)
+                outputs = cls.model(g, glob, isTrain = False)
                 loss = lossFunction(outputs, labels)
                 previousTestingLoss.append(loss.item())
         previousTestingLossMean = mean(previousTestingLoss)
@@ -62,7 +62,7 @@ class Gnn():
                 glob = torch.tensor(list(cls.moves.iloc[idx].globals.values())[:-1]).to(cls.device).float()
                 labels = torch.tensor([list(cls.moves.iloc[idx].globals.values())[-1]], device=cls.device).float()
                 optimizer.zero_grad()
-                outputs = cls.model(g, glob)
+                outputs = cls.model(g, glob, isTrain=True)
                 loss = lossFunction(outputs, labels)
                 loss.backward()
                 optimizer.step()
@@ -74,7 +74,7 @@ class Gnn():
                         g = cls.extractInputFeaturesMove(idx).to(cls.device)
                         glob = torch.tensor(list(cls.moves.iloc[idx].globals.values())[:-1]).to(cls.device).float()
                         labels = torch.tensor([list(cls.moves.iloc[idx].globals.values())[-1]], device=cls.device).float()
-                        outputs = cls.model(g, glob)
+                        outputs = cls.model(g, glob, isTrain = False)
                         loss = lossFunction(outputs, labels)
                         testingLoss.append(loss.item())
                 
@@ -96,14 +96,14 @@ class Gnn():
         del globalFeats['player_id']
         graph = cls.fromDictsToGraph(Board.Board().placesToDict(player), Board.Board().edgesToDict(player)).to(cls.device)
         glob = torch.tensor(list(globalFeats.values())[:-1]).float().to(cls.device)
-        return cls.model(graph, glob).item()
+        return cls.model(graph, glob, isTrain=False).item()
 
-    def evaluatePosition(cls, player):
-        globalFeats = player.globalFeaturesToDict()
-        del globalFeats['player_id']
-        graph = cls.fromDictsToGraph(Board.Board().placesToDict(player), Board.Board().edgesToDict(player)).to(cls.device)
-        glob = torch.tensor(list(globalFeats.values())[:-1]).float().to(cls.device)
-        return cls.model(graph, glob)
+    # def evaluatePosition(cls, player):
+    #     globalFeats = player.globalFeaturesToDict()
+    #     del globalFeats['player_id']
+    #     graph = cls.fromDictsToGraph(Board.Board().placesToDict(player), Board.Board().edgesToDict(player)).to(cls.device)
+    #     glob = torch.tensor(list(globalFeats.values())[:-1]).float().to(cls.device)
+    #     return cls.model(graph, glob)
 
     def extractInputFeaturesMove(cls, moveIndex):
         places = cls.moves.iloc[moveIndex].places
@@ -138,7 +138,7 @@ class Net(nn.Module):
     self.OutputLayer1 = nn.Linear(54*gnnOutputDim+globInputDim, 85)
     self.OutputLayer2 = nn.Linear(85, 1)
 
-  def forward(self, graph, globalFeats):
+  def forward(self, graph, globalFeats, isTrain):
     graph.ndata['feat'] = F.relu(self.GNN1(graph, graph.ndata['feat']))
     graph.ndata['feat'] = F.relu(self.GNN2(graph, graph.ndata['feat']))
     embeds = F.relu(self.GNN3(graph, graph.ndata['feat']))
@@ -147,8 +147,9 @@ class Net(nn.Module):
     globalFeats = F.relu(self.GlobalLayer1(globalFeats))
     globalFeats = F.relu(self.GlobalLayer2(globalFeats))
     globalFeats = F.relu(self.GlobalLayer3(globalFeats))
-
-    output = F.relu(self.OutputLayer1(torch.cat([embeds, globalFeats])))
+    output = torch.cat([embeds, globalFeats])
+    output = torch.dropout(output, p = 0.33, train = isTrain)
+    output = F.relu(self.OutputLayer1(output))
     output = self.OutputLayer2(output)
     return torch.sigmoid(output)
         
