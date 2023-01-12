@@ -225,7 +225,7 @@ class GameView:
         font_largest_army = self.font_resourceSmaller.render('LA: '+ str(self.game.largestArmyPlayer.id), False, pygame.Color('white'))
         self.screen.blit(font_largest_army, (self.gameWidth-self.height//3.77, self.height - self.height//22.2))
 
-        font_dice = self.font_resourceSmaller.render(str(self.game.dices[self.game.actualTurn]), False, pygame.Color('white'))
+        font_dice = self.font_resourceSmaller.render(str(self.game.dices[self.game.actualTurn-1]), False, pygame.Color('white'))
         diceRoll = pygame.Rect(self.height//5.8, 0, self.height//20, self.height//20)
         self.screen.fill(self.bgScoreColor, diceRoll)
         self.screen.blit(font_dice, (self.height//5.7, self.height//200))

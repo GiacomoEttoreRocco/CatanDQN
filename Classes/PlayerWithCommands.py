@@ -204,7 +204,7 @@ class Player:
                         for p_adj_adj in Board.Board().graph.listOfAdj[p_adj]:
                             if(Board.Board().places[p_adj_adj].owner != 0):
                                 available = False
-                        if(available and Board.Board().places[p_adj].owner == 0 and self.nColonies < 5): 
+                        if(available and Board.Board().places[p_adj].owner == 0 and self.nColonies < 5 and Board.Board().places[p_adj] not in possibleColonies): 
                             possibleColonies.append(Board.Board().places[p_adj])
         return possibleColonies
 
@@ -450,48 +450,82 @@ class Player:
 
     def aiActionValue(self, action, thingNeeded = None):
         ctr = controller.ActionController()
-
-        if(action == commands.PassTurnCommand): 
-            toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
-        else:
-            pointsBefore = self.victoryPoints
-            previousPossibleColonies = self.calculatePossibleColony()
-            previousCount = self.resourceCount()
+        if(action == commands.FirstChoiseCommand or action == commands.SecondChoiseCommand or action == commands.PlaceInitialStreetCommand or action == commands.PlaceInitialColonyCommand or action == commands.PlaceSecondColonyCommand):
+            # print("Initial path, player: ", self.id)
             ctr.execute(action(self, thingNeeded)) 
-            if(self.victoryPoints >= 10):
-                print("AI conclusive move! " + str(action))
-                ctr.undo()
-                return 1000.0
-            if(pointsBefore < self.victoryPoints):
-                toRet = 100.0 + Gnn.Gnn().evaluatePositionForPlayer(self)
-            elif(action == commands.PlaceStreetCommand):
-                if(previousPossibleColonies == []):
-                    if(self.calculatePossibleColony() != []):
-                        print("smart move")
-                        val = Gnn.Gnn().evaluatePositionForPlayer(self)
-                        toRet = 90.0 + val
-                        print("Valore val gnn:", val)
-                    else:
-                        print("could be a smart move")
-                        val = Gnn.Gnn().evaluatePositionForPlayer(self)
-                        toRet = 45.0 + val
-                        print("Valore val gnn:", val)
-                else:
-                    toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
-            elif(action == commands.TradeBankCommand):
-                # if(self.resources['wood'] > 0 and self.resources['clay'] > 0):
-                #     toRet = 100.0
-                # elif(previousCount > 7):
-                if(previousCount > 7):
-                    toRet = 100.0 + Gnn.Gnn().evaluatePositionForPlayer(self)
-                else:
-                    toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
-            else:
-                toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
+            toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
             ctr.undo()
+        else:
+            if(action == commands.PassTurnCommand): 
+                # print("pass turn path, player: ", self.id)
+                toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
+            else:
+                pointsBefore = self.victoryPoints
+                previousPossibleColonies = self.calculatePossibleColony()
+                previousCount = self.resourceCount()
+                ctr.execute(action(self, thingNeeded)) 
+                # print("Azione valutata: ", str(action))
+                if(self.victoryPoints >= 10):
+                    # print("AI conclusive move! " + str(action))
+                    ctr.undo()
+                    return 1000.0
+                if(pointsBefore < self.victoryPoints):
+                    # print("Greedy path, player: ", self.id)
+                    toRet = 300.0 + Gnn.Gnn().evaluatePositionForPlayer(self)
+                elif(action == commands.PlaceStreetCommand or action == commands.PlaceFreeStreetCommand):
+                    if(previousPossibleColonies == []):
+                        if(self.calculatePossibleColony() != []):
+                            # print("New colony available path, player: ", self.id)
+                            # print("smart move")
+                            val = Gnn.Gnn().evaluatePositionForPlayer(self)
+                            toRet = 190.0 + val
+                            # print("Valore val gnn:", val)
+                        else:
+                            # print("Street path, player: ", self.id)
+                            # print("could be a smart move")
+                            val = Gnn.Gnn().evaluatePositionForPlayer(self)
+                            toRet = 185.0 + val
+                            # print("Valore val gnn:", val)
+                    elif(len(previousPossibleColonies) < len(self.calculatePossibleColony())):
+                            # print("Another colony available path, player: ", self.id)
+                            # print("Previous: ", previousPossibleColonies)
+                            # print("Actual: ", self.calculatePossibleColony())
+                            val = Gnn.Gnn().evaluatePositionForPlayer(self)
+                            toRet = 170.0 + val
+                            # print("Valore val gnn:", val)
+                    else:
+                        # print("Random street path, player: ", self.id)
+                        toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
+                elif(action == commands.TradeBankCommand):
+                    if(self.resources['crop'] > 1 and self.resources['iron'] > 2 and self.calculatePossibleCity() != []):
+                        # print("City trade path, player: ", self.id)
+                        toRet = 175.0 + Gnn.Gnn().evaluatePositionForPlayer(self)
+                    elif(self.resources['crop'] > 0 and self.resources['iron'] > 0 and self.resources['sheep'] > 0):
+                        # print("City trade path, player: ", self.id)
+                        toRet = 175.0 + Gnn.Gnn().evaluatePositionForPlayer(self)
+                    elif(self.resources['wood'] > 0 and self.resources['clay'] > 0 and self.resources['crop'] > 0 and self.resources['sheep'] > 0 and previousPossibleColonies != []):
+                        # print("Colony trade path, player: ", self.id)
+                        toRet = 175.0 + Gnn.Gnn().evaluatePositionForPlayer(self)
+                    elif(self.resources['wood'] > 0 and self.resources['clay'] > 0 and previousCount >= 7):
+                        # print("Wood and Clay greater then 0 path, player: ", self.id)
+                        # print("thing needed: ", thingNeeded)
+                        toRet = 175.0 + Gnn.Gnn().evaluatePositionForPlayer(self)
+                    elif(previousCount >= 7):
+                        # print("Avoid discard path, player: ", self.id)
+                        toRet = 100.0 + Gnn.Gnn().evaluatePositionForPlayer(self)
+                    else:
+                        # print("Random trade path, player: ", self.id)
+                        toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
+                else:
+                    # print("Random path, player: ", self.id)
+                    toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
+                ctr.undo()
+        # print("Evalutation from GNN: ", toRet)
         return toRet 
 
     def globalFeaturesToDict(self):
+        # for p in self.game.players:
+        #     print("Id: ", p.id, "LAST USER: ", int(p.lastRobberUser))
         return {'player_id': self.id,'victory_points': self.victoryPoints, 'cards_bought': self.boughtCards, 'last_robber_user': int(self.lastRobberUser),
                 'used_knights': self.usedKnights, 'crop': self.resources["crop"], 'iron': self.resources["iron"],
                 'wood': self.resources["wood"], 'clay': self.resources["clay"], 'sheep': self.resources["sheep"], 'winner':None}

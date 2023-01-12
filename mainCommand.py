@@ -11,7 +11,7 @@ import AI.Gnn as Gnn
 import pygame_gui
 
 toggle = False
-toVis = False
+toVis = True
 
 if(not toVis):
     speed = True
@@ -69,7 +69,6 @@ def decisionManager(player):
             elif(event.ui_element == view.stack.scroll_bar.top_button):
                 view.stack.scroll_bar.set_scroll_from_start_percentage(view.stack.scroll_bar.start_percentage-0.1)
                 view.updateGameScreen(True)
-                
             else:
                 print("Nothing clicked")
         if event.type == pygame.KEYDOWN:
@@ -124,8 +123,6 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
         game.players[1].AI = True
         game.players[2].AI = True
         game.players[3].AI = True
-    # game.players[AIid].RANDOM = False
-    # game.players[AIid].AI = True
     
     reverseTurnOffSet = {0 : 0, 1 : 1, 2 : 2, 3 : 3, 4 : 3, 5 : 2, 6 : 1, 7 : 0}
 
@@ -162,7 +159,6 @@ def saveToJson(victoryPlayer):
         global allGames
         allGames = pd.concat([allGames, total], ignore_index=True)
         print("Length of total moves of allGames: ", len(allGames))
-
 
 def printWinners():
     normValue = sum(WINNERS)

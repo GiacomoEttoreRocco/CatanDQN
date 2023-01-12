@@ -94,21 +94,24 @@ class UseRobberCommand:
         for action in self.actions:
             action.execute()
 
-        self.player.game.players[self.previousLastRobberUserId] = False
+        self.player.game.players[self.previousLastRobberUserId-1].lastRobberUser = False
         self.player.lastRobberUser = True
 
     def undo(self):
         for action in reversed(self.actions):
             action.undo()
 
-        self.player.game.players[self.previousLastRobberUserId] = True
-        self.player.lastRobberUser = False
+        if(self.previousLastRobberUserId != 0):
+            self.player.game.players[self.previousLastRobberUserId-1].lastRobberUser = True
+            self.player.lastRobberUser = False
+        else:
+            self.player.lastRobberUser = False
 
     def redo(self):
         for action in self.actions:
             action.redo()
 
-        self.player.game.players[self.previousLastRobberUserId] = False
+        self.player.game.players[self.previousLastRobberUserId-1].lastRobberUser = False
         self.player.lastRobberUser = True
 
     def __repr__(self) -> str:
@@ -751,10 +754,8 @@ class StealResourceCommand:
                 playersInTile.append(owner)
         if len(playersInTile) > 0:
             self.chosenPlayer = playersInTile[random.randint(0,len(playersInTile)-1)]
-            # print("I'm the one who is stealing: ", self.player.id)
             self.takenResource = self.chosenPlayer.stealFromMe()
         else:
-            # print("Robber placed in a free of player tile.")
             self.chosenPlayer = None
             self.takenResource = None
 
@@ -762,7 +763,6 @@ class StealResourceCommand:
         if self.chosenPlayer is not None and self.takenResource is not None:
             self.actions.append(AddResourceToPlayer(self.player, self.takenResource))
             self.actions.append(RemoveResourceToPlayer(self.chosenPlayer, self.takenResource))
-
         for action in self.actions:
             action.execute()
     def undo(self):
@@ -824,8 +824,7 @@ class UseKnightCommand:
         self.actions.append(CheckLargestArmyCommand(self.player.game))
         for action in self.actions:
             action.execute()
-
-        self.player.game.players[self.previousLastRobberUserId] = False
+        self.player.game.players[self.previousLastRobberUserId-1].lastRobberUser = False
         self.player.lastRobberUser = True
 
     def undo(self):
@@ -834,17 +833,20 @@ class UseKnightCommand:
         self.player.unusedKnights += 1
         self.player.usedKnights -= 1
 
-        self.player.game.players[self.previousLastRobberUserId] = True
-        self.player.lastRobberUser = False
+        if(self.previousLastRobberUserId != 0):
+            self.player.game.players[self.previousLastRobberUserId-1].lastRobberUser = True
+            self.player.lastRobberUser = False
+        else:
+            self.player.lastRobberUser = False
 
     def redo(self):
         self.player.unusedKnights -= 1
         self.player.usedKnights += 1
         for action in self.actions:
             action.redo()   
-        self.player.game.players[self.previousLastRobberUserId] = False
+        self.player.game.players[self.previousLastRobberUserId-1].lastRobberUser = False
         self.player.lastRobberUser = True
-        
+
     def __repr__(self) -> str:
         s = f'{self.__class__.__name__}'
         for action in self.actions:
