@@ -11,7 +11,7 @@ import AI.Gnn as Gnn
 import pygame_gui
 
 toggle = False
-toVis = True
+toVis = False
 
 if(not toVis):
     speed = True
@@ -171,9 +171,9 @@ def printWinners():
     print(s)
     print(WINNERS)
 
-iterations = 5
-numberTrainGame = 10
-numberTestGame = 10
+iterations = 15
+numberTrainGame = 1
+numberTestGame = 1
 
 for epoch in range(iterations):
     print('Iteration: ', epoch+1, "/", iterations)
