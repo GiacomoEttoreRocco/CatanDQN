@@ -1,7 +1,7 @@
 import Classes as c
 import Command.controller as controller
-import Command.commands as commands
-import Command.action as action
+# import Command.commands as commands
+# import Command.action as action
 import pygame
 import Graphics.GameView as GameView
 import os
@@ -9,15 +9,23 @@ import pandas as pd
 import time
 import AI.Gnn as Gnn
 import pygame_gui
+toggle = False
+toVis = False
 
-speed = True
-withGraphics = False
-withDelay = False
-realPlayer = False
-save = True
-train = True
-# save = False
-# train = False
+if(not toVis):
+    speed = True
+    withGraphics = False
+    withDelay = False
+    realPlayer = False
+    save = True
+    train = True
+else:
+    speed = True
+    withGraphics = True
+    withDelay = False
+    realPlayer = False
+    save = False
+    train = False
 ctr = controller.ActionController()
 
 WINNERS = [0.0, 0.0, 0.0, 0.0]
@@ -91,20 +99,11 @@ def decisionManager(player):
         if(not onlyPassTurn):  
             saveMove(save, player) 
 
-# def doActionDecisions(game: c.GameWithCommands, player: c.PlayerWithCommands, withGraphics = True):
-#     action = decisionManager(player)
-    
-#     if(action == commands.BuyDevCardCommand):
-#         devCardsBought[player.id-1] += 1
-
-#     if(game.checkWon(player)):
-#         return
-#     if(action in commands.cardCommands()):
-#         player.turnCardUsed = True
-
-def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True, AIid = None):
-    global devCardsBought
-    devCardsBought = [0.0, 0.0, 0.0, 0.0]
+def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True):
+    global toggle 
+    #toggle = not toggle # PER CAMBIARE AI E RANDOM
+    # global devCardsBought
+    # devCardsBought = [0.0, 0.0, 0.0, 0.0]
     if(withGraphics):
         GameView.GameView.setupAndDisplayBoard(view)
         GameView.GameView.setupPlaces(view)
@@ -112,14 +111,18 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
     game.actualTurn = 0 
     won = False
 
-    game.players[0].RANDOM = True
-    game.players[1].RANDOM = True
-    game.players[2].RANDOM = True
-    game.players[3].RANDOM = True
-    # game.players[0].AI = True
-    # game.players[1].AI = True
-    # game.players[2].AI = True
-    # game.players[3].AI = True
+    if(toggle):
+        print("RANDOM GAME.")
+        game.players[0].RANDOM = True
+        game.players[1].RANDOM = True
+        game.players[2].RANDOM = True
+        game.players[3].RANDOM = True
+    else:
+        print("AI GAME.")
+        game.players[0].AI = True
+        game.players[1].AI = True
+        game.players[2].AI = True
+        game.players[3].AI = True
     # game.players[AIid].RANDOM = False
     # game.players[AIid].AI = True
     
@@ -131,12 +134,10 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
             decisionManager(playerTurn)
         else:
             playerTurn = game.players[game.actualTurn%game.nplayer]
-            # doActionDecisions(game, playerTurn, withGraphics)
             decisionManager(playerTurn)
             if(playerTurn.victoryPoints >= 10):
                 WINNERS[playerTurn.id-1] += 1
                 s = 'Winner: ' + str(playerTurn.id) + "\n"
-                # game.printVictoryPointsOfAll(devCardsBought)
                 saveToJson(playerTurn)
                 print(s) 
                 won = True
@@ -174,8 +175,8 @@ def printWinners():
     print(WINNERS)
 
 iterations = 5
-numberTrainGame = 2
-numberTestGame = 4
+numberTrainGame = 10
+numberTestGame = 10
 
 for epoch in range(iterations):
     print('Iteration: ', epoch+1, "/", iterations)
@@ -184,13 +185,11 @@ for epoch in range(iterations):
         print('game: ', batch+1, "/", numberTrainGame) 
         total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
         g = c.GameWithCommands.Game()
-
         if(withGraphics):
             view = GameView.GameView(g, ctr)
             playGameWithGraphic(g, view, withGraphics)
         else:
             playGameWithGraphic(g, None, withGraphics)
-
         c.Board.Board().reset()
         c.Bank.Bank().reset()
 

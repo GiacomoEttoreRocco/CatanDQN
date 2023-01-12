@@ -199,7 +199,7 @@ class BankGiveResourceCommand:
                 self.actions.append(AddResourceToPlayer(self.player, self.resource))
                 self.actions.append(RemoveResourceToBank(self.resource))
             else:
-                print(f'Bank does not have {self.resource} anymore.')
+                print(f'Bank does not have {self.resource} anymore. Request by Player {self.player.id}')
         for action in self.actions:
             action.execute()
 
@@ -436,13 +436,11 @@ class PlaceSecondColonyCommand:
             s+=f'\n\t{action}'
         return s
     
-
 @dataclass
 class FirstChoiseCommand:
     player: Player
     placeChoosen: cg.Place
     actions: list[Action] = field(default_factory=list)
-
 
     def execute(self):
         tmp = PlaceInitialColonyCommand(self.player, self.placeChoosen)
@@ -635,6 +633,8 @@ class BuyDevCardCommand:
         self.actions.extend([PlayerSpendResourceCommand(self.player, "iron"),
                                         PlayerSpendResourceCommand(self.player, "crop"),
                                         PlayerSpendResourceCommand(self.player, "sheep")])
+        
+        self.player.boughtCards += 1
 
         for operation in self.actions:
             operation.execute()
@@ -657,6 +657,8 @@ class BuyDevCardCommand:
         for operation in reversed(self.actions):
             operation.undo()
 
+        self.player.boughtCards -= 1
+
         if(self.card == "knight"):
             self.player.justBoughtKnights -= 1
         if(self.card == "monopoly"):
@@ -673,6 +675,8 @@ class BuyDevCardCommand:
     def redo(self):
         for operation in self.actions:
             operation.redo()
+
+        self.player.boughtCards += 1
 
         self.card = Board.Board().deck[0]
         if(self.card == "knight"):

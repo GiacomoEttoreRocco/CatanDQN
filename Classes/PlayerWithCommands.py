@@ -10,12 +10,15 @@ import AI.Gnn as Gnn
 class Player: 
     def __init__(self, id, game, AI = False, RANDOM = False):
         assert not  (AI and RANDOM), "Error in definition of player"
+        print("Player initialized.")
         self.AI = AI
         self.RANDOM = RANDOM
 
         self.ownedColonies = []
         self.ownedStreets = []
         self.ownedCities = []
+
+        self.boughtCards = 0
 
         self.id = id
 
@@ -264,17 +267,6 @@ class Player:
                     candidateColony = colony
             return max, candidateColony    
 
-        # if(action == commands.PlaceStreetCommand):
-        #     possibleEdges = self.calculatePossibleEdges()
-        #     candidateEdge = None
-        #     max = -1
-        #     for edge in possibleEdges: 
-        #         valutation = self.actionValue(action, edge)
-        #         if(max < valutation):
-        #             max = valutation
-        #             candidateEdge = edge
-        #     return max, candidateEdge
-        
         if(action == commands.PlaceColonyCommand):
             possibleColony = self.calculatePossibleColony()
             candidateColony = None
@@ -397,13 +389,20 @@ class Player:
 
     def actionValue(self, action, thingNeeded = None):
         if self.AI:
-            #print("AI")
             return self.aiActionValue(action, thingNeeded)
         elif self.RANDOM:
-            #print("RANDOM")
             return self.randomActionValue(action, thingNeeded)
         
     def randomActionValue(self, action, thingNeeded = None):
+        if(self.victoryPoints >= 8):
+            ctr = controller.ActionController()
+            ctr.execute(action(self, thingNeeded)) 
+            if(self.victoryPoints >= 10):
+                print("Random conclusive move! " + str(action))
+                toRet = 300.0
+                ctr.undo()
+                return toRet
+            ctr.undo()
 
         if(action == commands.PassTurnCommand):
             return 0.2 + random.uniform(0, 1)
@@ -429,7 +428,6 @@ class Player:
             else:
                 toRet = 16
             return toRet 
-        
         if(action == commands.PlaceInitialColonyCommand):
             toRet = 10.0
         elif(action == commands.PlaceStreetCommand): 
@@ -446,7 +444,6 @@ class Player:
             toRet = 1.0 
         else:
             toRet = 0.5
-        
         return toRet + random.uniform(0,2)
 
     def aiActionValue(self, action, thingNeeded = None):
@@ -455,12 +452,36 @@ class Player:
         if(action == commands.PassTurnCommand): 
             toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
         else:
+            pointsBefore = self.victoryPoints
+            previousPossibleColonies = self.calculatePossibleColony()
+            previousCount = self.resourceCount()
             ctr.execute(action(self, thingNeeded)) 
-            toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
+            if(self.victoryPoints >= 10):
+                print("AI conclusive move! " + str(action))
+                ctr.undo()
+                return 1000.0
+            if(pointsBefore < self.victoryPoints):
+                toRet = 100.0
+            elif(action == commands.PlaceStreetCommand):
+                if(previousPossibleColonies == [] and self.calculatePossibleColony() != []):
+                    # print("smart path")
+                    toRet = 90.0
+                else:
+                    toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
+            elif(action == commands.TradeBankCommand):
+                if(self.resources['wood'] > 0 and self.resources['clay'] > 0):
+                    toRet = 100.0
+                elif(previousCount > 7):
+                    toRet = 200.0
+                else:
+                    toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
+            else:
+                toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
             ctr.undo()
-        return toRet # + random.uniform(0.00001,0.00002)
+        # return toRet # + random.uniform(0.00001,0.00002)
+        return toRet + random.uniform(0.001,0.002)
 
     def globalFeaturesToDict(self):
-        return {'player_id': self.id,'victory_points': self.victoryPoints,\
+        return {'player_id': self.id,'victory_points': self.victoryPoints, 'cards_bought': self.boughtCards,\
             'used_knights': self.usedKnights, 'crop': self.resources["crop"], 'iron': self.resources["iron"],\
             'wood': self.resources["wood"], 'clay': self.resources["clay"], 'sheep': self.resources["sheep"], 'winner':None}

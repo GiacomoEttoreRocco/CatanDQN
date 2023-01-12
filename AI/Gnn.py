@@ -21,22 +21,23 @@ class Gnn():
             cls.epochs = epochs
             cls.learningRate = learningRate
             cls.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
-            cls.model = Net(9, 8, 3, 7).to(cls.device)
+            cls.model = Net(9, 8, 3, 8).to(cls.device)
             if os.path.exists('./AI/model_weights.pth'):
                 cls.model.load_state_dict(torch.load('./AI/model_weights.pth', map_location=cls.device))
                 print('Weights loaded..')
         return cls.instance
 
     def trainModel(cls, validate = False):
+        if os.path.exists('./AI/model_weights.pth'):
+            cls.model.load_state_dict(torch.load('./AI/model_weights.pth', map_location=cls.device))
+            print('Weights loaded..')
         trainingDataFrame = pd.read_json('./json/training_game.json')
         testingDataFrame = pd.read_json('./json/testing_game.json')
         trainingSetLength = len(trainingDataFrame)
         testingSetLength = len(testingDataFrame)
         cls.moves = pd.concat([trainingDataFrame, testingDataFrame], ignore_index=True)
-
         lossFunction = nn.MSELoss()
         optimizer = torch.optim.Adam(cls.model.parameters(), lr=cls.learningRate)
-        
         trainingSet = np.random.permutation([x for x in range(trainingSetLength)])
         testingSet = np.random.permutation([x for x in range(trainingSetLength, trainingSetLength+testingSetLength)])
 
@@ -51,7 +52,6 @@ class Gnn():
                 previousTestingLoss.append(loss.item())
         previousTestingLossMean = mean(previousTestingLoss)
         print(f'Training loss: - Testing loss: {previousTestingLossMean}')
-
 
         counter = 0
         for epoch in range(cls.epochs):
@@ -80,7 +80,7 @@ class Gnn():
                 
                 testingLossMean = mean(testingLoss)
                 print(f'Training loss: {mean(trainingLoss)} Testing loss: {mean(testingLoss)}')
-                if testingLossMean <= previousTestingLossMean:
+                if testingLossMean < previousTestingLossMean:
                     previousTestingLossMean = testingLossMean
                     cls.saveWeights()
                     counter = 0
@@ -90,8 +90,6 @@ class Gnn():
                     return
             else:
                 cls.saveWeights()
-
-
 
     def evaluatePositionForPlayer(cls, player):
         globalFeats = player.globalFeaturesToDict()
@@ -123,7 +121,7 @@ class Gnn():
 
     def saveWeights(cls):
         torch.save(cls.model.state_dict(), './AI/model_weights.pth')
-        print("wheights corretly updated.") 
+        print("weights correctly updated.") 
 
 class Net(nn.Module):
   def __init__(self, gnnInputDim, gnnHiddenDim, gnnOutputDim, globInputDim):
