@@ -82,17 +82,35 @@ class UseRobberCommand:
     player: Player
     tilePosition: cg.Tile
     actions: list[Action] = field(default_factory=list)
+    previousLastRobberUserId: int = 0
+
+    def __post_init__(self):
+        for p in self.player.game.players:
+            if(p.lastRobberUser == True):
+                self.previousLastRobberUserId = p.id
 
     def execute(self):
         self.actions.extend([SetRobberTile(self.tilePosition), StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])])        
         for action in self.actions:
             action.execute()
+
+        self.player.game.players[self.previousLastRobberUserId] = False
+        self.player.lastRobberUser = True
+
     def undo(self):
         for action in reversed(self.actions):
             action.undo()
+
+        self.player.game.players[self.previousLastRobberUserId] = True
+        self.player.lastRobberUser = False
+
     def redo(self):
         for action in self.actions:
             action.redo()
+
+        self.player.game.players[self.previousLastRobberUserId] = False
+        self.player.lastRobberUser = True
+
     def __repr__(self) -> str:
         s = f'{self.__class__.__name__}'
         for action in self.actions:
@@ -107,7 +125,7 @@ class SevenOnDicesCommand:
     def execute(self):
         for pyr in self.player.game.players:
             half = int(pyr.resourceCount()/2)
-            if(pyr.resourceCount() >= 7):
+            if(pyr.resourceCount() > 7):
                 if(pyr.AI or pyr.RANDOM):
                     for _ in range(0, half):
                         _, resource = pyr.evaluate(DiscardResourceCommand)
@@ -792,6 +810,12 @@ class UseKnightCommand:
     player: Player
     tilePosition: cg.Tile
     actions: list[Action] = field(default_factory=list)
+    previousLastRobberUserId: int = 0
+
+    def __post_init__(self):
+        for p in self.player.game.players:
+            if(p.lastRobberUser == True):
+                self.previousLastRobberUserId = p.id
 
     def execute(self):
         self.player.unusedKnights -= 1
@@ -800,16 +824,27 @@ class UseKnightCommand:
         self.actions.append(CheckLargestArmyCommand(self.player.game))
         for action in self.actions:
             action.execute()
+
+        self.player.game.players[self.previousLastRobberUserId] = False
+        self.player.lastRobberUser = True
+
     def undo(self):
         for action in reversed(self.actions):
             action.undo()
         self.player.unusedKnights += 1
         self.player.usedKnights -= 1
+
+        self.player.game.players[self.previousLastRobberUserId] = True
+        self.player.lastRobberUser = False
+
     def redo(self):
         self.player.unusedKnights -= 1
         self.player.usedKnights += 1
         for action in self.actions:
             action.redo()   
+        self.player.game.players[self.previousLastRobberUserId] = False
+        self.player.lastRobberUser = True
+        
     def __repr__(self) -> str:
         s = f'{self.__class__.__name__}'
         for action in self.actions:

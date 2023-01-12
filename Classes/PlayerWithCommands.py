@@ -49,6 +49,8 @@ class Player:
 
         self.turnCardUsed = False
 
+        self.lastRobberUser = False
+
         # RESOURCES:
         self.resources = {"wood" : 0, "clay" : 0, "crop": 0, "sheep": 0, "iron": 0}
 
@@ -461,27 +463,35 @@ class Player:
                 ctr.undo()
                 return 1000.0
             if(pointsBefore < self.victoryPoints):
-                toRet = 100.0
+                toRet = 100.0 + Gnn.Gnn().evaluatePositionForPlayer(self)
             elif(action == commands.PlaceStreetCommand):
-                if(previousPossibleColonies == [] and self.calculatePossibleColony() != []):
-                    # print("smart path")
-                    toRet = 90.0
+                if(previousPossibleColonies == []):
+                    if(self.calculatePossibleColony() != []):
+                        print("smart move")
+                        val = Gnn.Gnn().evaluatePositionForPlayer(self)
+                        toRet = 90.0 + val
+                        print("Valore val gnn:", val)
+                    else:
+                        print("could be a smart move")
+                        val = Gnn.Gnn().evaluatePositionForPlayer(self)
+                        toRet = 45.0 + val
+                        print("Valore val gnn:", val)
                 else:
                     toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
             elif(action == commands.TradeBankCommand):
-                if(self.resources['wood'] > 0 and self.resources['clay'] > 0):
-                    toRet = 100.0
-                elif(previousCount > 7):
-                    toRet = 200.0
+                # if(self.resources['wood'] > 0 and self.resources['clay'] > 0):
+                #     toRet = 100.0
+                # elif(previousCount > 7):
+                if(previousCount > 7):
+                    toRet = 100.0 + Gnn.Gnn().evaluatePositionForPlayer(self)
                 else:
                     toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
             else:
                 toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
             ctr.undo()
-        # return toRet # + random.uniform(0.00001,0.00002)
-        return toRet + random.uniform(0.001,0.002)
+        return toRet 
 
     def globalFeaturesToDict(self):
-        return {'player_id': self.id,'victory_points': self.victoryPoints, 'cards_bought': self.boughtCards,\
-            'used_knights': self.usedKnights, 'crop': self.resources["crop"], 'iron': self.resources["iron"],\
-            'wood': self.resources["wood"], 'clay': self.resources["clay"], 'sheep': self.resources["sheep"], 'winner':None}
+        return {'player_id': self.id,'victory_points': self.victoryPoints, 'cards_bought': self.boughtCards, 'last_robber_user': int(self.lastRobberUser),
+                'used_knights': self.usedKnights, 'crop': self.resources["crop"], 'iron': self.resources["iron"],
+                'wood': self.resources["wood"], 'clay': self.resources["clay"], 'sheep': self.resources["sheep"], 'winner':None}

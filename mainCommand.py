@@ -9,6 +9,7 @@ import pandas as pd
 import time
 import AI.Gnn as Gnn
 import pygame_gui
+
 toggle = False
 toVis = False
 
