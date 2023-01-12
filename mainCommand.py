@@ -10,6 +10,7 @@ import time
 import AI.Gnn as Gnn
 import pygame_gui
 
+PURE = False
 toggle = False
 toVis = False
 
@@ -100,7 +101,8 @@ def decisionManager(player):
             saveMove(save, player) 
 
 def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True):
-    global toggle 
+    global toggle
+    global PURE 
     #toggle = not toggle # PER CAMBIARE AI E RANDOM
     # global devCardsBought
     # devCardsBought = [0.0, 0.0, 0.0, 0.0]
@@ -111,18 +113,24 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
     game.actualTurn = 0 
     won = False
 
-    if(toggle):
-        print("RANDOM GAME.")
-        game.players[0].RANDOM = True
-        game.players[1].RANDOM = True
-        game.players[2].RANDOM = True
-        game.players[3].RANDOM = True
+    if(PURE):
+        game.players[0].PURE_AI = True
+        game.players[1].PURE_AI = True
+        game.players[2].PURE_AI = True
+        game.players[3].PURE_AI = True
     else:
-        print("AI GAME.")
-        game.players[0].AI = True
-        game.players[1].AI = True
-        game.players[2].AI = True
-        game.players[3].AI = True
+        if(toggle):
+            print("RANDOM GAME.")
+            game.players[0].RANDOM = True
+            game.players[1].RANDOM = True
+            game.players[2].RANDOM = True
+            game.players[3].RANDOM = True
+        else:
+            print("AI GAME.")
+            game.players[0].AI = True
+            game.players[1].AI = True
+            game.players[2].AI = True
+            game.players[3].AI = True
     
     reverseTurnOffSet = {0 : 0, 1 : 1, 2 : 2, 3 : 3, 4 : 3, 5 : 2, 6 : 1, 7 : 0}
 

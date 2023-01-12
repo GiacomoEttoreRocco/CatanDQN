@@ -14,6 +14,8 @@ class Player:
         self.AI = AI
         self.RANDOM = RANDOM
 
+        self.PURE_AI = False
+
         self.ownedColonies = []
         self.ownedStreets = []
         self.ownedCities = []
@@ -394,6 +396,8 @@ class Player:
             return self.aiActionValue(action, thingNeeded)
         elif self.RANDOM:
             return self.randomActionValue(action, thingNeeded)
+        elif self.PURE_AI:
+            return self.PUREaiActionValue(action, thingNeeded)
         
     def randomActionValue(self, action, thingNeeded = None):
         if(self.victoryPoints >= 8):
@@ -522,6 +526,21 @@ class Player:
                 ctr.undo()
         # print("Evalutation from GNN: ", toRet)
         return toRet 
+
+    def PUREaiActionValue(self, action, thingNeeded = None):
+        ctr = controller.ActionController()
+        if(action == commands.PassTurnCommand): 
+            toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
+        else:
+            ctr.execute(action(self, thingNeeded)) 
+            if(self.victoryPoints >= 10):
+                ctr.undo()
+                return 1000.0
+            else:
+                toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
+                ctr.undo()
+        return toRet # 
+
 
     def globalFeaturesToDict(self):
         # for p in self.game.players:
