@@ -14,7 +14,7 @@ from statistics import mean
 
 class Gnn():
     instance = None
-    def __new__(cls, epochs=250, learningRate=0.0001): # precedente 0.03
+    def __new__(cls, epochs=250, learningRate = 0.0001): # precedente 0.03
         if cls.instance is None:
             cls.instance = super(Gnn, cls).__new__(cls)
             cls.moves = None
@@ -150,7 +150,7 @@ class Net(nn.Module):
     globalFeats = F.relu(self.GlobalLayer2(globalFeats))
     globalFeats = F.relu(self.GlobalLayer3(globalFeats))
     output = torch.cat([embeds, globalFeats])
-    output = torch.dropout(output, p = 0.33, train = isTrain)
+    output = torch.dropout(output, p = 0.5, train = isTrain)
     output = F.relu(self.OutputLayer1(output))
     output = self.OutputLayer2(output)
     return torch.sigmoid(output)
