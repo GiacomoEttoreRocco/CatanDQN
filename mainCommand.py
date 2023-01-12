@@ -10,7 +10,7 @@ import time
 import AI.Gnn as Gnn
 import pygame_gui
 
-PURE = False
+PURE = True
 toggle = False
 toVis = False
 
@@ -39,9 +39,11 @@ def doActionWithGraphics(player):
     view.updateGameScreen()
     if(not onlyPassTurn):  
         saveMove(save, player)
+
 def undoActionWithGraphics():
     ctr.undo()
     view.updateGameScreen()
+
 def redoActionWithGraphics():
     ctr.redo()
     view.updateGameScreen()
@@ -114,6 +116,8 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
     won = False
 
     if(PURE):
+        print("PURE AI GAME.")
+
         game.players[0].PURE_AI = True
         game.players[1].PURE_AI = True
         game.players[2].PURE_AI = True

@@ -78,40 +78,25 @@ class Game:
                             Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
 
     def bestAction(self, player: Player):
-        if(player.AI or player.RANDOM):
-            if(self.actualTurn<4):
-                actions = [commands.FirstChoiseCommand]
-            elif(self.actualTurn<8):
-                actions = [commands.SecondChoiseCommand]
-            else:
-                actions = player.availableActions(player.turnCardUsed)
+        if(self.actualTurn<4):
+            actions = [commands.FirstChoiseCommand]
+        elif(self.actualTurn<8):
+            actions = [commands.SecondChoiseCommand]
+        else:
+            actions = player.availableActions(player.turnCardUsed)
 
-            max = -1
-            thingsNeeded = None
-            bestAction = actions[0]
-            for action in actions: 
-                evaluation, tempInput = player.evaluate(action)
-                if(max <= evaluation):
-                    max = evaluation
-                    thingsNeeded = tempInput
-                    bestAction = action
+        max = -1
+        thingsNeeded = None
+        bestAction = actions[0]
+        for action in actions: 
+            evaluation, tempInput = player.evaluate(action)
+            if(max <= evaluation):
+                max = evaluation
+                thingsNeeded = tempInput
+                bestAction = action
 
-            onlyPassTurn = commands.PassTurnCommand in actions and len(actions)==1
-            return bestAction, thingsNeeded, onlyPassTurn
-        # else:
-        #     actions = player.availableActionsWithInput(usedCard)
-        #     return player.chooseAction(actions)
-
-    # def sevenOnDices(self):
-    #     #ctr = controller.ActionController()
-    #     for pyr in self.players:
-    #         # print("Resource count: ", pyr.resourceCount())
-    #         half = int(pyr.resourceCount()/2)
-    #         if(pyr.resourceCount() >= 7):
-    #             if(pyr.AI or pyr.RANDOM):
-    #                 for i in range(0, half):
-    #                     eval, resource = pyr.evaluate(commands.DiscardResourceCommand)
-    #                     self.ctr.execute(commands.DiscardResourceCommand(pyr, resource))
+        onlyPassTurn = commands.PassTurnCommand in actions and len(actions)==1
+        return bestAction, thingsNeeded, onlyPassTurn
 
     def rollDice(self): 
         return random.randint(1,6) + random.randint(1,6)    
