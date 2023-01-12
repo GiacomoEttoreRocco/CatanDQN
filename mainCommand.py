@@ -12,7 +12,7 @@ import pygame_gui
 
 PURE = True
 toggle = False
-toVis = False
+toVis = True
 
 if(not toVis):
     speed = True
@@ -22,7 +22,7 @@ if(not toVis):
     save = True
     train = True
 else:
-    speed = True
+    speed = False # True #
     withGraphics = True
     withDelay = False
     realPlayer = False
@@ -55,7 +55,8 @@ def decisionManager(player):
         # while event.type != pygame_gui.UI_BUTTON_PRESSED and event.type != pygame.KEYDOWN:
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if(event.ui_element == view.aiButton):
-                player.AI = True
+                player.PURE_AI = True
+                # player.AI = True
                 player.RANDOM = False
                 doActionWithGraphics(player)
             elif(event.ui_element == view.randomButton):

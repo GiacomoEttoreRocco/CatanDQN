@@ -142,6 +142,8 @@ class Net(nn.Module):
     graph.ndata['feat'] = F.relu(self.GNN1(graph, graph.ndata['feat']))
     graph.ndata['feat'] = F.relu(self.GNN2(graph, graph.ndata['feat']))
     embeds = F.relu(self.GNN3(graph, graph.ndata['feat']))
+    for i, x in enumerate(embeds):
+        print("Place: ", i, x)
     embeds = torch.flatten(embeds)
     
     globalFeats = F.relu(self.GlobalLayer1(globalFeats))

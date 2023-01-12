@@ -453,6 +453,7 @@ class Player:
         return toRet + random.uniform(0,2)
 
     def aiActionValue(self, action, thingNeeded = None):
+    # def HARDaiActionValue(self, action, thingNeeded = None):
         ctr = controller.ActionController()
         if(action == commands.FirstChoiseCommand or action == commands.SecondChoiseCommand or action == commands.PlaceInitialStreetCommand or action == commands.PlaceInitialColonyCommand or action == commands.PlaceSecondColonyCommand):
             # print("Initial path, player: ", self.id)
@@ -539,6 +540,7 @@ class Player:
                 return 1000.0
             elif(previousCount >= 8):
                 toRet = 100.0 + Gnn.Gnn().evaluatePositionForPlayer(self)
+                ctr.undo()
             else:
                 toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
                 ctr.undo()
