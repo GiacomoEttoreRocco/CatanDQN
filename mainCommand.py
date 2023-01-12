@@ -10,7 +10,7 @@ import time
 import AI.Gnn as Gnn
 import pygame_gui
 
-PURE = True
+PURE = False
 toggle = False
 toVis = True
 
@@ -22,7 +22,7 @@ if(not toVis):
     save = True
     train = True
 else:
-    speed = False # True #
+    speed =  True # False #
     withGraphics = True
     withDelay = False
     realPlayer = False
