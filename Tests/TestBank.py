@@ -1,5 +1,5 @@
 import unittest
-import Classes.Player as c
+import Classes as c
 from Classes.Bank import Bank
 
 class TestBank(unittest.TestCase):
