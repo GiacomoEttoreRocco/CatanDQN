@@ -1,6 +1,7 @@
 __pycache__/
 .idea/
 .vscode
+AI/__pycache__/
 Classes/__pycache__/
 Graphics/__pycache__/
-json/game.json
+.json/
