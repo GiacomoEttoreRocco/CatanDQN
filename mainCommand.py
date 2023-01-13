@@ -22,7 +22,7 @@ if(not toVis):
     save = True
     train = True
 else:
-    speed = True
+    speed =  True # False #
     withGraphics = True
     withDelay = False
     realPlayer = False
@@ -39,9 +39,11 @@ def doActionWithGraphics(player):
     view.updateGameScreen()
     if(not onlyPassTurn):  
         saveMove(save, player)
+
 def undoActionWithGraphics():
     ctr.undo()
     view.updateGameScreen()
+
 def redoActionWithGraphics():
     ctr.redo()
     view.updateGameScreen()
@@ -53,7 +55,8 @@ def decisionManager(player):
         # while event.type != pygame_gui.UI_BUTTON_PRESSED and event.type != pygame.KEYDOWN:
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if(event.ui_element == view.aiButton):
-                player.AI = True
+                player.PURE_AI = True
+                # player.AI = True
                 player.RANDOM = False
                 doActionWithGraphics(player)
             elif(event.ui_element == view.randomButton):
@@ -114,6 +117,8 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
     won = False
 
     if(PURE):
+        print("PURE AI GAME.")
+
         game.players[0].PURE_AI = True
         game.players[1].PURE_AI = True
         game.players[2].PURE_AI = True
@@ -127,10 +132,10 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
             game.players[3].RANDOM = True
         else:
             print("AI GAME.")
-            game.players[0].AI = True
-            game.players[1].AI = True
+            game.players[0].RANDOM = True
+            game.players[1].PURE_AI = True
             game.players[2].AI = True
-            game.players[3].AI = True
+            game.players[3].RANDOM = True
     
     reverseTurnOffSet = {0 : 0, 1 : 1, 2 : 2, 3 : 3, 4 : 3, 5 : 2, 6 : 1, 7 : 0}
 
@@ -179,9 +184,9 @@ def printWinners():
     print(s)
     print(WINNERS)
 
-iterations = 15
-numberTrainGame = 1
-numberTestGame = 1
+iterations = 50
+numberTrainGame = 5
+numberTestGame = 5
 
 for epoch in range(iterations):
     print('Iteration: ', epoch+1, "/", iterations)

@@ -58,7 +58,8 @@ class GameView:
         #                                      html_text='REDO',
         #                                      manager=self.manager)
 
-        self.font_resource = pygame.font.SysFont('tahoma', self.height//18)
+        self.font_resourceLarge = pygame.font.SysFont('tahoma', self.height//18)
+        self.font_resourceMedium = pygame.font.SysFont('tahoma', self.height//23)
         self.font_resourceSmaller = pygame.font.SysFont('tahoma', self.height//28)
         self.font_resourceSmallest = pygame.font.SysFont('tahoma', self.height//58, bold=True)
 
@@ -79,7 +80,7 @@ class GameView:
         self.bgScoreColorHighlited = pygame.Color('grey64')
 
         for i in range(0, len(self.game.players)):
-            self.points.append(self.font_resource.render(str(self.game.players[i].victoryPoints), False, self.playerColorDict[i+1]))
+            self.points.append(self.font_resourceLarge.render(str(self.game.players[i].victoryPoints), False, self.playerColorDict[i+1]))
             self.pointsCards.append(self.font_resourceSmallest.render("Vp cards: " + str(self.game.players[i].victoryPointsCards), False, self.playerColorDict[i+1]))
             self.woods.append(self.font_resourceSmallest.render("Wood: " + str(self.game.players[i].resources["wood"]), False, self.playerColorDict[i+1]))
             self.sheeps.append(self.font_resourceSmallest.render("Sheep: " +str(self.game.players[i].resources["sheep"]), False, self.playerColorDict[i+1]))
@@ -94,7 +95,7 @@ class GameView:
 
     def updateStats(self):
         for i in range(0, len(self.game.players)):
-            self.points[i] = self.font_resource.render(str(self.game.players[i].victoryPoints), False, self.playerColorDict[i+1])
+            self.points[i] = self.font_resourceLarge.render(str(self.game.players[i].victoryPoints), False, self.playerColorDict[i+1])
             self.pointsCards[i] = self.font_resourceSmallest.render("Vp cards: " + str(self.game.players[i].victoryPointsCards), False, self.playerColorDict[i+1])
             self.woods[i] = self.font_resourceSmallest.render("Wood: " + str(self.game.players[i].resources["wood"]), False, self.playerColorDict[i+1])
             self.sheeps[i] = self.font_resourceSmallest.render("Sheep: " +str(self.game.players[i].resources["sheep"]), False, self.playerColorDict[i+1])
@@ -195,10 +196,16 @@ class GameView:
             else:
                 scores_string += '%.2f '% (normalizedScores[i]/sum)
 
-        scores = self.font_resourceSmallest.render(scores_string, False, self.playerColorDict[player.id])
-        playersScores = pygame.Rect(self.gameWidth/2-self.height//8, 0, self.height//4, self.height//20)
+        # scores = self.font_resourceSmallest.render(scores_string, False, self.playerColorDict[0]) # self.playerColorDict[player.id])
+        scores = self.font_resourceMedium.render(scores_string, False, pygame.Color('grey')) # self.playerColorDict[player.id])
+
+        # playersScores = pygame.Rect(self.gameWidth/2-self.height//8, 0, self.height//4, self.height//20)
+        # self.screen.fill(self.bgScoreColor, playersScores)
+        # self.screen.blit(scores, (self.gameWidth/2-self.height//8.3, self.height//200))
+
+        playersScores = pygame.Rect(self.gameWidth/2-self.height//4, 0, self.height//1.8, self.height//11)
         self.screen.fill(self.bgScoreColor, playersScores)
-        self.screen.blit(scores, (self.gameWidth/2-self.height//8.3, self.height//200))
+        self.screen.blit(scores, (self.gameWidth/2-self.height//4.3, self.height//100))
 
     def updateGameScreen(self, flag=False):
         self.setupAndDisplayBoard() # recently added

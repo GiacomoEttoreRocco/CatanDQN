@@ -453,6 +453,7 @@ class Player:
         return toRet + random.uniform(0,2)
 
     def aiActionValue(self, action, thingNeeded = None):
+    # def HARDaiActionValue(self, action, thingNeeded = None):
         ctr = controller.ActionController()
         if(action == commands.FirstChoiseCommand or action == commands.SecondChoiseCommand or action == commands.PlaceInitialStreetCommand or action == commands.PlaceInitialColonyCommand or action == commands.PlaceSecondColonyCommand):
             # print("Initial path, player: ", self.id)
@@ -514,7 +515,7 @@ class Player:
                         # print("Wood and Clay greater then 0 path, player: ", self.id)
                         # print("thing needed: ", thingNeeded)
                         toRet = 175.0 + Gnn.Gnn().evaluatePositionForPlayer(self)
-                    elif(previousCount >= 7):
+                    elif(previousCount >= 8):
                         # print("Avoid discard path, player: ", self.id)
                         toRet = 100.0 + Gnn.Gnn().evaluatePositionForPlayer(self)
                     else:
@@ -532,10 +533,14 @@ class Player:
         if(action == commands.PassTurnCommand): 
             toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
         else:
+            previousCount = self.resourceCount()
             ctr.execute(action(self, thingNeeded)) 
             if(self.victoryPoints >= 10):
                 ctr.undo()
                 return 1000.0
+            elif(previousCount >= 8):
+                toRet = 100.0 + Gnn.Gnn().evaluatePositionForPlayer(self)
+                ctr.undo()
             else:
                 toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
                 ctr.undo()
