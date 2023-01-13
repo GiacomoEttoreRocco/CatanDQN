@@ -103,7 +103,7 @@ def decisionManager(player):
         if(not onlyPassTurn):  
             saveMove(save, player) 
 
-def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True):
+def playGameWithGraphic(game: c.Game, view=None, withGraphics = True):
     global toggle
     global PURE 
     #toggle = not toggle # PER CAMBIARE AI E RANDOM
@@ -185,8 +185,8 @@ def printWinners():
     print(WINNERS)
 
 iterations = 50
-numberTrainGame = 15
-numberTestGame = 15
+numberTrainGame = 1
+numberTestGame = 1
 
 if __name__ == '__main__':
     for epoch in range(iterations):
@@ -195,7 +195,7 @@ if __name__ == '__main__':
         for batch in range(numberTrainGame): 
             print('game: ', batch+1, "/", numberTrainGame) 
             total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
-            g = c.GameWithCommands.Game()
+            g = c.Game.Game()
             if(withGraphics):
                 view = GameView.GameView(g, ctr)
                 playGameWithGraphic(g, view, withGraphics)
@@ -212,7 +212,7 @@ if __name__ == '__main__':
         for batch in range(numberTestGame): 
             print('game: ', batch+1, "/", numberTestGame) 
             total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
-            g = c.GameWithCommands.Game()
+            g = c.Game.Game()
 
             if(withGraphics):
                 view = GameView.GameView(g, ctr)
