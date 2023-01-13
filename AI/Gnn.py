@@ -10,6 +10,7 @@ import pandas as pd
 import os as os
 import Classes.Board as Board
 from statistics import mean
+import random
 
 
 
@@ -39,7 +40,7 @@ class Gnn():
         lossFunction = nn.MSELoss()
         optimizer = torch.optim.Adam(cls.model.parameters(), lr=cls.learningRate)
         trainingSetLoader = ld.DataLoader(trainingDataset, batch_size=cls.batch)
-        testingSetLoader = ld.DataLoader(testingDataset)
+        testingSetLoader = ld.DataLoader(testingDataset, batch_size=cls.batch)
 
         previousTestingLossMean = cls.test(testingSetLoader, lossFunction=lossFunction)
         print(f'Training loss: - Testing loss: {previousTestingLossMean}')
@@ -150,13 +151,12 @@ class MyDataset(torch.utils.data.IterableDataset):
         self.data = [[self.extractInputFeaturesMove(i), self.extractGlobalFeatures(i), self.extractLabels(i)] for i in range(len(self.dataFrame))]
 
     def __iter__(self):
+        np.random.shuffle(self.data)
         return iter(self.data)
 
     def __len__(self):
         return len(self.data)
 
-    def __getitem__(self, idx):
-        return self.data[idx]
     
     def extractInputFeaturesMove(self, moveIndex):
         places = self.dataFrame.iloc[moveIndex].places
