@@ -8,25 +8,18 @@ import AI.Gnn as Gnn
 
 class Player: 
     def __init__(self, id, game, type: PlayerTypes = PlayerTypes.NOT_SET):
-        print("Player initialized.")
-        
+         
+        self.id = id
         self.type = type
+        self.game = game
 
         self.ownedColonies = []
         self.ownedStreets = []
         self.ownedCities = []
 
-        self.boughtCards = 0
-
-        self.id = id
-
-        # print("I'm ", self.id, " an AI ", AI)
-        # print("I'm ", self.id, " a RANDOM ", RANDOM)
-
         self.victoryPoints = 0
         self.victoryPointsCards = 0
-
-        self.game = game
+        self.boughtCards = 0
 
         self.nColonies = 0
         self.nCities = 0
@@ -392,7 +385,7 @@ class Player:
             ctr = controller.ActionController()
             ctr.execute(action(self, thingNeeded)) 
             if(self.victoryPoints >= 10):
-                print("Random conclusive move! " + str(action))
+                print("Priority Agent conclusive move! " + str(action))
                 toRet = 300.0
                 ctr.undo()
                 return toRet
@@ -459,7 +452,7 @@ class Player:
                 ctr.execute(action(self, thingNeeded)) 
                 # print("Azione valutata: ", str(action))
                 if(self.victoryPoints >= 10):
-                    # print("AI conclusive move! " + str(action))
+                    print("Hybrid Agent conclusive move! " + str(action))
                     ctr.undo()
                     return 1000.0
                 if(pointsBefore < self.victoryPoints):
@@ -524,6 +517,7 @@ class Player:
             previousCount = self.resourceCount()
             ctr.execute(action(self, thingNeeded)) 
             if(self.victoryPoints >= 10):
+                print("PureAI Agent conclusive move! " + str(action))
                 ctr.undo()
                 return 1000.0
             elif(previousCount >= 8):

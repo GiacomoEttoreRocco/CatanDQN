@@ -8,13 +8,17 @@ from Classes.PlayerTypes import PlayerTypes
 
 class GameController:
 
-    def __init__(self, speed=True, saveOnFile=True, withGraphics=False) -> None:
+    def __init__(self, playerTypes: list(PlayerTypes), speed=True, saveOnFile=True, withGraphics=False) -> None:
         self.speed = speed
         self.saveOnFile =saveOnFile
         self.withGraphics = withGraphics
 
         self.reset()
         self.game = c.Game.Game()
+
+        for player, type in zip(self.game.players, playerTypes):
+            player.type = type
+
         if self.withGraphics:
             self.view = GameView.GameView(self.game, self.game.ctr)
         else:
@@ -94,38 +98,13 @@ class GameController:
                     
             
     def playGameWithGraphic(self):
-        toggle = False
-        PURE =False
-
+        
         if(self.withGraphics):
             GameView.GameView.setupAndDisplayBoard(self.view)
             GameView.GameView.setupPlaces(self.view)
             GameView.GameView.updateGameScreen(self.view)
-        self.game.actualTurn = 0 
-        won = False
-
-        if(PURE):
-            print("PURE AI GAME.")
-
-            self.game.players[0].type = PlayerTypes.PURE
-            self.game.players[1].type = PlayerTypes.PURE
-            self.game.players[2].type = PlayerTypes.PURE
-            self.game.players[3].type = PlayerTypes.PURE
-
-        else:
-            if(toggle):
-                print("PRIORITY GAME.")
-                self.game.players[0].type = PlayerTypes.PRIORITY
-                self.game.players[1].type = PlayerTypes.PRIORITY
-                self.game.players[2].type = PlayerTypes.PRIORITY
-                self.game.players[3].type = PlayerTypes.PRIORITY
-            else:
-                print("AI GAME.")
-                self.game.players[0].type = PlayerTypes.PRIORITY
-                self.game.players[1].type = PlayerTypes.HYBRID
-                self.game.players[2].type = PlayerTypes.PURE
-                self.game.players[3].type = PlayerTypes.PRIORITY
-        
+                 
+        self.game.actualTurn = 0       
         reverseTurnOffSet = {0 : 0, 1 : 1, 2 : 2, 3 : 3, 4 : 3, 5 : 2, 6 : 1, 7 : 0}
 
         while True:
@@ -141,7 +120,7 @@ class GameController:
                     if(self.withGraphics):
                         pygame.quit()
                     
-                    return playerTurn.id
+                    return playerTurn
 
     def saveMove(self, player):
         if(self.saveOnFile):
