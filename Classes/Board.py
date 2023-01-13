@@ -26,7 +26,7 @@ class Board: # deve diventare un singleton
             cls.places = cls.graph.places
             cls.edges = cls.graph.edges
             
-            np.random.seed(1996)
+            # np.random.seed(1996)
             #   PERMUTATIONS: 
             cls.numbers = np.random.permutation(cls.graph.numbers)
             cls.resources = np.random.permutation(cls.graph.resources)

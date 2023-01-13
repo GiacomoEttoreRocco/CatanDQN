@@ -48,7 +48,6 @@ class Gnn():
         counter = 0
         for epoch in range(cls.epochs):
             print('epoch: ', epoch+1, "/", cls.epochs)
-            
             trainingLossMean = cls.train(trainingSetLoader, lossFunction, optimizer)
             testingLossMean = cls.test(testingSetLoader, lossFunction)
             print(f'Training loss: {trainingLossMean} Testing loss: {testingLossMean}')

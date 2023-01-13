@@ -10,7 +10,7 @@ import time
 import AI.Gnn as Gnn
 import pygame_gui
 
-PURE = False
+PURE = True
 toggle = False
 toVis = False
 
@@ -133,8 +133,8 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
         else:
             print("AI GAME.")
             game.players[0].RANDOM = True
-            game.players[1].PURE_AI = True
-            game.players[2].AI = True
+            game.players[1].AI = True
+            game.players[2].PURE_AI = True
             game.players[3].RANDOM = True
     
     reverseTurnOffSet = {0 : 0, 1 : 1, 2 : 2, 3 : 3, 4 : 3, 5 : 2, 6 : 1, 7 : 0}
@@ -185,8 +185,8 @@ def printWinners():
     print(WINNERS)
 
 iterations = 50
-numberTrainGame = 1
-numberTestGame = 1
+numberTrainGame = 15
+numberTestGame = 15
 
 if __name__ == '__main__':
     for epoch in range(iterations):
