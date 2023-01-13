@@ -1,7 +1,7 @@
 import Classes as c
 import Command.controller as controller
-import Command.commands as commands
-import Command.action as action
+# import Command.commands as commands
+# import Command.action as action
 import pygame
 import Graphics.GameView as GameView
 import os
@@ -10,12 +10,24 @@ import time
 import AI.Gnn as Gnn
 import pygame_gui
 
-speed = True
-withGraphics = False
-withDelay = False
-realPlayer = False
-save = True
-train = True
+PURE = False
+toggle = False
+toVis = False
+
+if(not toVis):
+    speed = True
+    withGraphics = False
+    withDelay = False
+    realPlayer = False
+    save = True
+    train = True
+else:
+    speed =  True # False #
+    withGraphics = True
+    withDelay = False
+    realPlayer = False
+    save = False
+    train = False
 ctr = controller.ActionController()
 
 WINNERS = [0.0, 0.0, 0.0, 0.0]
@@ -27,9 +39,11 @@ def doActionWithGraphics(player):
     view.updateGameScreen()
     if(not onlyPassTurn):  
         saveMove(save, player)
+
 def undoActionWithGraphics():
     ctr.undo()
     view.updateGameScreen()
+
 def redoActionWithGraphics():
     ctr.redo()
     view.updateGameScreen()
@@ -41,7 +55,8 @@ def decisionManager(player):
         # while event.type != pygame_gui.UI_BUTTON_PRESSED and event.type != pygame.KEYDOWN:
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if(event.ui_element == view.aiButton):
-                player.AI = True
+                player.PURE_AI = True
+                # player.AI = True
                 player.RANDOM = False
                 doActionWithGraphics(player)
             elif(event.ui_element == view.randomButton):
@@ -58,7 +73,6 @@ def decisionManager(player):
             elif(event.ui_element == view.stack.scroll_bar.top_button):
                 view.stack.scroll_bar.set_scroll_from_start_percentage(view.stack.scroll_bar.start_percentage-0.1)
                 view.updateGameScreen(True)
-                
             else:
                 print("Nothing clicked")
         if event.type == pygame.KEYDOWN:
@@ -89,34 +103,39 @@ def decisionManager(player):
         if(not onlyPassTurn):  
             saveMove(save, player) 
 
-# def doActionDecisions(game: c.GameWithCommands, player: c.PlayerWithCommands, withGraphics = True):
-#     action = decisionManager(player)
-    
-#     if(action == commands.BuyDevCardCommand):
-#         devCardsBought[player.id-1] += 1
-
-#     if(game.checkWon(player)):
-#         return
-#     if(action in commands.cardCommands()):
-#         player.turnCardUsed = True
-
 def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True):
-    global devCardsBought
-    devCardsBought = [0.0, 0.0, 0.0, 0.0]
+    global toggle
+    global PURE 
+    #toggle = not toggle # PER CAMBIARE AI E RANDOM
+    # global devCardsBought
+    # devCardsBought = [0.0, 0.0, 0.0, 0.0]
     if(withGraphics):
         GameView.GameView.setupAndDisplayBoard(view)
         GameView.GameView.setupPlaces(view)
         GameView.GameView.updateGameScreen(view)
     game.actualTurn = 0 
     won = False
-    game.players[0].AI = True
-    game.players[1].AI = True
-    game.players[2].AI = True
-    game.players[3].AI = True
-    # game.players[0].RANDOM = True
-    # game.players[1].RANDOM = True
-    # game.players[2].RANDOM = True
-    # game.players[3].RANDOM = True
+
+    if(PURE):
+        print("PURE AI GAME.")
+
+        game.players[0].PURE_AI = True
+        game.players[1].PURE_AI = True
+        game.players[2].PURE_AI = True
+        game.players[3].PURE_AI = True
+    else:
+        if(toggle):
+            print("RANDOM GAME.")
+            game.players[0].RANDOM = True
+            game.players[1].RANDOM = True
+            game.players[2].RANDOM = True
+            game.players[3].RANDOM = True
+        else:
+            print("AI GAME.")
+            game.players[0].RANDOM = True
+            game.players[1].PURE_AI = True
+            game.players[2].AI = True
+            game.players[3].RANDOM = True
     
     reverseTurnOffSet = {0 : 0, 1 : 1, 2 : 2, 3 : 3, 4 : 3, 5 : 2, 6 : 1, 7 : 0}
 
@@ -126,12 +145,10 @@ def playGameWithGraphic(game: c.GameWithCommands, view=None, withGraphics = True
             decisionManager(playerTurn)
         else:
             playerTurn = game.players[game.actualTurn%game.nplayer]
-            # doActionDecisions(game, playerTurn, withGraphics)
             decisionManager(playerTurn)
             if(playerTurn.victoryPoints >= 10):
                 WINNERS[playerTurn.id-1] += 1
                 s = 'Winner: ' + str(playerTurn.id) + "\n"
-                # game.printVictoryPointsOfAll(devCardsBought)
                 saveToJson(playerTurn)
                 print(s) 
                 won = True
@@ -149,12 +166,12 @@ def saveMove(save, player):
 def saveToJson(victoryPlayer):
     if(save):
         for i in range(len(total)):
-            total.globals[i]['winner'] = victoryPlayer.id
+            total.globals[i]['winner'] = 1 if total.globals[i]['player_id'] == victoryPlayer.id else 0
+            del total.globals[i]['player_id']
         print("Length of total moves of this game: ", len(total))
         global allGames
         allGames = pd.concat([allGames, total], ignore_index=True)
         print("Length of total moves of allGames: ", len(allGames))
-
 
 def printWinners():
     normValue = sum(WINNERS)
@@ -167,16 +184,16 @@ def printWinners():
     print(s)
     print(WINNERS)
 
-epochs = 1
-batchs = 10
+iterations = 50
+numberTrainGame = 5
+numberTestGame = 5
 
-for epoch in range(epochs):
-    print('Iteration: ', epoch+1, "/", epochs)
+for epoch in range(iterations):
+    print('Iteration: ', epoch+1, "/", iterations)
     allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})   
-    for batch in range(batchs): 
-        print('game: ', batch+1, "/", batchs) 
+    for batch in range(numberTrainGame): 
+        print('game: ', batch+1, "/", numberTrainGame) 
         total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
-        #g = c.Game.Game()
         g = c.GameWithCommands.Game()
         if(withGraphics):
             view = GameView.GameView(g, ctr)
@@ -187,6 +204,26 @@ for epoch in range(epochs):
         c.Bank.Bank().reset()
 
     if(train):
-        allGames.to_json("./json/game.json")
-        Gnn.Gnn().trainModel()
         printWinners()
+        allGames.to_json("./json/training_game.json")
+
+    allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})   
+    for batch in range(numberTestGame): 
+        print('game: ', batch+1, "/", numberTestGame) 
+        total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
+        g = c.GameWithCommands.Game()
+
+        if(withGraphics):
+            view = GameView.GameView(g, ctr)
+            playGameWithGraphic(g, view, withGraphics)
+        else:
+            playGameWithGraphic(g, None, withGraphics)
+
+        c.Board.Board().reset()
+        c.Bank.Bank().reset()
+
+    if(train):
+        printWinners()
+        allGames.to_json("./json/testing_game.json")
+        Gnn.Gnn().trainModel(validate=True)
+            

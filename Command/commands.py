@@ -82,17 +82,38 @@ class UseRobberCommand:
     player: Player
     tilePosition: cg.Tile
     actions: list[Action] = field(default_factory=list)
+    previousLastRobberUserId: int = 0
+
+    def __post_init__(self):
+        for p in self.player.game.players:
+            if(p.lastRobberUser == True):
+                self.previousLastRobberUserId = p.id
 
     def execute(self):
         self.actions.extend([SetRobberTile(self.tilePosition), StealResourceCommand(self.player, Board.Board().tiles[self.tilePosition])])        
         for action in self.actions:
             action.execute()
+
+        self.player.game.players[self.previousLastRobberUserId-1].lastRobberUser = False
+        self.player.lastRobberUser = True
+
     def undo(self):
         for action in reversed(self.actions):
             action.undo()
+
+        if(self.previousLastRobberUserId != 0):
+            self.player.game.players[self.previousLastRobberUserId-1].lastRobberUser = True
+            self.player.lastRobberUser = False
+        else:
+            self.player.lastRobberUser = False
+
     def redo(self):
         for action in self.actions:
             action.redo()
+
+        self.player.game.players[self.previousLastRobberUserId-1].lastRobberUser = False
+        self.player.lastRobberUser = True
+
     def __repr__(self) -> str:
         s = f'{self.__class__.__name__}'
         for action in self.actions:
@@ -107,7 +128,7 @@ class SevenOnDicesCommand:
     def execute(self):
         for pyr in self.player.game.players:
             half = int(pyr.resourceCount()/2)
-            if(pyr.resourceCount() >= 7):
+            if(pyr.resourceCount() > 7):
                 if(pyr.AI or pyr.RANDOM):
                     for _ in range(0, half):
                         _, resource = pyr.evaluate(DiscardResourceCommand)
@@ -199,7 +220,7 @@ class BankGiveResourceCommand:
                 self.actions.append(AddResourceToPlayer(self.player, self.resource))
                 self.actions.append(RemoveResourceToBank(self.resource))
             else:
-                print(f'Bank does not have {self.resource} anymore.')
+                print(f'Bank does not have {self.resource} anymore. Request by Player {self.player.id}')
         for action in self.actions:
             action.execute()
 
@@ -436,13 +457,11 @@ class PlaceSecondColonyCommand:
             s+=f'\n\t{action}'
         return s
     
-
 @dataclass
 class FirstChoiseCommand:
     player: Player
     placeChoosen: cg.Place
     actions: list[Action] = field(default_factory=list)
-
 
     def execute(self):
         tmp = PlaceInitialColonyCommand(self.player, self.placeChoosen)
@@ -635,6 +654,8 @@ class BuyDevCardCommand:
         self.actions.extend([PlayerSpendResourceCommand(self.player, "iron"),
                                         PlayerSpendResourceCommand(self.player, "crop"),
                                         PlayerSpendResourceCommand(self.player, "sheep")])
+        
+        self.player.boughtCards += 1
 
         for operation in self.actions:
             operation.execute()
@@ -657,6 +678,8 @@ class BuyDevCardCommand:
         for operation in reversed(self.actions):
             operation.undo()
 
+        self.player.boughtCards -= 1
+
         if(self.card == "knight"):
             self.player.justBoughtKnights -= 1
         if(self.card == "monopoly"):
@@ -673,6 +696,8 @@ class BuyDevCardCommand:
     def redo(self):
         for operation in self.actions:
             operation.redo()
+
+        self.player.boughtCards += 1
 
         self.card = Board.Board().deck[0]
         if(self.card == "knight"):
@@ -729,10 +754,8 @@ class StealResourceCommand:
                 playersInTile.append(owner)
         if len(playersInTile) > 0:
             self.chosenPlayer = playersInTile[random.randint(0,len(playersInTile)-1)]
-            # print("I'm the one who is stealing: ", self.player.id)
             self.takenResource = self.chosenPlayer.stealFromMe()
         else:
-            # print("Robber placed in a free of player tile.")
             self.chosenPlayer = None
             self.takenResource = None
 
@@ -740,7 +763,6 @@ class StealResourceCommand:
         if self.chosenPlayer is not None and self.takenResource is not None:
             self.actions.append(AddResourceToPlayer(self.player, self.takenResource))
             self.actions.append(RemoveResourceToPlayer(self.chosenPlayer, self.takenResource))
-
         for action in self.actions:
             action.execute()
     def undo(self):
@@ -788,6 +810,12 @@ class UseKnightCommand:
     player: Player
     tilePosition: cg.Tile
     actions: list[Action] = field(default_factory=list)
+    previousLastRobberUserId: int = 0
+
+    def __post_init__(self):
+        for p in self.player.game.players:
+            if(p.lastRobberUser == True):
+                self.previousLastRobberUserId = p.id
 
     def execute(self):
         self.player.unusedKnights -= 1
@@ -796,16 +824,29 @@ class UseKnightCommand:
         self.actions.append(CheckLargestArmyCommand(self.player.game))
         for action in self.actions:
             action.execute()
+        self.player.game.players[self.previousLastRobberUserId-1].lastRobberUser = False
+        self.player.lastRobberUser = True
+
     def undo(self):
         for action in reversed(self.actions):
             action.undo()
         self.player.unusedKnights += 1
         self.player.usedKnights -= 1
+
+        if(self.previousLastRobberUserId != 0):
+            self.player.game.players[self.previousLastRobberUserId-1].lastRobberUser = True
+            self.player.lastRobberUser = False
+        else:
+            self.player.lastRobberUser = False
+
     def redo(self):
         self.player.unusedKnights -= 1
         self.player.usedKnights += 1
         for action in self.actions:
             action.redo()   
+        self.player.game.players[self.previousLastRobberUserId-1].lastRobberUser = False
+        self.player.lastRobberUser = True
+
     def __repr__(self) -> str:
         s = f'{self.__class__.__name__}'
         for action in self.actions:
