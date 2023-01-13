@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-from torch.nn import ReLU
 import torch.nn.functional as F
 from torch_geometric.data import Data, Batch
 import torch_geometric.loader as ld
@@ -10,7 +9,6 @@ import pandas as pd
 import os as os
 import Classes.Board as Board
 from statistics import mean
-import random
 
 
 

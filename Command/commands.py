@@ -1,13 +1,12 @@
 from dataclasses import dataclass, field
 from Command.action import Action as Action
-import Classes.PlayerWithCommands as Player
-import Classes.GameWithCommands as Game
+import Classes.Player as Player
+import Classes.Game as Game
 import Classes.Board as Board
 import Classes.CatanGraph as cg
 import Classes.Bank as Bank
 import random
 import numpy as np
-import time
 
 @dataclass
 class InitialTurnSetupCommand:

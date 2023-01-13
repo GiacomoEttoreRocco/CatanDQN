@@ -1,9 +1,5 @@
-import random
 import numpy as np
 import Classes.CatanGraph as CatanGraph
-import csv
-from csv import QUOTE_NONE
-import pandas as pd
 
 dictCsvResources = {None: 0, "desert": 0, "crop": 1, "iron": 2, "wood": 3, "clay": 4, "sheep": 5}
 dictCsvHarbor = {"" : 0, "3:1" : 1, "2:1 crop" : 2, "2:1 iron" : 3, "2:1 wood" : 4, "2:1 clay" : 5, "2:1 sheep" : 6}  # incrementato il peso!

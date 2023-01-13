@@ -1,7 +1,0 @@
-{
-    
-    "python.terminal.activateEnvironment": true,
-    "python.defaultInterpreterPath": "C:\\Users\\ricca\\miniconda3\\envs\\prnu\\python.exe",
-    
-    // "terminal.integrated.shell.windows":"C:\\Windows\\System32\\cmd.exe"
-}

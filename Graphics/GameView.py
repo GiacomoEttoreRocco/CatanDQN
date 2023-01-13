@@ -8,7 +8,6 @@ import Classes.Board as Board
 import Graphics.PlaceCoordinates as pc
 import AI.Gnn as Gnn
 import os
-import time
 
 class GameView:
     def __init__(self, game, controller):
