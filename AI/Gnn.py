@@ -135,7 +135,7 @@ class Net(nn.Module):
 
     globalFeats = self.GlobalLayers(globalFeats)
     output = torch.cat([embeds, globalFeats], dim=-1)
-    output = torch.dropout(output, p = 0.33, train = isTrain)
+    output = torch.dropout(output, p = 0.5, train = isTrain)
     output = self.OutLayers(output)
     return output
 
