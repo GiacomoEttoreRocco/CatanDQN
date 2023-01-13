@@ -1,14 +1,7 @@
 import Classes as c
-import Command.controller as controller
-# import Command.commands as commands
-# import Command.action as action
-import pygame
-import Graphics.GameView as GameView
-import os
+from AI.Gnn import Gnn
+
 import pandas as pd
-import time
-import AI.Gnn as Gnn
-import pygame_gui
 
 PURE = True
 toggle = False
@@ -28,161 +21,19 @@ else:
     realPlayer = False
     save = False
     train = False
-ctr = controller.ActionController()
 
 WINNERS = [0.0, 0.0, 0.0, 0.0]
-devCardsBought = [0.0, 0.0, 0.0, 0.0]
-
-def doActionWithGraphics(player):
-    action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
-    ctr.execute(action(player, thingNeeded))
-    view.updateGameScreen()
-    if(not onlyPassTurn):  
-        saveMove(save, player)
-
-def undoActionWithGraphics():
-    ctr.undo()
-    view.updateGameScreen()
-
-def redoActionWithGraphics():
-    ctr.redo()
-    view.updateGameScreen()
-
-def decisionManager(player):
-    assert not(not speed and not withGraphics)
-    if(not speed and withGraphics):
-        event = pygame.event.wait()
-        # while event.type != pygame_gui.UI_BUTTON_PRESSED and event.type != pygame.KEYDOWN:
-        if event.type == pygame_gui.UI_BUTTON_PRESSED:
-            if(event.ui_element == view.aiButton):
-                player.PURE_AI = True
-                # player.AI = True
-                player.RANDOM = False
-                doActionWithGraphics(player)
-            elif(event.ui_element == view.randomButton):
-                player.AI = False
-                player.RANDOM = True
-                doActionWithGraphics(player)
-            elif(event.ui_element == view.undoButton):
-                undoActionWithGraphics()
-            elif(event.ui_element == view.redoButton):
-                redoActionWithGraphics()
-            elif(event.ui_element == view.stack.scroll_bar.bottom_button):
-                view.stack.scroll_bar.set_scroll_from_start_percentage(view.stack.scroll_bar.start_percentage+0.1)
-                view.updateGameScreen(True)
-            elif(event.ui_element == view.stack.scroll_bar.top_button):
-                view.stack.scroll_bar.set_scroll_from_start_percentage(view.stack.scroll_bar.start_percentage-0.1)
-                view.updateGameScreen(True)
-            else:
-                print("Nothing clicked")
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                print("Escape")
-            elif event.key == pygame.K_a:
-                player.AI = True
-                player.RANDOM = False
-                doActionWithGraphics(player)
-            else:
-                print(f'Key {event.key} pressed')
-        if event.type == pygame.QUIT:
-            print("Quitting")
-            pygame.quit()
-
-        view.manager.process_events(event) 
-    
-    elif (speed and withGraphics):
-        events = pygame.event.get()
-        for event in events:
-            if event.type == pygame.QUIT:
-                pygame.quit()
-        doActionWithGraphics(player)
-        
-    else:
-        action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
-        ctr.execute(action(player, thingNeeded))
-        if(not onlyPassTurn):  
-            saveMove(save, player) 
-
-def playGameWithGraphic(game: c.Game, view=None, withGraphics = True):
-    global toggle
-    global PURE 
-    #toggle = not toggle # PER CAMBIARE AI E RANDOM
-    # global devCardsBought
-    # devCardsBought = [0.0, 0.0, 0.0, 0.0]
-    if(withGraphics):
-        GameView.GameView.setupAndDisplayBoard(view)
-        GameView.GameView.setupPlaces(view)
-        GameView.GameView.updateGameScreen(view)
-    game.actualTurn = 0 
-    won = False
-
-    if(PURE):
-        print("PURE AI GAME.")
-
-        game.players[0].PURE_AI = True
-        game.players[1].PURE_AI = True
-        game.players[2].PURE_AI = True
-        game.players[3].PURE_AI = True
-    else:
-        if(toggle):
-            print("RANDOM GAME.")
-            game.players[0].RANDOM = True
-            game.players[1].RANDOM = True
-            game.players[2].RANDOM = True
-            game.players[3].RANDOM = True
-        else:
-            print("AI GAME.")
-            game.players[0].RANDOM = True
-            game.players[1].AI = True
-            game.players[2].PURE_AI = True
-            game.players[3].RANDOM = True
-    
-    reverseTurnOffSet = {0 : 0, 1 : 1, 2 : 2, 3 : 3, 4 : 3, 5 : 2, 6 : 1, 7 : 0}
-
-    while won == False:
-        if(game.actualTurn < 8):
-            playerTurn = game.players[reverseTurnOffSet[game.actualTurn]]     
-            decisionManager(playerTurn)
-        else:
-            playerTurn = game.players[game.actualTurn%game.nplayer]
-            decisionManager(playerTurn)
-            if(playerTurn.victoryPoints >= 10):
-                WINNERS[playerTurn.id-1] += 1
-                s = 'Winner: ' + str(playerTurn.id) + "\n"
-                saveToJson(playerTurn)
-                print(s) 
-                won = True
-
-    if(withGraphics):
-        pygame.quit()
-
-def saveMove(save, player):
-    if(save):
-        places = c.Board.Board().placesToDict(player)
-        edges = c.Board.Board().edgesToDict(player)
-        globals = player.globalFeaturesToDict()
-        total.loc[len(total)] = [places, edges, globals]
-
-def saveToJson(victoryPlayer):
-    if(save):
-        for i in range(len(total)):
-            total.globals[i]['winner'] = 1 if total.globals[i]['player_id'] == victoryPlayer.id else 0
-            del total.globals[i]['player_id']
-        print("Length of total moves of this game: ", len(total))
-        global allGames
-        allGames = pd.concat([allGames, total], ignore_index=True)
-        print("Length of total moves of allGames: ", len(allGames))
 
 def printWinners():
-    normValue = sum(WINNERS)
-    toPrint = [0.0, 0.0, 0.0, 0.0]
-    for i, v in enumerate(WINNERS):
-        toPrint[i] = v/normValue
-    s = ""
-    for i, vperc in enumerate(toPrint):
-        s = s + "Player " + str(i+1)+ ": " + str(round(vperc*100,2)) + " % "
-    print(s)
-    print(WINNERS)
+        normValue = sum(WINNERS)
+        toPrint = [0.0, 0.0, 0.0, 0.0]
+        for i, v in enumerate(WINNERS):
+            toPrint[i] = v/normValue
+        s = ""
+        for i, vperc in enumerate(toPrint):
+            s = s + "Player " + str(i+1)+ ": " + str(round(vperc*100,2)) + " % "
+        print(s)
+        print(WINNERS)
 
 iterations = 50
 numberTrainGame = 1
@@ -194,15 +45,11 @@ if __name__ == '__main__':
         allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})   
         for batch in range(numberTrainGame): 
             print('game: ', batch+1, "/", numberTrainGame) 
-            total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
-            g = c.Game.Game()
-            if(withGraphics):
-                view = GameView.GameView(g, ctr)
-                playGameWithGraphic(g, view, withGraphics)
-            else:
-                playGameWithGraphic(g, None, withGraphics)
-            c.Board.Board().reset()
-            c.Bank.Bank().reset()
+            game = c.GameController.GameController(withGraphics=True)
+            winnerId = game.playGameWithGraphic()
+            WINNERS[winnerId-1]+=1
+            allGames = pd.concat([allGames, game.total], ignore_index=True)
+            print("Length of total moves of allGames: ", len(allGames))
 
         if(train):
             printWinners()
@@ -211,20 +58,14 @@ if __name__ == '__main__':
         allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})   
         for batch in range(numberTestGame): 
             print('game: ', batch+1, "/", numberTestGame) 
-            total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
-            g = c.Game.Game()
-
-            if(withGraphics):
-                view = GameView.GameView(g, ctr)
-                playGameWithGraphic(g, view, withGraphics)
-            else:
-                playGameWithGraphic(g, None, withGraphics)
-
-            c.Board.Board().reset()
-            c.Bank.Bank().reset()
+            game = c.GameController.GameController(withGraphics=True)
+            winnerId = game.playGameWithGraphic()
+            WINNERS[winnerId-1]+=1
+            allGames = pd.concat([allGames, game.total], ignore_index=True)
+            print("Length of total moves of allGames: ", len(allGames))
 
         if(train):
             printWinners()
             allGames.to_json("./json/testing_game.json")
-            Gnn.Gnn().trainModel(validate=True)
+            Gnn().trainModel(validate=True)
                 

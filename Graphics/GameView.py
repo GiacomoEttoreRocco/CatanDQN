@@ -19,8 +19,7 @@ class GameView:
         self.sourceFileDir = os.path.dirname(os.path.abspath(__file__))
         self.robberImgPath = os.path.join(self.sourceFileDir, "imgs/robber.png")
         self.tempRobberTile = -1 # per motivi di efficienza.
-        # #Use pygame to display the board
-        self.game = game #?????
+        self.game = game
         self.controller = controller
         windowSize = self.width, self.height
         self.playerColorDict = {0: pygame.Color('grey'), 1: pygame.Color('red'), 2: pygame.Color('yellow'),
@@ -35,8 +34,8 @@ class GameView:
         self.graphicPlaceList = []
         self.screen = pygame.display.set_mode(windowSize)
 
-        self.manager = pygame_gui.UIManager(windowSize, 'Graphics/style/vertical_bar.json')
-
+        self.manager = pygame_gui.UIManager(windowSize)
+        
         self.aiButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.gameWidth/2 - self.height//10 * 2, self.height - self.height//20), (self.height//10, self.height//20)),
                                              text='Move AI',
                                              manager=self.manager)

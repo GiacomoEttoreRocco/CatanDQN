@@ -13,10 +13,10 @@ class Game:
     def __init__(self, num_players = 4):
 
         self.ctr = controller.ActionController()
-        ########################################## dummy is necessary: debugging and functioning reason. 
+
         self.dummy = Player.Player(0, self)
         self.dummy.victoryPoints = 4
-        ##########################################
+
         self.nplayer = num_players
         self.players = [Player.Player(i+1, self) for i in range(0, num_players)]
         self.largestArmyPlayer = self.dummy
@@ -39,31 +39,6 @@ class Game:
             assert self.players[i].nColonies == 0
             assert self.players[i].nStreets == 0
             assert self.players[i].unusedKnights == 0
-
-    def printVictoryPointsOfAll(self, nDevCardsBought: list):
-        for player in self.players:
-            s = str(player.id) + " : " + str(player.victoryPoints) + " -> Points from colony: +" + str(player.nColonies) + " From cities: +" + str(player.nCities*2) + " From vpCards: +" + str(player.victoryPointsCards)
-            if(player.id == self.largestArmyPlayer.id):
-                s += " From Knigths +2 "
-            if(player.id == self.longestStreetOwner.id):    
-                s += " From Streets +2 "
-            s += " Number of DevCards bounght: " + str(nDevCardsBought[player.id-1])
-            print(s) 
-
-        s = str(self.dummy.id) + " : " + str(self.dummy.victoryPoints) + " -> Points from colony: +" + str(self.dummy.nColonies) + " From cities: +" + str(self.dummy.nCities*2) + " From vpCards: +" + str(self.dummy.victoryPointsCards)
-        if(self.dummy.id == self.largestArmyPlayer.id):
-            s += " From Knigths +2 "
-        if(self.dummy.id == self.longestStreetOwner.id):    
-            s += " From Streets +2 "
-        print(s) 
-
-        for player in self.players:
-            s = "Player Id: " +str(player.id) + " : "
-            assert player.victoryPoints >= 2, s+"\nError: found a player with less then 2 points."
-            assert player.victoryPoints <= 12, s+"\nError: found a player with more then 11 points."
-
-        assert self.dummy.victoryPoints >= 0, s+"\nError, fake player weird behaviour: less then 0 points."
-        assert self.dummy.victoryPoints <= 4, s+"\nError: fake player weird behaviour: more then 4 points."
 
     def dice_production(self, number):
         for tile in Board.Board().tiles:
@@ -192,35 +167,4 @@ class Game:
                 edge = tuple(sorted([place, adjPlace]))
                 if(Board.Board().edges[edge] == player.id):
                     toRet.append(adjPlace)
-        return toRet
-
-    # def playGame(self):
-    #     Board.Board().reset()
-    #     Bank.Bank().reset()
-    #     turn = 1 
-    #     won = False
-    #     for p in self.players:
-    #         self.doInitialChoise(p)
-    #     for p in sorted(self.players, reverse=True):
-    #         self.doInitialChoise(p, giveResources=True)
-    #     while won == False:
-    #         playerTurn = self.players[turn%self.nplayer]
-    #         turn += 1
-    #         self.doTurn(playerTurn)
-    #         if(playerTurn.victoryPoints >= 10):
-    #             print("The winner is: ", playerTurn, "!")
-    #             # time.sleep(5)
-    #             return playerTurn
-    #         if(turn % 4 == 0):
-    #             print("========================================== Start of turn: ", str(int(turn/4)), "=========================================================")
-
-
-
-
-
-
-
-
-
-                        
-        
+        return toRet   
