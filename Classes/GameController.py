@@ -4,6 +4,7 @@ import pandas as pd
 import Graphics.GameView as GameView
 import AI.Gnn as Gnn
 import Classes as c
+from Classes.PlayerTypes import PlayerTypes
 
 class GameController:
 
@@ -47,12 +48,10 @@ class GameController:
             event = pygame.event.wait()
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if(event.ui_element == self.view.aiButton):
-                    player.PURE_AI = True
-                    player.RANDOM = False
+                    player.type = PlayerTypes.PURE
                     self.doActionWithGraphics(player)
                 elif(event.ui_element == self.view.randomButton):
-                    player.AI = False
-                    player.RANDOM = True
+                    player.type = PlayerTypes.PRIORITY
                     self.doActionWithGraphics(player)
                 elif(event.ui_element == self.view.undoButton):
                     self.undoActionWithGraphics()
@@ -70,8 +69,7 @@ class GameController:
                 if event.key == pygame.K_ESCAPE:
                     print("Escape")
                 elif event.key == pygame.K_a:
-                    player.AI = True
-                    player.RANDOM = False
+                    player.type = PlayerTypes.PURE
                     self.doActionWithGraphics(player)
                 else:
                     print(f'Key {event.key} pressed')
@@ -109,23 +107,24 @@ class GameController:
         if(PURE):
             print("PURE AI GAME.")
 
-            self.game.players[0].PURE_AI = True
-            self.game.players[1].PURE_AI = True
-            self.game.players[2].PURE_AI = True
-            self.game.players[3].PURE_AI = True
+            self.game.players[0].type = PlayerTypes.PURE
+            self.game.players[1].type = PlayerTypes.PURE
+            self.game.players[2].type = PlayerTypes.PURE
+            self.game.players[3].type = PlayerTypes.PURE
+
         else:
             if(toggle):
-                print("RANDOM GAME.")
-                self.game.players[0].RANDOM = True
-                self.game.players[1].RANDOM = True
-                self.game.players[2].RANDOM = True
-                self.game.players[3].RANDOM = True
+                print("PRIORITY GAME.")
+                self.game.players[0].type = PlayerTypes.PRIORITY
+                self.game.players[1].type = PlayerTypes.PRIORITY
+                self.game.players[2].type = PlayerTypes.PRIORITY
+                self.game.players[3].type = PlayerTypes.PRIORITY
             else:
                 print("AI GAME.")
-                self.game.players[0].RANDOM = True
-                self.game.players[1].AI = True
-                self.game.players[2].PURE_AI = True
-                self.game.players[3].RANDOM = True
+                self.game.players[0].type = PlayerTypes.PRIORITY
+                self.game.players[1].type = PlayerTypes.HYBRID
+                self.game.players[2].type = PlayerTypes.PURE
+                self.game.players[3].type = PlayerTypes.PRIORITY
         
         reverseTurnOffSet = {0 : 0, 1 : 1, 2 : 2, 3 : 3, 4 : 3, 5 : 2, 6 : 1, 7 : 0}
 

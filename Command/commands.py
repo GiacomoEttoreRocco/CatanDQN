@@ -128,12 +128,11 @@ class SevenOnDicesCommand:
         for pyr in self.player.game.players:
             half = int(pyr.resourceCount()/2)
             if(pyr.resourceCount() > 7):
-                if(pyr.AI or pyr.RANDOM):
-                    for _ in range(0, half):
-                        _, resource = pyr.evaluate(DiscardResourceCommand)
-                        tmp = DiscardResourceCommand(pyr, resource)
-                        tmp.execute()
-                        self.actions.append(tmp)
+                for _ in range(0, half):
+                    _, resource = pyr.evaluate(DiscardResourceCommand)
+                    tmp = DiscardResourceCommand(pyr, resource)
+                    tmp.execute()
+                    self.actions.append(tmp)
         ev, pos = self.player.evaluate(UseRobberCommand)
         tmp = UseRobberCommand(self.player, pos)
         self.actions.append(tmp)

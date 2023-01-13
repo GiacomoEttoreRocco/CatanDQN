@@ -2,17 +2,15 @@ import Command.commands as commands
 import Command.controller as controller
 import Classes.Bank as Bank
 import Classes.Board as Board
+from Classes.PlayerTypes import PlayerTypes
 import random
 import AI.Gnn as Gnn
 
 class Player: 
-    def __init__(self, id, game, AI = False, RANDOM = False):
-        assert not  (AI and RANDOM), "Error in definition of player"
+    def __init__(self, id, game, type: PlayerTypes = PlayerTypes.NOT_SET):
         print("Player initialized.")
-        self.AI = AI
-        self.RANDOM = RANDOM
-
-        self.PURE_AI = False
+        
+        self.type = type
 
         self.ownedColonies = []
         self.ownedStreets = []
@@ -69,15 +67,6 @@ class Player:
     def __le__(self, other):
         return self.id <= other.id
         
-    # def useResource(self, resource):
-    #     # assert self.resources[resource] >= 0, "FATAL ERROR. You should not be able to use this method."
-    #     # temporary solution:
-    #     if(self.resources[resource] > 0):
-    #         self.resources[resource] -= 1
-    #         Bank.Bank().resources[resource] += 1
-    #     else:
-    #         print("This should be after a - Bank does not have this resorce anymore - , if not, you may have a problem sir.")
-
     def chooseAction(self, actions):
         print("Mosse disponibili: ")
         for i, action in enumerate(actions):
@@ -390,14 +379,15 @@ class Player:
         return resourceTaken
 
     def actionValue(self, action, thingNeeded = None):
-        if self.AI:
-            return self.aiActionValue(action, thingNeeded)
-        elif self.RANDOM:
-            return self.randomActionValue(action, thingNeeded)
-        elif self.PURE_AI:
-            return self.PUREaiActionValue(action, thingNeeded)
+        assert self.type != PlayerTypes.NOT_SET
+        if self.type == PlayerTypes.HYBRID:
+            return self.hybridAiActionValue(action, thingNeeded)
+        elif self.type == PlayerTypes.PRIORITY:
+            return self.priorityActionValue(action, thingNeeded)
+        elif self.type == PlayerTypes.PURE:
+            return self.pureAiActionValue(action, thingNeeded)
         
-    def randomActionValue(self, action, thingNeeded = None):
+    def priorityActionValue(self, action, thingNeeded = None):
         if(self.victoryPoints >= 8):
             ctr = controller.ActionController()
             ctr.execute(action(self, thingNeeded)) 
@@ -450,7 +440,7 @@ class Player:
             toRet = 0.5
         return toRet + random.uniform(0,2)
 
-    def aiActionValue(self, action, thingNeeded = None):
+    def hybridAiActionValue(self, action, thingNeeded = None):
     # def HARDaiActionValue(self, action, thingNeeded = None):
         ctr = controller.ActionController()
         if(action == commands.FirstChoiseCommand or action == commands.SecondChoiseCommand or action == commands.PlaceInitialStreetCommand or action == commands.PlaceInitialColonyCommand or action == commands.PlaceSecondColonyCommand):
@@ -526,7 +516,7 @@ class Player:
         # print("Evalutation from GNN: ", toRet)
         return toRet 
 
-    def PUREaiActionValue(self, action, thingNeeded = None):
+    def pureAiActionValue(self, action, thingNeeded = None):
         ctr = controller.ActionController()
         if(action == commands.PassTurnCommand): 
             toRet = Gnn.Gnn().evaluatePositionForPlayer(self)
