@@ -117,7 +117,7 @@ class GameController:
                 self.decisionManager(playerTurn)
                 if(playerTurn.victoryPoints >= 10):
                     self.saveToJson(playerTurn)
-                    print(f'Winner: {playerTurn.id}\n')
+                    print(f'Winner: {playerTurn.id}, Agent: {playerTurn.type}\n')
                     if(self.withGraphics):
                         pygame.quit()
                     
