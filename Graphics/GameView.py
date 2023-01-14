@@ -213,10 +213,14 @@ class GameView:
         self.checkAndDrawPlaces()
         self.updateStats()
         self.updateScoreGNN(self.game.currentTurnPlayer)
-        self.blit(self.game.players[0], self.height//200, self.height//200)
-        self.blit(self.game.players[1], self.height//200, self.height-self.height//2.9)
-        self.blit(self.game.players[2], self.gameWidth-self.height//6.9, self.height//200)
-        self.blit(self.game.players[3], self.gameWidth-self.height//6.9, self.height-self.height//2.9)
+
+        if(self.game.nplayers < 3):
+            self.blit(self.game.players[0], self.height//200, self.height//200)
+            self.blit(self.game.players[1], self.gameWidth-self.height//6.9, self.height//200)
+        elif(self.game.nplayers < 4):
+            self.blit(self.game.players[2], self.height//200, self.height-self.height//2.9)
+        else:
+            self.blit(self.game.players[3], self.gameWidth-self.height//6.9, self.height-self.height//2.9)
 
         longestStreetBox = pygame.Rect(self.height//5.8, self.height-self.height//10, self.gameWidth * 0.1, self.height//10)
         self.screen.fill(self.bgScoreColor, longestStreetBox)

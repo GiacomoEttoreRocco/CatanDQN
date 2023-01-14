@@ -53,7 +53,7 @@ def training(iterationProcessIndex, iterations, numberOfTrainingGames, numberOfV
 def performanceEvaluation(iterationProcessIndex, playerTypes, numberOfTestingGames, withGraphics=True, speed=True):
     print("PERFORMANCE EVALUATION STARTED...")
     winners = [0.0, 0.0]
-    special = playerTypes[3]
+    special = playerTypes[-1]
     for numGame in range(numberOfTestingGames): 
         np.random.shuffle(playerTypes)
         print('game: ', numGame+1, "/", numberOfTestingGames) 
@@ -76,21 +76,26 @@ def writeOnCsv(i, winners):
     
 if __name__ == '__main__':
     
-    numberOfRepetitions = 30
+    # numberOfRepetitions = 30
 
-    for idx in range(numberOfRepetitions):
-        training(idx, iterations=2, numberOfTrainingGames=10, numberOfValidationGames=10)
+    # for idx in range(numberOfRepetitions):
+    #     training(idx, iterations=2, numberOfTrainingGames=10, numberOfValidationGames=10)
         
-        results = []
-        playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
-        results.extend(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=20, withGraphics=False))
+    #     results = []
+    #     playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
+    #     results.extend(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=20, withGraphics=False))
 
-        playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PURE]
-        results.extend(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=20, withGraphics=False))
+    #     playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PURE]
+    #     results.extend(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=20, withGraphics=False))
         
-        playerTypes = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.PURE]
-        results.extend(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=20, withGraphics=False))
+    #     playerTypes = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.PURE]
+    #     results.extend(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=20, withGraphics=False))
 
-        writeOnCsv(idx, results)
-    
+    #     writeOnCsv(idx, results)
+
+    playerTypes = [PlayerTypes.PURE, PlayerTypes.PURE] #, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
+    performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=20, withGraphics=True)
+
+
+
                 

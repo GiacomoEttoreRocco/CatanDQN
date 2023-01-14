@@ -17,7 +17,7 @@ class Game:
         self.dummy = Player.Player(0, self)
         self.dummy.victoryPoints = 4
 
-        self.nplayer = num_players
+        self.nplayers = num_players
         self.players = [Player.Player(i+1, self) for i in range(0, num_players)]
         self.largestArmyPlayer = self.dummy
         self.longestStreetOwner = self.dummy
@@ -52,9 +52,9 @@ class Game:
                             Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
 
     def bestAction(self, player: Player):
-        if(self.actualTurn<4):
+        if(self.actualTurn<self.nplayers):
             actions = [commands.FirstChoiseCommand]
-        elif(self.actualTurn<8):
+        elif(self.actualTurn<self.nplayers*2):
             actions = [commands.SecondChoiseCommand]
         else:
             actions = player.availableActions(player.turnCardUsed)

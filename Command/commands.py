@@ -304,15 +304,15 @@ class DefaultPassTurnCommand:
     importantTemp: any = None # serve per prendere il secondo elemento di thing needed (che è un None)
     def execute(self):
         self.player.game.actualTurn += 1
-        self.player.game.currentTurnPlayer = self.player.game.players[self.player.game.actualTurn%4]
+        self.player.game.currentTurnPlayer = self.player.game.players[self.player.game.actualTurn%self.player.game.nplayers]
 
     def undo(self):
         self.player.game.actualTurn -= 1
-        self.player.game.currentTurnPlayer = self.player.game.players[self.player.game.actualTurn%4]
+        self.player.game.currentTurnPlayer = self.player.game.players[self.player.game.actualTurn%self.player.game.nplayers]
 
     def redo(self):
         self.player.game.actualTurn += 1
-        self.player.game.currentTurnPlayer = self.player.game.players[self.player.game.actualTurn%4]
+        self.player.game.currentTurnPlayer = self.player.game.players[self.player.game.actualTurn%self.player.game.nplayers]
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}'
 

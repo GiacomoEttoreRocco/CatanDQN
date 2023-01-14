@@ -14,7 +14,7 @@ class GameController:
         self.withGraphics = withGraphics
 
         self.reset()
-        self.game = c.Game.Game()
+        self.game = c.Game.Game(len(playerTypes)) 
 
         for player, type in zip(self.game.players, playerTypes):
             player.type = type
@@ -106,14 +106,13 @@ class GameController:
             GameView.GameView.updateGameScreen(self.view)
                  
         self.game.actualTurn = 0       
-        reverseTurnOffSet = {0 : 0, 1 : 1, 2 : 2, 3 : 3, 4 : 3, 5 : 2, 6 : 1, 7 : 0}
-
+        reverseTurnOffSet = [*list(range(self.game.nplayers)), *list(reversed(range(self.game.nplayers)))]
         while True:
-            if(self.game.actualTurn < 8):
+            if(self.game.actualTurn < self.game.nplayers*2):
                 playerTurn = self.game.players[reverseTurnOffSet[self.game.actualTurn]]     
                 self.decisionManager(playerTurn)
             else:
-                playerTurn = self.game.players[self.game.actualTurn%self.game.nplayer]
+                playerTurn = self.game.players[self.game.actualTurn%self.game.nplayers]
                 self.decisionManager(playerTurn)
                 if(playerTurn.victoryPoints >= 10):
                     self.saveToJson(playerTurn)
