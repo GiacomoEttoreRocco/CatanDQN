@@ -12,7 +12,7 @@ def printWinners(winners):
             toPrint[i] = v/normValue
         s = ""
         for i, vperc in enumerate(toPrint):
-            s = s + "Player " + str(i+1)+ ": " + str(round(vperc*100,2)) + " % "
+            s = s + "Player " + str(i+1)+ ": " + str(round(vperc*100.0,2)) + " % "
         print(s)
         print(winners)
 
@@ -64,8 +64,8 @@ def performanceEvaluation(iterationProcessIndex, playerTypes, numberOfTestingGam
         else:
             winners[1]+=1
     
-    print(f'PERFORMANCE EVALUATION FINISHED. RESULT: {winners[0]/sum(winners)*100} %') 
-    return [*winners, winners[0]/sum(winners)*100]
+    print(f'PERFORMANCE EVALUATION FINISHED. RESULT: {winners[0]/sum(winners)*100.0} %') 
+    return [*winners, winners[0]/sum(winners)*100.0]
 
     
 def writeOnCsv(i, winners):

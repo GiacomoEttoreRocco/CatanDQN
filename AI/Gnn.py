@@ -14,13 +14,14 @@ from statistics import mean
 
 class Gnn():
     instance = None
-    def __new__(cls, epochs=250, batch=16, learningRate=0.0001):
+    def __new__(cls, epochs=250, batch=16, learningRate=0.0001, weightDecay = 1e-05):
         if cls.instance is None:
             cls.instance = super(Gnn, cls).__new__(cls)
             cls.moves = None
             cls.epochs = epochs
             cls.batch = batch
             cls.learningRate = learningRate
+            cls.weightDecay = weightDecay
             cls.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
             cls.model = Net(9, 8, 3, 9).to(cls.device)
             cls.modelWeightsPath = "AI\model_weights.pth"
@@ -38,7 +39,7 @@ class Gnn():
         testingDataset = MyDataset(train=False)
 
         lossFunction = nn.MSELoss()
-        optimizer = torch.optim.Adam(cls.model.parameters(), lr=cls.learningRate)
+        optimizer = torch.optim.Adam(cls.model.parameters(), lr=cls.learningRate, weight_decay=cls.weightDecay)
         trainingSetLoader = ld.DataLoader(trainingDataset, batch_size=cls.batch)
         testingSetLoader = ld.DataLoader(testingDataset, batch_size=cls.batch)
 
