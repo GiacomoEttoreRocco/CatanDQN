@@ -112,27 +112,27 @@ class Net(nn.Module):
     super().__init__()
     self.Gnn = Sequential('x, edge_index, edge_attr', [
         (GCNConv(gnnInputDim, gnnHiddenDim), 'x, edge_index, edge_attr -> x'),
-        nn.ReLU(inplace=True),
+        nn.Sigmoid(),
         (GCNConv(gnnHiddenDim, gnnHiddenDim), 'x, edge_index, edge_attr -> x'),
-        nn.ReLU(inplace=True),
+        nn.Sigmoid(),
         (GCNConv(gnnHiddenDim, gnnOutputDim), 'x, edge_index, edge_attr -> x'),
-        nn.ReLU(inplace=True)
+        nn.Sigmoid()
     ])
     
     self.GlobalLayers = nn.Sequential(
         nn.Linear(globInputDim, 16),
-        nn.ReLU(inplace=True),
+        nn.Sigmoid(),
         nn.Linear(16, 16),
-        nn.ReLU(inplace=True),
+        nn.Sigmoid(),
         nn.Linear(16, globInputDim),
-        nn.ReLU(inplace=True)
+        nn.Sigmoid()
     )
 
     self.OutLayers = nn.Sequential(
         nn.Linear(54*gnnOutputDim+globInputDim, 85),
-        nn.ReLU(inplace=True),
-        nn.Linear(85, 1),
         nn.Sigmoid(),
+        nn.Linear(85, 1),
+        nn.Sigmoid()
     )
 
   def forward(self, graph, globalFeats, isTrain):

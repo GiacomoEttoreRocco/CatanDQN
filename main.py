@@ -76,10 +76,10 @@ def writeOnCsv(i, winners):
     
 if __name__ == '__main__':
     
-    numberOfRepetitions = 3
+    numberOfRepetitions = 50
 
     for idx in range(numberOfRepetitions):
-        training(idx, iterations=3, numberOfTrainingGames=2, numberOfValidationGames=2)
+        training(idx, iterations=5, numberOfTrainingGames=1, numberOfValidationGames=5)
         
         results = []
         playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
@@ -89,7 +89,7 @@ if __name__ == '__main__':
         results.extend(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=20, withGraphics=False))
         
         playerTypes = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.PURE]
-        results.extend(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=20, withGraphics=False))
+        results.extend(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=10, withGraphics=False))
 
         writeOnCsv(idx, results)
     
