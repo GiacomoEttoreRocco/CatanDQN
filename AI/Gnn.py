@@ -23,15 +23,17 @@ class Gnn():
             cls.learningRate = learningRate
             cls.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
             cls.model = Net(9, 8, 3, 9).to(cls.device)
-            if os.path.exists('./AI/model_weights.pth'):
-                cls.model.load_state_dict(torch.load('./AI/model_weights.pth', map_location=cls.device))
+            cls.modelWeightsPath = "AI\model_weights.pth"
+            if os.path.exists(cls.modelWeightsPath):
+                cls.model.load_state_dict(torch.load(cls.modelWeightsPath, map_location=cls.device))
                 print('Weights loaded..')
         return cls.instance
 
+    def reset(cls):
+        cls.instance = None
+
     def trainModel(cls, validate = False):
-        if os.path.exists('./AI/model_weights.pth'):
-            cls.model.load_state_dict(torch.load('./AI/model_weights.pth', map_location=cls.device))
-            print('Weights loaded..')
+        cls.loadWeights()
         trainingDataset = MyDataset(train=True)
         testingDataset = MyDataset(train=False)
 
@@ -41,6 +43,7 @@ class Gnn():
         testingSetLoader = ld.DataLoader(testingDataset, batch_size=cls.batch)
 
         previousTestingLossMean = cls.test(testingSetLoader, lossFunction=lossFunction)
+        actualModelWeights = cls.model.state_dict()
         print(f'Training loss: - Testing loss: {previousTestingLossMean}')
 
         counter = 0
@@ -51,11 +54,13 @@ class Gnn():
             print(f'Training loss: {trainingLossMean} Testing loss: {testingLossMean}')
             if testingLossMean < previousTestingLossMean:
                 previousTestingLossMean = testingLossMean
-                cls.saveWeights()
+                actualModelWeights = cls.model.state_dict()
+                
                 counter = 0
             elif counter<2:
                 counter+=1
             else:
+                cls.saveWeights(actualModelWeights)
                 return
     
     def test(cls, loader, lossFunction):
@@ -93,9 +98,14 @@ class Gnn():
         edge_index = torch.tensor([edges['place_1'],edges['place_2']], dtype=torch.long)
         return Data(x=x, edge_index=edge_index, edge_attr=w)
 
-    def saveWeights(cls):
-        torch.save(cls.model.state_dict(), './AI/model_weights.pth')
+    def saveWeights(cls, weights):
+        torch.save(weights, cls.modelWeightsPath)
         print("weights correctly updated.") 
+    
+    def loadWeights(cls):
+        if os.path.exists(cls.modelWeightsPath):
+            cls.model.load_state_dict(torch.load(cls.modelWeightsPath, map_location=cls.device))
+            print('Weights loaded..')
 
 class Net(nn.Module):
   def __init__(self, gnnInputDim, gnnHiddenDim, gnnOutputDim, globInputDim):

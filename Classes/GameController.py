@@ -29,6 +29,7 @@ class GameController:
     def reset(self):
         c.Board.Board().reset()
         c.Bank.Bank().reset()
+        Gnn.Gnn().reset()
 
     def doActionWithGraphics(self, player):
         action, thingNeeded, onlyPassTurn = player.game.bestAction(player)

@@ -385,7 +385,7 @@ class Player:
             ctr = controller.ActionController()
             ctr.execute(action(self, thingNeeded)) 
             if(self.victoryPoints >= 10):
-                print("Priority Agent conclusive move! " + str(action))
+                # print("Priority Agent conclusive move! " + str(action))
                 toRet = 300.0
                 ctr.undo()
                 return toRet
@@ -452,7 +452,7 @@ class Player:
                 ctr.execute(action(self, thingNeeded)) 
                 # print("Azione valutata: ", str(action))
                 if(self.victoryPoints >= 10):
-                    print("Hybrid Agent conclusive move! " + str(action))
+                    # print("Hybrid Agent conclusive move! " + str(action))
                     ctr.undo()
                     return 1000.0
                 if(pointsBefore < self.victoryPoints):
@@ -517,7 +517,7 @@ class Player:
             previousCount = self.resourceCount()
             ctr.execute(action(self, thingNeeded)) 
             if(self.victoryPoints >= 10):
-                print("PureAI Agent conclusive move! " + str(action))
+                # print("PureAI Agent conclusive move! " + str(action))
                 ctr.undo()
                 return 1000.0
             elif(previousCount >= 8):
