@@ -14,14 +14,13 @@ from statistics import mean
 
 class Gnn():
     instance = None
-    def __new__(cls, epochs=250, batch=16, learningRate=0.0001, weightDecay = 1e-05):
+    def __new__(cls, epochs=250, batch=16, learningRate=0.00001):
         if cls.instance is None:
             cls.instance = super(Gnn, cls).__new__(cls)
             cls.moves = None
             cls.epochs = epochs
             cls.batch = batch
             cls.learningRate = learningRate
-            cls.weightDecay = weightDecay
             cls.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
             cls.model = Net(9, 8, 3, 9).to(cls.device)
             cls.modelWeightsPath = "AI\model_weights.pth"
@@ -39,7 +38,7 @@ class Gnn():
         testingDataset = MyDataset(train=False)
 
         lossFunction = nn.MSELoss()
-        optimizer = torch.optim.Adam(cls.model.parameters(), lr=cls.learningRate, weight_decay=cls.weightDecay)
+        optimizer = torch.optim.Adam(cls.model.parameters(), lr=cls.learningRate)
         trainingSetLoader = ld.DataLoader(trainingDataset, batch_size=cls.batch)
         testingSetLoader = ld.DataLoader(testingDataset, batch_size=cls.batch)
 
@@ -113,27 +112,27 @@ class Net(nn.Module):
     super().__init__()
     self.Gnn = Sequential('x, edge_index, edge_attr', [
         (GCNConv(gnnInputDim, gnnHiddenDim), 'x, edge_index, edge_attr -> x'),
-        nn.Sigmoid(),
+        nn.ReLU(inplace=True),
         (GCNConv(gnnHiddenDim, gnnHiddenDim), 'x, edge_index, edge_attr -> x'),
-        nn.Sigmoid(),
+        nn.ReLU(inplace=True),
         (GCNConv(gnnHiddenDim, gnnOutputDim), 'x, edge_index, edge_attr -> x'),
-        nn.Sigmoid()
+        nn.ReLU(inplace=True)
     ])
     
     self.GlobalLayers = nn.Sequential(
         nn.Linear(globInputDim, 16),
-        nn.Sigmoid(),
+        nn.ReLU(inplace=True),
         nn.Linear(16, 16),
-        nn.Sigmoid(),
+        nn.ReLU(inplace=True),
         nn.Linear(16, globInputDim),
-        nn.Sigmoid()
+        nn.ReLU(inplace=True)
     )
 
     self.OutLayers = nn.Sequential(
         nn.Linear(54*gnnOutputDim+globInputDim, 85),
-        nn.Sigmoid(),
+        nn.ReLU(inplace=True),
         nn.Linear(85, 1),
-        nn.Sigmoid()
+        nn.ReLU(inplace=True)
     )
 
   def forward(self, graph, globalFeats, isTrain):

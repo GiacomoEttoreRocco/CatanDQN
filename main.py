@@ -4,6 +4,7 @@ from Classes.PlayerTypes import PlayerTypes
 import pandas as pd
 import numpy as np
 import csv
+import shutil
 
 def printWinners(winners):
         normValue = sum(winners)
@@ -18,7 +19,7 @@ def printWinners(winners):
 
 def training(iterationProcessIndex, iterations, numberOfTrainingGames, numberOfValidationGames):
     winners = [0.0,0.0,0.0,0.0]
-    playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.HYBRID, PlayerTypes.PURE]
+    playerTypes = [PlayerTypes.PRIORITY,PlayerTypes.PRIORITY, PlayerTypes.HYBRID, PlayerTypes.PURE]
     print(f'Starting training: {iterationProcessIndex}')
     for iteration in range(iterations):
         print('Iteration: ', iteration+1, "/", iterations)
@@ -65,7 +66,7 @@ def performanceEvaluation(iterationProcessIndex, playerTypes, numberOfTestingGam
             winners[1]+=1
     
     print(f'PERFORMANCE EVALUATION FINISHED. RESULT: {winners[0]/sum(winners)*100.0} %') 
-    return [*winners, winners[0]/sum(winners)*100.0]
+    return winners[0]/sum(winners)*100.0
 
     
 def writeOnCsv(i, winners):
@@ -75,26 +76,34 @@ def writeOnCsv(i, winners):
 
     
 if __name__ == '__main__':
-    
-    # numberOfRepetitions = 30
 
-    # for idx in range(numberOfRepetitions):
-    #     training(idx, iterations=2, numberOfTrainingGames=10, numberOfValidationGames=10)
-        
-    #     results = []
-    #     playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
-    #     results.extend(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=20, withGraphics=False))
+    SHOW = False
 
-    #     playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PURE]
-    #     results.extend(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=20, withGraphics=False))
-        
-    #     playerTypes = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.PURE]
-    #     results.extend(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=20, withGraphics=False))
+    if not SHOW:
+        numberOfRepetitions = 50
+        maxPerformanceResults = 0
 
-    #     writeOnCsv(idx, results)
+        for idx in range(numberOfRepetitions):
+            training(idx, iterations=2, numberOfTrainingGames=5, numberOfValidationGames=5)
+            
+            results = []
+            playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
+            results.append(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=20, withGraphics=False))
 
-    playerTypes = [PlayerTypes.PURE, PlayerTypes.PURE] #, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
-    performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=20, withGraphics=True)
+            playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PURE]
+            results.append(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=20, withGraphics=False))
+            
+            playerTypes = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.PURE]
+            results.append(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=20, withGraphics=False))
+
+            if maxPerformanceResults<sum(results):
+                print(f'Saving best weights in iteration {idx}...')
+                shutil.copyfile('AI/model_weights.pth', 'AI/best_model_weights.pth')
+
+            writeOnCsv(idx, results)
+        else:
+            playerTypes = [PlayerTypes.PURE, PlayerTypes.PURE] #, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
+            performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=10, withGraphics=True)
 
 
 

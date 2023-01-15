@@ -214,12 +214,12 @@ class GameView:
         self.updateStats()
         self.updateScoreGNN(self.game.currentTurnPlayer)
 
-        if(self.game.nplayers < 3):
+        if(2 <= self.game.nplayers):
             self.blit(self.game.players[0], self.height//200, self.height//200)
             self.blit(self.game.players[1], self.gameWidth-self.height//6.9, self.height//200)
-        elif(self.game.nplayers < 4):
+        if(3 <= self.game.nplayers):
             self.blit(self.game.players[2], self.height//200, self.height-self.height//2.9)
-        else:
+        if(4 <= self.game.nplayers):
             self.blit(self.game.players[3], self.gameWidth-self.height//6.9, self.height-self.height//2.9)
 
         longestStreetBox = pygame.Rect(self.height//5.8, self.height-self.height//10, self.gameWidth * 0.1, self.height//10)
@@ -241,13 +241,7 @@ class GameView:
 
         undoStack = self.controller.summaryUndoStack()
         redoStack = self.controller.summaryRedoStack()
-        # s = "MOVES LIST\n"
-        # for item in redoStack:
-        #     s+=item+"\n"
-        # for item in reversed(undoStack):
-        #     s+=item+"\n"
-        # if not flag:
-        #     self.stack.set_text(s)
+        
         if not flag:
             self.stack.set_item_list(["MOVES LIST"])
             self.stack.add_items(redoStack)
