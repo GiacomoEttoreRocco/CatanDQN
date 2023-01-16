@@ -73,7 +73,7 @@ class GameView:
         self.monopolyCards = []
         self.roadBuildingCards = []
         self.yearOfPlentyCards = []
-
+        self.playerType = []
         self.bgScoreColor = pygame.Color("grey18")
         self.bgScoreColorHighlited = pygame.Color('grey64')
 
@@ -90,6 +90,7 @@ class GameView:
             self.monopolyCards.append(self.font_resourceSmallest.render("MonopolyCards: " + str(self.game.players[i].monopolyCard), False, self.playerColorDict[i+1]))
             self.roadBuildingCards.append(self.font_resourceSmallest.render("RoadBuildingCards: " + str(self.game.players[i].roadBuildingCard), False, self.playerColorDict[i+1]))
             self.yearOfPlentyCards.append(self.font_resourceSmallest.render("YearOfPlentyCards: " + str(self.game.players[i].yearOfPlentyCard), False, self.playerColorDict[i+1]))
+            self.playerType.append(self.font_resourceSmallest.render("Type: " + str(self.game.players[i].type.name), False, self.playerColorDict[i+1]))
 
     def updateStats(self):
         for i in range(0, len(self.game.players)):
@@ -104,9 +105,10 @@ class GameView:
             self.monopolyCards[i] = self.font_resourceSmallest.render("Monopoly: " + str(self.game.players[i].monopolyCard), False, self.playerColorDict[i+1])
             self.roadBuildingCards[i] = self.font_resourceSmallest.render("RoadBuilding: " + str(self.game.players[i].roadBuildingCard), False, self.playerColorDict[i+1])
             self.yearOfPlentyCards[i] = self.font_resourceSmallest.render("YearOfPlenty: " + str(self.game.players[i].yearOfPlentyCard), False, self.playerColorDict[i+1])
+            self.playerType[i] = self.font_resourceSmallest.render("Type: " + str(self.game.players[i].type.name), False, self.playerColorDict[i+1])
 
     def blit(self, player, x, y):
-        playerBox = pygame.Rect(x-self.height//200, y-self.height//200, self.height//6.7, self.height//2.8)
+        playerBox = pygame.Rect(x-self.height//200, y-self.height//200, self.height//6.7, self.height//2.5)
         if self.game.currentTurnPlayer == player:
             self.screen.fill(self.bgScoreColorHighlited, playerBox)
         else:
@@ -122,6 +124,7 @@ class GameView:
         self.screen.blit(self.monopolyCards[player.id-1], (x, y+self.height//4.2))
         self.screen.blit(self.roadBuildingCards[player.id-1], (x, y+self.height//3.6))
         self.screen.blit(self.yearOfPlentyCards[player.id-1], (x, y+self.height//3.3))
+        self.screen.blit(self.playerType[player.id-1], (x, y+self.height//2.8))
 
     def setupAndDisplayBoard(self, bg = True):
         self.graphicTileList = [] # recently added
@@ -218,9 +221,9 @@ class GameView:
             self.blit(self.game.players[0], self.height//200, self.height//200)
             self.blit(self.game.players[1], self.gameWidth-self.height//6.9, self.height//200)
         if(3 <= self.game.nplayers):
-            self.blit(self.game.players[2], self.height//200, self.height-self.height//2.9)
+            self.blit(self.game.players[2], self.height//200, self.height-self.height//2.6)
         if(4 <= self.game.nplayers):
-            self.blit(self.game.players[3], self.gameWidth-self.height//6.9, self.height-self.height//2.9)
+            self.blit(self.game.players[3], self.gameWidth-self.height//6.9, self.height-self.height//2.6)
 
         longestStreetBox = pygame.Rect(self.height//5.8, self.height-self.height//10, self.gameWidth * 0.1, self.height//10)
         self.screen.fill(self.bgScoreColor, longestStreetBox)
