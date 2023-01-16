@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.data import Data, Batch
 import torch_geometric.loader as ld
-from torch_geometric.nn import GCNConv, Sequential
+from torch_geometric.nn import GCNConv, GraphConv, Sequential, global_mean_pool
 import numpy as np
 import pandas as pd
 import os as os
@@ -14,7 +14,7 @@ from statistics import mean
 
 class Gnn():
     instance = None
-    def __new__(cls, epochs=250, batch=16, learningRate=0.00001):
+    def __new__(cls, epochs=250, batch=16, learningRate=0.0001):
         if cls.instance is None:
             cls.instance = super(Gnn, cls).__new__(cls)
             cls.moves = None
@@ -23,7 +23,7 @@ class Gnn():
             cls.learningRate = learningRate
             cls.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
             cls.model = Net(9, 8, 3, 9).to(cls.device)
-            cls.modelWeightsPath = "AI\model_weights.pth"
+            cls.modelWeightsPath = "AI/model_weights.pth"
             if os.path.exists(cls.modelWeightsPath):
                 cls.model.load_state_dict(torch.load(cls.modelWeightsPath, map_location=cls.device))
                 print('Weights loaded..')
@@ -111,39 +111,41 @@ class Net(nn.Module):
   def __init__(self, gnnInputDim, gnnHiddenDim, gnnOutputDim, globInputDim):
     super().__init__()
     self.Gnn = Sequential('x, edge_index, edge_attr', [
-        (GCNConv(gnnInputDim, gnnHiddenDim), 'x, edge_index, edge_attr -> x'),
+        (GraphConv(gnnInputDim, gnnHiddenDim), 'x, edge_index, edge_attr -> x'),
         nn.ReLU(inplace=True),
-        (GCNConv(gnnHiddenDim, gnnHiddenDim), 'x, edge_index, edge_attr -> x'),
+        (GraphConv(gnnHiddenDim, 4), 'x, edge_index, edge_attr -> x'),
         nn.ReLU(inplace=True),
-        (GCNConv(gnnHiddenDim, gnnOutputDim), 'x, edge_index, edge_attr -> x'),
-        nn.ReLU(inplace=True)
+        # (GCNConv(gnnHiddenDim, gnnOutputDim), 'x, edge_index, edge_attr -> x'),
+        # nn.ReLU(inplace=True)
     ])
     
     self.GlobalLayers = nn.Sequential(
-        nn.Linear(globInputDim, 16),
+        nn.Linear(globInputDim, 8),
         nn.ReLU(inplace=True),
-        nn.Linear(16, 16),
+        nn.Linear(8, 8),
         nn.ReLU(inplace=True),
-        nn.Linear(16, globInputDim),
+        nn.Linear(8, globInputDim),
         nn.ReLU(inplace=True)
     )
 
     self.OutLayers = nn.Sequential(
-        nn.Linear(54*gnnOutputDim+globInputDim, 85),
+        # nn.Linear(54*gnnOutputDim+globInputDim, 85),
+        nn.Linear(54*4+globInputDim, 128),
         nn.ReLU(inplace=True),
-        nn.Linear(85, 1),
-        nn.ReLU(inplace=True)
+        nn.Linear(128, 1),
+        nn.Sigmoid()
     )
 
   def forward(self, graph, globalFeats, isTrain):
-    batch_size, x, edge_index, edge_attr = graph.num_graphs, graph.x, graph.edge_index, graph.edge_attr
+    batch_size, batch, x, edge_index, edge_attr = graph.num_graphs, graph.batch, graph.x, graph.edge_index, graph.edge_attr
     
     embeds = self.Gnn(x, edge_index=edge_index, edge_attr=edge_attr)
-    embeds = torch.reshape(embeds, (batch_size, 54*3))
+    # embeds = torch.reshape(embeds, (batch_size, 54*3))
+    embeds = torch.reshape(embeds, (batch_size, 54*4))
 
     globalFeats = self.GlobalLayers(globalFeats)
     output = torch.cat([embeds, globalFeats], dim=-1)
-    output = torch.dropout(output, p = 0.5, train = isTrain)
+    output = torch.dropout(output, p = 0.2, train = isTrain)
     output = self.OutLayers(output)
     return output
 

@@ -520,7 +520,7 @@ class Player:
                 # print("PureAI Agent conclusive move! " + str(action))
                 ctr.undo()
                 return 1000.0
-            elif(previousCount >= 8):
+            elif(previousCount >= 8 and self.resourceCount() < 8):
                 toRet = 100.0 + Gnn.Gnn().evaluatePositionForPlayer(self)
                 ctr.undo()
             else:
