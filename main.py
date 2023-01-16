@@ -84,26 +84,27 @@ if __name__ == '__main__':
         maxPerformanceResults = 0
 
         for idx in range(numberOfRepetitions):
-            training(idx, iterations=2, numberOfTrainingGames=5, numberOfValidationGames=5)
+            training(idx, iterations=3, numberOfTrainingGames=5, numberOfValidationGames=5)
             
             results = []
             playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
-            results.append(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=20, withGraphics=False))
+            results.append(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=15, withGraphics=False))
 
             playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PURE]
-            results.append(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=20, withGraphics=False))
+            results.append(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=15, withGraphics=False))
             
             playerTypes = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.PURE]
-            results.append(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=20, withGraphics=False))
+            results.append(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=15, withGraphics=False))
 
             if maxPerformanceResults<sum(results):
                 print(f'Saving best weights in iteration {idx}...')
+                maxPerformanceResults = sum(results)
                 shutil.copyfile('AI/model_weights.pth', 'AI/best_model_weights.pth')
 
             writeOnCsv(idx, results)
-        else:
-            playerTypes = [PlayerTypes.PURE, PlayerTypes.PURE] #, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
-            performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=10, withGraphics=True)
+    else:
+        playerTypes = [PlayerTypes.PRIORITY,PlayerTypes.HYBRID,PlayerTypes.PURE,PlayerTypes.PURE] #, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
+        performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=2, withGraphics=True)
 
 
 
