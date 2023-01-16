@@ -77,14 +77,14 @@ def writeOnCsv(i, winners):
     
 if __name__ == '__main__':
 
-    SHOW = False
+    SHOW = True
 
     if not SHOW:
         numberOfRepetitions = 50
         maxPerformanceResults = 0
 
         for idx in range(numberOfRepetitions):
-            training(idx, iterations=3, numberOfTrainingGames=5, numberOfValidationGames=5)
+            training(idx, iterations=2, numberOfTrainingGames=5, numberOfValidationGames=5)
             
             results = []
             playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
@@ -103,9 +103,7 @@ if __name__ == '__main__':
 
             writeOnCsv(idx, results)
     else:
-        playerTypes = [PlayerTypes.PRIORITY,PlayerTypes.HYBRID,PlayerTypes.PURE,PlayerTypes.PURE] #, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
-        performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=2, withGraphics=True)
-
-
-
+        Gnn().modelWeightsPath = "AI/best_model_weights.pth"
+        playerTypes = [PlayerTypes.PRIORITY,PlayerTypes.PRIORITY,PlayerTypes.PRIORITY,PlayerTypes.HYBRID]
+        performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=1, withGraphics=True, speed=True)
                 
