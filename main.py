@@ -77,10 +77,10 @@ def writeOnCsv(i, winners):
     
 if __name__ == '__main__':
 
-    SHOW = False
+    SHOW = True
 
     if not SHOW:
-        numberOfRepetitions = 50
+        numberOfRepetitions = 1
         maxPerformanceResults = 0
 
         for idx in range(numberOfRepetitions):
@@ -103,8 +103,23 @@ if __name__ == '__main__':
 
             writeOnCsv(idx, results)
     else:
-        playerTypes = [PlayerTypes.PRIORITY,PlayerTypes.HYBRID,PlayerTypes.PURE,PlayerTypes.PURE] #, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
-        performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=2, withGraphics=True)
+        for idx in range(1):
+            results = []
+            playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
+            results.append(performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=25, withGraphics=True))
+
+            playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PURE]
+            results.append(performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=25, withGraphics=True))
+            
+            playerTypes = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.PURE]
+            results.append(performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=25, withGraphics=True))
+
+            with open('best_results.csv', 'a') as f:
+                writer = csv.writer(f)
+                writer.writerow(results)
+
+        # playerTypes = [PlayerTypes.PRIORITY,PlayerTypes.HYBRID,PlayerTypes.PURE,PlayerTypes.PURE] #, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
+        # performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=2, withGraphics=True)
 
 
 
