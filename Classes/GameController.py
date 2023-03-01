@@ -76,6 +76,14 @@ class GameController:
                 elif event.key == pygame.K_a:
                     player.type = PlayerTypes.PURE
                     self.doActionWithGraphics(player)
+                elif event.key == pygame.K_p:
+                    player.type = PlayerTypes.PRIORITY
+                    self.doActionWithGraphics(player)
+                elif event.key == pygame.K_h:
+                    player.type = PlayerTypes.HYBRID
+                    self.doActionWithGraphics(player)
+                elif event.key == pygame.K_d:
+                    self.doActionWithGraphics(player)    
                 else:
                     print(f'Key {event.key} pressed')
             if event.type == pygame.QUIT:
