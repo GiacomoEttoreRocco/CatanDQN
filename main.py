@@ -103,7 +103,6 @@ if __name__ == '__main__':
 
             writeOnCsv(idx, results)
     else:
-<<<<<<< HEAD
         for idx in range(1):
             results = []
             playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
@@ -124,9 +123,7 @@ if __name__ == '__main__':
 
 
 
-=======
         Gnn().modelWeightsPath = "AI/best_model_weights.pth"
         playerTypes = [PlayerTypes.PRIORITY,PlayerTypes.PRIORITY,PlayerTypes.PRIORITY,PlayerTypes.HYBRID]
         performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=1, withGraphics=True, speed=True)
->>>>>>> 19f13845928713c56805c09b8d4771b8288f6a20
                 
