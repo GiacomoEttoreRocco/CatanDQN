@@ -21,7 +21,6 @@ class Board: # deve diventare un singleton
             cls.tiles = cls.graph.tiles
             cls.places = cls.graph.places
             cls.edges = cls.graph.edges
-            
             np.random.seed(1996)
             #   PERMUTATIONS: 
             cls.numbers = np.random.permutation(cls.graph.numbers)
@@ -48,8 +47,6 @@ class Board: # deve diventare un singleton
         return True
 
     def chooseTileHarbor(cls):
-        #for harbor in cls.harbors:
-        #    print(harbor)
         i = 0
         for edge in cls.EdgesOnTheSea:
             if(cls.availableForHarbor(cls, edge) and i < len(cls.harbors)):
@@ -107,8 +104,6 @@ class Board: # deve diventare un singleton
                 else:  
                     number += 1
         return number
-
-###########################################################################################################################################################################################################################
 
     def placesToDict(cls, playerInTurn) :
         data={'is_owned_place': [], 'type':[], 'resource_1':[],'dice_1':[],'resource_2':[],'dice_2':[],'resource_3':[],'dice_3':[], 'harbor':[]} #, 'robber_tile':[]}

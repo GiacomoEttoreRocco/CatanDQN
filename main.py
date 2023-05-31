@@ -115,13 +115,12 @@ def simulationMain():
                 writer = csv.writer(f)
                 writer.writerow(results)
 
-        # playerTypes = [PlayerTypes.PRIORITY,PlayerTypes.HYBRID,PlayerTypes.PURE,PlayerTypes.PURE] #, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
-        # performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=2, withGraphics=True)
-
         Gnn().modelWeightsPath = "AI/best_model_weights.pth"
         playerTypes = [PlayerTypes.PRIORITY,PlayerTypes.PRIORITY,PlayerTypes.PRIORITY,PlayerTypes.HYBRID]
         performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=1, withGraphics=True, speed=True)
 
 if __name__ == '__main__':
-        game = c.GameController.GameController(playerTypes=[PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.HYBRID], withGraphics=True, speed=True, saveOnFile=False)
+        types = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID]
+        game = c.GameController.GameController(playerTypes=types, withGraphics=True, speed=True, saveOnFile=False)
+        
         winner = game.playGameWithGraphic()
