@@ -51,27 +51,6 @@ class Game:
                             Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
                             Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
 
-    def bestAction(self, player: Player):
-        if(self.actualTurn<self.nplayers):
-            actions = [commands.FirstChoiseCommand]
-        elif(self.actualTurn<self.nplayers*2):
-            actions = [commands.SecondChoiseCommand]
-        else:
-            actions = player.availableActions(player.turnCardUsed)
-
-        max = -1
-        thingsNeeded = None
-        bestAction = actions[0]
-        for action in actions: 
-            evaluation, tempInput = player.evaluate(action)
-            if(max <= evaluation):
-                max = evaluation
-                thingsNeeded = tempInput
-                bestAction = action
-
-        onlyPassTurn = commands.PassTurnCommand in actions and len(actions)==1
-        return bestAction, thingsNeeded, onlyPassTurn
-
     def rollDice(self): 
         return random.randint(1,6) + random.randint(1,6)    
 

@@ -10,8 +10,6 @@ import os as os
 import Classes.Board as Board
 from statistics import mean
 
-
-
 class Gnn():
     instance = None
     def __new__(cls, epochs=250, batch=16, learningRate=0.0001):
@@ -36,16 +34,13 @@ class Gnn():
         cls.loadWeights()
         trainingDataset = MyDataset(train=True)
         testingDataset = MyDataset(train=False)
-
         lossFunction = nn.MSELoss()
         optimizer = torch.optim.Adam(cls.model.parameters(), lr=cls.learningRate)
         trainingSetLoader = ld.DataLoader(trainingDataset, batch_size=cls.batch)
         testingSetLoader = ld.DataLoader(testingDataset, batch_size=cls.batch)
-
         previousTestingLossMean = cls.test(testingSetLoader, lossFunction=lossFunction)
         actualModelWeights = cls.model.state_dict()
         print(f'Training loss: - Testing loss: {previousTestingLossMean}')
-
         counter = 0
         for epoch in range(cls.epochs):
             print('epoch: ', epoch+1, "/", cls.epochs)
@@ -55,7 +50,6 @@ class Gnn():
             if testingLossMean < previousTestingLossMean:
                 previousTestingLossMean = testingLossMean
                 actualModelWeights = cls.model.state_dict()
-                
                 counter = 0
             elif counter<2:
                 counter+=1
@@ -87,7 +81,7 @@ class Gnn():
 
     def evaluatePositionForPlayer(cls, player):
         globalFeats = player.globalFeaturesToDict()
-        del globalFeats['player_id']
+        del globalFeats['player_id'] # rimuove la colonna player_id che è inutile
         graph = Batch.from_data_list([cls.fromDictsToGraph(Board.Board().placesToDict(player), Board.Board().edgesToDict(player)).to(cls.device)])
         glob = torch.tensor([list(globalFeats.values())[:-1]], dtype=torch.float, device=cls.device)
         return cls.model(graph, glob, isTrain=False).item()
@@ -111,12 +105,9 @@ class Net(nn.Module):
   def __init__(self, gnnInputDim, gnnHiddenDim, gnnOutputDim, globInputDim):
     super().__init__()
     self.Gnn = Sequential('x, edge_index, edge_attr', [
-        (GraphConv(gnnInputDim, gnnHiddenDim), 'x, edge_index, edge_attr -> x'),
-        nn.ReLU(inplace=True),
-        (GraphConv(gnnHiddenDim, 4), 'x, edge_index, edge_attr -> x'),
-        nn.ReLU(inplace=True),
-        # (GCNConv(gnnHiddenDim, gnnOutputDim), 'x, edge_index, edge_attr -> x'),
-        # nn.ReLU(inplace=True)
+        (GraphConv(gnnInputDim, gnnHiddenDim), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True),
+        (GraphConv(gnnHiddenDim, 4), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True),
+                # (GCNConv(gnnHiddenDim, gnnOutputDim), 'x, edge_index, edge_attr -> x'), # nn.ReLU(inplace=True)
     ])
     
     self.GlobalLayers = nn.Sequential(
@@ -138,11 +129,11 @@ class Net(nn.Module):
 
   def forward(self, graph, globalFeats, isTrain):
     batch_size, batch, x, edge_index, edge_attr = graph.num_graphs, graph.batch, graph.x, graph.edge_index, graph.edge_attr
-    
     embeds = self.Gnn(x, edge_index=edge_index, edge_attr=edge_attr)
+    # print("Embeds: ", embeds)
     # embeds = torch.reshape(embeds, (batch_size, 54*3))
     embeds = torch.reshape(embeds, (batch_size, 54*4))
-
+    # print("Embeds: ", embeds)
     globalFeats = self.GlobalLayers(globalFeats)
     output = torch.cat([embeds, globalFeats], dim=-1)
     output = torch.dropout(output, p = 0.2, train = isTrain)
@@ -165,7 +156,6 @@ class MyDataset(torch.utils.data.IterableDataset):
 
     def __len__(self):
         return len(self.data)
-
     
     def extractInputFeaturesMove(self, moveIndex):
         places = self.dataFrame.iloc[moveIndex].places

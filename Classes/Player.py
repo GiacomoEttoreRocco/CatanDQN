@@ -528,10 +528,28 @@ class Player:
                 ctr.undo()
         return toRet # 
 
-
     def globalFeaturesToDict(self):
         # for p in self.game.players:
         #     print("Id: ", p.id, "LAST USER: ", int(p.lastRobberUser))
         return {'player_id': self.id,'victory_points': self.victoryPoints, 'cards_bought': self.boughtCards, 'last_robber_user': int(self.lastRobberUser),
                 'used_knights': self.usedKnights, 'crop': self.resources["crop"], 'iron': self.resources["iron"],
                 'wood': self.resources["wood"], 'clay': self.resources["clay"], 'sheep': self.resources["sheep"], 'winner':None}
+    
+    def bestAction(self):
+        if(self.game.actualTurn<self.game.nplayers):
+            actions = [commands.FirstChoiseCommand]
+        elif(self.game.actualTurn<self.game.nplayers*2):
+            actions = [commands.SecondChoiseCommand]
+        else:
+            actions = self.availableActions(self.turnCardUsed)
+        max = -1
+        thingsNeeded = None
+        bestAction = actions[0]
+        for action in actions: 
+            evaluation, tempInput = self.evaluate(action)
+            if(max <= evaluation):
+                max = evaluation
+                thingsNeeded = tempInput
+                bestAction = action
+        onlyPassTurn = commands.PassTurnCommand in actions and len(actions)==1
+        return bestAction, thingsNeeded, onlyPassTurn

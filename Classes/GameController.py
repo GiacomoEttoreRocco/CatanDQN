@@ -32,7 +32,7 @@ class GameController:
         Gnn.Gnn().reset()
 
     def doActionWithGraphics(self, player):
-        action, thingNeeded, onlyPassTurn = player.game.bestAction(player)
+        action, thingNeeded, onlyPassTurn = player.bestAction()
         self.game.ctr.execute(action(player, thingNeeded))
         self.view.updateGameScreen()
         if(not onlyPassTurn):  
