@@ -121,6 +121,6 @@ def simulationMain():
 
 if __name__ == '__main__':
         types = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID]
-        game = c.GameController.GameController(playerTypes=types, withGraphics=True, speed=False, saveOnFile=False)
+        game = c.GameController.GameController(playerTypes=types, withGraphics=True, speed=True, saveOnFile=False)
         
         winner = game.playGameWithGraphic()

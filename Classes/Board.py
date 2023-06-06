@@ -27,9 +27,15 @@ class Board: # deve diventare un singleton
             cls.resources = np.random.permutation(cls.graph.resources)
             cls.harbors = np.random.permutation(cls.graph.harbors)
             cls.EdgesOnTheSea = np.random.permutation(cls.graph.EdgesOnTheSea)
+
+            # cls.placeTiles = []# temp
+            # for i in range(0, 54):# temp
+            #     cls.placeTiles.append([])# temp
+
             if(doPlacement):
                 # print("\n Tiles placement...\n")
                 cls.tilesPlacement(cls)
+
         return cls.instance
 
     def reset(cls):
@@ -72,6 +78,9 @@ class Board: # deve diventare un singleton
         for t in cls.tiles:
             for p in t.associatedPlaces:
                 cls.places[p].touchedResourses.append(t.resource)
+                # cls.placeTiles[p].append(t.identificator) # temp
+        # for pi in range(0, len(cls.placeTiles)):
+        #     print(pi, ":", cls.placeTiles[pi])
 
     def __repr__(cls):
         s = ""
@@ -95,43 +104,32 @@ class Board: # deve diventare un singleton
             numbers.append(0)
         return numbers
 
-    def robberOfPlace(cls, place):
-        number = 0
-        for tile in cls.tiles:
-            if place.id in CatanGraph.tilePlaces[tile.identificator]:
-                if(cls.robberTile == tile.identificator):
-                    return number
-                else:  
-                    number += 1
-        return number
+    def placesOnRobber(cls):
+        return CatanGraph.tilePlaces[cls.robberTile]
+    
+    def idTileBlocked(cls, place):
+        id = 1
+        for tile in CatanGraph.placeTiles[place.id]:
+            if(tile == cls.robberTile):
+                return id
+            else:
+                id += 1
+        return 0
 
     def placesToDict(cls, playerInTurn) :
         data={'is_owned_place': [], 'type':[], 'resource_1':[],'dice_1':[],'resource_2':[],'dice_2':[],'resource_3':[],'dice_3':[], 'harbor':[]} #, 'robber_tile':[]}
     
         for p in cls.places:
-
-            resorceBlockedId = cls.robberOfPlace(p)    
-
-            if p.owner == playerInTurn.id:
-                data['is_owned_place'].append(1)
-            elif p.owner == 0:
-                data['is_owned_place'].append(-1)
-            else:
-                data['is_owned_place'].append(0)
-
-            if(p.isCity):
-                data['type'].append(2) # incrementato il peso!
-            elif(p.isColony):
-                data['type'].append(1) # incrementato il peso!
-            else:
-                data['type'].append(0)
-            
+            resourceBlockedId = cls.idTileBlocked(p)  
+            data['is_owned_place'].append(p.ownedByThisPlayer(playerInTurn))
+            data['type'].append(p.placeType()) 
             dices = cls.dicesOfPlace(p)
+
             if(len(p.touchedResourses) < 1):
                 data['resource_1'].append(dictCsvResources[None])
-                data['dice_1'].append(0) # incrementato il peso!
+                data['dice_1'].append(0) 
             else:
-                if(resorceBlockedId != 0):
+                if(resourceBlockedId != 0):
                     data['resource_1'].append(dictCsvResources[p.touchedResourses[0]])
                 else:
                     data['resource_1'].append(dictCsvResources[None])
@@ -139,9 +137,9 @@ class Board: # deve diventare un singleton
 
             if(len(p.touchedResourses) < 2):
                 data['resource_2'].append(dictCsvResources[None])
-                data['dice_2'].append(0) # incrementato il peso!
+                data['dice_2'].append(0) 
             else:
-                if(resorceBlockedId != 1):
+                if(resourceBlockedId != 1):
                     data['resource_2'].append(dictCsvResources[p.touchedResourses[1]])
                 else:
                     data['resource_2'].append(dictCsvResources[None])
@@ -149,16 +147,61 @@ class Board: # deve diventare un singleton
 
             if(len(p.touchedResourses) < 3):
                 data['resource_3'].append(dictCsvResources[None])
-                data['dice_3'].append(0)  # incrementato il peso!
+                data['dice_3'].append(0)  
             else:
-                if(resorceBlockedId != 2):
+                if(resourceBlockedId != 2):
                     data['resource_3'].append(dictCsvResources[p.touchedResourses[2]])
                 else:
                     data['resource_3'].append(dictCsvResources[None])
-
                 data['dice_3'].append(dices[2])
+
             data['harbor'].append(dictCsvHarbor[p.harbor])
             
+        return data
+    
+    def placesState(cls, playerInTurn) :
+        data={'ownedType':[], 'resource_1':[],'dice_1':[],'underRobber1':[], 'resource_2':[],'dice_2':[],'underRobber2':[],'resource_3':[],'dice_3':[],'underRobber3':[], 'harbor':[]}
+        for p in cls.places:
+            resourceBlockedId = cls.idTileBlocked(p)  
+            owned = p.ownedByThisPlayer(playerInTurn)
+            if(p.isCity):
+                data['ownedType'].append(2*owned) 
+            elif(p.isColony):
+                data['ownedType'].append(1*owned) 
+            else:
+                data['ownedType'].append(0*owned)
+            data['harbor'].append(dictCsvHarbor[p.harbor])
+            dices = cls.dicesOfPlace(p)
+            if(len(p.touchedResourses) < 1):
+                data['resource_1'].append(dictCsvResources[None])
+                data['dice_1'].append(0) 
+            else:
+                data['resource_1'].append(dictCsvResources[p.touchedResourses[0]])
+                if(resourceBlockedId == 1):
+                    data['underRobber1'].append(1)
+                else:
+                    data['underRobber1'].append(0)
+                data['dice_1'].append(dices[0])
+            if(len(p.touchedResourses) < 2):
+                data['resource_2'].append(dictCsvResources[None])
+                data['dice_2'].append(0) 
+            else:
+                data['resource_2'].append(dictCsvResources[p.touchedResourses[1]])
+                if(resourceBlockedId == 2):
+                    data['underRobber2'].append(1)
+                else:
+                    data['underRobber2'].append(0)
+                data['dice_2'].append(dices[1])
+            if(len(p.touchedResourses) < 3):
+                data['resource_3'].append(dictCsvResources[None])
+                data['dice_3'].append(0) 
+            else:
+                data['resource_3'].append(dictCsvResources[p.touchedResourses[2]])
+                if(resourceBlockedId == 3):
+                    data['underRobber3'].append(1)
+                else:
+                    data['underRobber3'].append(0)
+                data['dice_3'].append(dices[2])
         return data
 
     def edgesToDict(cls, playerInTurn):

@@ -26,19 +26,20 @@ class Game:
         self.dices = [self.rollDice() for _ in range(1000)]
         self.actualTurn = 0
         self.currentTurnPlayer = self.players[0] #self.dummy
-        self.order = 0
+        #self.order = 0
 
-        for i in range(num_players):
-            assert self.players[i].resourceCount() == 0
-            assert self.players[i].victoryPoints == 0
-            assert len(self.players[i].ownedStreets) == 0
-            assert len(self.players[i].ownedCities) == 0
-            assert len(self.players[i].ownedColonies) == 0
-            assert len(self.players[i].ownedHarbors) == 0
-            assert self.players[i].nCities == 0
-            assert self.players[i].nColonies == 0
-            assert self.players[i].nStreets == 0
-            assert self.players[i].unusedKnights == 0
+        # DEBUG:
+        # for i in range(num_players):
+        #     assert self.players[i].resourceCount() == 0
+        #     assert self.players[i].victoryPoints == 0
+        #     assert len(self.players[i].ownedStreets) == 0
+        #     assert len(self.players[i].ownedCities) == 0
+        #     assert len(self.players[i].ownedColonies) == 0
+        #     assert len(self.players[i].ownedHarbors) == 0
+        #     assert self.players[i].nCities == 0
+        #     assert self.players[i].nColonies == 0
+        #     assert self.players[i].nStreets == 0
+        #     assert self.players[i].unusedKnights == 0
 
     def dice_production(self, number):
         for tile in Board.Board().tiles:
@@ -92,7 +93,7 @@ class Game:
         max = 0
         visited = set()
         for tail in self.findLeaves(player):
-            self.order = 0
+            #self.order = 0
             length, tmpVisited = self.explorePlace(player, tail, [])
             visited.update(tmpVisited)
             if max<length:
@@ -112,7 +113,7 @@ class Game:
         return max - 1 
         
     def explorePlace(self, player, place, visited):
-        self.order +=1
+        #self.order +=1
         max = 0
         tmpVisited = list.copy(visited)
         outVisited = list.copy(visited)

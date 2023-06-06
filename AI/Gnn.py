@@ -106,8 +106,7 @@ class Net(nn.Module):
     super().__init__()
     self.Gnn = Sequential('x, edge_index, edge_attr', [
         (GraphConv(gnnInputDim, gnnHiddenDim), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True),
-        (GraphConv(gnnHiddenDim, gnnOutputDim), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True),
-                # (GCNConv(gnnHiddenDim, gnnOutputDim), 'x, edge_index, edge_attr -> x'), # nn.ReLU(inplace=True)
+        (GraphConv(gnnHiddenDim, 4), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True), # (GCNConv(gnnHiddenDim, gnnOutputDim), 'x, edge_index, edge_attr -> x'), # nn.ReLU(inplace=True)
     ])
     
     self.GlobalLayers = nn.Sequential(
@@ -121,7 +120,7 @@ class Net(nn.Module):
 
     self.OutLayers = nn.Sequential(
         # nn.Linear(54*gnnOutputDim+globInputDim, 85),
-        nn.Linear(54*gnnOutputDim+globInputDim, 128),
+        nn.Linear(54*4+globInputDim, 128),
         nn.ReLU(inplace=True),
         nn.Linear(128, 1),
         nn.Sigmoid()
@@ -133,6 +132,7 @@ class Net(nn.Module):
     # print("Embeds: ", embeds)
     # embeds = torch.reshape(embeds, (batch_size, 54*3))
     embeds = torch.reshape(embeds, (batch_size, 54*4))
+    # print("Embeds: ", embeds)
     globalFeats = self.GlobalLayers(globalFeats)
     output = torch.cat([embeds, globalFeats], dim=-1)
     output = torch.dropout(output, p = 0.2, train = isTrain)

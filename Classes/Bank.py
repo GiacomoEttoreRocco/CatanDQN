@@ -27,4 +27,10 @@ class Bank:
     def reset(cls):
         Bank.instance = None
 
+    def totalResourceOut(cls):
+        totResOut = 0
+        for resource in cls.resources.keys:
+            totResOut = totResOut + (19 - cls.resources[resource])
+        return totResOut
+
 

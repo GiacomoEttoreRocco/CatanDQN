@@ -8,44 +8,30 @@ import AI.Gnn as Gnn
 
 class Player: 
     def __init__(self, id, game, type: PlayerTypes = PlayerTypes.NOT_SET):
-         
         self.id = id
         self.type = type
         self.game = game
-
         self.ownedColonies = []
         self.ownedStreets = []
         self.ownedCities = []
-
         self.victoryPoints = 0
         self.victoryPointsCards = 0
         self.boughtCards = 0
-
         self.nColonies = 0
         self.nCities = 0
         self.nStreets = 0
-
         self.usedKnights = 0
         self.unusedKnights = 0
         self.justBoughtKnights = 0
-
         self.monopolyCard = 0
         self.justBoughtMonopolyCard = 0
-
         self.roadBuildingCard = 0
         self.justBoughtRoadBuildingCard = 0
-        
         self.yearOfPlentyCard = 0
         self.justBoughtYearOfPlentyCard = 0
-
         self.turnCardUsed = False
-
         self.lastRobberUser = False
-
-        # RESOURCES:
         self.resources = {"wood" : 0, "clay" : 0, "crop": 0, "sheep": 0, "iron": 0}
-
-        #HARBORS: 
         self.ownedHarbors = []
 
     def __eq__(self, other):
@@ -529,11 +515,21 @@ class Player:
         return toRet # 
 
     def globalFeaturesToDict(self):
-        # for p in self.game.players:
-        #     print("Id: ", p.id, "LAST USER: ", int(p.lastRobberUser))
         return {'player_id': self.id,'victory_points': self.victoryPoints, 'cards_bought': self.boughtCards, 'last_robber_user': int(self.lastRobberUser),
                 'used_knights': self.usedKnights, 'crop': self.resources["crop"], 'iron': self.resources["iron"],
                 'wood': self.resources["wood"], 'clay': self.resources["clay"], 'sheep': self.resources["sheep"], 'winner':None}
+    
+    def globalFeaturesState(self):
+        myCrop = self.resources["crop"]
+        myIron = self.resources["iron"]
+        myWood = self.resources["wood"]
+        myClay = self.resources["clay"]
+        mySheep = self.resources["sheep"]
+        totResOthers = Bank.Bank().totalResourceOut() - (myCrop + myIron + myWood + myClay + mySheep)
+
+        return {'player_id': self.id, 'victory_points': self.victoryPoints, 'cards_bought': self.boughtCards,
+                'used_knights': self.usedKnights, 'crop': myCrop, 'iron': myIron,
+                'wood': myWood, 'clay': myClay, 'sheep': mySheep, "total_resource_out": totResOthers}
     
     def bestAction(self):
         if(self.game.actualTurn<self.game.nplayers):
