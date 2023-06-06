@@ -46,7 +46,6 @@ class GameController:
         self.game.ctr.redo()
         self.view.updateGameScreen()    
 
-    
     def decisionManager(self, player):
         assert not(not self.speed and not self.withGraphics)
         if(not self.speed and self.withGraphics):
