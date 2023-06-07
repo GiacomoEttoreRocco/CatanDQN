@@ -125,4 +125,4 @@ if __name__ == '__main__':
         types = [PlayerTypes.PURE, PlayerTypes.PURE]
         game = c.GameController.GameController(playerTypes=types, withGraphics=True, speed=True, saveOnFile=False)
         
-        winner = game.playGameWithGraphic()
+        winner = game.playGame()
