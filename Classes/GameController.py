@@ -49,14 +49,17 @@ class GameController:
                     player.type = PlayerTypes.PRIORITY
                     self.view.updateGameScreen()
                 elif(event.ui_element == self.view.hybridButton):
-                    player.type = PlayerTypes.PRIORITY
+                    player.type = PlayerTypes.HYBRID
+                    self.view.updateGameScreen()
+                elif(event.ui_element == self.view.ReinforcementLearningButton):
+                    player.type = PlayerTypes.RL
                     self.view.updateGameScreen()
                 elif(event.ui_element == self.view.undoButton):
                     self.game.ctr.undo()
                     self.view.updateGameScreen()
                 elif(event.ui_element == self.view.redoButton):
                     self.game.ctr.redo()
-                    self.view.updateGameScreen()  
+                    self.view.updateGameScreen() 
                 elif(event.ui_element == self.view.doButton):
                     self.doActionWithGraphics(player)
                     self.view.updateGameScreen()  
@@ -68,6 +71,7 @@ class GameController:
                     self.view.updateGameScreen(True)
                 else:
                     print("Nothing clicked")
+
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     print("Escape")
