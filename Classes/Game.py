@@ -149,5 +149,12 @@ class Game:
                     toRet.append(adjPlace)
         return toRet   
     
-    def getState(self, player):
-        state = Board.Board().placesState(player) + Board.Board.placesState(player) + player.globalFeaturesState()
+    def getTotalState(self, player):
+        state = Board.Board().placesState(player) + player.globalFeaturesState() # da capire come, probabilmente bisogna assemblare i 3 tensori
+        return state
+
+    def getBoardState(self, player):
+        return Board.Board().placesState(player)
+    
+    def getPlayerGlobalFeaturesState(self, player):
+        return player.globalFeaturesState()

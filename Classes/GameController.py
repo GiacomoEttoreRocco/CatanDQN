@@ -115,11 +115,15 @@ class GameController:
         reverseTurnOffSet = [*list(range(self.game.nplayers)), *list(reversed(range(self.game.nplayers)))]
         while True:
             if(self.game.actualTurn < self.game.nplayers*2):
-                playerTurn = self.game.players[reverseTurnOffSet[self.game.actualTurn]]     
+                playerTurn = self.game.players[reverseTurnOffSet[self.game.actualTurn]] 
+                print("Tensor state initial phase: \n")    
                 self.decisionManager(playerTurn)
+                print("Board state: ", self.game.getBoardState(playerTurn))
+                print("Player state: ", self.game.getPlayerGlobalFeaturesState(playerTurn))
             else:
                 playerTurn = self.game.players[self.game.actualTurn%self.game.nplayers]
                 self.decisionManager(playerTurn)
+
                 if(playerTurn.victoryPoints >= 10):
                     self.saveToJson(playerTurn)
                     print(f'Winner: {playerTurn.id}, Agent: {playerTurn.type}\n')

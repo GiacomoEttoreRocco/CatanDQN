@@ -29,7 +29,7 @@ class Bank:
 
     def totalResourceOut(cls):
         totResOut = 0
-        for resource in cls.resources.keys:
+        for resource in cls.resources.keys():
             totResOut = totResOut + (19 - cls.resources[resource])
         return totResOut
 

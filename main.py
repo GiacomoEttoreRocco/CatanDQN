@@ -123,6 +123,6 @@ if __name__ == '__main__':
         # types = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID]
         # types = [PlayerTypes.HYBRID, PlayerTypes.HYBRID] #, PlayerTypes.HYBRID, PlayerTypes.HYBRID]
         types = [PlayerTypes.PURE, PlayerTypes.PURE]
-        game = c.GameController.GameController(playerTypes=types, withGraphics=True, speed=True, saveOnFile=False)
+        gameCtrl = c.GameController.GameController(playerTypes=types, withGraphics=True, speed=True, saveOnFile=False)
         
-        winner = game.playGame()
+        winner = gameCtrl.playGame()

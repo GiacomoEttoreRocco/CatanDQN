@@ -181,9 +181,9 @@ class Place:
         if self.owner == player.id:
             return 1
         elif self.owner == 0:
-            return -1
-        else:
             return 0
+        else:
+            return -1
             
     def placeType(self):
         if(self.isCity):

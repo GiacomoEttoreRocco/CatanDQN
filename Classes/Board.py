@@ -176,6 +176,7 @@ class Board:
             if(len(p.touchedResourses) < 1):
                 data['resource_1'].append(dictCsvResources[None])
                 data['dice_1'].append(0) 
+                data['underRobber1'].append(0)
             else:
                 data['resource_1'].append(dictCsvResources[p.touchedResourses[0]])
                 if(resourceBlockedId == 1):
@@ -183,9 +184,11 @@ class Board:
                 else:
                     data['underRobber1'].append(0)
                 data['dice_1'].append(dices[0])
+
             if(len(p.touchedResourses) < 2):
                 data['resource_2'].append(dictCsvResources[None])
                 data['dice_2'].append(0) 
+                data['underRobber2'].append(0)
             else:
                 data['resource_2'].append(dictCsvResources[p.touchedResourses[1]])
                 if(resourceBlockedId == 2):
@@ -196,6 +199,7 @@ class Board:
             if(len(p.touchedResourses) < 3):
                 data['resource_3'].append(dictCsvResources[None])
                 data['dice_3'].append(0) 
+                data['underRobber3'].append(0)
             else:
                 data['resource_3'].append(dictCsvResources[p.touchedResourses[2]])
                 if(resourceBlockedId == 3):
@@ -203,6 +207,10 @@ class Board:
                 else:
                     data['underRobber3'].append(0)
                 data['dice_3'].append(dices[2])
+
+        # Debug:
+        # for x in data.keys():
+        #     print(x, ":" , data[x], "Len: ", len(data[x]))
 
         tensor = torch.Tensor(list(data.values()))
         return tensor
