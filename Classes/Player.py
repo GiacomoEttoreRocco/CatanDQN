@@ -534,7 +534,7 @@ class Player:
         tensor = torch.Tensor(list(data.values()))
         return tensor
     
-    def bestAction(self):
+    def bestActionSL(self):
         if(self.game.actualTurn<self.game.nplayers):
             actions = [commands.FirstChoiseCommand]
         elif(self.game.actualTurn<self.game.nplayers*2):

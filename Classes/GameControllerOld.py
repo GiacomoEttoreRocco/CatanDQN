@@ -31,35 +31,35 @@ class GameController:
         c.Bank.Bank().reset()
         Gnn.Gnn().reset()
 
-    # def doActionWithGraphics(self, player):
-    #     action, thingNeeded, onlyPassTurn = player.bestAction()
-    #     self.game.ctr.execute(action(player, thingNeeded))
-    #     self.view.updateGameScreen()
-    #     if(not onlyPassTurn):  
-    #         self.saveMove(player)
+    def doActionWithGraphics(self, player):
+        action, thingNeeded, onlyPassTurn = player.bestActionSL()
+        self.game.ctr.execute(action(player, thingNeeded))
+        self.view.updateGameScreen()
+        if(not onlyPassTurn):  
+            self.saveMove(player)
 
-    def decisionManagerGUI(self, player):
+    def undoActionWithGraphics(self):
+        self.game.ctr.undo()
+        self.view.updateGameScreen()
+
+    def redoActionWithGraphics(self):
+        self.game.ctr.redo()
+        self.view.updateGameScreen()    
+
+    def decisionManagerGUI_SL(self, player):
         if(not self.speed and self.withGraphics):
             event = pygame.event.wait()
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if(event.ui_element == self.view.aiButton):
                     player.type = PlayerTypes.PURE
-                    self.view.updateGameScreen()
+                    self.doActionWithGraphics(player)
                 elif(event.ui_element == self.view.randomButton):
                     player.type = PlayerTypes.PRIORITY
-                    self.view.updateGameScreen()
-                elif(event.ui_element == self.view.hybridButton):
-                    player.type = PlayerTypes.PRIORITY
-                    self.view.updateGameScreen()
-                elif(event.ui_element == self.view.undoButton):
-                    self.game.ctr.undo()
-                    self.view.updateGameScreen()
-                elif(event.ui_element == self.view.redoButton):
-                    self.game.ctr.redo()
-                    self.view.updateGameScreen()  
-                elif(event.ui_element == self.view.doButton):
                     self.doActionWithGraphics(player)
-                    self.view.updateGameScreen()  
+                elif(event.ui_element == self.view.undoButton):
+                    self.undoActionWithGraphics()
+                elif(event.ui_element == self.view.redoButton):
+                    self.redoActionWithGraphics()
                 elif(event.ui_element == self.view.stack.scroll_bar.bottom_button):
                     self.view.stack.scroll_bar.set_scroll_from_start_percentage(self.view.stack.scroll_bar.start_percentage+0.1)
                     self.view.updateGameScreen(True)
@@ -71,19 +71,19 @@ class GameController:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     print("Escape")
-                # elif event.key == pygame.K_a:
-                #     player.type = PlayerTypes.PURE
-                #     self.doActionWithGraphics(player)
-                # elif event.key == pygame.K_p:
-                #     player.type = PlayerTypes.PRIORITY
-                #     self.doActionWithGraphics(player)
-                # elif event.key == pygame.K_h:
-                #     player.type = PlayerTypes.HYBRID
-                #     self.doActionWithGraphics(player)
-                # elif event.key == pygame.K_d:
-                #     self.doActionWithGraphics(player)    
-                # else:
-                #     print(f'Key {event.key} pressed')
+                elif event.key == pygame.K_a:
+                    player.type = PlayerTypes.PURE
+                    self.doActionWithGraphics(player)
+                elif event.key == pygame.K_p:
+                    player.type = PlayerTypes.PRIORITY
+                    self.doActionWithGraphics(player)
+                elif event.key == pygame.K_h:
+                    player.type = PlayerTypes.HYBRID
+                    self.doActionWithGraphics(player)
+                elif event.key == pygame.K_d:
+                    self.doActionWithGraphics(player)    
+                else:
+                    print(f'Key {event.key} pressed')
             if event.type == pygame.QUIT:
                 print("Quitting")
                 pygame.quit()
@@ -95,23 +95,43 @@ class GameController:
                     pygame.quit()
             self.doActionWithGraphics(player)
 
-    def decisionManagerNonGUI(self, player):
-        action, thingNeeded, onlyPassTurn = player.bestAction()
+    def decisionManagerNonGUI_SL(self, player):
+        action, thingNeeded, onlyPassTurn = player.bestActionSL()
         self.game.ctr.execute(action(player, thingNeeded))
         if(not onlyPassTurn):  
             self.saveMove(player) 
 
-    def decisionManager(self, player):
+    def decisionManager_SL(self, player):
         if(self.withGraphics):
-            self.decisionManagerGUI(player)
+            self.decisionManagerGUI_SL(player)
         else:
-            self.decisionManagerNonGUI(player)
+            self.decisionManagerNonGUI_SL(player)
+
+#############################################################################################################
+
+    def decisionManager_RL(self, player):
+        if(self.withGraphics):
+            self.decisionManagerGUI_RL(player)
+        else:
+            self.decisionManagerNonGUI_RL(player)
+
+    def decisionManagerNonGUI_RL(self, player):
+        # action, thingNeeded, onlyPassTurn = player.bestActionSL()
+        state = self.game.getState(player)
+        action, thingNeeded, onlyPassTurn = player.bestActionRL(state)
+        action = action(player, thingNeeded)
+        # self.game.ctr.execute(action(player, thingNeeded))
+        reward = self.game.step(action(player, thingNeeded))
+        newState = self.game.getState(player)
+
+#############################################################################################################
 
     def playGame(self):    
         if(self.withGraphics):
             GameView.GameView.setupAndDisplayBoard(self.view)
             GameView.GameView.setupPlaces(self.view)
             GameView.GameView.updateGameScreen(self.view)
+                 
         self.game.actualTurn = 0       
         reverseTurnOffSet = [*list(range(self.game.nplayers)), *list(reversed(range(self.game.nplayers)))]
         while True:
@@ -136,17 +156,17 @@ class GameController:
                     
                     return playerTurn
 
-    # def saveMove(self, player):
-    #     if(self.saveOnFile):
-    #         places = c.Board.Board().placesToDict(player)
-    #         edges = c.Board.Board().edgesToDict(player)
-    #         globals = player.globalFeaturesToDict()
-    #         self.total.loc[len(self.total)] = [places, edges, globals]
+    def saveMove(self, player):
+        if(self.saveOnFile):
+            places = c.Board.Board().placesToDict(player)
+            edges = c.Board.Board().edgesToDict(player)
+            globals = player.globalFeaturesToDict()
+            self.total.loc[len(self.total)] = [places, edges, globals]
 
-    # def saveToJson(self, victoryPlayer):
-    #     if(self.saveOnFile):
-    #         for i in range(len(self.total)):
-    #             self.total.globals[i]['winner'] = 1 if self.total.globals[i]['player_id'] == victoryPlayer.id else 0
-    #             del self.total.globals[i]['player_id']
-    #         print("Length of total moves of this game: ", len(self.total))
+    def saveToJson(self, victoryPlayer):
+        if(self.saveOnFile):
+            for i in range(len(self.total)):
+                self.total.globals[i]['winner'] = 1 if self.total.globals[i]['player_id'] == victoryPlayer.id else 0
+                del self.total.globals[i]['player_id']
+            print("Length of total moves of this game: ", len(self.total))
 

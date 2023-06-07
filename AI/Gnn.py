@@ -21,7 +21,9 @@ class Gnn():
             cls.learningRate = learningRate
             cls.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
             cls.model = Net(9, 8, 3, 9).to(cls.device)
-            cls.modelWeightsPath = "AI/best_model_weights.pth"
+            # cls.modelWeightsPath = "AI/best_model_weights.pth"
+            cls.modelWeightsPath = "AI/best_model_SL.pth"
+
             if os.path.exists(cls.modelWeightsPath):
                 cls.model.load_state_dict(torch.load(cls.modelWeightsPath, map_location=cls.device))
                 print('Weights loaded..')

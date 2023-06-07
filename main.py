@@ -50,7 +50,7 @@ def training(iterationProcessIndex, iterations, numberOfTrainingGames, numberOfV
         
         Gnn().trainModel(validate=True)
 
-def performanceEvaluation(iterationProcessIndex, playerTypes, numberOfTestingGames, withGraphics=True, speed=True):
+def performanceEvaluation(iterationProcessIndex, playerTypes, numberOfTestingGames, withGraphics, speed):
     print("PERFORMANCE EVALUATION STARTED...")
     winners = [0.0, 0.0]
     special = playerTypes[-1]
@@ -73,56 +73,56 @@ def writeOnCsv(i, winners):
         writer = csv.writer(f)
         writer.writerow([i, *winners])
 
-def simulationMain():
-    SHOW = True
+# def simulationMain():
+#     SHOW = True
 
-    if not SHOW:
-        numberOfRepetitions = 1
-        maxPerformanceResults = 0
+#     if not SHOW:
+#         numberOfRepetitions = 1
+#         maxPerformanceResults = 0
 
-        for idx in range(numberOfRepetitions):
-            training(idx, iterations=2, numberOfTrainingGames=5, numberOfValidationGames=5)
+#         for idx in range(numberOfRepetitions):
+#             training(idx, iterations=2, numberOfTrainingGames=5, numberOfValidationGames=5)
             
-            results = []
-            playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
-            results.append(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=15, withGraphics=False))
+#             results = []
+#             playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
+#             results.append(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=15, withGraphics=False))
 
-            playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PURE]
-            results.append(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=15, withGraphics=False))
+#             playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PURE]
+#             results.append(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=15, withGraphics=False))
             
-            playerTypes = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.PURE]
-            results.append(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=15, withGraphics=False))
+#             playerTypes = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.PURE]
+#             results.append(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=15, withGraphics=False))
 
-            if maxPerformanceResults<sum(results):
-                print(f'Saving best weights in iteration {idx}...')
-                maxPerformanceResults = sum(results)
-                shutil.copyfile('AI/model_weights.pth', 'AI/best_model_weights.pth')
+#             if maxPerformanceResults<sum(results):
+#                 print(f'Saving best weights in iteration {idx}...')
+#                 maxPerformanceResults = sum(results)
+#                 shutil.copyfile('AI/model_weights.pth', 'AI/best_model_weights.pth')
 
-            writeOnCsv(idx, results)
-    else:
-        for idx in range(1):
-            results = []
-            playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
-            results.append(performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=25, withGraphics=True))
+#             writeOnCsv(idx, results)
+#     else:
+#         for idx in range(1):
+#             results = []
+#             playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
+#             results.append(performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=25, withGraphics=True))
 
-            playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PURE]
-            results.append(performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=25, withGraphics=True))
+#             playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PURE]
+#             results.append(performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=25, withGraphics=True))
             
-            playerTypes = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.PURE]
-            results.append(performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=25, withGraphics=True))
+#             playerTypes = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.PURE]
+#             results.append(performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=25, withGraphics=True))
 
-            with open('best_results.csv', 'a') as f:
-                writer = csv.writer(f)
-                writer.writerow(results)
+        #     with open('best_results.csv', 'a') as f:
+        #         writer = csv.writer(f)
+        #         writer.writerow(results)
 
-        Gnn().modelWeightsPath = "AI/best_model_weights.pth"
-        playerTypes = [PlayerTypes.PRIORITY,PlayerTypes.PRIORITY,PlayerTypes.PRIORITY,PlayerTypes.HYBRID]
-        performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=1, withGraphics=True, speed=True)
+        # Gnn().modelWeightsPath = "AI/best_model_weights.pth"
+        # playerTypes = [PlayerTypes.PRIORITY,PlayerTypes.PRIORITY,PlayerTypes.PRIORITY,PlayerTypes.HYBRID]
+        # performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=1, withGraphics=True, speed=True)
 
 if __name__ == '__main__':
         # types = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID]
         # types = [PlayerTypes.HYBRID, PlayerTypes.HYBRID] #, PlayerTypes.HYBRID, PlayerTypes.HYBRID]
-        types = [PlayerTypes.PURE, PlayerTypes.PURE]
+        types = [PlayerTypes.HYBRID, PlayerTypes.HYBRID]
         gameCtrl = c.GameController.GameController(playerTypes=types, withGraphics=True, speed=True, saveOnFile=False)
         
         winner = gameCtrl.playGame()
