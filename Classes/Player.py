@@ -5,6 +5,7 @@ import Classes.Board as Board
 from Classes.PlayerTypes import PlayerTypes
 import random
 import AI.Gnn as Gnn
+import torch
 
 class Player: 
     def __init__(self, id, game, type: PlayerTypes = PlayerTypes.NOT_SET):
@@ -527,9 +528,11 @@ class Player:
         mySheep = self.resources["sheep"]
         totResOthers = Bank.Bank().totalResourceOut() - (myCrop + myIron + myWood + myClay + mySheep)
 
-        return {'player_id': self.id, 'victory_points': self.victoryPoints, 'cards_bought': self.boughtCards,
+        data = {'player_id': self.id, 'victory_points': self.victoryPoints, 'cards_bought': self.boughtCards,
                 'used_knights': self.usedKnights, 'crop': myCrop, 'iron': myIron,
                 'wood': myWood, 'clay': myClay, 'sheep': mySheep, "total_resource_out": totResOthers}
+        tensor = torch.Tensor(list(data.values()))
+        return tensor
     
     def bestAction(self):
         if(self.game.actualTurn<self.game.nplayers):

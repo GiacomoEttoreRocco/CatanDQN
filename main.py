@@ -120,7 +120,9 @@ def simulationMain():
         performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=1, withGraphics=True, speed=True)
 
 if __name__ == '__main__':
-        types = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID]
+        # types = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID]
+        # types = [PlayerTypes.HYBRID, PlayerTypes.HYBRID] #, PlayerTypes.HYBRID, PlayerTypes.HYBRID]
+        types = [PlayerTypes.PURE, PlayerTypes.PURE]
         game = c.GameController.GameController(playerTypes=types, withGraphics=True, speed=True, saveOnFile=False)
         
         winner = game.playGameWithGraphic()

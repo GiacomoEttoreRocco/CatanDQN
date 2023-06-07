@@ -1,10 +1,11 @@
 import numpy as np
 import Classes.CatanGraph as CatanGraph
+import torch
 
 dictCsvResources = {None: 0, "desert": 0, "crop": 1, "iron": 2, "wood": 3, "clay": 4, "sheep": 5}
 dictCsvHarbor = {"" : 0, "3:1" : 1, "2:1 crop" : 2, "2:1 iron" : 3, "2:1 wood" : 4, "2:1 clay" : 5, "2:1 sheep" : 6}  # incrementato il peso!
 
-class Board: # deve diventare un singleton
+class Board: 
     instance = None
     def __new__(cls, doPlacement=True):
 
@@ -21,7 +22,7 @@ class Board: # deve diventare un singleton
             cls.tiles = cls.graph.tiles
             cls.places = cls.graph.places
             cls.edges = cls.graph.edges
-            np.random.seed(1996)
+            # np.random.seed(1996)
             #   PERMUTATIONS: 
             cls.numbers = np.random.permutation(cls.graph.numbers)
             cls.resources = np.random.permutation(cls.graph.resources)
@@ -202,7 +203,10 @@ class Board: # deve diventare un singleton
                 else:
                     data['underRobber3'].append(0)
                 data['dice_3'].append(dices[2])
-        return data
+
+        tensor = torch.Tensor(list(data.values()))
+        return tensor
+        # return data
 
     def edgesToDict(cls, playerInTurn):
         data={'place_1':[],'place_2':[],'is_owned_edge': [],}
@@ -215,7 +219,24 @@ class Board: # deve diventare un singleton
                 data['is_owned_edge'].append(-1)
             else:
                 data['is_owned_edge'].append(0)
+        # tensor = torch.Tensor(list(data.values()))
+        # return tensor
         return data
+    
+    def edgesState(cls, playerInTurn):
+        data={'place_1':[],'place_2':[],'is_owned_edge': [],}
+        for edge in cls.edges.keys():
+            data['place_1'].append(edge[0])
+            data['place_2'].append(edge[1])
+            if cls.edges[edge] == playerInTurn.id:
+                data['is_owned_edge'].append(1)
+            elif cls.edges[edge] == 0:
+                data['is_owned_edge'].append(-1)
+            else:
+                data['is_owned_edge'].append(0)
+        tensor = torch.Tensor(list(data.values()))
+        return tensor
+        # return data
             
 # Nodes: 
 

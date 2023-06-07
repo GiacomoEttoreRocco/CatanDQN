@@ -103,10 +103,9 @@ class GameController:
             self.game.ctr.execute(action(player, thingNeeded))
             if(not onlyPassTurn):  
                 self.saveMove(player) 
-                    
-            
-    def playGameWithGraphic(self):
-        
+                         
+    # def playGameWithGraphic(self):
+    def playGame(self):    
         if(self.withGraphics):
             GameView.GameView.setupAndDisplayBoard(self.view)
             GameView.GameView.setupPlaces(self.view)

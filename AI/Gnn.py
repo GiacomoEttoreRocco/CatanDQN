@@ -87,7 +87,8 @@ class Gnn():
         return cls.model(graph, glob, isTrain=False).item()
 
     def fromDictsToGraph(cls, places, edges):
-        w = torch.abs(torch.tensor(edges['is_owned_edge'], dtype=torch.float))
+        # w = torch.tensor(torch.tensor(edges['is_owned_edge'], dtype=torch.float)) # abs
+        w = torch.tensor(edges['is_owned_edge'], dtype=torch.float) # abs
         x = torch.tensor(np.transpose(list(places.values())), dtype=torch.float)
         edge_index = torch.tensor([edges['place_1'],edges['place_2']], dtype=torch.long)
         return Data(x=x, edge_index=edge_index, edge_attr=w)

@@ -10,7 +10,7 @@ import math
 import os
 
 class Game:
-    def __init__(self, num_players = 4):
+    def __init__(self, num_players):
 
         self.ctr = controller.ActionController()
 
@@ -137,9 +137,9 @@ class Game:
                 toRet.add(p2)
         return toRet
 
-    def isLeaf(self, player, place):
-        return len(self.connectedPlacesToPlace(player, place))==1 or len(self.connectedPlacesToPlace(player, place))==3
-
+    def isLeaf(self, player, place): #  Per il Jack del futuro: non è errato, richiede un po' di ragionamento
+        return len(self.connectedPlacesToPlace(player, place))==1 or len(self.connectedPlacesToPlace(player, place))==3 # se == 3 allora si trova in un punto ciclico.
+    
     def connectedPlacesToPlace(self, player, place):
         toRet = []
         if Board.Board().places[place].owner in (0, player.id):
@@ -148,3 +148,6 @@ class Game:
                 if(Board.Board().edges[edge] == player.id):
                     toRet.append(adjPlace)
         return toRet   
+    
+    def getState(self, player):
+        state = Board.Board().placesState(player) + Board.Board.placesState(player) + player.globalFeaturesState()
