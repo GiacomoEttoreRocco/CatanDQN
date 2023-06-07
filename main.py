@@ -1,10 +1,14 @@
 import Classes as c
 from AI.Gnn import Gnn
-from Classes.PlayerTypes import PlayerTypes
+# from Classes.PlayerTypes import PlayerTypes
 import pandas as pd
 import numpy as np
 import csv
 import shutil
+from Classes.Strategy.HybridStrategy import HybridStrategy
+
+from Classes.Strategy.PriorityStrategy import PriorityStrategy
+from Classes.Strategy.PureStrategy import PureStrategy
 
 def printWinners(winners):
         normValue = sum(winners)
@@ -19,15 +23,15 @@ def printWinners(winners):
 
 def training(iterationProcessIndex, iterations, numberOfTrainingGames, numberOfValidationGames):
     winners = [0.0,0.0,0.0,0.0]
-    playerTypes = [PlayerTypes.PRIORITY,PlayerTypes.PRIORITY, PlayerTypes.HYBRID, PlayerTypes.PURE]
+    playerStrategies = [PriorityStrategy, PriorityStrategy, HybridStrategy, PureStrategy]
     print(f'Starting training: {iterationProcessIndex}')
     for iteration in range(iterations):
         print('Iteration: ', iteration+1, "/", iterations)
         allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
-        np.random.shuffle(playerTypes)
+        np.random.shuffle(playerStrategies)
         for numGame in range(numberOfTrainingGames): 
             print('game: ', numGame+1, "/", numberOfTrainingGames) 
-            game = c.GameController.GameController(playerTypes=playerTypes)
+            game = c.GameController.GameController(playerStrategies=playerStrategies)
             winner = game.playGameWithGraphic()
             winners[winner.id-1]+=1
             allGames = pd.concat([allGames, game.total], ignore_index=True)
@@ -39,7 +43,7 @@ def training(iterationProcessIndex, iterations, numberOfTrainingGames, numberOfV
         allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})   
         for numGame in range(numberOfValidationGames): 
             print('game: ', numGame+1, "/", numberOfValidationGames) 
-            game = c.GameController.GameController(playerTypes=playerTypes)
+            game = c.GameController.GameController(playerStrategies=playerStrategies)
             winner = game.playGameWithGraphic()
             winners[winner.id-1]+=1
             allGames = pd.concat([allGames, game.total], ignore_index=True)
@@ -122,7 +126,9 @@ def writeOnCsv(i, winners):
 if __name__ == '__main__':
         # types = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID]
         # types = [PlayerTypes.HYBRID, PlayerTypes.HYBRID] #, PlayerTypes.HYBRID, PlayerTypes.HYBRID]
-        types = [PlayerTypes.HYBRID, PlayerTypes.HYBRID]
-        gameCtrl = c.GameController.GameController(playerTypes=types, withGraphics=True, speed=True, saveOnFile=False)
+        # types = [PlayerTypes.PRIORITY, PlayerTypes.PURE]
+        prioStrategy = PriorityStrategy()
+        strategies = [prioStrategy, prioStrategy]
+        gameCtrl = c.GameController.GameController(playerStrategies = strategies, withGraphics=True, speed=False, saveOnFile=False)
         
         winner = gameCtrl.playGame()

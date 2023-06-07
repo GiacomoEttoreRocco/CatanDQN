@@ -36,16 +36,22 @@ class GameView:
 
         self.manager = pygame_gui.UIManager(windowSize)
         
-        self.aiButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.gameWidth/2 - self.height//10 * 2, self.height - self.height//20), (self.height//10, self.height//20)),
-                                             text='Move AI',
+        self.priorityButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.gameWidth/2 - self.height//10 * 4, self.height - self.height//20), (self.height//5, self.height//20)),
+                                             text='Priority Mode',
                                              manager=self.manager)
-        self.randomButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.gameWidth/2 - self.height//10, self.height - self.height//20), (self.height//10, self.height//20)),
-                                             text='Move random',
+        self.hybridButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.gameWidth/2 - self.height//10 * 2, self.height - self.height//20), (self.height//5, self.height//20)),
+                                             text='Hybrid Mode',
                                              manager=self.manager)
-        self.undoButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.gameWidth/2, self.height - self.height//20), (self.height//10, self.height//20)),
+        self.pureButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.gameWidth/2 - self.height//10  * 0, self.height - self.height//20), (self.height//5, self.height//20)),
+                                             text='Pure AI Mode',
+                                             manager=self.manager)
+        self.rlButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.gameWidth/2 - self.height//10  * -2, self.height - self.height//20), (self.height//5, self.height//20)),
+                                             text='RL Mode',
+                                             manager=self.manager)
+        self.undoButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.gameWidth/2 - self.height//10  * 4, self.height - self.height//10), (self.height//5, self.height//20)),
                                              text='UNDO',
                                              manager=self.manager)
-        self.redoButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.gameWidth/2 + self.height//10, self.height - self.height//20), (self.height//10, self.height//20)),
+        self.redoButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.gameWidth/2 - self.height//10  * 2, self.height - self.height//10), (self.height//5, self.height//20)),
                                              text='REDO',
                                              manager=self.manager)
 
@@ -86,11 +92,10 @@ class GameView:
             self.irons.append(self.font_resourceSmallest.render("Iron: " + str(self.game.players[i].resources["iron"]), False, self.playerColorDict[i+1]))
             self.clays.append(self.font_resourceSmallest.render("Clay: " + str(self.game.players[i].resources["clay"]), False, self.playerColorDict[i+1]))
             self.knights.append(self.font_resourceSmallest.render("Knights: " + str(self.game.players[i].usedKnights), False, self.playerColorDict[i+1]))
-
             self.monopolyCards.append(self.font_resourceSmallest.render("MonopolyCards: " + str(self.game.players[i].monopolyCard), False, self.playerColorDict[i+1]))
             self.roadBuildingCards.append(self.font_resourceSmallest.render("RoadBuildingCards: " + str(self.game.players[i].roadBuildingCard), False, self.playerColorDict[i+1]))
             self.yearOfPlentyCards.append(self.font_resourceSmallest.render("YearOfPlentyCards: " + str(self.game.players[i].yearOfPlentyCard), False, self.playerColorDict[i+1]))
-            self.playerType.append(self.font_resourceSmallest.render("Type: " + str(self.game.players[i].type.name), False, self.playerColorDict[i+1]))
+            self.playerType.append(self.font_resourceSmallest.render("Type: " + str(self.game.players[i].strategy.name()), False, self.playerColorDict[i+1]))
 
     def updateStats(self):
         for i in range(0, len(self.game.players)):
@@ -105,14 +110,16 @@ class GameView:
             self.monopolyCards[i] = self.font_resourceSmallest.render("Monopoly: " + str(self.game.players[i].monopolyCard), False, self.playerColorDict[i+1])
             self.roadBuildingCards[i] = self.font_resourceSmallest.render("RoadBuilding: " + str(self.game.players[i].roadBuildingCard), False, self.playerColorDict[i+1])
             self.yearOfPlentyCards[i] = self.font_resourceSmallest.render("YearOfPlenty: " + str(self.game.players[i].yearOfPlentyCard), False, self.playerColorDict[i+1])
-            self.playerType[i] = self.font_resourceSmallest.render("Type: " + str(self.game.players[i].type.name), False, self.playerColorDict[i+1])
+            self.playerType[i] = self.font_resourceSmallest.render("Type: " + str(self.game.players[i].strategy.name()), False, self.playerColorDict[i+1])
 
     def blit(self, player, x, y):
         playerBox = pygame.Rect(x-self.height//200, y-self.height//200, self.height//6.7, self.height//2.5)
-        if self.game.currentTurnPlayer == player:
-            self.screen.fill(self.bgScoreColorHighlited, playerBox)
-        else:
-            self.screen.fill(self.bgScoreColor, playerBox)
+        # if self.game.currentTurnPlayer == player:
+        #     self.screen.fill(self.bgScoreColorHighlited, playerBox)
+        # else:
+        #     self.screen.fill(self.bgScoreColor, playerBox)
+        self.screen.fill(self.bgScoreColor, playerBox)
+
         self.screen.blit(self.points[player.id-1], (x, y)) # 5,5
         self.screen.blit(self.pointsCards[player.id-1], (x, y+self.height//18.2))
         self.screen.blit(self.woods[player.id-1], (x, y+self.height//10.5))

@@ -1,6 +1,7 @@
 import Classes.Player as Player
 import Classes.Board as Board
 import Classes.Bank as Bank
+from Classes.Strategy.Strategy import Strategy
 import Command.commands as commands
 import Command.controller as controller
 
@@ -14,11 +15,11 @@ class Game:
 
         self.ctr = controller.ActionController()
 
-        self.dummy = Player.Player(0, self)
+        self.dummy = Player.Player(0, self, Strategy)
         self.dummy.victoryPoints = 4
 
         self.nplayers = num_players
-        self.players = [Player.Player(i+1, self) for i in range(0, num_players)]
+        self.players = [Player.Player(i+1, self, None) for i in range(0, num_players)]
         self.largestArmyPlayer = self.dummy
         self.longestStreetOwner = self.dummy
         self.longestStreetLength = 4

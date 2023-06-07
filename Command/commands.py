@@ -129,11 +129,11 @@ class SevenOnDicesCommand:
             half = int(pyr.resourceCount()/2)
             if(pyr.resourceCount() > 7):
                 for _ in range(0, half):
-                    _, resource = pyr.evaluate(DiscardResourceCommand)
+                    _, resource = pyr.strategy.evaluate(DiscardResourceCommand, self.player)
                     tmp = DiscardResourceCommand(pyr, resource)
                     tmp.execute()
                     self.actions.append(tmp)
-        ev, pos = self.player.evaluate(UseRobberCommand)
+        ev, pos = self.player.strategy.evaluate(UseRobberCommand,self.player)
         tmp = UseRobberCommand(self.player, pos)
         self.actions.append(tmp)
         tmp.execute()
@@ -182,7 +182,6 @@ class RemoveResourceToPlayer:
 @dataclass
 class AddResourceToBank:
     resource: str
-
     def execute(self):
         Bank.Bank().resources[self.resource] += 1
     def undo(self):
@@ -195,7 +194,6 @@ class AddResourceToBank:
 @dataclass
 class RemoveResourceToBank:
     resource: str
-
     def execute(self):
         Bank.Bank().resources[self.resource] -= 1
     def undo(self):
@@ -246,7 +244,6 @@ class PlayerSpendResourceCommand:
         self.actions.append(AddResourceToBank(self.resource))
         for action in self.actions:
             action.execute()
-
     def undo(self):
         for action in reversed(self.actions):
             action.undo()
@@ -465,7 +462,7 @@ class FirstChoiseCommand:
         tmp = PlaceInitialColonyCommand(self.player, self.placeChoosen)
         self.actions.append(tmp)
         tmp.execute()
-        _, edgeChoosen = self.player.evaluate(PlaceInitialStreetCommand)
+        _, edgeChoosen = self.player.strategy.evaluate(PlaceInitialStreetCommand, self.player)
         tmp = PlaceInitialStreetCommand(self.player, edgeChoosen)
         self.actions.append(tmp)
         tmp.execute()
@@ -495,7 +492,7 @@ class SecondChoiseCommand:
         tmp = PlaceSecondColonyCommand(self.player, self.placeChoosen)
         self.actions.append(tmp)
         tmp.execute()
-        _, edgeChoosen = self.player.evaluate(PlaceInitialStreetCommand)
+        _, edgeChoosen = self.player.strategy.evaluate(PlaceInitialStreetCommand, self.player)
         tmp = PlaceInitialStreetCommand(self.player, edgeChoosen)
         self.actions.append(tmp)
         tmp.execute()

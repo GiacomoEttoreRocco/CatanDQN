@@ -46,7 +46,7 @@ class GameController:
         self.game.ctr.redo()
         self.view.updateGameScreen()    
 
-    def decisionManagerGUI_SL(self, player):
+    def decisionManagerGUI(self, player):
         if(not self.speed and self.withGraphics):
             event = pygame.event.wait()
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
@@ -71,19 +71,6 @@ class GameController:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     print("Escape")
-                elif event.key == pygame.K_a:
-                    player.type = PlayerTypes.PURE
-                    self.doActionWithGraphics(player)
-                elif event.key == pygame.K_p:
-                    player.type = PlayerTypes.PRIORITY
-                    self.doActionWithGraphics(player)
-                elif event.key == pygame.K_h:
-                    player.type = PlayerTypes.HYBRID
-                    self.doActionWithGraphics(player)
-                elif event.key == pygame.K_d:
-                    self.doActionWithGraphics(player)    
-                else:
-                    print(f'Key {event.key} pressed')
             if event.type == pygame.QUIT:
                 print("Quitting")
                 pygame.quit()
@@ -95,17 +82,17 @@ class GameController:
                     pygame.quit()
             self.doActionWithGraphics(player)
 
-    def decisionManagerNonGUI_SL(self, player):
+    def decisionManagerNonGUI(self, player):
         action, thingNeeded, onlyPassTurn = player.bestActionSL()
         self.game.ctr.execute(action(player, thingNeeded))
         if(not onlyPassTurn):  
             self.saveMove(player) 
 
-    def decisionManager_SL(self, player):
+    def decisionManager(self, player):
         if(self.withGraphics):
-            self.decisionManagerGUI_SL(player)
+            self.decisionManagerGUI(player)
         else:
-            self.decisionManagerNonGUI_SL(player)
+            self.decisionManagerNonGUI(player)
 
 #############################################################################################################
 
@@ -138,15 +125,15 @@ class GameController:
             if(self.game.actualTurn < self.game.nplayers*2):
                 playerTurn = self.game.players[reverseTurnOffSet[self.game.actualTurn]] 
                 self.decisionManager(playerTurn)
-                print("Tensor state initial phase: \n")    
-                print("Board state: ", self.game.getBoardState(playerTurn))
-                print("Player state: ", self.game.getPlayerGlobalFeaturesState(playerTurn))
+                # print("Tensor state initial phase: \n")    
+                # print("Board state: ", self.game.getBoardState(playerTurn))
+                # print("Player state: ", self.game.getPlayerGlobalFeaturesState(playerTurn))
             else:
                 playerTurn = self.game.players[self.game.actualTurn%self.game.nplayers]
                 self.decisionManager(playerTurn)
-                print("Generic turn: \n")
-                print("Board state: ", self.game.getBoardState(playerTurn))
-                print("Player state: ", self.game.getPlayerGlobalFeaturesState(playerTurn))
+                # print("Generic turn: \n")
+                # print("Board state: ", self.game.getBoardState(playerTurn))
+                # print("Player state: ", self.game.getPlayerGlobalFeaturesState(playerTurn))
 
                 if(playerTurn.victoryPoints >= 10):
                     self.saveToJson(playerTurn)
