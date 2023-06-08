@@ -128,7 +128,9 @@ if __name__ == '__main__':
         # types = [PlayerTypes.HYBRID, PlayerTypes.HYBRID] #, PlayerTypes.HYBRID, PlayerTypes.HYBRID]
         # types = [PlayerTypes.PRIORITY, PlayerTypes.PURE]
         prioStrategy = PriorityStrategy()
-        strategies = [prioStrategy, prioStrategy]
-        gameCtrl = c.GameController.GameController(playerStrategies = strategies, withGraphics=True, speed=False, saveOnFile=False)
+        hybStrategy = HybridStrategy()
+        purStrategy = PureStrategy()
+        strategies = [hybStrategy, purStrategy]
+        gameCtrl = c.GameController.GameController(playerStrategies = strategies, withGraphics=True, speed=True, saveOnFile=False)
         
         winner = gameCtrl.playGame()

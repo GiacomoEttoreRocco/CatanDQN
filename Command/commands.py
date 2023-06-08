@@ -168,14 +168,22 @@ class AddResourceToPlayer:
 class RemoveResourceToPlayer:
     player: Player
     resource: str
+    unduable: bool = True
     def execute(self):
-        assert self.player.resources[self.resource]>0, f"Player {self.player.id} can't EXECUTE this action becouse it has not {self.resource}"
-        self.player.resources[self.resource] -= 1
+        # assert self.player.resources[self.resource]>0, f"Player {self.player.id} can't EXECUTE this action becouse it has not {self.resource}"
+        if(self.player.resources[self.resource] > 0):
+            self.player.resources[self.resource] -= 1
+        else:
+            self.unduable = False
     def undo(self):
-        self.player.resources[self.resource] += 1
+        if(self.unduable):
+            self.player.resources[self.resource] += 1
     def redo(self):
-        assert self.player.resources[self.resource]>0, f"Player {self.player.id} can't UNDO this action becouse it has not {self.resource}"
-        self.player.resources[self.resource] -= 1
+        # assert self.player.resources[self.resource]>0, f"Player {self.player.id} can't UNDO this action becouse it has not {self.resource}"
+        if(self.player.resources[self.resource] > 0):
+            self.player.resources[self.resource] -= 1
+        else:
+            self.unduable = False
     def __repr__(self) -> str:
         return f'{self.__class__.__name__} res: {self.resource}'
 

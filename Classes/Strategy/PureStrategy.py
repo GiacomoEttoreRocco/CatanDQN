@@ -35,7 +35,7 @@ class PureStrategy(StrategySL):
     def actionValue(self, player, action, thingNeeded = None):
         ctr = controller.ActionController()
         if(action == commands.PassTurnCommand): 
-            toRet = Gnn.Gnn().evaluatePositionForPlayer(player)
+            toRet = Gnn().evaluatePositionForPlayer(player)
         else:
             previousCount = player.resourceCount()
             ctr.execute(action(player, thingNeeded)) 
@@ -44,9 +44,9 @@ class PureStrategy(StrategySL):
                 ctr.undo()
                 return 1000.0
             elif(previousCount >= 8 and player.resourceCount() < 8):
-                toRet = 100.0 + Gnn.Gnn().evaluatePositionForPlayer(player)
+                toRet = 100.0 + Gnn().evaluatePositionForPlayer(player)
                 ctr.undo()
             else:
-                toRet = Gnn.Gnn().evaluatePositionForPlayer(player)
+                toRet = Gnn().evaluatePositionForPlayer(player)
                 ctr.undo()
         return toRet # 

@@ -45,23 +45,23 @@ class GameController:
                     # self.view.updateGameScreen()
                 elif(event.ui_element == self.view.priorityButton):
                     player.strategy = PriorityStrategy()
-                    self.view.updateGameScreen()
+                    # self.view.updateGameScreen()
                 elif(event.ui_element == self.view.hybridButton):
                     player.strategy = HybridStrategy()
-                    self.view.updateGameScreen()
+                    # self.view.updateGameScreen()
                 elif(event.ui_element == self.view.rlButton):
                     player.strategy = ReinforcementLearningStrategy()
-                    self.view.updateGameScreen()
+                    # self.view.updateGameScreen()
                 elif(event.ui_element == self.view.undoButton):
                     self.game.ctr.undo()
-                    self.view.updateGameScreen()
+                    # self.view.updateGameScreen()
                 elif(event.ui_element == self.view.redoButton):
                     self.game.ctr.redo()
-                    self.view.updateGameScreen() 
+                    # self.view.updateGameScreen() 
                 elif(event.ui_element == self.view.doButton):
                     action, thingNeeded, onlyPassTurn = player.bestAction()
                     self.game.ctr.execute(action(player, thingNeeded))
-                    self.view.updateGameScreen()  
+                    # self.view.updateGameScreen()  
                 elif(event.ui_element == self.view.stack.scroll_bar.bottom_button):
                     self.view.stack.scroll_bar.set_scroll_from_start_percentage(self.view.stack.scroll_bar.start_percentage+0.1)
                     self.view.updateGameScreen(True)
@@ -73,9 +73,9 @@ class GameController:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     print("Escape")
-            if event.type == pygame.QUIT:
-                print("Quitting")
-                pygame.quit()
+            # if event.type == pygame.QUIT:
+                    print("Quitting")
+                    pygame.quit()
             self.view.updateGameScreen()
             self.view.manager.process_events(event) 
         else:
@@ -123,7 +123,7 @@ class GameController:
                 # print("Player state: ", self.game.getPlayerGlobalFeaturesState(playerTurn))
                 if(playerTurn.victoryPoints >= 10):
                     # self.saveToJson(playerTurn)
-                    print(f'Winner: {playerTurn.id}, Agent: {playerTurn.strategy().name()}\n')
+                    print(f'Winner: {playerTurn.id}, Agent: {playerTurn.strategy.name()}\n')
                     if(self.withGraphics):
                         pygame.quit()
                     return playerTurn
