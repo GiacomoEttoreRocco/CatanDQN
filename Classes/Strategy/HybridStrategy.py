@@ -11,9 +11,9 @@ class HybridStrategy(StrategySL):
         pass
     
     def bestAction(self, player):
-        if(player.game.actualTurn<self.game.nplayers):
+        if(player.game.actualTurn<player.game.nplayers):
             actions = [commands.FirstChoiseCommand]
-        elif(player.game.actualTurn<self.game.nplayers*2):
+        elif(player.game.actualTurn<player.game.nplayers*2):
             actions = [commands.SecondChoiseCommand]
         else:
             actions = self.availableActions(player.turnCardUsed)

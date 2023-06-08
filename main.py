@@ -129,6 +129,6 @@ if __name__ == '__main__':
         # types = [PlayerTypes.PRIORITY, PlayerTypes.PURE]
         prioStrategy = PriorityStrategy()
         strategies = [prioStrategy, prioStrategy]
-        gameCtrl = c.GameController.GameController(playerStrategies = strategies, withGraphics=True, speed=True, saveOnFile=False)
+        gameCtrl = c.GameController.GameController(playerStrategies = strategies, withGraphics=True, speed=False, saveOnFile=False)
         
         winner = gameCtrl.playGame()

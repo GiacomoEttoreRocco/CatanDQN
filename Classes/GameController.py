@@ -40,28 +40,28 @@ class GameController:
         if(not self.speed and self.withGraphics):
             event = pygame.event.wait()
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                if(event.ui_element == self.view.aiButton):
+                if(event.ui_element == self.view.pureButton):
                     player.strategy = PureStrategy()
                     # self.view.updateGameScreen()
-                elif(event.ui_element == self.view.randomButton):
-                    player.type = PriorityStrategy()
-                    # self.view.updateGameScreen()
+                elif(event.ui_element == self.view.priorityButton):
+                    player.strategy = PriorityStrategy()
+                    self.view.updateGameScreen()
                 elif(event.ui_element == self.view.hybridButton):
-                    player.type = HybridStrategy()
-                    # self.view.updateGameScreen()
-                elif(event.ui_element == self.view.reinforcementLearningButton):
-                    player.type = ReinforcementLearningStrategy()
-                    # self.view.updateGameScreen()
+                    player.strategy = HybridStrategy()
+                    self.view.updateGameScreen()
+                elif(event.ui_element == self.view.rlButton):
+                    player.strategy = ReinforcementLearningStrategy()
+                    self.view.updateGameScreen()
                 elif(event.ui_element == self.view.undoButton):
                     self.game.ctr.undo()
-                    # self.view.updateGameScreen()
+                    self.view.updateGameScreen()
                 elif(event.ui_element == self.view.redoButton):
                     self.game.ctr.redo()
-                    # self.view.updateGameScreen() 
+                    self.view.updateGameScreen() 
                 elif(event.ui_element == self.view.doButton):
                     action, thingNeeded, onlyPassTurn = player.bestAction()
                     self.game.ctr.execute(action(player, thingNeeded))
-                    # self.view.updateGameScreen()  
+                    self.view.updateGameScreen()  
                 elif(event.ui_element == self.view.stack.scroll_bar.bottom_button):
                     self.view.stack.scroll_bar.set_scroll_from_start_percentage(self.view.stack.scroll_bar.start_percentage+0.1)
                     self.view.updateGameScreen(True)

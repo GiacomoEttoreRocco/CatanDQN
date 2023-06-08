@@ -54,6 +54,9 @@ class GameView:
         self.redoButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.gameWidth/2 - self.height//10  * 2, self.height - self.height//10), (self.height//5, self.height//20)),
                                              text='REDO',
                                              manager=self.manager)
+        self.doButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.gameWidth/2 - self.height//10  * 0, self.height - self.height//10), (self.height//5, self.height//20)),
+                                             text='DO',
+                                             manager=self.manager)
 
         self.stack = pygame_gui.elements.UISelectionList(relative_rect=pygame.Rect((self.gameWidth,0),(self.moveListWidth,self.height)),
                                             item_list=[("player.id", "action")],
