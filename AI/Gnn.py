@@ -135,7 +135,7 @@ class Net(nn.Module):
     # print("Embeds: ", embeds)
     # embeds = torch.reshape(embeds, (batch_size, 54*3))
     embeds = torch.reshape(embeds, (batch_size, 54*4))
-    # print("Embeds: ", embeds)
+    # print("Embeds: ", len(embeds[0]))
     globalFeats = self.GlobalLayers(globalFeats)
     output = torch.cat([embeds, globalFeats], dim=-1)
     output = torch.dropout(output, p = 0.2, train = isTrain)

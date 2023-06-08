@@ -36,6 +36,12 @@ class GameController:
         c.Bank.Bank().reset()
         Gnn.Gnn().reset()
 
+    def executeDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
+        prevPoints = self.player._victoryPoints()
+        self.game.ctr.execute(action(player, thingNeeded))
+        self.previousReward = self.player._actualPoints - prevPoints
+
+
     def decisionManagerGUI(self, player):
         if(not self.speed and self.withGraphics):
             event = pygame.event.wait()
@@ -91,8 +97,9 @@ class GameController:
     def decisionManagerNonGUI(self, player):
         action, thingNeeded, onlyPassTurn = player.bestAction()
         self.game.ctr.execute(action(player, thingNeeded))
-        if(not onlyPassTurn):  
-            self.saveMove(player) 
+
+        # if(not onlyPassTurn):  
+        #     # self.saveMove(player) 
 
     def decisionManager(self, player):
         if(self.withGraphics):
@@ -121,7 +128,7 @@ class GameController:
                 # print("Generic turn: \n")
                 # print("Board state: ", self.game.getBoardState(playerTurn))
                 # print("Player state: ", self.game.getPlayerGlobalFeaturesState(playerTurn))
-                if(playerTurn.victoryPoints >= 10):
+                if(playerTurn._victoryPoints >= 10):
                     # self.saveToJson(playerTurn)
                     print(f'Winner: {playerTurn.id}, Agent: {playerTurn.strategy.name()}\n')
                     if(self.withGraphics):

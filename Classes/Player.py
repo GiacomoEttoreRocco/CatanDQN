@@ -16,7 +16,7 @@ class Player:
         self.ownedColonies = []
         self.ownedStreets = []
         self.ownedCities = []
-        self.victoryPoints = 0
+        self._victoryPoints = 0
         self.victoryPointsCards = 0
         self.boughtCards = 0
         self.nColonies = 0
@@ -35,6 +35,10 @@ class Player:
         self.lastRobberUser = False
         self.resources = {"wood" : 0, "clay" : 0, "crop": 0, "sheep": 0, "iron": 0}
         self.ownedHarbors = []
+
+        # for RL stuff
+
+        self.previousReward = 0
 
     def __eq__(self, other):
         return self.id == other.id
@@ -208,7 +212,7 @@ class Player:
         return resourceTaken
 
     def globalFeaturesToDict(self):
-        return {'player_id': self.id,'victory_points': self.victoryPoints, 'cards_bought': self.boughtCards, 'last_robber_user': int(self.lastRobberUser),
+        return {'player_id': self.id,'victory_points': self._victoryPoints, 'cards_bought': self.boughtCards, 'last_robber_user': int(self.lastRobberUser),
                 'used_knights': self.usedKnights, 'crop': self.resources["crop"], 'iron': self.resources["iron"],
                 'wood': self.resources["wood"], 'clay': self.resources["clay"], 'sheep': self.resources["sheep"], 'winner':None}
     
@@ -220,11 +224,19 @@ class Player:
         mySheep = self.resources["sheep"]
         totResOthers = Bank.Bank().totalResourceOut() - (myCrop + myIron + myWood + myClay + mySheep)
 
-        data = {'player_id': self.id, 'victory_points': self.victoryPoints, 'cards_bought': self.boughtCards,
+        # data = {'player_id': self.id, 'victory_points': self.victoryPoints, 'cards_bought': self.boughtCards,
+        #         'used_knights': self.usedKnights, 'crop': myCrop, 'iron': myIron,
+        #         'wood': myWood, 'clay': myClay, 'sheep': mySheep, "total_resource_out": totResOthers}
+        
+        data = {'victory_points': self._victoryPoints, 'cards_bought': self.boughtCards,
                 'used_knights': self.usedKnights, 'crop': myCrop, 'iron': myIron,
                 'wood': myWood, 'clay': myClay, 'sheep': mySheep, "total_resource_out": totResOthers}
+        
         tensor = torch.Tensor(list(data.values()))
         return tensor
     
     def bestAction(self):
         return self.strategy.bestAction(self) 
+    
+    def victoryPointsModification(self, points):
+        self._victoryPoints += points

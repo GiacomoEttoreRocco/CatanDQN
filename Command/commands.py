@@ -389,7 +389,7 @@ class PlaceInitialColonyCommand:
     def execute(self):
         Board.Board().places[self.place.id].owner = self.player.id
         Board.Board().places[self.place.id].isColony = True
-        self.player.victoryPoints+=1
+        self.player.victoryPointsModification(1)
         self.player.nColonies+=1
         self.player.ownedColonies.append(self.place.id)
         if(self.place.harbor != ""):
@@ -397,7 +397,7 @@ class PlaceInitialColonyCommand:
     def undo(self):
         Board.Board().places[self.place.id].owner = 0
         Board.Board().places[self.place.id].isColony = False
-        self.player.victoryPoints-=1
+        self.player.victoryPointsModification(-1)
         self.player.nColonies-=1
         del self.player.ownedColonies[-1]
         if(self.place.harbor != ""):
@@ -416,7 +416,7 @@ class PlaceDefaultCityCommand:
     def execute(self):
         Board.Board().places[self.place.id].isColony = False
         Board.Board().places[self.place.id].isCity = True
-        self.player.victoryPoints+=1
+        self.player.victoryPointsModification(1)
         self.player.nCities+=1
         self.player.nColonies-=1
         self.player.ownedCities.append(self.place.id)
@@ -424,7 +424,7 @@ class PlaceDefaultCityCommand:
     def undo(self):
         Board.Board().places[self.place.id].isColony = True
         Board.Board().places[self.place.id].isCity = False
-        self.player.victoryPoints-=1
+        self.player.victoryPointsModification(-1)
         self.player.nCities-=1
         self.player.nColonies+=1
         del self.player.ownedCities[-1]
@@ -537,24 +537,24 @@ class CheckLongestStreetCommand:
         if(self.previousLongestStreetOwner != self.actualLongestStreetOwner):
             self.game.longestStreetOwner = self.actualLongestStreetOwner
             self.game.longestStreetLength = self.actualMaxLength
-            self.actualLongestStreetOwner.victoryPoints += 2
-            self.previousLongestStreetOwner.victoryPoints -= 2
+            self.actualLongestStreetOwner.victoryPointsModification(2)
+            self.previousLongestStreetOwner.victoryPointsModification(-2)
         self.game.longestStreetLength = self.actualMaxLength
 
     def undo(self):
         if(self.previousLongestStreetOwner != self.actualLongestStreetOwner):
             self.game.longestStreetOwner = self.previousLongestStreetOwner
             self.game.longestStreetLength = self.previousMaxLength
-            self.actualLongestStreetOwner.victoryPoints -= 2
-            self.previousLongestStreetOwner.victoryPoints += 2
+            self.actualLongestStreetOwner.victoryPointsModification(-2)
+            self.previousLongestStreetOwner.victoryPointsModification(2)
         self.game.longestStreetLength = self.previousMaxLength
         
     def redo(self):
         if(self.previousLongestStreetOwner != self.actualLongestStreetOwner):
             self.game.longestStreetOwner = self.actualLongestStreetOwner
             self.game.longestStreetLength = self.previousMaxLength
-            self.actualLongestStreetOwner.victoryPoints += 2
-            self.previousLongestStreetOwner.victoryPoints -= 2
+            self.actualLongestStreetOwner.victoryPointsModification(2)
+            self.previousLongestStreetOwner.victoryPointsModification(-2)
         self.game.longestStreetLength = self.actualMaxLength
         
     def __repr__(self) -> str:
@@ -673,7 +673,8 @@ class BuyDevCardCommand:
         if(self.card == "year_of_plenty"):
             self.player.justBoughtYearOfPlentyCard += 1
         if(self.card == "victory_point"):
-            self.player.victoryPoints += 1
+            # self.player.victoryPoints += 1
+            self.player.victoryPointsModification(1)
             self.player.victoryPointsCards += 1
         Board.Board().deck = Board.Board().deck[1:]
 
@@ -692,7 +693,7 @@ class BuyDevCardCommand:
         if(self.card == "year_of_plenty"):
             self.player.justBoughtYearOfPlentyCard -= 1
         if(self.card == "victory_point"):
-            self.player.victoryPoints -= 1
+            self.player.victoryPointsModification(-1)
             self.player.victoryPointsCards -= 1
         Board.Board().deck = np.insert(Board.Board().deck, 0, self.card)
         
@@ -712,7 +713,7 @@ class BuyDevCardCommand:
         if(self.card == "year_of_plenty"):
             self.player.justBoughtYearOfPlentyCard += 1
         if(self.card == "victory_point"):
-            self.player.victoryPoints += 1
+            self.player.victoryPointsModification(1)
             self.player.victoryPointsCards += 1
         Board.Board().deck = Board.Board().deck[1:]
     def __repr__(self) -> str:
@@ -793,18 +794,24 @@ class CheckLargestArmyCommand:
         self.actualLargestArmyOwner = self.game.largestArmy()
         if(self.previousLargestArmyOwner != self.actualLargestArmyOwner):
             self.game.largestArmyPlayer = self.actualLargestArmyOwner
-            self.actualLargestArmyOwner.victoryPoints += 2 
-            self.previousLargestArmyOwner.victoryPoints -= 2
+            # self.actualLargestArmyOwner.victoryPoints += 2 
+            # self.previousLargestArmyOwner.victoryPoints -= 2
+            self.actualLargestArmyOwner.victoryPointsModification(2)
+            self.previousLargestArmyOwner.victoryPointsModification(-2)
     def undo(self):
         if(self.previousLargestArmyOwner != self.actualLargestArmyOwner):
             self.game.largestArmyPlayer = self.previousLargestArmyOwner
-            self.actualLargestArmyOwner.victoryPoints -= 2 
-            self.previousLargestArmyOwner.victoryPoints += 2
+            # self.actualLargestArmyOwner.victoryPoints -= 2 
+            # self.previousLargestArmyOwner.victoryPoints += 2
+            self.actualLargestArmyOwner.victoryPointsModification(-2)
+            self.previousLargestArmyOwner.victoryPointsModification(2)
     def redo(self):
         if(self.previousLargestArmyOwner != self.actualLargestArmyOwner):
             self.game.largestArmyPlayer = self.actualLargestArmyOwner
-            self.actualLargestArmyOwner.victoryPoints += 2 
-            self.previousLargestArmyOwner.victoryPoints -= 2
+            # self.actualLargestArmyOwner.victoryPoints += 2 
+            # self.previousLargestArmyOwner.victoryPoints -= 2
+            self.actualLargestArmyOwner.victoryPointsModification(2)
+            self.previousLargestArmyOwner.victoryPointsModification(-2)
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}'
 

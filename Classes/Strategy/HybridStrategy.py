@@ -44,14 +44,14 @@ class HybridStrategy(StrategySL):
                 # toRet = Gnn.Gnn().evaluatePositionForPlayer(player)
                 toRet = Gnn().evaluatePositionForPlayer(player)
             else:
-                pointsBefore = player.victoryPoints
+                pointsBefore = player._victoryPoints
                 previousPossibleColonies = player.calculatePossibleColony()
                 previousCount = player.resourceCount()
                 ctr.execute(action(player, thingNeeded)) 
-                if(player.victoryPoints >= 10):
+                if(player._victoryPoints >= 10):
                     ctr.undo()
                     return 1000.0
-                if(pointsBefore < player.victoryPoints):
+                if(pointsBefore < player._victoryPoints):
                     # print("Greedy path, player: ", self.id)
                     toRet = 300.0 + Gnn().evaluatePositionForPlayer(player)
                 elif(action == commands.PlaceStreetCommand or action == commands.PlaceFreeStreetCommand):

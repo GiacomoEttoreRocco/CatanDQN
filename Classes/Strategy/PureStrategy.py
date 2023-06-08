@@ -39,7 +39,7 @@ class PureStrategy(StrategySL):
         else:
             previousCount = player.resourceCount()
             ctr.execute(action(player, thingNeeded)) 
-            if(player.victoryPoints >= 10):
+            if(player._victoryPoints >= 10):
                 # print("PureAI Agent conclusive move! " + str(action))
                 ctr.undo()
                 return 1000.0

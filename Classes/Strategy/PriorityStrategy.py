@@ -33,7 +33,7 @@ class PriorityStrategy(StrategySL):
         return super().evaluate(action, player)
     
     def actionValue(self, player, action, thingNeeded = None):
-        if(player.victoryPoints >= 8):
+        if(player._victoryPoints >= 8):
             ctr = controller.ActionController()
             ctr.execute(action(player, thingNeeded)) 
             if(player.victoryPoints >= 10):
