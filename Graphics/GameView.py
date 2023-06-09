@@ -87,7 +87,7 @@ class GameView:
         self.bgScoreColorHighlited = pygame.Color('grey64')
 
         for i in range(0, len(self.game.players)):
-            self.points.append(self.font_resourceLarge.render(str(self.game.players[i].victoryPoints), False, self.playerColorDict[i+1]))
+            self.points.append(self.font_resourceLarge.render(str(self.game.players[i]._victoryPoints), False, self.playerColorDict[i+1]))
             self.pointsCards.append(self.font_resourceSmallest.render("Vp cards: " + str(self.game.players[i].victoryPointsCards), False, self.playerColorDict[i+1]))
             self.woods.append(self.font_resourceSmallest.render("Wood: " + str(self.game.players[i].resources["wood"]), False, self.playerColorDict[i+1]))
             self.sheeps.append(self.font_resourceSmallest.render("Sheep: " +str(self.game.players[i].resources["sheep"]), False, self.playerColorDict[i+1]))
@@ -102,7 +102,7 @@ class GameView:
 
     def updateStats(self):
         for i in range(0, len(self.game.players)):
-            self.points[i] = self.font_resourceLarge.render(str(self.game.players[i].victoryPoints), False, self.playerColorDict[i+1])
+            self.points[i] = self.font_resourceLarge.render(str(self.game.players[i]._victoryPoints), False, self.playerColorDict[i+1])
             self.pointsCards[i] = self.font_resourceSmallest.render("Vp cards: " + str(self.game.players[i].victoryPointsCards), False, self.playerColorDict[i+1])
             self.woods[i] = self.font_resourceSmallest.render("Wood: " + str(self.game.players[i].resources["wood"]), False, self.playerColorDict[i+1])
             self.sheeps[i] = self.font_resourceSmallest.render("Sheep: " +str(self.game.players[i].resources["sheep"]), False, self.playerColorDict[i+1])
