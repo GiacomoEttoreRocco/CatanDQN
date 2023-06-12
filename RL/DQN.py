@@ -17,8 +17,8 @@ class DQNagent():
         self.LearningRate = 1e-3
         self.device = device
         self.previousState = None
-        self.policy_net = DQGNN(nInputs, nOutputs).to(device)
-        self.target_net = DQGNN(nInputs, nOutputs).to(device)
+        self.policy_net = DQGNN(nInputs, 8, 4, 9, nOutputs).to(device)
+        self.target_net = DQGNN(nInputs, 8, 4, 9, nOutputs).to(device)
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.criterion = criterion
         self.optimizer = torch.optim.AdamW(self.policy_net.parameters(), lr=self.LearningRate)
@@ -55,9 +55,18 @@ class DQNagent():
             self.softUpdate()
         return action
     
-    def greedyAction(self, state):
+    # def greedyAction(self, state, availableMoves):
+    #     with torch.no_grad():
+    #         action = self.policy_net(state).max(1)[1].view(1, 1)
+    #     return action
+
+    def greedyAction(self, state, availableMoves):
         with torch.no_grad():
-            action = self.policy_net(state).max(1)[1].view(1, 1)
+            q_values = self.policy_net(state)  # Calcola i valori Q per tutte le azioni
+            valid_q_values = q_values[0][availableMoves]  # Filtra i valori Q validi
+            max_q_value, max_index = valid_q_values.max(0)  # Trova il massimo tra i valori Q validi
+            action = availableMoves[max_index.item()]  # Seleziona l'azione corrispondente all'indice massimo
+            # action = torch.tensor([[action]], dtype=torch.long)
         return action
 
     def explorationAction(self):
@@ -116,7 +125,7 @@ class ReplayMemory():
 #         return self.layer3(x)
 
 class DQGNN(nn.Module):
-  def __init__(self, gnnInputDim, gnnHiddenDim, gnnOutputDim, globInputDim, obsLength, nActions):
+  def __init__(self, gnnInputDim, gnnHiddenDim, gnnOutputDim, globInputDim, nActions):
     super().__init__()
 
     self.Gnn = Sequential('x, edge_index, edge_attr', [
@@ -138,9 +147,19 @@ class DQGNN(nn.Module):
         # nn.ReLU(inplace=True),
         # nn.Linear(128, 1),
         # nn.Sigmoid()
-        nn.Linear(obsLength, 128),
+        nn.Linear(54*4, 128),
         nn.ReLU(inplace=True),
         nn.Linear(128, 128),
         nn.ReLU(inplace=True),
         nn.Linear(128, nActions)
     )
+
+    def forward(self, graph, globalFeats, isTrain):
+        batch_size, batch, x, edge_index, edge_attr = graph.num_graphs, graph.batch, graph.x, graph.edge_index, graph.edge_attr
+        embeds = self.Gnn(x, edge_index=edge_index, edge_attr=edge_attr)
+        embeds = torch.reshape(embeds, (batch_size, 54*4))
+        globalFeats = self.GlobalLayers(globalFeats)
+        output = torch.cat([embeds, globalFeats], dim=-1)
+        output = torch.dropout(output, p = 0.2, train = isTrain)
+        output = self.OutLayers(output)
+        return output

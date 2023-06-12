@@ -20,7 +20,7 @@ class Gnn():
             cls.batch = batch
             cls.learningRate = learningRate
             cls.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
-            cls.model = Net(9, 8, 3, 9).to(cls.device)
+            cls.model = Net(9, 8, 4, 9).to(cls.device) # 9,8,3,9
             # cls.modelWeightsPath = "AI/best_model_weights.pth"
             cls.modelWeightsPath = "AI/best_model_SL.pth"
 
@@ -132,10 +132,7 @@ class Net(nn.Module):
   def forward(self, graph, globalFeats, isTrain):
     batch_size, batch, x, edge_index, edge_attr = graph.num_graphs, graph.batch, graph.x, graph.edge_index, graph.edge_attr
     embeds = self.Gnn(x, edge_index=edge_index, edge_attr=edge_attr)
-    # print("Embeds: ", embeds)
-    # embeds = torch.reshape(embeds, (batch_size, 54*3))
     embeds = torch.reshape(embeds, (batch_size, 54*4))
-    # print("Embeds: ", len(embeds[0]))
     globalFeats = self.GlobalLayers(globalFeats)
     output = torch.cat([embeds, globalFeats], dim=-1)
     output = torch.dropout(output, p = 0.2, train = isTrain)

@@ -8,10 +8,12 @@ import random
 
 class ReinforcementLearningStrategy(Strategy):
     def __init__(self): # diventerà un singleton
+        
         # self, nInputs, nOutputs, criterion, device
         # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         # self.macroDQN = DQNagent(nInputs, nOutputs, criterion) # macro rete decisionale
-        self.macroDQN = DQNagent(x, y) # macro rete decisionale
+
+        self.macroDQN = DQNagent(9, 10) # macro rete decisionale
 
     def name(self):
         return "RL"
