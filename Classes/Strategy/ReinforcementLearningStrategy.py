@@ -4,13 +4,13 @@ from Classes.staticUtilities import *
 from Command import commands, controller
 from Classes.Strategy.Strategy import Strategy
 from RL.DQN import DQNagent
+import random
 
 class ReinforcementLearningStrategy(Strategy):
     def __init__(self): # diventerà un singleton
         # self, nInputs, nOutputs, criterion, device
         # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         # self.macroDQN = DQNagent(nInputs, nOutputs, criterion) # macro rete decisionale
-
         self.macroDQN = DQNagent(x, y) # macro rete decisionale
 
     def name(self):
@@ -227,27 +227,50 @@ class ReinforcementLearningStrategy(Strategy):
         return bestTile
 
     def euristicPlayCard(self, player):
-        ...
-        return thingNeeded
+        if player.unusedKnights > 0:
+            return self.euristicPlayKnight(player)
+        if player.monopolyCard > 0:
+            return self.euristicMonopoly(player)
+        if player.roadBuildingCard > 0:
+            return self.euristicRoadBuildingCard(player)
+        if player.yearOfPlenty > 0:
+            return self.euristicYearOfPlenty(player)
 
     def euristicPlaceStreet(self, player):
-        ...
-        return thingNeeded
+        availableStreets = player.calculatePossibleStreets()
+        if(len(availableStreets) != 0):
+            return random.choice(availableStreets) # per ora random
+        return None
     
     def euristicKnight(self, player):
-        ...
-        return thingNeeded
+        actualDistanceFromEight = 12
+        for tile in player.game.tiles:
+            blockable = False
+            isMyTile = False
+            for place in tile.associatedPlaces:
+                if(place.owner != player.id):
+                    blockable = True
+                if(place.owner == player.id):
+                    isMyTile = True
+            if(blockable and not isMyTile):
+                if(actualDistanceFromEight < abs(tile.number, 8)):
+                    bestTile = tile
+        return bestTile
     
     def euristicMonopoly(self, player):
-        ...
-        return thingNeeded
+        min = 25
+        toTake = ""
+        for res in Bank().resources:
+            if Bank.resources[res] < min:
+                toTake = res
+                min = Bank.resources[res]
+        return toTake
     
     def euristicRoadBuildingCard(self, player):
-        ...
-        return thingNeeded
+        return self.euristicPlaceStreet(player)  # si può chiamare questo, perchè nel momento in cui viene gestito il command di road building card, viene chiamato 2 volte il comando place street
     
     def euristicYearOfPlenty(self, player):
-        ...
-        return thingNeeded
+        resources = ["iron", "wood", "clay", "crop", "sheep"]
+        return random.choice(resources), random.choice(resources)
 
     

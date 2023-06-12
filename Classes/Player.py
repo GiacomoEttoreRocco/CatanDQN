@@ -114,13 +114,13 @@ class Player:
     
     def availableTurnActionsId(self, turnCardUsed):
         availableActions = [0] #commands.PassTurnCommand
-        if(self.resources["crop"] >= 1 and self.resources["iron"] >= 1 and self.resources["sheep"] >= 1 and len(Board.Board().deck) > 0):
+        if(availableResourcesForDevCard(self.resources) and len(Board.Board().deck) > 0):
             availableActions.append(1) # commands.BuyDevCardCommand
-        if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.nStreets < 15 and self.calculatePossibleStreets() != None): 
+        if(availableResourcesForStreet(self.resources) and self.nStreets < 15 and self.calculatePossibleStreets() != None): 
             availableActions.append(2) # commands.PlaceStreetCommand
-        if(self.resources["wood"] >= 1  and self.resources["clay"] >= 1 and self.resources["sheep"] >= 1 and self.resources["crop"] >= 1):
+        if(availableResourcesForColony(self.resources) and self.nColonies < 5):
             availableActions.append(3) # commands.PlaceColonyCommand
-        if(self.resources["iron"] >= 3 and self.resources["crop"] >= 2):
+        if(availableResourcesForCity(self.resources) and self.nCities < 4):
             availableActions.append(4) # commands.PlaceCityCommand
         canTrade = False
         for resource in self.resources.keys():
@@ -148,7 +148,6 @@ class Player:
                     edge = tuple(sorted([p1, p]))
                     if(Board.Board().edges[edge] == 0):
                         toRet.append(edge)
-
         if(Board.Board().places[p2].owner == 0 or Board.Board().places[p2].owner == self.id):
             for p in Board.Board().graph.listOfAdj[p2]:
                 if(p1 != p):
@@ -164,7 +163,7 @@ class Player:
         for edge in Board.Board().edges.keys():
             if(Board.Board().edges[edge] == self.id):
                 if(edge == None):
-                    print(Board.Board().edges[edge])
+                    print(Board.Board().edges[edge]) # debug
                 if(self.connectedEmptyEdges(edge) != None):
                     possibleEdges.extend(self.connectedEmptyEdges(edge))
         return possibleEdges
