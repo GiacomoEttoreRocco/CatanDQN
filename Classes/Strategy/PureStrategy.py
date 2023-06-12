@@ -11,7 +11,7 @@ class PureStrategy(StrategySL):
         pass
     
     def bestAction(self, player):
-        if(player.game.actualTurn<player.game.nplayers):
+        if(player.game.actualTurn < player.game.nplayers):
             actions = [commands.FirstChoiseCommand]
         elif(player.game.actualTurn<player.game.nplayers*2):
             actions = [commands.SecondChoiseCommand]
@@ -21,7 +21,7 @@ class PureStrategy(StrategySL):
         thingsNeeded = None
         bestAction = actions[0]
         for action in actions: 
-            evaluation, tempInput = self.evaluate(action, player)
+            evaluation, tempInput = self.chooseParameters(action, player)
             if(max <= evaluation):
                 max = evaluation
                 thingsNeeded = tempInput
@@ -29,8 +29,8 @@ class PureStrategy(StrategySL):
         onlyPassTurn = commands.PassTurnCommand in actions and len(actions)==1
         return bestAction, thingsNeeded, onlyPassTurn
     
-    def evaluate(self, action, player):
-        return super().evaluate(action, player)
+    def chooseParameters(self, action, player):
+        return super().chooseParameters(action, player)
     
     def actionValue(self, player, action, thingNeeded = None):
         ctr = controller.ActionController()

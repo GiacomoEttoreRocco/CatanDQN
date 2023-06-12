@@ -1,25 +1,27 @@
 import torch.nn as nn
 import torch.nn.functional as F
 from collections import deque, namedtuple
+from torch_geometric.nn import GCNConv, GraphConv, Sequential, global_mean_pool
 import torch
 import random
-
+#f
 Transition = namedtuple('Transition', ('state', 'action', 'reward', 'next_state'))
 
 class DQNagent():
-    def __init__(self, nInputs, nOutputs, criterion, device) -> None:
+    def __init__(self, nInputs, nOutputs, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")) -> None:
+
         self.BATCH_SIZE = 64 # 64 # 256
         self.GAMMA = 0.99
         self.fixed_EPS = 0.1
         self.TAU = 0.005 # 0.005
-        self.LR = 1e-3
+        self.LearningRate = 1e-3
         self.device = device
         self.previousState = None
-        self.policy_net = DQNetwork(nInputs, nOutputs).to(device)
-        self.target_net = DQNetwork(nInputs, nOutputs).to(device)
+        self.policy_net = DQGNN(nInputs, nOutputs).to(device)
+        self.target_net = DQGNN(nInputs, nOutputs).to(device)
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.criterion = criterion
-        self.optimizer = torch.optim.AdamW(self.policy_net.parameters(), lr=self.LR)
+        self.optimizer = torch.optim.AdamW(self.policy_net.parameters(), lr=self.LearningRate)
         self.memory = ReplayMemory(10000)
         self.previousState = None
         self.previousAction = None
@@ -102,13 +104,43 @@ class ReplayMemory():
     def __len__(self):
         return len(self.memory)
 
-class DQNetwork(nn.Module):
-    def __init__(self, observationLenght, n_actions):
-        super(DQNetwork, self).__init__()
-        self.layer1 = nn.Linear(observationLenght, 128)
-        self.layer2 = nn.Linear(128, 128)
-        self.layer3 = nn.Linear(128, n_actions)
-    def forward(self, x):
-        x = F.relu(self.layer1(x))
-        x = F.relu(self.layer2(x))
-        return self.layer3(x)
+# class DQNetwork(nn.Module):
+#     def __init__(self, observationLenght, n_actions):
+#         super(DQNetwork, self).__init__()
+#         self.layer1 = nn.Linear(observationLenght, 128)
+#         self.layer2 = nn.Linear(128, 128)
+#         self.layer3 = nn.Linear(128, n_actions)
+#     def forward(self, x):
+#         x = F.relu(self.layer1(x))
+#         x = F.relu(self.layer2(x))
+#         return self.layer3(x)
+
+class DQGNN(nn.Module):
+  def __init__(self, gnnInputDim, gnnHiddenDim, gnnOutputDim, globInputDim, obsLength, nActions):
+    super().__init__()
+
+    self.Gnn = Sequential('x, edge_index, edge_attr', [
+        (GraphConv(gnnInputDim, gnnHiddenDim), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True),
+        (GraphConv(gnnHiddenDim, 4), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True), # (GCNConv(gnnHiddenDim, gnnOutputDim), 'x, edge_index, edge_attr -> x'), # nn.ReLU(inplace=True)
+    ])
+    
+    self.GlobalLayers = nn.Sequential(
+        nn.Linear(globInputDim, 8),
+        nn.ReLU(inplace=True),
+        nn.Linear(8, 8),
+        nn.ReLU(inplace=True),
+        nn.Linear(8, globInputDim),
+        nn.ReLU(inplace=True)
+    )
+
+    self.OutLayers = nn.Sequential(
+        # nn.Linear(54*4+globInputDim, 128),
+        # nn.ReLU(inplace=True),
+        # nn.Linear(128, 1),
+        # nn.Sigmoid()
+        nn.Linear(obsLength, 128),
+        nn.ReLU(inplace=True),
+        nn.Linear(128, 128),
+        nn.ReLU(inplace=True),
+        nn.Linear(128, nActions)
+    )

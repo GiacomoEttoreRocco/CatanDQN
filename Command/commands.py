@@ -127,13 +127,13 @@ class SevenOnDicesCommand:
     def execute(self):
         for pyr in self.player.game.players:
             half = int(pyr.resourceCount()/2)
-            if(pyr.resourceCount() > 7):
+            if(pyr.resourceCount() >= 7):
                 for _ in range(0, half):
-                    _, resource = pyr.strategy.evaluate(DiscardResourceCommand, self.player)
+                    _, resource = pyr.strategy.chooseParameters(DiscardResourceCommand, self.player)
                     tmp = DiscardResourceCommand(pyr, resource)
                     tmp.execute()
                     self.actions.append(tmp)
-        ev, pos = self.player.strategy.evaluate(UseRobberCommand,self.player)
+        ev, pos = self.player.strategy.chooseParameters(UseRobberCommand, self.player)
         tmp = UseRobberCommand(self.player, pos)
         self.actions.append(tmp)
         tmp.execute()
@@ -470,7 +470,7 @@ class FirstChoiseCommand:
         tmp = PlaceInitialColonyCommand(self.player, self.placeChoosen)
         self.actions.append(tmp)
         tmp.execute()
-        _, edgeChoosen = self.player.strategy.evaluate(PlaceInitialStreetCommand, self.player)
+        _, edgeChoosen = self.player.strategy.chooseParameters(PlaceInitialStreetCommand, self.player)
         tmp = PlaceInitialStreetCommand(self.player, edgeChoosen)
         self.actions.append(tmp)
         tmp.execute()
@@ -500,7 +500,7 @@ class SecondChoiseCommand:
         tmp = PlaceSecondColonyCommand(self.player, self.placeChoosen)
         self.actions.append(tmp)
         tmp.execute()
-        _, edgeChoosen = self.player.strategy.evaluate(PlaceInitialStreetCommand, self.player)
+        _, edgeChoosen = self.player.strategy.chooseParameters(PlaceInitialStreetCommand, self.player)
         tmp = PlaceInitialStreetCommand(self.player, edgeChoosen)
         self.actions.append(tmp)
         tmp.execute()

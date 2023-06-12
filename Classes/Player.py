@@ -86,30 +86,56 @@ class Player:
          print("Print resources of player:  ", self.id," ", self.resources, "\n")
 
     def availableActions(self, turnCardUsed):
-        availableactions = [commands.PassTurnCommand]
+        availableActions = [commands.PassTurnCommand]
         if(self.resources["crop"] >= 1 and self.resources["iron"] >= 1 and self.resources["sheep"] >= 1 and len(Board.Board().deck) > 0):
-            availableactions.append(commands.BuyDevCardCommand)
+            availableActions.append(commands.BuyDevCardCommand)
         if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.nStreets < 15 and self.calculatePossibleEdges() != None): 
-            availableactions.append(commands.PlaceStreetCommand)
+            availableActions.append(commands.PlaceStreetCommand)
         if(self.resources["wood"] >= 1  and self.resources["clay"] >= 1 and self.resources["sheep"] >= 1 and self.resources["crop"] >= 1):
-            availableactions.append(commands.PlaceColonyCommand)
+            availableActions.append(commands.PlaceColonyCommand)
         if(self.resources["iron"] >= 3 and self.resources["crop"] >= 2):
-            availableactions.append(commands.PlaceCityCommand)
+            availableActions.append(commands.PlaceCityCommand)
         canTrade = False
         for resource in self.resources.keys():
             if(Bank.Bank().resourceToAsk(self, resource) <= self.resources[resource]):
                 canTrade = True
         if(canTrade):
-                availableactions.append(commands.TradeBankCommand)
+                availableActions.append(commands.TradeBankCommand)
         if(self.unusedKnights >= 1 and not turnCardUsed):
-            availableactions.append(commands.UseKnightCommand)    
+            availableActions.append(commands.UseKnightCommand)    
         if(self.monopolyCard >= 1 and not turnCardUsed):
-            availableactions.append(commands.UseMonopolyCardCommand)
+            availableActions.append(commands.UseMonopolyCardCommand)
         if(self.roadBuildingCard >= 1 and not turnCardUsed):
-            availableactions.append(commands.UseRoadBuildingCardCommand)
+            availableActions.append(commands.UseRoadBuildingCardCommand)
         if(self.yearOfPlentyCard >= 1 and not turnCardUsed):
-            availableactions.append(commands.UseYearOfPlentyCardCommand)
-        return availableactions
+            availableActions.append(commands.UseYearOfPlentyCardCommand)
+        return availableActions
+    
+    def availableTurnActionsId(self, turnCardUsed):
+        availableActions = [0] #commands.PassTurnCommand
+        if(self.resources["crop"] >= 1 and self.resources["iron"] >= 1 and self.resources["sheep"] >= 1 and len(Board.Board().deck) > 0):
+            availableActions.append(1) # commands.BuyDevCardCommand
+        if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.nStreets < 15 and self.calculatePossibleEdges() != None): 
+            availableActions.append(2) # commands.PlaceStreetCommand
+        if(self.resources["wood"] >= 1  and self.resources["clay"] >= 1 and self.resources["sheep"] >= 1 and self.resources["crop"] >= 1):
+            availableActions.append(3) # commands.PlaceColonyCommand
+        if(self.resources["iron"] >= 3 and self.resources["crop"] >= 2):
+            availableActions.append(4) # commands.PlaceCityCommand
+        canTrade = False
+        for resource in self.resources.keys():
+            if(Bank.Bank().resourceToAsk(self, resource) <= self.resources[resource]):
+                canTrade = True
+        if(canTrade):
+                availableActions.append(5) # commands.TradeBankCommand
+        if(self.unusedKnights >= 1 and not turnCardUsed):
+            availableActions.append(6) # commands.UseKnightCommand
+        if(self.monopolyCard >= 1 and not turnCardUsed):
+            availableActions.append(7) # commands.UseMonopolyCardCommand)
+        if(self.roadBuildingCard >= 1 and not turnCardUsed):
+            availableActions.append(8) # commands.UseRoadBuildingCardCommand)
+        if(self.yearOfPlentyCard >= 1 and not turnCardUsed):
+            availableActions.append(9) # commands.UseYearOfPlentyCardCommand)
+        return availableActions
 
     def connectedEmptyEdges(self, edge):
         p1 = edge[0]

@@ -16,7 +16,7 @@ class StrategySL(Strategy):
         ...
         pass
 
-    def evaluate(self, action, player):
+    def chooseParameters(self, action, player):
             if(action == commands.DiscardResourceCommand):
                 possibleCards = [r for r in player.resources.keys() if player.resources[r] > 0]
                 candidateCard = None
