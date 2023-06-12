@@ -22,7 +22,7 @@ class DQNagent():
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.criterion = criterion
         self.optimizer = torch.optim.AdamW(self.policy_net.parameters(), lr=self.LearningRate)
-        self.memory = ReplayMemory(10000)
+        self.memory = ReplayMemory(1000)
         self.previousState = None
         self.previousAction = None
 
