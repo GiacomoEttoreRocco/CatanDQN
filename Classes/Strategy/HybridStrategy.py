@@ -45,7 +45,7 @@ class HybridStrategy(StrategySL):
                 toRet = Gnn().evaluatePositionForPlayer(player)
             else:
                 pointsBefore = player._victoryPoints
-                previousPossibleColonies = player.calculatePossibleColony()
+                previousPossibleColonies = player.calculatePossibleColonies()
                 previousCount = player.resourceCount()
                 ctr.execute(action(player, thingNeeded)) 
                 if(player._victoryPoints >= 10):
@@ -56,19 +56,19 @@ class HybridStrategy(StrategySL):
                     toRet = 300.0 + Gnn().evaluatePositionForPlayer(player)
                 elif(action == commands.PlaceStreetCommand or action == commands.PlaceFreeStreetCommand):
                     if(previousPossibleColonies == []):
-                        if(player.calculatePossibleColony() != []):
+                        if(player.calculatePossibleColonies() != []):
                             val = Gnn().evaluatePositionForPlayer(player)
                             toRet = 190.0 + val
                         else:
                             val = Gnn().evaluatePositionForPlayer(player)
                             toRet = 185.0 + val
-                    elif(len(previousPossibleColonies) < len(player.calculatePossibleColony())):
+                    elif(len(previousPossibleColonies) < len(player.calculatePossibleColonies())):
                             val = Gnn().evaluatePositionForPlayer(player)
                             toRet = 170.0 + val
                     else:
                         toRet = Gnn().evaluatePositionForPlayer(player)
                 elif(action == commands.TradeBankCommand):
-                    if(player.resources['crop'] > 1 and player.resources['iron'] > 2 and player.calculatePossibleCity() != []):
+                    if(player.resources['crop'] > 1 and player.resources['iron'] > 2 and player.calculatePossibleCities() != []):
                         toRet = 175.0 + Gnn().evaluatePositionForPlayer(player)
                     elif(player.resources['crop'] > 0 and player.resources['iron'] > 0 and player.resources['sheep'] > 0):
                         toRet = 175.0 + Gnn().evaluatePositionForPlayer(player)

@@ -29,7 +29,7 @@ class StrategySL(Strategy):
                 return max, candidateCard
         
             if(action == commands.PlaceStreetCommand or action == commands.PlaceFreeStreetCommand):
-                possibleEdges = player.calculatePossibleEdges()
+                possibleEdges = player.calculatePossibleStreets()
                 candidateEdge = None
                 max = -1
                 for edge in possibleEdges: 
@@ -62,7 +62,7 @@ class StrategySL(Strategy):
                 return max, candidateColony    
 
             if(action == commands.PlaceColonyCommand):
-                possibleColony = player.calculatePossibleColony()
+                possibleColony = player.calculatePossibleColonies()
                 candidateColony = None
                 max = -1
                 for colony in possibleColony:
@@ -73,7 +73,7 @@ class StrategySL(Strategy):
                 return max, candidateColony
 
             if(action == commands.PlaceCityCommand):
-                possibleCity = player.calculatePossibleCity()
+                possibleCity = player.calculatePossibleCities()
                 candidateCity = None
                 max = -1
                 for city in possibleCity:
@@ -148,7 +148,7 @@ class StrategySL(Strategy):
                 candidateEdge2 = None
                 toRet = 0
                 if len(player.ownedStreets) < 14:
-                    possibleEdges = player.calculatePossibleEdges()
+                    possibleEdges = player.calculatePossibleStreets()
                     max1 = -1
                     for edge in possibleEdges: 
                         valutation = self.actionValue(player, commands.PlaceFreeStreetCommand, edge)
@@ -157,7 +157,7 @@ class StrategySL(Strategy):
                             candidateEdge1 = edge
                     toRet += max1
                 if len(player.ownedStreets) < 15:
-                    possibleEdges = player.calculatePossibleEdges()
+                    possibleEdges = player.calculatePossibleStreets()
                     max2 = -1
                     for edge in possibleEdges: 
                         if(edge != candidateEdge1):

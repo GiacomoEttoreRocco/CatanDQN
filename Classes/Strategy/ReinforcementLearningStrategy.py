@@ -1,4 +1,6 @@
+from Classes import Bank
 from Classes.MoveTypes import ForcedMoveTypes, InitialMoveTypes, TurnMoveTypes
+from Classes.staticUtilities import *
 from Command import commands, controller
 from Classes.Strategy.Strategy import Strategy
 from RL.DQN import DQNagent
@@ -71,71 +73,49 @@ class ReinforcementLearningStrategy(Strategy):
         
         if(action == commands.UseYearOfPlentyCardCommand):
             return self.euristicOutput(player, TurnMoveTypes.UseYearOfPlentyCard)
-
     
     def euristicOutput(self, player, idAction):
         if(idAction == ForcedMoveTypes.DiscardResource):
-            return self.euristicDiscardResource(player)
+            return commands.DiscardResourceCommand, self.euristicDiscardResource(player)
         
         if(idAction == ForcedMoveTypes.UseRobber):
-            return self.euristicRobber(player)
+            return commands.UseRobberCommand, self.euristicRobber(player)
         
         elif(idAction == InitialMoveTypes.InitialFirstChoice):
-            return self.euristicInitialFirstMove(player)
+            return commands.FirstChoiseCommand, self.euristicInitialFirstMove(player)
         
         elif(idAction == InitialMoveTypes.InitialSecondChoice):
-            return self.euristicInitialSecondMove(player)
+            return commands.SecondChoiseCommand, self.euristicInitialSecondMove(player)
         
         elif(idAction == TurnMoveTypes.PassTurn):
-            return  None
+            return  commands.PassTurnCommand, None
         
         elif(idAction == TurnMoveTypes.BuyDevCard):
-            return  None
+            return  commands.BuyDevCardCommand, None
         
         elif(idAction == TurnMoveTypes.PlaceStreet):
-            return  self.euristicPlaceStreet(player)
+            return  commands.PlaceStreetCommand, self.euristicPlaceStreet(player)
         
         elif(idAction == TurnMoveTypes.PlaceColony):
-            return  self.euristicPlaceColony(player)
+            return  commands.PlaceColonyCommand, self.euristicPlaceColony(player)
         
         elif(idAction == TurnMoveTypes.PlaceCity):
-            return  self.euristicPlaceCity(player)
+            return  commands.PlaceCityCommand, self.euristicPlaceCity(player)
         
         elif(idAction == TurnMoveTypes.TradeBank):
-            return  self.euristicTradeBank(player)
+            return  commands.TradeBankCommand, self.euristicTradeBank(player)
         
         elif(idAction == TurnMoveTypes.UseKnight):
-            return  self.euristicKnight(player)
+            return  commands.UseKnightCommand, self.euristicKnight(player)
         
         elif(idAction == TurnMoveTypes.UseMonopolyCard):
-            return  self.euristicMonopoly(player)
+            return  commands.UseMonopolyCardCommand, self.euristicMonopoly(player)
         
         elif(idAction == TurnMoveTypes.UseRoadBuildingCard):
-            return  self.euristicRoadBuildingCard(player)
+            return  commands.UseRoadBuildingCardCommand, self.euristicRoadBuildingCard(player)
         
         elif(idAction == TurnMoveTypes.UseYearOfPlentyCard):
-            return  self.euristicYearOfPlenty(player)
-        
-    def euristicDiscardResource(self, player):
-        resToDiscard = max(player.resources, key = player.resources.get) 
-        if(len(resToDiscard) > 1):
-            resToDiscard = resToDiscard[0]
-        return commands.DiscardResourceCommand, resToDiscard
-        
-    def euristicPlaceRobber(self, player):
-        actualDistanceFromEight = 12
-        for tile in player.game.tiles:
-            blockable = False
-            isMyTile = False
-            for place in tile.associatedPlaces:
-                if(place.owner != player.id):
-                    blockable = True
-                if(place.owner == player.id):
-                    isMyTile = True
-            if(blockable and not isMyTile):
-                if(actualDistanceFromEight < abs(tile.number, 8)):
-                    bestTile = tile
-        return commands.UseRobberCommand, bestTile
+            return  commands.UseYearOfPlentyCardCommand, self.euristicYearOfPlenty(player)
     
     def resValue(self, resource):
         if(resource == "iron"):
@@ -160,58 +140,114 @@ class ReinforcementLearningStrategy(Strategy):
         
     def euristicInitialFirstMove(self, player):
         availablePlaces = player.calculatePossibleInitialColony()
-
         max = 0
         choosenPlace = -1
-
         for place in availablePlaces:
             if(self.placeValue(place) > max):
                 choosenPlace = place
-
-        return action, place
+        return place
     
     def euristicInitialSecondMove(self, player):
-        ...
-        return action, thingNeeded 
+        availablePlaces = player.calculatePossibleInitialColony()
+        max = 0
+        choosenPlace = -1
+        for place in availablePlaces:
+            if(self.placeValue(place) > max):
+                choosenPlace = place
+        return place
         
     def euristicPlaceCity(self, player):
-        ...
-        return action, thingNeeded, None
+        ownedColonies = player.ownedColonies()
+        max = 0
+        choosenColony = -1
+        for colony in ownedColonies:
+            if(self.placeValue(colony) > max):
+                choosenColony = colony
+        return choosenColony
     
     def euristicPlaceColony(self, player):
-        ...
-        return action, thingNeeded, None
+        possibleColonies = player.calculatePossibleColonies()
+        max = 0
+        choosenColony = -1
+        for colony in possibleColonies:
+            if(self.placeValue(colony) > max):
+                choosenColony = colony
+        return choosenColony
 
     def euristicTradeBank(self, player):
-        ...
-        return action, thingNeeded, None
-    
-    def euristicRobber(self, player):
-        ...
-        return action, thingNeeded, None
+        trades = player.calculatePossibleTrades()
+        resourceCopy = player.resources.copy()
+        for trade in trades:
+            resourceCopy[trade[0]] += 1
+            resourceCopy[trade[1]] -= Bank().resourceToAsk(player, trade[1])
+            if((player.calculatePossibleCities() > 0 and availableResourcesForCity(resourceCopy)) or (player.calculatePossibleColonies() and availableResourcesForColony(resourceCopy))):
+                return trade
+            resourceCopy = player.resources.copy()
+            
+        for trade in trades:
+            resourceCopy[trade[0]] += 1
+            resourceCopy[trade[1]] -= Bank().resourceToAsk(player, trade[1])         
+            if(player.calculatePossibleStreets() > 0 and availableResourcesForStreet(resourceCopy)):
+                return trade
+            resourceCopy = player.resources.copy()  
 
-    def euristicPLayCard(self, player):
+        for trade in trades:
+            resourceCopy[trade[0]] += 1
+            resourceCopy[trade[1]] -= Bank().resourceToAsk(player, trade[1])
+            if(availableResourcesForDevCard(resourceCopy)):
+                return trade
+            resourceCopy = player.resources.copy()
+            
+        for trade in trades:
+            resourceCopy[trade[0]] += 1
+            resourceCopy[trade[1]] -= Bank().resourceToAsk(player, trade[1])
+            if(sum(player.resources) >= 7):
+                return trade
+            resourceCopy = player.resources.copy()
+
+    def euristicDiscardResource(self, player):
+        resToDiscard = max(player.resources, key = player.resources.get) 
+        if(len(resToDiscard) > 1):
+            resToDiscard = resToDiscard[0]
+        return resToDiscard
+        
+    def euristicPlaceRobber(self, player):
+        actualDistanceFromEight = 12
+        for tile in player.game.tiles:
+            blockable = False
+            isMyTile = False
+            for place in tile.associatedPlaces:
+                if(place.owner != player.id):
+                    blockable = True
+                if(place.owner == player.id):
+                    isMyTile = True
+            if(blockable and not isMyTile):
+                if(actualDistanceFromEight < abs(tile.number, 8)):
+                    bestTile = tile
+        return bestTile
+
+    def euristicPlayCard(self, player):
         ...
-        return action, thingNeeded, None
+        return thingNeeded
 
     def euristicPlaceStreet(self, player):
         ...
-        return action, thingNeeded, None
+        return thingNeeded
     
     def euristicKnight(self, player):
         ...
-        return action, thingNeeded, None
+        return thingNeeded
     
     def euristicMonopoly(self, player):
         ...
-        return action, thingNeeded, None
+        return thingNeeded
     
     def euristicRoadBuildingCard(self, player):
         ...
-        return action, thingNeeded, None
+        return thingNeeded
     
     def euristicYearOfPlenty(self, player):
         ...
-        return action, thingNeeded, None
+        return thingNeeded
 
     

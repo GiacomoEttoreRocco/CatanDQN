@@ -1,4 +1,5 @@
 from Classes.Strategy.Strategy import Strategy
+from Classes.staticUtilities import *
 import Command.commands as commands
 import Command.controller as controller
 import Classes.Bank as Bank
@@ -87,13 +88,13 @@ class Player:
 
     def availableActions(self, turnCardUsed):
         availableActions = [commands.PassTurnCommand]
-        if(self.resources["crop"] >= 1 and self.resources["iron"] >= 1 and self.resources["sheep"] >= 1 and len(Board.Board().deck) > 0):
+        if(availableResourcesForDevCard(self.resources) and len(Board.Board().deck) > 0):
             availableActions.append(commands.BuyDevCardCommand)
-        if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.nStreets < 15 and self.calculatePossibleEdges() != None): 
+        if(availableResourcesForStreet(self.resources) and self.nStreets < 15 and self.calculatePossibleStreets() != None): 
             availableActions.append(commands.PlaceStreetCommand)
-        if(self.resources["wood"] >= 1  and self.resources["clay"] >= 1 and self.resources["sheep"] >= 1 and self.resources["crop"] >= 1):
+        if(availableResourcesForColony(self.resources) and self.nColonies < 5):
             availableActions.append(commands.PlaceColonyCommand)
-        if(self.resources["iron"] >= 3 and self.resources["crop"] >= 2):
+        if(availableResourcesForCity(self.resources) and self.nCities < 4):
             availableActions.append(commands.PlaceCityCommand)
         canTrade = False
         for resource in self.resources.keys():
@@ -115,7 +116,7 @@ class Player:
         availableActions = [0] #commands.PassTurnCommand
         if(self.resources["crop"] >= 1 and self.resources["iron"] >= 1 and self.resources["sheep"] >= 1 and len(Board.Board().deck) > 0):
             availableActions.append(1) # commands.BuyDevCardCommand
-        if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.nStreets < 15 and self.calculatePossibleEdges() != None): 
+        if(self.resources["wood"] >= 1 and self.resources["clay"] >= 1 and self.nStreets < 15 and self.calculatePossibleStreets() != None): 
             availableActions.append(2) # commands.PlaceStreetCommand
         if(self.resources["wood"] >= 1  and self.resources["clay"] >= 1 and self.resources["sheep"] >= 1 and self.resources["crop"] >= 1):
             availableActions.append(3) # commands.PlaceColonyCommand
@@ -156,7 +157,7 @@ class Player:
                         toRet.append(edge)
         return toRet
 
-    def calculatePossibleEdges(self):
+    def calculatePossibleStreets(self):
         possibleEdges = []
         if(len(self.ownedStreets) == 15):
             return possibleEdges
@@ -193,7 +194,7 @@ class Player:
                 if(not streetOccupied):
                     return toRet
 
-    def calculatePossibleColony(self):
+    def calculatePossibleColonies(self):
         possibleColonies = []
         for p in Board.Board().places:
             if(p.owner == 0):
@@ -208,7 +209,7 @@ class Player:
                             possibleColonies.append(Board.Board().places[p_adj])
         return possibleColonies
 
-    def calculatePossibleCity(self):
+    def calculatePossibleCities(self):
         possibleCities = []
         for p in Board.Board().places:
             if(p.owner == self.id and p.isColony == 1 and self.nCities < 4):
