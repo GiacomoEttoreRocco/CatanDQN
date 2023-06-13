@@ -51,7 +51,7 @@ class StrategySL(Strategy):
                 return max, candidateEdge
 
             if(action == commands.PlaceInitialColonyCommand or action == commands.FirstChoiseCommand or action == commands.SecondChoiseCommand or action == commands.PlaceSecondColonyCommand):
-                possibleColony = player.calculatePossibleInitialColony()
+                possibleColony = player.calculatePossibleInitialColonies()
                 candidateColony = None
                 max = -1
                 for colony in possibleColony:

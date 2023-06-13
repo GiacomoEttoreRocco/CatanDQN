@@ -168,7 +168,7 @@ class Player:
                     possibleEdges.extend(self.connectedEmptyEdges(edge))
         return possibleEdges
 
-    def calculatePossibleInitialColony(self):
+    def calculatePossibleInitialColonies(self):
         toRet = []
         for p in Board.Board().places:
             if(p.owner == 0):

@@ -36,7 +36,7 @@ class PriorityStrategy(StrategySL):
         if(player._victoryPoints >= 8):
             ctr = controller.ActionController()
             ctr.execute(action(player, thingNeeded)) 
-            if(player.victoryPoints >= 10):
+            if(player._victoryPoints >= 10):
                 toRet = 300.0
                 ctr.undo()
                 return toRet

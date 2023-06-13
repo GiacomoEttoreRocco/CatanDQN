@@ -8,9 +8,9 @@ class ActionController:
     redoStack: list[action.Action] = field(default_factory = list)
 
     def execute(self, action: action.Action):
-        action.execute()
-        self.redoStack.clear()
-        self.undoStack.append(action)
+         action.execute()
+         self.redoStack.clear()
+         self.undoStack.append(action)
 
     def undo(self) -> None:
         if not self.undoStack:

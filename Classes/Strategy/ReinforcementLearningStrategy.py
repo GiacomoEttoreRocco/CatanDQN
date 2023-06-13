@@ -12,13 +12,14 @@ class ReinforcementLearningStrategy(Strategy):
         # self, nInputs, nOutputs, criterion, device
         # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         # self.macroDQN = DQNagent(nInputs, nOutputs, criterion) # macro rete decisionale
+        self.previousReward = 0
 
         self.macroDQN = DQGNNagent(9, 10) # macro rete decisionale
 
     def name(self):
         return "RL"
 
-    def bestAction(self, player, previousReward):
+    def bestAction(self, player):  #, previousReward):
         if(player.game.actualTurn<player.game.nplayers):
             return self.euristicOutput(player, InitialMoveTypes.InitialFirstChoice) 
         elif(player.game.actualTurn<player.game.nplayers*2):
@@ -26,7 +27,7 @@ class ReinforcementLearningStrategy(Strategy):
         else: # ...
             state = player.game.getTotalState(player)
             # RICORDATI CHE VANNO GESTITE LE FORCED MOVES, in futuro.
-            bestMove = self.macroDQN.step(state, previousReward, player.availableTurnActionsId()) 
+            bestMove = self.macroDQN.step(state, self.previousReward, player.availableTurnActionsId()) 
         return self.euristicOutput(player, bestMove) # action, thingNeeded
         
     def chooseParameters(self, action, player):

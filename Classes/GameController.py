@@ -36,10 +36,10 @@ class GameController:
         c.Bank.Bank().reset()
         Gnn.Gnn().reset()
 
-    def executeDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
-        prevPoints = self.player._victoryPoints()
+    def executeWithDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
+        prevPoints = player._victoryPoints()
         self.game.ctr.execute(action(player, thingNeeded))
-        self.previousReward = self.player._actualPoints - prevPoints
+        player.strategy.previousReward = self.player._actualPoints - prevPoints
 
 
     def decisionManagerGUI(self, player):
