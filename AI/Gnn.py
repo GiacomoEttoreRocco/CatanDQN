@@ -20,7 +20,8 @@ class Gnn():
             cls.epochs = epochs
             cls.batch = batch
             cls.learningRate = learningRate
-            cls.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
+            # cls.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
+            cls.device = 'cpu'
             cls.model = Net(9, 8, 4, 9).to(cls.device) # 9,8,3,9
             # cls.modelWeightsPath = "AI/best_model_weights.pth"
             cls.modelWeightsPath = "AI/best_model_SL.pth"
@@ -112,6 +113,8 @@ class Gnn():
 
 class Net(nn.Module):
   def __init__(self, gnnInputDim, gnnHiddenDim, gnnOutputDim, globInputDim):
+    # self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  
+    self.device = 'cpu'
     super().__init__()
     self.Gnn = Sequential('x, edge_index, edge_attr', [
         (GraphConv(gnnInputDim, gnnHiddenDim), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True),
@@ -146,14 +149,13 @@ class Net(nn.Module):
 #     return output
   
   def forward(self, graph, globalFeats, isTrain): 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # Definisci il dispositivo
     batch_size, batch, x, edge_index, edge_attr = graph.num_graphs, graph.batch, graph.x, graph.edge_index, graph.edge_attr
-    embeds = self.Gnn(x.to(device), edge_index=edge_index.to(device), edge_attr=edge_attr.to(device))
+    embeds = self.Gnn(x.to(self.device), edge_index=edge_index.to(self.device), edge_attr=edge_attr.to(self.device))
     embeds = torch.reshape(embeds, (batch_size, 54 * 4))
-    globalFeats = self.GlobalLayers(globalFeats.to(device))
+    globalFeats = self.GlobalLayers(globalFeats.to(self.device))
     output = torch.cat([embeds, globalFeats], dim=-1)
     output = torch.dropout(output, p=0.2, train=isTrain)
-    output = self.OutLayers(output.to(device))
+    output = self.OutLayers(output.to(self.device))
     return output
 
 
