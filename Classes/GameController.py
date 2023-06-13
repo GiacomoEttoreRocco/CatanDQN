@@ -37,9 +37,10 @@ class GameController:
         Gnn.Gnn().reset()
 
     def executeWithDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
-        prevPoints = player._victoryPoints()
+        prevPoints = player._victoryPoints
         self.game.ctr.execute(action(player, thingNeeded))
-        player.strategy.previousReward = self.player._actualPoints - prevPoints
+        player.previousReward = player._victoryPoints - prevPoints
+        print(player.previousReward)
 
 
     def decisionManagerGUI(self, player):
@@ -66,7 +67,8 @@ class GameController:
                     # self.view.updateGameScreen() 
                 elif(event.ui_element == self.view.doButton):
                     action, thingNeeded, onlyPassTurn = player.bestAction()
-                    self.game.ctr.execute(action(player, thingNeeded))
+                    # self.game.ctr.execute(action(player, thingNeeded))
+                    self.executeWithDeltaReward(player, action, thingNeeded, onlyPassTurn)
                     # self.view.updateGameScreen()  
                 elif(event.ui_element == self.view.stack.scroll_bar.bottom_button):
                     self.view.stack.scroll_bar.set_scroll_from_start_percentage(self.view.stack.scroll_bar.start_percentage+0.1)
@@ -90,13 +92,16 @@ class GameController:
                 if event.type == pygame.QUIT:
                     pygame.quit()
             action, thingNeeded, onlyPassTurn = player.bestAction()
-            self.game.ctr.execute(action(player, thingNeeded))
+            # self.game.ctr.execute(action(player, thingNeeded))
+            self.executeWithDeltaReward(player, action, thingNeeded, onlyPassTurn)
+
             # if(not onlyPassTurn):  
             #     self.saveMove(player) 
 
     def decisionManagerNonGUI(self, player):
         action, thingNeeded, onlyPassTurn = player.bestAction()
-        self.game.ctr.execute(action(player, thingNeeded))
+        # self.game.ctr.execute(action(player, thingNeeded))
+        self.executeWithDeltaReward(player, action, thingNeeded, onlyPassTurn)
 
         # if(not onlyPassTurn):  
         #     # self.saveMove(player) 

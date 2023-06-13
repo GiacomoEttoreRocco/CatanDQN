@@ -12,7 +12,6 @@ class ReinforcementLearningStrategy(Strategy):
         # self, nInputs, nOutputs, criterion, device
         # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         # self.macroDQN = DQNagent(nInputs, nOutputs, criterion) # macro rete decisionale
-        self.previousReward = 0
 
         self.macroDQN = DQGNNagent(9, 10) # macro rete decisionale
 
@@ -27,7 +26,7 @@ class ReinforcementLearningStrategy(Strategy):
         else: # ...
             state = player.game.getTotalState(player)
             # RICORDATI CHE VANNO GESTITE LE FORCED MOVES, in futuro.
-            bestMove = self.macroDQN.step(state, self.previousReward, player.availableTurnActionsId()) 
+            bestMove = self.macroDQN.step(state, player.previousReward, player.availableTurnActionsId()) 
         return self.euristicOutput(player, bestMove) # action, thingNeeded
         
     def chooseParameters(self, action, player):
@@ -81,7 +80,7 @@ class ReinforcementLearningStrategy(Strategy):
             return commands.DiscardResourceCommand, self.euristicDiscardResource(player)
         
         if(idAction == ForcedMoveTypes.UseRobber):
-            return commands.UseRobberCommand, self.euristicRobber(player)
+            return commands.UseRobberCommand, self.euristicPlaceRobber(player)
         
         elif(idAction == InitialMoveTypes.InitialFirstChoice):
             return commands.FirstChoiseCommand, self.euristicInitialFirstMove(player)
@@ -141,7 +140,7 @@ class ReinforcementLearningStrategy(Strategy):
         return value
         
     def euristicInitialFirstMove(self, player):
-        availablePlaces = player.calculatePossibleInitialColony()
+        availablePlaces = player.calculatePossibleInitialColonies()
         max = 0
         choosenPlace = -1
         for place in availablePlaces:
@@ -150,7 +149,7 @@ class ReinforcementLearningStrategy(Strategy):
         return place
     
     def euristicInitialSecondMove(self, player):
-        availablePlaces = player.calculatePossibleInitialColony()
+        availablePlaces = player.calculatePossibleInitialColonies()
         max = 0
         choosenPlace = -1
         for place in availablePlaces:
