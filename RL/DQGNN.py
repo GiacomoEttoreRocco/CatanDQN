@@ -4,8 +4,10 @@ from collections import deque, namedtuple
 from torch_geometric.nn import GCNConv, GraphConv, Sequential, global_mean_pool
 import torch
 import random
+
+from Classes.MoveTypes import TurnMoveTypes
 #f
-Transition = namedtuple('Transition', ('state', 'action', 'reward', 'next_state'))
+Transition = namedtuple('Transition', ('graph', 'glob', 'action', 'reward', 'next_graph', 'next_glob'))
 
 class DQGNNagent():
     def __init__(self, nInputs, nOutputs, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")) -> None:
@@ -16,14 +18,17 @@ class DQGNNagent():
         self.TAU = 0.005 # 0.005
         self.LearningRate = 1e-3
         self.device = device
-        self.previousState = None
+
         self.policy_net = DQGNN(nInputs, 8, 4, 9, nOutputs).to(device)
         self.target_net = DQGNN(nInputs, 8, 4, 9, nOutputs).to(device)
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.criterion = criterion
         self.optimizer = torch.optim.AdamW(self.policy_net.parameters(), lr=self.LearningRate)
         self.memory = ReplayMemory(1000)
-        self.previousState = None
+
+        self.previousGraph = None
+        self.previousGlob = None
+
         self.previousAction = None
 
         self.decay = 0.9
@@ -33,22 +38,33 @@ class DQGNNagent():
         if(self.fixed_EPS < 0.0001):
             self.fixed_EPS = 0
 
-    def saveInMemory(self, state, action, reward, nextState): # qui è da inserire una transition
+    def saveInMemory(self, graph, glob, action, reward, nextGraph, nextGlob): # qui è da inserire una transition
         if(reward != None):
-            self.memory.push(state, action, reward, nextState)
+            self.memory.push(graph, glob, action, reward, nextGraph, nextGlob)
 
-    def selectMove(self, state, availableMoves):
+    def selectMove(self, graph, glob, availableMoves):
         sample = random.random()
         if sample < self.fixed_EPS:
             action = self.explorationAction(availableMoves)
         else:
-            action = self.greedyAction(state, availableMoves)
+            action = self.greedyAction(graph, glob, availableMoves)
         return action
     
-    def step(self, state, previousReward, availableMoves):                                                 
-        self.saveInMemory(self.previousState, self.previousAction, previousReward, state)
-        action = self.selectMove(state, availableMoves) # la differenza sta nel fatto che può essere scelta la mossa random
-        self.previousState = state
+    # def step(self, graph, glob, previousReward, availableMoves):                                                 
+    #     self.saveInMemory(self.previousState, self.previousAction, previousReward, graph, glob)
+    #     action = self.selectMove(graph, glob, availableMoves) # la differenza sta nel fatto che può essere scelta la mossa random
+    #     self.previousGraph = graph
+    #     self.previousGlob = glob
+    #     self.previousAction = action
+    #     if(self.fixed_EPS > 0.005):
+    #         self.optimize_model()
+    #         self.softUpdate()
+    #     return action
+    
+    def step(self, graph, glob, availableMoves):   
+        action = self.selectMove(graph, glob, availableMoves) 
+        self.previousGraph = graph
+        self.previousGlob = glob
         self.previousAction = action
         if(self.fixed_EPS > 0.005):
             self.optimize_model()
@@ -77,16 +93,16 @@ class DQGNNagent():
         if len(self.memory) < self.BATCH_SIZE:
             return
         transitions = self.memory.sample(self.BATCH_SIZE)
-
         batch = Transition(*zip(*transitions)) # batch.state mi passa un array di tutti gli stati
-        state_batch = torch.cat(batch.state)
+        graph_batch = torch.cat(batch.graph)
+        glob_batch = torch.cat(batch.glob)
         reward_batch = torch.cat(batch.reward) # prendi tutti i rewards
         action_batch = torch.cat(batch.action) # prendi tutte le actions
-        next_state = torch.cat(batch.next_state)  # ...
-
+        next_graph = torch.cat(batch.next_graph)  # ...
+        next_glob = torch.cat(batch.next_glob)
         with torch.no_grad():
-            expected_state_action_values = self.GAMMA * self.target_net.forward(next_state).max(1)[0] + reward_batch # scelta progettuale: per il next_step, considerare tutte le mosse potenziali
-        state_action_values = self.policy_net.forward(state_batch)
+            expected_state_action_values = self.GAMMA * self.target_net.forward(next_graph, next_glob).max(1)[0] + reward_batch # scelta progettuale: per il next_step, considerare tutte le mosse potenziali
+        state_action_values = self.policy_net.forward(graph_batch, glob_batch)
         state_action_values = state_action_values.gather(1, action_batch) # vengono selezionati gli elementi indicati da action_batch, nel tensore "state_action_values"
         self.optimizer.zero_grad()
         loss = self.criterion(state_action_values, expected_state_action_values.unsqueeze(1))
@@ -154,12 +170,12 @@ class DQGNN(nn.Module):
         nn.Linear(128, nActions)
     )
 
-    def forward(self, graph, globalFeats, isTrain):
+    def forward(self, graph, glob, isTrain):
         batch_size, batch, x, edge_index, edge_attr = graph.num_graphs, graph.batch, graph.x, graph.edge_index, graph.edge_attr
         embeds = self.Gnn(x, edge_index=edge_index, edge_attr=edge_attr)
         embeds = torch.reshape(embeds, (batch_size, 54*4))
-        globalFeats = self.GlobalLayers(globalFeats)
-        output = torch.cat([embeds, globalFeats], dim=-1)
+        glob = self.GlobalLayers(glob)
+        output = torch.cat([embeds, glob], dim=-1)
         output = torch.dropout(output, p = 0.2, train = isTrain)
         output = self.OutLayers(output)
         return output

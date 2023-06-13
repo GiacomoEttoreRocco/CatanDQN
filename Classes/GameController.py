@@ -1,11 +1,13 @@
 import pygame
 import pygame_gui
 import pandas as pd
+from Classes import Board
 from Classes.Strategy.HybridStrategy import HybridStrategy
 from Classes.Strategy.PriorityStrategy import PriorityStrategy
 from Classes.Strategy.PureStrategy import PureStrategy
 from Classes.Strategy.ReinforcementLearningStrategy import ReinforcementLearningStrategy
 from Classes.Strategy.Strategy import Strategy
+from Command import commands
 import Graphics.GameView as GameView
 import AI.Gnn as Gnn
 import Classes as c
@@ -38,9 +40,18 @@ class GameController:
 
     def executeWithDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
         prevPoints = player._victoryPoints
+        if(player.strategy.name() == "RL" and action != commands.PassTurnCommand):
+            previousGraph = Board.Board().boardStateGraph(player)
+            previousGlob = player.globalFeaturesToTensor()
+            actionId = player.strategy.getActionId(action)
+
         self.game.ctr.execute(action(player, thingNeeded))
-        player.previousReward = player._victoryPoints - prevPoints
-        # print(player.previousReward)
+        player.reward = player._victoryPoints - prevPoints
+
+        if(player.strategy.name() == "RL" and action != commands.PassTurnCommand):
+            graph = Board.Board().boardStateGraph(player)
+            glob = player.globalFeaturesToTensor()
+            player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId, player.reward, graph, glob)
 
     def decisionManagerGUI(self, player):
         if(not self.speed and self.withGraphics):
@@ -48,33 +59,26 @@ class GameController:
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if(event.ui_element == self.view.pureButton):
                     player.strategy = PureStrategy()
-                    # self.view.updateGameScreen()
                 elif(event.ui_element == self.view.priorityButton):
                     player.strategy = PriorityStrategy()
-                    # self.view.updateGameScreen()
                 elif(event.ui_element == self.view.hybridButton):
                     player.strategy = HybridStrategy()
-                    # self.view.updateGameScreen()
                 elif(event.ui_element == self.view.rlButton):
                     player.strategy = ReinforcementLearningStrategy()
-                    # self.view.updateGameScreen()
                 elif(event.ui_element == self.view.undoButton):
                     self.game.ctr.undo()
-                    # self.view.updateGameScreen()
                 elif(event.ui_element == self.view.redoButton):
                     self.game.ctr.redo()
-                    # self.view.updateGameScreen() 
                 elif(event.ui_element == self.view.doButton):
                     action, thingNeeded, onlyPassTurn = player.bestAction()
                     # self.game.ctr.execute(action(player, thingNeeded))
-                    self.executeWithDeltaReward(player, action, thingNeeded, onlyPassTurn)
-                    # self.view.updateGameScreen()  
+                    self.executeWithDeltaReward(player, action, thingNeeded, onlyPassTurn) 
                 elif(event.ui_element == self.view.stack.scroll_bar.bottom_button):
                     self.view.stack.scroll_bar.set_scroll_from_start_percentage(self.view.stack.scroll_bar.start_percentage+0.1)
-                    self.view.updateGameScreen(True)
+                    # self.view.updateGameScreen(True)
                 elif(event.ui_element == self.view.stack.scroll_bar.top_button):
                     self.view.stack.scroll_bar.set_scroll_from_start_percentage(self.view.stack.scroll_bar.start_percentage-0.1)
-                    self.view.updateGameScreen(True)
+                    # self.view.updateGameScreen(True)
                 else:
                     print("Nothing clicked")
             if event.type == pygame.KEYDOWN:

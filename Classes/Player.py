@@ -39,7 +39,7 @@ class Player:
 
         # for RL stuff
 
-        self.previousReward = 0
+        self.reward = 0
 
     def __eq__(self, other):
         return self.id == other.id

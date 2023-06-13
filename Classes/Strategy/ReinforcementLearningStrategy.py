@@ -3,7 +3,7 @@ from Classes.MoveTypes import ForcedMoveTypes, InitialMoveTypes, TurnMoveTypes
 from Classes.staticUtilities import *
 from Command import commands, controller
 from Classes.Strategy.Strategy import Strategy
-from RL.DQN import DQGNNagent
+from RL.DQGNN import DQGNNagent
 import random
 
 class ReinforcementLearningStrategy(Strategy):
@@ -13,7 +13,7 @@ class ReinforcementLearningStrategy(Strategy):
         # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         # self.macroDQN = DQNagent(nInputs, nOutputs, criterion) # macro rete decisionale
 
-        self.macroDQN = DQGNNagent(9, 10) # macro rete decisionale
+        self.macroDQN = DQGNNagent(11, 10) # macro rete decisionale
 
     def name(self):
         return "RL"
@@ -24,9 +24,13 @@ class ReinforcementLearningStrategy(Strategy):
         elif(player.game.actualTurn<player.game.nplayers*2):
             return self.euristicOutput(player, InitialMoveTypes.InitialSecondChoice)
         else: # ...
-            state = player.game.getTotalState(player)
+            # state = player.game.getTotalState(player)
+
+            graph = Board.Board().boardStateGraph(player)
+            glob = player.globalFeaturesToTensor()
+
             # RICORDATI CHE VANNO GESTITE LE FORCED MOVES, in futuro.
-            bestMove = self.macroDQN.step(state, player.previousReward, player.availableTurnActionsId()) 
+            bestMove = self.macroDQN.step(graph, glob, player.previousReward, player.availableTurnActionsId()) 
         return self.euristicOutput(player, bestMove) # action, thingNeeded
         
     def chooseParameters(self, action, player):
@@ -291,4 +295,49 @@ class ReinforcementLearningStrategy(Strategy):
         resources = ["iron", "wood", "clay", "crop", "sheep"]
         return random.choice(resources), random.choice(resources)
 
+    def getActionId(command):
+        if(command == commands.DiscardResourceCommand):
+            return ForcedMoveTypes.DiscardResource
+        
+        elif(command == commands.UseRobberCommand):
+            return ForcedMoveTypes.UseRobber
+        
+        elif(command == commands.FirstChoiseCommand):
+            return InitialMoveTypes.InitialFirstChoice
+
+        elif(command == commands.PlaceInitialStreetCommand):
+            return InitialMoveTypes.InitialStreetChoice
+        
+        elif(command == commands.SecondChoiseCommand):
+            return InitialMoveTypes.InitialSecondChoice
+        
+        elif(command == commands.PassTurnCommand):
+            return TurnMoveTypes.PassTurn
+        
+        elif(command == commands.BuyDevCardCommand):
+            return TurnMoveTypes.BuyDevCard
+        
+        elif(command == commands.PlaceStreetCommand):
+            return TurnMoveTypes.PlaceStreet
+        
+        elif(command == commands.PlaceColonyCommand):
+            return TurnMoveTypes.PlaceColony
+        
+        elif(command == commands.PlaceCityCommand):
+            return TurnMoveTypes.PlaceCity 
+        
+        elif(command == commands.TradeBankCommand):
+            return TurnMoveTypes.TradeBank 
+        
+        elif(command == commands.UseKnightCommand):
+            return TurnMoveTypes.UseKnight 
+        
+        elif(command == commands.UseMonopolyCardCommand):
+            return TurnMoveTypes.UseMonopolyCard  
+        
+        elif(command == commands.UseRoadBuildingCardCommand):
+            return TurnMoveTypes.UseRoadBuildingCard 
+        
+        elif(command == commands.UseYearOfPlentyCardCommand):
+            return TurnMoveTypes.UseYearOfPlentyCard 
     

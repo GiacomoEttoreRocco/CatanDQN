@@ -114,7 +114,6 @@ class Game:
         return max - 1 
         
     def explorePlace(self, player, place, visited):
-        #self.order +=1
         max = 0
         tmpVisited = list.copy(visited)
         outVisited = list.copy(visited)
