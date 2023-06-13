@@ -9,3 +9,4 @@ def availableResourcesForStreet(resDict):
 
 def availableResourcesForDevCard(resDict):
     return resDict["crop"] >= 1 and resDict["iron"] >= 1 and resDict["sheep"] >= 1
+

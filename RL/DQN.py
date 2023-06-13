@@ -7,7 +7,7 @@ import random
 #f
 Transition = namedtuple('Transition', ('state', 'action', 'reward', 'next_state'))
 
-class DQNagent():
+class DQGNNagent():
     def __init__(self, nInputs, nOutputs, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")) -> None:
 
         self.BATCH_SIZE = 64 # 64 # 256
@@ -47,7 +47,7 @@ class DQNagent():
     
     def step(self, state, previousReward):                                                 
         self.saveInMemory(self.previousState, self.previousAction, previousReward, state)
-        action = self.selectMove(state)
+        action = self.selectMove(state) # la differenza sta nel fatto che può essere scelta la mossa random
         self.previousState = state
         self.previousAction = action
         if(self.fixed_EPS > 0.005):
@@ -85,9 +85,9 @@ class DQNagent():
         next_state = torch.cat(batch.next_state)  # ...
 
         with torch.no_grad():
-            expected_state_action_values = self.GAMMA * self.target_net.forward(next_state).max(1)[0] + reward_batch
+            expected_state_action_values = self.GAMMA * self.target_net.forward(next_state).max(1)[0] + reward_batch # scelta progettuale: per il next_step, considerare tutte le mosse potenziali
         state_action_values = self.policy_net.forward(state_batch)
-        state_action_values = state_action_values.gather(1, action_batch)
+        state_action_values = state_action_values.gather(1, action_batch) # vengono selezionati gli elementi indicati da action_batch, nel tensore "state_action_values"
         self.optimizer.zero_grad()
         loss = self.criterion(state_action_values, expected_state_action_values.unsqueeze(1))
         #print("Loss: ", loss)

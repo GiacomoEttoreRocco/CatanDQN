@@ -112,7 +112,7 @@ class Player:
             availableActions.append(commands.UseYearOfPlentyCardCommand)
         return availableActions
     
-    def availableTurnActionsId(self, turnCardUsed):
+    def availableTurnActionsId(self):
         availableActions = [0] #commands.PassTurnCommand
         if(availableResourcesForDevCard(self.resources) and len(Board.Board().deck) > 0):
             availableActions.append(1) # commands.BuyDevCardCommand
@@ -128,13 +128,13 @@ class Player:
                 canTrade = True
         if(canTrade):
                 availableActions.append(5) # commands.TradeBankCommand
-        if(self.unusedKnights >= 1 and not turnCardUsed):
+        if(self.unusedKnights >= 1 and not self.turnCardUsed):
             availableActions.append(6) # commands.UseKnightCommand
-        if(self.monopolyCard >= 1 and not turnCardUsed):
+        if(self.monopolyCard >= 1 and not self.turnCardUsed):
             availableActions.append(7) # commands.UseMonopolyCardCommand)
-        if(self.roadBuildingCard >= 1 and not turnCardUsed):
+        if(self.roadBuildingCard >= 1 and not self.turnCardUsed):
             availableActions.append(8) # commands.UseRoadBuildingCardCommand)
-        if(self.yearOfPlentyCard >= 1 and not turnCardUsed):
+        if(self.yearOfPlentyCard >= 1 and not self.turnCardUsed):
             availableActions.append(9) # commands.UseYearOfPlentyCardCommand)
         return availableActions
 
