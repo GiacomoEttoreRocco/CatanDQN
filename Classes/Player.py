@@ -237,10 +237,10 @@ class Player:
         # print("Steal: ",resourceTaken, "from player ", self.id, "which has ", self.resources[resourceTaken])
         return resourceTaken
 
-    def globalFeaturesToDict(self):
-        return {'player_id': self.id,'victory_points': self._victoryPoints, 'cards_bought': self.boughtCards, 'last_robber_user': int(self.lastRobberUser),
-                'used_knights': self.usedKnights, 'crop': self.resources["crop"], 'iron': self.resources["iron"],
-                'wood': self.resources["wood"], 'clay': self.resources["clay"], 'sheep': self.resources["sheep"], 'winner':None}
+    # def globalFeaturesToDict(self):
+    #     return {'player_id': self.id,'victory_points': self._victoryPoints, 'cards_bought': self.boughtCards, 'last_robber_user': int(self.lastRobberUser),
+    #             'used_knights': self.usedKnights, 'crop': self.resources["crop"], 'iron': self.resources["iron"],
+    #             'wood': self.resources["wood"], 'clay': self.resources["clay"], 'sheep': self.resources["sheep"], 'winner':None}
     
     def globalFeaturesToTensor(self):
         return torch.tensor([[

@@ -5,7 +5,7 @@ import torch
 from torch_geometric.data import Data, Batch
 
 dictCsvResources = {None: 0, "desert": 0, "crop": 1, "iron": 2, "wood": 3, "clay": 4, "sheep": 5}
-dictCsvHarbor = {"" : 0, "3:1" : 1, "2:1 crop" : 2, "2:1 iron" : 3, "2:1 wood" : 4, "2:1 clay" : 5, "2:1 sheep" : 6}  # incrementato il peso!
+dictCsvHarbor = {"" : 0, "3:1" : 1, "2:1 crop" : 2, "2:1 iron" : 3, "2:1 wood" : 4, "2:1 clay" : 5, "2:1 sheep" : 6} 
 
 class Board: 
     instance = None
@@ -29,24 +29,16 @@ class Board:
                         "year_of_plenty","year_of_plenty","monopoly","monopoly", "road_building","road_building"]
             #   SHUFFLE DECK
             cls.deck = np.random.permutation(cls.deck)
-            #print("Deck of this game: ", cls.deck)
             cls.graph = CatanGraph.CatanGraph()
             cls.tiles = cls.graph.tiles
             cls.places = cls.graph.places
             cls.edges = cls.graph.edges
-            # np.random.seed(1996)
-            #   PERMUTATIONS: 
             cls.numbers = np.random.permutation(cls.graph.numbers)
             cls.resources = np.random.permutation(cls.graph.resources)
             cls.harbors = np.random.permutation(cls.graph.harbors)
             cls.EdgesOnTheSea = np.random.permutation(cls.graph.EdgesOnTheSea)
 
-            # cls.placeTiles = []# temp
-            # for i in range(0, 54):# temp
-            #     cls.placeTiles.append([])# temp
-
             if(doPlacement):
-                # print("\n Tiles placement...\n")
                 cls.tilesPlacement(cls)
 
         return cls.instance
@@ -130,46 +122,46 @@ class Board:
                 id += 1
         return 0
 
-    # def placesToDict(cls, playerInTurn):
-    #     data={'is_owned_place': [], 'type':[], 'resource_1':[],'dice_1':[],'resource_2':[],'dice_2':[],'resource_3':[],'dice_3':[], 'harbor':[]} #, 'robber_tile':[]}
+    def placesToDict(cls, playerInTurn):
+        data={'is_owned_place': [], 'type':[], 'resource_1':[],'dice_1':[],'resource_2':[],'dice_2':[],'resource_3':[],'dice_3':[], 'harbor':[]} #, 'robber_tile':[]}
     
-    #     for p in cls.places:
-    #         resourceBlockedId = cls.idTileBlocked(p)  
-    #         data['is_owned_place'].append(p.ownedByThisPlayer(playerInTurn))
-    #         data['type'].append(p.placeType()) 
-    #         dices = cls.dicesOfPlace(p)
+        for p in cls.places:
+            resourceBlockedId = cls.idTileBlocked(p)  
+            data['is_owned_place'].append(p.ownedByThisPlayer(playerInTurn))
+            data['type'].append(p.placeType()) 
+            dices = cls.dicesOfPlace(p)
 
-    #         if(len(p.touchedResourses) < 1):
-    #             data['resource_1'].append(dictCsvResources[None])
-    #             data['dice_1'].append(0) 
-    #         else:
-    #             if(resourceBlockedId != 0):
-    #                 data['resource_1'].append(dictCsvResources[p.touchedResourses[0]])
-    #             else:
-    #                 data['resource_1'].append(dictCsvResources[None])
-    #             data['dice_1'].append(dices[0])
+            if(len(p.touchedResourses) < 1):
+                data['resource_1'].append(dictCsvResources[None])
+                data['dice_1'].append(0) 
+            else:
+                if(resourceBlockedId != 0):
+                    data['resource_1'].append(dictCsvResources[p.touchedResourses[0]])
+                else:
+                    data['resource_1'].append(dictCsvResources[None])
+                data['dice_1'].append(dices[0])
 
-    #         if(len(p.touchedResourses) < 2):
-    #             data['resource_2'].append(dictCsvResources[None])
-    #             data['dice_2'].append(0) 
-    #         else:
-    #             if(resourceBlockedId != 1):
-    #                 data['resource_2'].append(dictCsvResources[p.touchedResourses[1]])
-    #             else:
-    #                 data['resource_2'].append(dictCsvResources[None])
-    #             data['dice_2'].append(dices[1])
+            if(len(p.touchedResourses) < 2):
+                data['resource_2'].append(dictCsvResources[None])
+                data['dice_2'].append(0) 
+            else:
+                if(resourceBlockedId != 1):
+                    data['resource_2'].append(dictCsvResources[p.touchedResourses[1]])
+                else:
+                    data['resource_2'].append(dictCsvResources[None])
+                data['dice_2'].append(dices[1])
 
-    #         if(len(p.touchedResourses) < 3):
-    #             data['resource_3'].append(dictCsvResources[None])
-    #             data['dice_3'].append(0)  
-    #         else:
-    #             if(resourceBlockedId != 2):
-    #                 data['resource_3'].append(dictCsvResources[p.touchedResourses[2]])
-    #             else:
-    #                 data['resource_3'].append(dictCsvResources[None])
-    #             data['dice_3'].append(dices[2])
-    #         data['harbor'].append(dictCsvHarbor[p.harbor])
-    #     return data
+            if(len(p.touchedResourses) < 3):
+                data['resource_3'].append(dictCsvResources[None])
+                data['dice_3'].append(0)  
+            else:
+                if(resourceBlockedId != 2):
+                    data['resource_3'].append(dictCsvResources[p.touchedResourses[2]])
+                else:
+                    data['resource_3'].append(dictCsvResources[None])
+                data['dice_3'].append(dices[2])
+            data['harbor'].append(dictCsvHarbor[p.harbor])
+        return data
 
     def placesToTensor(cls, playerInTurn):
         is_owned_place = []
@@ -291,19 +283,16 @@ class Board:
         tensor = torch.Tensor([ownedType, resource_1, dice_1, underRobber1, resource_2, dice_2, underRobber2, resource_3, dice_3, underRobber3, harbor])
         return tensor.t()
 
-    # def edgesToDict(cls, playerInTurn):
-    #     # data={'place_1':[],'place_2':[],'is_owned_edge': [],}
-    #     data={'is_owned_edge': []}
-    #     for edge in cls.edges.keys():
-    #         # data['place_1'].append(edge[0])
-    #         # data['place_2'].append(edge[1])
-    #         if cls.edges[edge] == playerInTurn.id:
-    #             data['is_owned_edge'].append(1)
-    #         elif cls.edges[edge] == 0:
-    #             data['is_owned_edge'].append(-1)
-    #         else:
-    #             data['is_owned_edge'].append(0)
-    #     return data
+    def edgesToDict(cls, playerInTurn):
+        data={'is_owned_edge': []}
+        for edge in cls.edges.keys():
+            if cls.edges[edge] == playerInTurn.id:
+                data['is_owned_edge'].append(1)
+            elif cls.edges[edge] == 0:
+                data['is_owned_edge'].append(-1)
+            else:
+                data['is_owned_edge'].append(0)
+        return data
     
     def edgesToTensor(cls, playerInTurn):
         is_owned_edge = []
