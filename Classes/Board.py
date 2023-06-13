@@ -78,7 +78,8 @@ class Board:
 
         for t in cls.tiles:
             for p in t.associatedPlaces:
-                cls.places[p].touchedResourses.append(t.resource)
+                if(t.resource != None and t.resource != "desert"):
+                    cls.places[p].touchedResourses.append(t.resource)
                 # cls.placeTiles[p].append(t.identificator) # temp
         # for pi in range(0, len(cls.placeTiles)):
         #     print(pi, ":", cls.placeTiles[pi])

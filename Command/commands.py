@@ -171,7 +171,7 @@ class RemoveResourceToPlayer:
     unduable: bool = True
     def execute(self):
         # assert self.player.resources[self.resource]>0, f"Player {self.player.id} can't EXECUTE this action becouse it has not {self.resource}"
-        if(self.player.resources[self.resource] > 0):
+        if(self.player.resources[self.resource] > 0 and self.resource != None):
             self.player.resources[self.resource] -= 1
         else:
             self.unduable = False
@@ -180,7 +180,7 @@ class RemoveResourceToPlayer:
             self.player.resources[self.resource] += 1
     def redo(self):
         # assert self.player.resources[self.resource]>0, f"Player {self.player.id} can't UNDO this action becouse it has not {self.resource}"
-        if(self.player.resources[self.resource] > 0):
+        if(self.player.resources[self.resource] > 0 and self.resource != None):
             self.player.resources[self.resource] -= 1
         else:
             self.unduable = False

@@ -11,6 +11,8 @@ from Classes.Strategy.PriorityStrategy import PriorityStrategy
 from Classes.Strategy.PureStrategy import PureStrategy
 from Classes.Strategy.ReinforcementLearningStrategy import ReinforcementLearningStrategy
 
+import time
+
 def printWinners(winners):
         normValue = sum(winners)
         toPrint = [0.0, 0.0, 0.0, 0.0]
@@ -132,7 +134,13 @@ if __name__ == '__main__':
         hybStrategy = HybridStrategy()
         purStrategy = PureStrategy()
         rlStrategy = ReinforcementLearningStrategy()
-        strategies = [purStrategy, prioStrategy]
+        strategies = [hybStrategy, purStrategy]
         # strategies = [rlStrategy, prioStrategy]
-        gameCtrl = c.GameController.GameController(playerStrategies = strategies, withGraphics=True, speed=True, saveOnFile=False)
-        winner = gameCtrl.playGame()
+
+        start_time = time.time()
+        for i in range(0, 5):
+            gameCtrl = c.GameController.GameController(playerStrategies = strategies, withGraphics=False, speed=True, saveOnFile=False)
+            winner = gameCtrl.playGame()
+        end_time = time.time()
+        execution_time = end_time - start_time
+        print(f"Execution time: {execution_time} seconds")

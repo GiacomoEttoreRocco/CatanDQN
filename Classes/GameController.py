@@ -42,7 +42,6 @@ class GameController:
         player.previousReward = player._victoryPoints - prevPoints
         # print(player.previousReward)
 
-
     def decisionManagerGUI(self, player):
         if(not self.speed and self.withGraphics):
             event = pygame.event.wait()
@@ -114,6 +113,7 @@ class GameController:
             self.decisionManagerNonGUI(player)
 
     def playGame(self):    
+        self.reset()
         if(self.withGraphics):
             GameView.GameView.setupAndDisplayBoard(self.view)
             GameView.GameView.setupPlaces(self.view)
