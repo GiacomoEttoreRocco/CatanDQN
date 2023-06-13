@@ -191,13 +191,13 @@ class RemoveResourceToPlayer:
 class AddResourceToBank:
     resource: str
     def execute(self):
-        if(self.resources != None):
+        if(self.resource != None):
             Bank.Bank().resources[self.resource] += 1
     def undo(self):
-        if(self.resources != None):
+        if(self.resource != None):
             Bank.Bank().resources[self.resource] -= 1
     def redo(self):
-        if(self.resources != None):
+        if(self.resource != None):
             Bank.Bank().resources[self.resource] += 1
     def __repr__(self) -> str:
         return f'{self.__class__.__name__} res: {self.resource}'

@@ -138,7 +138,7 @@ if __name__ == '__main__':
         # strategies = [rlStrategy, prioStrategy]
 
         start_time = time.time()
-        for i in range(0, 15):
+        for i in range(0, 10):
             gameCtrl = c.GameController.GameController(playerStrategies = strategies, withGraphics=False, speed=True, saveOnFile=False)
             winner = gameCtrl.playGame()
         end_time = time.time()
