@@ -18,17 +18,15 @@ class ReinforcementLearningStrategy(Strategy):
     def name(self):
         return "RL"
 
-    def bestAction(self, player):
+    def bestAction(self, player, previousReward):
         if(player.game.actualTurn<player.game.nplayers):
             return self.euristicOutput(player, InitialMoveTypes.InitialFirstChoice) 
         elif(player.game.actualTurn<player.game.nplayers*2):
             return self.euristicOutput(player, InitialMoveTypes.InitialSecondChoice) 
         else: # ...
             state = player.game.getTotalState(player)
-            # RICORDATI CHE VANNO GESTITE LE FORCED MOVES.
-            bestMove = self.macroDQN.allOutputs(state, player.availableTurnActionsId()) # feed forward, deve restituire direttamente l'output corretto, perchè altrimenti: non puoi fare la loss
-            # availableTurnActionsId = player.availableTurnActionsId()  # questa cosa qui è da cambiare, il massimo non deve venire scelto in questo metodo
-            # bestAction = max(outputs[i] for i in availableTurnActionsId) # questa cosa qui è da cambiare, il massimo non deve venire scelto in questo metodo
+            # RICORDATI CHE VANNO GESTITE LE FORCED MOVES, in futuro.
+            bestMove = self.macroDQN.step(state, previousReward, player.availableTurnActionsId()) 
         return self.euristicOutput(player, bestMove) # action, thingNeeded
         
     def chooseParameters(self, action, player):

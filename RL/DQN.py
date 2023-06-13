@@ -37,17 +37,17 @@ class DQGNNagent():
         if(reward != None):
             self.memory.push(state, action, reward, nextState)
 
-    def selectMove(self, state):
+    def selectMove(self, state, availableMoves):
         sample = random.random()
         if sample < self.fixed_EPS:
-            action = self.explorationAction()
+            action = self.explorationAction(availableMoves)
         else:
-            action = self.greedyAction(state)
+            action = self.greedyAction(state, availableMoves)
         return action
     
-    def step(self, state, previousReward):                                                 
+    def step(self, state, previousReward, availableMoves):                                                 
         self.saveInMemory(self.previousState, self.previousAction, previousReward, state)
-        action = self.selectMove(state) # la differenza sta nel fatto che può essere scelta la mossa random
+        action = self.selectMove(state, availableMoves) # la differenza sta nel fatto che può essere scelta la mossa random
         self.previousState = state
         self.previousAction = action
         if(self.fixed_EPS > 0.005):
@@ -69,8 +69,8 @@ class DQGNNagent():
             # action = torch.tensor([[action]], dtype=torch.long)
         return action
 
-    def explorationAction(self):
-        random_action = random.randint(0, 1)
+    def explorationAction(self, availableMoves):
+        random_action = random.choice(availableMoves)
         return torch.tensor([[random_action]], dtype=torch.long, device=self.device)
 
     def optimize_model(self):
