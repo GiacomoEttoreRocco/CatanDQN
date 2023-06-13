@@ -92,29 +92,31 @@ class Gnn():
             trainingLoss.append(loss.item())
         return mean(trainingLoss)
 
-    def evaluatePositionForPlayer(cls, player):
-        globalFeats = player.globalFeaturesToDict()
-        del globalFeats['player_id'] # rimuove la colonna player_id che è inutile
-        graph = Batch.from_data_list([cls.fromDictsToGraph(Board.Board().placesToDict(player), Board.Board().edgesToDict(player)).to(cls.device)])
-        # print("Graph gnn, riga 88 GNN: ", graph)
-        # DataBatch(x=[54, 9], edge_index=[2, 72], edge_attr=[72], batch=[54], ptr=[2])
-        glob = torch.tensor([list(globalFeats.values())[:-1]], dtype=torch.float, device=cls.device)
-        return cls.model(graph, glob, isTrain=False).item()
-    
-    def fromDictsToGraph(cls, places, edges):
-        w = torch.tensor(edges['is_owned_edge'], dtype=torch.float)
-        x = torch.tensor(np.transpose(list(places.values())), dtype=torch.float)
-        return Data(x=x, edge_index=cls.hardEdgeIndex, edge_attr=w)
-
     # def evaluatePositionForPlayer(cls, player):
     #     globalFeats = player.globalFeaturesToDict()
     #     del globalFeats['player_id'] # rimuove la colonna player_id che è inutile
-    #     # graph = Batch.from_data_list([cls.fromDictsToGraph(Board.Board().placesToDict(player), Board.Board().edgesToDict(player)).to(cls.device)])
-    #     graph = Batch.from_data_list([Data(x=Board.Board().placesToTensor(player), edge_index=cls.hardEdgeIndex, edge_attr=Board.Board().edgesToTensor(player)).to(cls.device)])
-    #     # print("Riga 114, gnn: ", graph)
-    #     # DataBatch(x=[9, 54], edge_index=[2, 72], edge_attr=[72], batch=[9], ptr=[2])
+    #     graph = Batch.from_data_list([cls.fromDictsToGraph(Board.Board().placesToDict(player), Board.Board().edgesToDict(player)).to(cls.device)])
+    #     # print("Graph gnn, riga 88 GNN: ", graph)
+    #     # DataBatch(x=[54, 9], edge_index=[2, 72], edge_attr=[72], batch=[54], ptr=[2])
     #     glob = torch.tensor([list(globalFeats.values())[:-1]], dtype=torch.float, device=cls.device)
     #     return cls.model(graph, glob, isTrain=False).item()
+    
+    # def fromDictsToGraph(cls, places, edges):
+    #     w = torch.tensor(edges['is_owned_edge'], dtype=torch.float)
+    #     x = torch.tensor(np.transpose(list(places.values())), dtype=torch.float)
+    #     return Data(x=x, edge_index=cls.hardEdgeIndex, edge_attr=w)
+
+    def evaluatePositionForPlayer(cls, player):
+        globalFeats = player.globalFeaturesToDict()
+        del globalFeats['player_id'] # rimuove la colonna player_id che è inutile
+        # graph = Batch.from_data_list([cls.fromDictsToGraph(Board.Board().placesToDict(player), Board.Board().edgesToDict(player)).to(cls.device)])
+        graph = Batch.from_data_list([Data(x=Board.Board().placesToTensor(player), edge_index=cls.hardEdgeIndex, edge_attr=Board.Board().edgesToTensor(player)).to(cls.device)])
+        # print("Riga 114, gnn: ", graph)
+        # DataBatch(x=[9, 54], edge_index=[2, 72], edge_attr=[72], batch=[9], ptr=[2])
+        # glob = torch.tensor([list(globalFeats.values())[:-1]], dtype=torch.float, device=cls.device)
+        glob = player.globalFeaturesToTensor()
+        # print("Glob: ", glob)
+        return cls.model(graph, glob, isTrain=False).item()
 
     def saveWeights(cls, weights):
         torch.save(weights, cls.modelWeightsPath)

@@ -171,7 +171,7 @@ class RemoveResourceToPlayer:
     unduable: bool = True
     def execute(self):
         # assert self.player.resources[self.resource]>0, f"Player {self.player.id} can't EXECUTE this action becouse it has not {self.resource}"
-        if(self.player.resources[self.resource] > 0 and self.resource != None):
+        if(self.resource != None and self.player.resources[self.resource] > 0):
             self.player.resources[self.resource] -= 1
         else:
             self.unduable = False
@@ -180,7 +180,7 @@ class RemoveResourceToPlayer:
             self.player.resources[self.resource] += 1
     def redo(self):
         # assert self.player.resources[self.resource]>0, f"Player {self.player.id} can't UNDO this action becouse it has not {self.resource}"
-        if(self.player.resources[self.resource] > 0 and self.resource != None):
+        if(self.resource != None and self.player.resources[self.resource] > 0):
             self.player.resources[self.resource] -= 1
         else:
             self.unduable = False
@@ -191,11 +191,14 @@ class RemoveResourceToPlayer:
 class AddResourceToBank:
     resource: str
     def execute(self):
-        Bank.Bank().resources[self.resource] += 1
+        if(self.resources != None):
+            Bank.Bank().resources[self.resource] += 1
     def undo(self):
-        Bank.Bank().resources[self.resource] -= 1
+        if(self.resources != None):
+            Bank.Bank().resources[self.resource] -= 1
     def redo(self):
-        Bank.Bank().resources[self.resource] += 1
+        if(self.resources != None):
+            Bank.Bank().resources[self.resource] += 1
     def __repr__(self) -> str:
         return f'{self.__class__.__name__} res: {self.resource}'
 

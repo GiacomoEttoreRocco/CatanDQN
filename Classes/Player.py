@@ -242,6 +242,19 @@ class Player:
                 'used_knights': self.usedKnights, 'crop': self.resources["crop"], 'iron': self.resources["iron"],
                 'wood': self.resources["wood"], 'clay': self.resources["clay"], 'sheep': self.resources["sheep"], 'winner':None}
     
+    def globalFeaturesToTensor(self):
+        return torch.tensor([[
+            self._victoryPoints,
+            self.boughtCards,
+            int(self.lastRobberUser),
+            self.usedKnights,
+            self.resources["crop"],
+            self.resources["iron"],
+            self.resources["wood"],
+            self.resources["clay"],
+            self.resources["sheep"],
+        ]], dtype=torch.float)
+    
     # def globalFeaturesState(self):
     #     myCrop = self.resources["crop"]
     #     myIron = self.resources["iron"]
