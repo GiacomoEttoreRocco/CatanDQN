@@ -160,61 +160,128 @@ class Board:
             
         return data
     
-    def placesState(cls, playerInTurn) :
-        data={'ownedType':[], 'resource_1':[],'dice_1':[],'underRobber1':[], 'resource_2':[],'dice_2':[],'underRobber2':[],'resource_3':[],'dice_3':[],'underRobber3':[], 'harbor':[]}
+    # def placesState(cls, playerInTurn) :
+    #     data={'ownedType':[], 'resource_1':[],'dice_1':[],'underRobber1':[], 'resource_2':[],'dice_2':[],'underRobber2':[],'resource_3':[],'dice_3':[],'underRobber3':[], 'harbor':[]}
+    #     for p in cls.places:
+    #         resourceBlockedId = cls.idTileBlocked(p)  
+    #         owned = p.ownedByThisPlayer(playerInTurn)
+    #         if(p.isCity):
+    #             data['ownedType'].append(2*owned) 
+    #         elif(p.isColony):
+    #             data['ownedType'].append(1*owned) 
+    #         else:
+    #             data['ownedType'].append(0*owned)
+    #         data['harbor'].append(dictCsvHarbor[p.harbor])
+    #         dices = cls.dicesOfPlace(p)
+    #         if(len(p.touchedResourses) < 1):
+    #             data['resource_1'].append(dictCsvResources[None])
+    #             data['dice_1'].append(0) 
+    #             data['underRobber1'].append(0)
+    #         else:
+    #             data['resource_1'].append(dictCsvResources[p.touchedResourses[0]])
+    #             if(resourceBlockedId == 1):
+    #                 data['underRobber1'].append(1)
+    #             else:
+    #                 data['underRobber1'].append(0)
+    #             data['dice_1'].append(dices[0])
+
+    #         if(len(p.touchedResourses) < 2):
+    #             data['resource_2'].append(dictCsvResources[None])
+    #             data['dice_2'].append(0) 
+    #             data['underRobber2'].append(0)
+    #         else:
+    #             data['resource_2'].append(dictCsvResources[p.touchedResourses[1]])
+    #             if(resourceBlockedId == 2):
+    #                 data['underRobber2'].append(1)
+    #             else:
+    #                 data['underRobber2'].append(0)
+    #             data['dice_2'].append(dices[1])
+    #         if(len(p.touchedResourses) < 3):
+    #             data['resource_3'].append(dictCsvResources[None])
+    #             data['dice_3'].append(0) 
+    #             data['underRobber3'].append(0)
+    #         else:
+    #             data['resource_3'].append(dictCsvResources[p.touchedResourses[2]])
+    #             if(resourceBlockedId == 3):
+    #                 data['underRobber3'].append(1)
+    #             else:
+    #                 data['underRobber3'].append(0)
+    #             data['dice_3'].append(dices[2])
+
+    #     tensor = torch.Tensor(list(data.values()))
+    #     return tensor
+
+    def placesStateTensor(cls, playerInTurn):
+        ownedType = []
+        resource_1 = []
+        dice_1 = []
+        underRobber1 = []
+        resource_2 = []
+        dice_2 = []
+        underRobber2 = []
+        resource_3 = []
+        dice_3 = []
+        underRobber3 = []
+        harbor = []
+
         for p in cls.places:
             resourceBlockedId = cls.idTileBlocked(p)  
             owned = p.ownedByThisPlayer(playerInTurn)
-            if(p.isCity):
-                data['ownedType'].append(2*owned) 
-            elif(p.isColony):
-                data['ownedType'].append(1*owned) 
+
+            if p.isCity:
+                ownedType.append(2 * owned) 
+            elif p.isColony:
+                ownedType.append(1 * owned) 
             else:
-                data['ownedType'].append(0*owned)
-            data['harbor'].append(dictCsvHarbor[p.harbor])
+                ownedType.append(0 * owned)
+
+            harbor.append(dictCsvHarbor[p.harbor])
             dices = cls.dicesOfPlace(p)
-            if(len(p.touchedResourses) < 1):
-                data['resource_1'].append(dictCsvResources[None])
-                data['dice_1'].append(0) 
-                data['underRobber1'].append(0)
-            else:
-                data['resource_1'].append(dictCsvResources[p.touchedResourses[0]])
-                if(resourceBlockedId == 1):
-                    data['underRobber1'].append(1)
-                else:
-                    data['underRobber1'].append(0)
-                data['dice_1'].append(dices[0])
 
-            if(len(p.touchedResourses) < 2):
-                data['resource_2'].append(dictCsvResources[None])
-                data['dice_2'].append(0) 
-                data['underRobber2'].append(0)
+            if len(p.touchedResourses) < 1:
+                resource_1.append(dictCsvResources[None])
+                dice_1.append(0) 
+                underRobber1.append(0)
             else:
-                data['resource_2'].append(dictCsvResources[p.touchedResourses[1]])
-                if(resourceBlockedId == 2):
-                    data['underRobber2'].append(1)
+                resource_1.append(dictCsvResources[p.touchedResourses[0]])
+
+                if resourceBlockedId == 1:
+                    underRobber1.append(1)
                 else:
-                    data['underRobber2'].append(0)
-                data['dice_2'].append(dices[1])
-            if(len(p.touchedResourses) < 3):
-                data['resource_3'].append(dictCsvResources[None])
-                data['dice_3'].append(0) 
-                data['underRobber3'].append(0)
+                    underRobber1.append(0)
+
+                dice_1.append(dices[0])
+
+            if len(p.touchedResourses) < 2:
+                resource_2.append(dictCsvResources[None])
+                dice_2.append(0) 
+                underRobber2.append(0)
             else:
-                data['resource_3'].append(dictCsvResources[p.touchedResourses[2]])
-                if(resourceBlockedId == 3):
-                    data['underRobber3'].append(1)
+                resource_2.append(dictCsvResources[p.touchedResourses[1]])
+
+                if resourceBlockedId == 2:
+                    underRobber2.append(1)
                 else:
-                    data['underRobber3'].append(0)
-                data['dice_3'].append(dices[2])
+                    underRobber2.append(0)
 
-        # Debug:
-        # for x in data.keys():
-        #     print(x, ":" , data[x], "Len: ", len(data[x]))
+                dice_2.append(dices[1])
 
-        tensor = torch.Tensor(list(data.values()))
+            if len(p.touchedResourses) < 3:
+                resource_3.append(dictCsvResources[None])
+                dice_3.append(0) 
+                underRobber3.append(0)
+            else:
+                resource_3.append(dictCsvResources[p.touchedResourses[2]])
+
+                if resourceBlockedId == 3:
+                    underRobber3.append(1)
+                else:
+                    underRobber3.append(0)
+
+                dice_3.append(dices[2])
+
+        tensor = torch.Tensor([ownedType, resource_1, dice_1, underRobber1, resource_2, dice_2, underRobber2, resource_3, dice_3, underRobber3, harbor])
         return tensor
-        # return data
 
     def edgesToDict(cls, playerInTurn):
         data={'place_1':[],'place_2':[],'is_owned_edge': [],}
@@ -227,23 +294,44 @@ class Board:
                 data['is_owned_edge'].append(-1)
             else:
                 data['is_owned_edge'].append(0)
-        # tensor = torch.Tensor(list(data.values()))
-        # return tensor
         return data
     
-    def edgesState(cls, playerInTurn):
-        data={'place_1':[],'place_2':[],'is_owned_edge': [],}
-        for edge in cls.edges.keys():
-            data['place_1'].append(edge[0])
-            data['place_2'].append(edge[1])
-            if cls.edges[edge] == playerInTurn.id:
-                data['is_owned_edge'].append(1)
-            elif cls.edges[edge] == 0:
-                data['is_owned_edge'].append(-1)
+    # def edgesState(cls, playerInTurn):
+    #     data={'place_1':[],'place_2':[],'is_owned_edge': [],}
+    #     for edge in cls.edges.keys():
+    #         data['place_1'].append(edge[0])
+    #         data['place_2'].append(edge[1])
+    #         if cls.edges[edge] == playerInTurn.id:
+    #             data['is_owned_edge'].append(1)
+    #         elif cls.edges[edge] == 0:
+    #             data['is_owned_edge'].append(-1)
+    #         else:
+    #             data['is_owned_edge'].append(0)
+    #     tensor = torch.Tensor(list(data.values()))
+    #     return tensor
+
+    def edgesStateTensor(cls, playerInTurn):
+        place_1 = []
+        place_2 = []
+        is_owned_edge = []
+
+        for edge, owner in cls.edges.items():
+            place_1.append(edge[0])
+            place_2.append(edge[1])
+
+            if owner == playerInTurn.id:
+                is_owned_edge.append(1)
+            elif owner == 0:
+                is_owned_edge.append(-1)
             else:
-                data['is_owned_edge'].append(0)
-        tensor = torch.Tensor(list(data.values()))
+                is_owned_edge.append(0)
+
+        tensor = torch.Tensor([place_1, place_2, is_owned_edge])
         return tensor
+    
+
+    def boardState(cls, playerInTurn):
+        return cls.placesState(playerInTurn) + cls.edgesState(playerInTurn)# dfgfhjk
         # return data
             
 # Nodes: 

@@ -85,6 +85,7 @@ class Gnn():
         globalFeats = player.globalFeaturesToDict()
         del globalFeats['player_id'] # rimuove la colonna player_id che è inutile
         graph = Batch.from_data_list([cls.fromDictsToGraph(Board.Board().placesToDict(player), Board.Board().edgesToDict(player)).to(cls.device)])
+        # print("Graph gnn, riga 88 GNN: ", graph)
         glob = torch.tensor([list(globalFeats.values())[:-1]], dtype=torch.float, device=cls.device)
         return cls.model(graph, glob, isTrain=False).item()
 

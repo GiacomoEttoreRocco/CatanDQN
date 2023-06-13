@@ -9,6 +9,7 @@ from Classes.Strategy.HybridStrategy import HybridStrategy
 
 from Classes.Strategy.PriorityStrategy import PriorityStrategy
 from Classes.Strategy.PureStrategy import PureStrategy
+from Classes.Strategy.ReinforcementLearningStrategy import ReinforcementLearningStrategy
 
 def printWinners(winners):
         normValue = sum(winners)
@@ -130,7 +131,8 @@ if __name__ == '__main__':
         prioStrategy = PriorityStrategy()
         hybStrategy = HybridStrategy()
         purStrategy = PureStrategy()
-        strategies = [hybStrategy, purStrategy, prioStrategy]
+        rlStrategy = ReinforcementLearningStrategy()
+        strategies = [purStrategy, prioStrategy]
+        # strategies = [rlStrategy, prioStrategy]
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, withGraphics=True, speed=True, saveOnFile=False)
-        
         winner = gameCtrl.playGame()

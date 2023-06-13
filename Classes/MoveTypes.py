@@ -13,11 +13,12 @@ class TurnMoveTypes(Enum):
     UseYearOfPlentyCard = 9
 
 class ForcedMoveTypes(Enum): # se sono forced non ha senso farle valutare dal DQN globale, solo dal DQN specifico
-    PlaceFreeStreet = -5
-    UseRobber = -4
-    DiscardResource = -3
+    PlaceFreeStreet = -6
+    UseRobber = -5
+    DiscardResource = -4
 
 class InitialMoveTypes(Enum): # idem
-    InitialFirstChoice = -2
+    InitialFirstChoice = -3
+    InitialStreetChoice = -2
     InitialSecondChoice = -1
 

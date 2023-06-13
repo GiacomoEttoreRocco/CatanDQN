@@ -1,4 +1,4 @@
-from Classes import Bank
+from Classes import Bank, Board
 from Classes.MoveTypes import ForcedMoveTypes, InitialMoveTypes, TurnMoveTypes
 from Classes.staticUtilities import *
 from Command import commands, controller
@@ -20,9 +20,9 @@ class ReinforcementLearningStrategy(Strategy):
 
     def bestAction(self, player):  #, previousReward):
         if(player.game.actualTurn<player.game.nplayers):
-            return self.euristicOutput(player, InitialMoveTypes.InitialFirstChoice) 
+            return self.euristicOutput(player, InitialMoveTypes.InitialFirstChoice)
         elif(player.game.actualTurn<player.game.nplayers*2):
-            return self.euristicOutput(player, InitialMoveTypes.InitialSecondChoice) 
+            return self.euristicOutput(player, InitialMoveTypes.InitialSecondChoice)
         else: # ...
             state = player.game.getTotalState(player)
             # RICORDATI CHE VANNO GESTITE LE FORCED MOVES, in futuro.
@@ -31,7 +31,7 @@ class ReinforcementLearningStrategy(Strategy):
         
     def chooseParameters(self, action, player):
         if(action == commands.PlaceFreeStreetCommand):
-            return self.euristicOutput(player, ForcedMoveTypes.PlaceFreeStreet)  
+            return self.euristicOutput(player, ForcedMoveTypes.PlaceFreeStreet)
         
         if(action == commands.UseRobberCommand): # Yes they are the same method, but must be differentiated becouse of the count of knights.
             return self.euristicOutput(player, ForcedMoveTypes.UseRobber)  
@@ -41,6 +41,9 @@ class ReinforcementLearningStrategy(Strategy):
         
         if(action == commands.FirstChoiseCommand):
             return self.euristicOutput(player, InitialMoveTypes.InitialFirstChoice)   ####
+        
+        if(action == commands.PlaceInitialStreetCommand):
+            return 0, self.euristicOutput(player, InitialMoveTypes.InitialStreetChoice)
 
         if(action == commands.SecondChoiseCommand):
             return self.euristicOutput(player, InitialMoveTypes.InitialSecondChoice)
@@ -77,46 +80,50 @@ class ReinforcementLearningStrategy(Strategy):
     
     def euristicOutput(self, player, idAction):
         if(idAction == ForcedMoveTypes.DiscardResource):
-            return commands.DiscardResourceCommand, self.euristicDiscardResource(player)
+            return commands.DiscardResourceCommand, self.euristicDiscardResource(player), None
         
         if(idAction == ForcedMoveTypes.UseRobber):
-            return commands.UseRobberCommand, self.euristicPlaceRobber(player)
+            return commands.UseRobberCommand, self.euristicPlaceRobber(player), None
         
         elif(idAction == InitialMoveTypes.InitialFirstChoice):
-            return commands.FirstChoiseCommand, self.euristicInitialFirstMove(player)
+            # print("INITIAL CHOICE: ", commands.FirstChoiseCommand, self.euristicInitialFirstMove(player), None)
+            return commands.FirstChoiseCommand, self.euristicInitialFirstMove(player), None
+
+        elif(idAction == InitialMoveTypes.InitialStreetChoice):
+            return self.euristicPlaceInitialStreet(player)
         
         elif(idAction == InitialMoveTypes.InitialSecondChoice):
-            return commands.SecondChoiseCommand, self.euristicInitialSecondMove(player)
+            return commands.SecondChoiseCommand, self.euristicInitialSecondMove(player), None
         
         elif(idAction == TurnMoveTypes.PassTurn):
-            return  commands.PassTurnCommand, None
+            return  commands.PassTurnCommand, None, None
         
         elif(idAction == TurnMoveTypes.BuyDevCard):
-            return  commands.BuyDevCardCommand, None
+            return  commands.BuyDevCardCommand, None, None
         
         elif(idAction == TurnMoveTypes.PlaceStreet):
-            return  commands.PlaceStreetCommand, self.euristicPlaceStreet(player)
+            return  commands.PlaceStreetCommand, self.euristicPlaceStreet(player), None
         
         elif(idAction == TurnMoveTypes.PlaceColony):
-            return  commands.PlaceColonyCommand, self.euristicPlaceColony(player)
+            return  commands.PlaceColonyCommand, self.euristicPlaceColony(player), None
         
         elif(idAction == TurnMoveTypes.PlaceCity):
-            return  commands.PlaceCityCommand, self.euristicPlaceCity(player)
+            return  commands.PlaceCityCommand, self.euristicPlaceCity(player), None
         
         elif(idAction == TurnMoveTypes.TradeBank):
-            return  commands.TradeBankCommand, self.euristicTradeBank(player)
+            return  commands.TradeBankCommand, self.euristicTradeBank(player), None
         
         elif(idAction == TurnMoveTypes.UseKnight):
-            return  commands.UseKnightCommand, self.euristicKnight(player)
+            return  commands.UseKnightCommand, self.euristicKnight(player), None
         
         elif(idAction == TurnMoveTypes.UseMonopolyCard):
-            return  commands.UseMonopolyCardCommand, self.euristicMonopoly(player)
+            return  commands.UseMonopolyCardCommand, self.euristicMonopoly(player), None
         
         elif(idAction == TurnMoveTypes.UseRoadBuildingCard):
-            return  commands.UseRoadBuildingCardCommand, self.euristicRoadBuildingCard(player)
+            return  commands.UseRoadBuildingCardCommand, self.euristicRoadBuildingCard(player), None
         
         elif(idAction == TurnMoveTypes.UseYearOfPlentyCard):
-            return  commands.UseYearOfPlentyCardCommand, self.euristicYearOfPlenty(player)
+            return  commands.UseYearOfPlentyCardCommand, self.euristicYearOfPlenty(player), None
     
     def resValue(self, resource):
         if(resource == "iron"):
@@ -129,14 +136,16 @@ class ReinforcementLearningStrategy(Strategy):
             return 4
         elif(resource == "sheep"):
             return 3
+        else:
+            return 0
     
     def diceEvaluationFunction(self, diceValue):
         return 1 / (1 + abs(diceValue - 8))
     
     def placeValue(self, place):
         value = 0
-        for tile in place.touchedTiles():
-            value += self.resValue(tile.resource) * self.diceEvaluationFunction(tile.number)
+        for tile in place.touchedTiles:
+            value += self.resValue(Board.Board().tiles[tile].resource) * self.diceEvaluationFunction(Board.Board().tiles[tile].number)
         return value
         
     def euristicInitialFirstMove(self, player):
@@ -145,8 +154,13 @@ class ReinforcementLearningStrategy(Strategy):
         choosenPlace = -1
         for place in availablePlaces:
             if(self.placeValue(place) > max):
+                max = self.placeValue(place)
                 choosenPlace = place
-        return place
+        return choosenPlace
+    
+    def euristicPlaceInitialStreet(self, player):
+        availableStreets = player.calculatePossibleInitialStreets()
+        return random.choice(availableStreets)
     
     def euristicInitialSecondMove(self, player):
         availablePlaces = player.calculatePossibleInitialColonies()
@@ -154,15 +168,17 @@ class ReinforcementLearningStrategy(Strategy):
         choosenPlace = -1
         for place in availablePlaces:
             if(self.placeValue(place) > max):
+                max = self.placeValue(place)
                 choosenPlace = place
-        return place
+        return choosenPlace
         
     def euristicPlaceCity(self, player):
-        ownedColonies = player.ownedColonies()
+        ownedColonies = player.ownedColonies() # to upgrade in city
         max = 0
         choosenColony = -1
         for colony in ownedColonies:
             if(self.placeValue(colony) > max):
+                max = self.placeValue(colony)
                 choosenColony = colony
         return choosenColony
     
@@ -172,6 +188,7 @@ class ReinforcementLearningStrategy(Strategy):
         choosenColony = -1
         for colony in possibleColonies:
             if(self.placeValue(colony) > max):
+                max = self.placeValue(colony)
                 choosenColony = colony
         return choosenColony
 

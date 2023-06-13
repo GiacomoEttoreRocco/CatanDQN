@@ -163,6 +163,9 @@ class Place:
         self.isColony = False
         self.isCity = False
 
+        self.touchedTiles = placeTiles[id]
+        # print(placeTiles)
+
     def isOnTheSea(self):
         if(self.id in [0,1,2,3,4,5,6,14,15,25,26,37,36,46,45,53,52,51,50,49,48,47,39,38,28,27,16,17,7,8]):
             return True

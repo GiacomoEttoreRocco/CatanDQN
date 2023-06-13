@@ -276,6 +276,7 @@ class GameView:
     def drawStreet(self, edge, color):
         startPos = edge[0]
         endPos = edge[1]
+        # print("gamveView, 279:", startPos)
         pygame.draw.line(self.screen, pygame.Color("Black"), self.graphicPlaceList[startPos].coords, self.graphicPlaceList[endPos].coords, self.height//50)
         pygame.draw.line(self.screen, color, self.graphicPlaceList[startPos].coords, self.graphicPlaceList[endPos].coords, self.height//100)
 

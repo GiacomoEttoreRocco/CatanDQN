@@ -48,6 +48,7 @@ class StrategySL(Strategy):
                     if(max < valutation):
                         max = valutation
                         candidateEdge = edge
+                        # print(edge)
                 return max, candidateEdge
 
             if(action == commands.PlaceInitialColonyCommand or action == commands.FirstChoiseCommand or action == commands.SecondChoiseCommand or action == commands.PlaceSecondColonyCommand):

@@ -242,7 +242,22 @@ class Player:
                 'used_knights': self.usedKnights, 'crop': self.resources["crop"], 'iron': self.resources["iron"],
                 'wood': self.resources["wood"], 'clay': self.resources["clay"], 'sheep': self.resources["sheep"], 'winner':None}
     
-    def globalFeaturesState(self):
+    # def globalFeaturesState(self):
+    #     myCrop = self.resources["crop"]
+    #     myIron = self.resources["iron"]
+    #     myWood = self.resources["wood"]
+    #     myClay = self.resources["clay"]
+    #     mySheep = self.resources["sheep"]
+    #     totResOthers = Bank.Bank().totalResourceOut() - (myCrop + myIron + myWood + myClay + mySheep)
+
+    #     data = {'victory_points': self._victoryPoints, 'cards_bought': self.boughtCards,
+    #             'used_knights': self.usedKnights, 'crop': myCrop, 'iron': myIron,
+    #             'wood': myWood, 'clay': myClay, 'sheep': mySheep, "total_resource_out": totResOthers}
+        
+    #     tensor = torch.Tensor(list(data.values()))
+    #     return tensor
+    
+    def globalFeaturesStateTensor(self):
         myCrop = self.resources["crop"]
         myIron = self.resources["iron"]
         myWood = self.resources["wood"]
@@ -250,15 +265,7 @@ class Player:
         mySheep = self.resources["sheep"]
         totResOthers = Bank.Bank().totalResourceOut() - (myCrop + myIron + myWood + myClay + mySheep)
 
-        # data = {'player_id': self.id, 'victory_points': self.victoryPoints, 'cards_bought': self.boughtCards,
-        #         'used_knights': self.usedKnights, 'crop': myCrop, 'iron': myIron,
-        #         'wood': myWood, 'clay': myClay, 'sheep': mySheep, "total_resource_out": totResOthers}
-        
-        data = {'victory_points': self._victoryPoints, 'cards_bought': self.boughtCards,
-                'used_knights': self.usedKnights, 'crop': myCrop, 'iron': myIron,
-                'wood': myWood, 'clay': myClay, 'sheep': mySheep, "total_resource_out": totResOthers}
-        
-        tensor = torch.Tensor(list(data.values()))
+        tensor = torch.Tensor([self._victoryPoints, self.boughtCards, self.usedKnights, myCrop, myIron, myWood, myClay, mySheep, totResOthers])
         return tensor
     
     def bestAction(self):
