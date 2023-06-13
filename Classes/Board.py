@@ -210,7 +210,7 @@ class Board:
             harbor.append(dictCsvHarbor[p.harbor])
         
         tensor = torch.Tensor([is_owned_place, place_type, resource_1, dice_1, resource_2, dice_2, resource_3, dice_3, harbor])
-        return tensor
+        return tensor.t()
 
     
     # def placesState(cls, playerInTurn) :
@@ -337,10 +337,11 @@ class Board:
         return tensor
 
     def edgesToDict(cls, playerInTurn):
-        data={'place_1':[],'place_2':[],'is_owned_edge': [],}
+        # data={'place_1':[],'place_2':[],'is_owned_edge': [],}
+        data={'is_owned_edge': []}
         for edge in cls.edges.keys():
-            data['place_1'].append(edge[0])
-            data['place_2'].append(edge[1])
+            # data['place_1'].append(edge[0])
+            # data['place_2'].append(edge[1])
             if cls.edges[edge] == playerInTurn.id:
                 data['is_owned_edge'].append(1)
             elif cls.edges[edge] == 0:
@@ -350,13 +351,13 @@ class Board:
         return data
     
     def edgesToTensor(cls, playerInTurn):
-        place_1 = []
-        place_2 = []
+        # place_1 = []
+        # place_2 = []
         is_owned_edge = []
 
         for edge, owner in cls.edges.items():
-            place_1.append(edge[0])
-            place_2.append(edge[1])
+            # place_1.append(edge[0])
+            # place_2.append(edge[1])
 
             if owner == playerInTurn.id:
                 is_owned_edge.append(1)
@@ -365,7 +366,8 @@ class Board:
             else:
                 is_owned_edge.append(0)
 
-        tensor = torch.Tensor([place_1, place_2, is_owned_edge])
+        # tensor = torch.Tensor([is_owned_edge])
+        tensor = torch.Tensor(is_owned_edge)
         return tensor
     
     # def edgesState(cls, playerInTurn):
