@@ -135,15 +135,27 @@ class Net(nn.Module):
         nn.Sigmoid()
     )
 
-  def forward(self, graph, globalFeats, isTrain):
+#   def forward(self, graph, globalFeats, isTrain):
+#     batch_size, batch, x, edge_index, edge_attr = graph.num_graphs, graph.batch, graph.x, graph.edge_index, graph.edge_attr
+#     embeds = self.Gnn(x, edge_index=edge_index, edge_attr=edge_attr)
+#     embeds = torch.reshape(embeds, (batch_size, 54*4))
+#     globalFeats = self.GlobalLayers(globalFeats)
+#     output = torch.cat([embeds, globalFeats], dim=-1)
+#     output = torch.dropout(output, p = 0.2, train = isTrain)
+#     output = self.OutLayers(output)
+#     return output
+  
+  def forward(self, graph, globalFeats, isTrain): 
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # Definisci il dispositivo
     batch_size, batch, x, edge_index, edge_attr = graph.num_graphs, graph.batch, graph.x, graph.edge_index, graph.edge_attr
-    embeds = self.Gnn(x, edge_index=edge_index, edge_attr=edge_attr)
-    embeds = torch.reshape(embeds, (batch_size, 54*4))
-    globalFeats = self.GlobalLayers(globalFeats)
+    embeds = self.Gnn(x.to(device), edge_index=edge_index.to(device), edge_attr=edge_attr.to(device))
+    embeds = torch.reshape(embeds, (batch_size, 54 * 4))
+    globalFeats = self.GlobalLayers(globalFeats.to(device))
     output = torch.cat([embeds, globalFeats], dim=-1)
-    output = torch.dropout(output, p = 0.2, train = isTrain)
-    output = self.OutLayers(output)
+    output = torch.dropout(output, p=0.2, train=isTrain)
+    output = self.OutLayers(output.to(device))
     return output
+
 
 class MyDataset(torch.utils.data.IterableDataset):
     def __init__(self, train=False):

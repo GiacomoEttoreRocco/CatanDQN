@@ -133,7 +133,7 @@ if __name__ == '__main__':
         hybStrategy = HybridStrategy()
         purStrategy = PureStrategy()
         rlStrategy = ReinforcementLearningStrategy()
-        strategies = [hybStrategy, rlStrategy]
+        strategies = [hybStrategy, prioStrategy]
         # strategies = [rlStrategy, prioStrategy]
 
         start_time = time.time()

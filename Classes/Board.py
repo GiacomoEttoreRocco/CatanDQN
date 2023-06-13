@@ -307,5 +307,6 @@ class Board:
         return tensor
     
     def boardStateGraph(cls, player):
-        return Batch.from_data_list([Data(x=cls.placesStateTensor(player), edge_index= cls.hardEdgeIndex, edge_attr= cls.edgesToTensor(player)).to(cls.device)])
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # Definisci il dispositivo
+        return Batch.from_data_list([Data(x=cls.placesStateTensor(player), edge_index= cls.hardEdgeIndex, edge_attr= cls.edgesToTensor(player)).to(device)])
             
