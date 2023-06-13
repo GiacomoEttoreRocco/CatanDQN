@@ -40,7 +40,7 @@ class GameController:
         prevPoints = player._victoryPoints
         self.game.ctr.execute(action(player, thingNeeded))
         player.previousReward = player._victoryPoints - prevPoints
-        print(player.previousReward)
+        # print(player.previousReward)
 
 
     def decisionManagerGUI(self, player):

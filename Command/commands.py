@@ -472,7 +472,7 @@ class FirstChoiseCommand:
         tmp.execute()
         # print("Res: ", self.player.strategy.chooseParameters(PlaceInitialStreetCommand, self.player))
         _, edgeChoosen = self.player.strategy.chooseParameters(PlaceInitialStreetCommand, self.player)
-        print("475 commands: ",edgeChoosen)
+        # print("475 commands: ",edgeChoosen)
         tmp = PlaceInitialStreetCommand(self.player, edgeChoosen)
         self.actions.append(tmp)
         tmp.execute()
