@@ -24,9 +24,8 @@ def printWinners(winners):
         print(s)
         print(winners)
 
-def training(iterationProcessIndex, iterations, numberOfTrainingGames, numberOfValidationGames):
-    winners = [0.0,0.0,0.0,0.0]
-    playerStrategies = [PriorityStrategy, PriorityStrategy, HybridStrategy, PureStrategy]
+def training(playerStrategies, iterationProcessIndex, iterations, numberOfTrainingGames, numberOfValidationGames):
+    winners = [0.0] * len(playerStrategies)
     print(f'Starting training: {iterationProcessIndex}')
     for iteration in range(iterations):
         print('Iteration: ', iteration+1, "/", iterations)

@@ -12,16 +12,6 @@ from statistics import mean
 
 class Gnn():
     
-    hardEdgeIndex = torch.tensor([[ 0,  0,  1,  2,  2,  3,  4,  4,  5,  6,  7,  7,  8,  9,  9, 10, 11, 11,
-        12, 13, 13, 14, 15, 16, 16, 17, 18, 18, 19, 20, 20, 21, 22, 22, 23, 24,
-        24, 25, 26, 27, 28, 28, 29, 30, 30, 31, 32, 32, 33, 34, 34, 35, 36, 36,
-        38, 39, 40, 41, 41, 42, 43, 43, 44, 45, 45, 39, 47, 48, 49, 50, 51, 52],
-    [ 1,  8,  2,  3, 10,  4,  5, 12,  6, 14,  8, 17,  9, 10, 19, 11, 12, 21,
-        13, 14, 23, 15, 25, 17, 27, 18, 19, 29, 20, 21, 31, 22, 23, 33, 24, 25,
-        35, 26, 37, 28, 29, 38, 30, 31, 40, 32, 33, 42, 34, 35, 44, 36, 37, 46,
-        39, 40, 41, 42, 49, 43, 44, 51, 45, 46, 53, 47, 48, 49, 50, 51, 52, 53]])
-
-
     instance = None
     def __new__(cls, epochs=250, batch=16, learningRate=0.0001):
         if cls.instance is None:
@@ -104,10 +94,10 @@ class Gnn():
     # def fromDictsToGraph(cls, places, edges):
     #     w = torch.tensor(edges['is_owned_edge'], dtype=torch.float)
     #     x = torch.tensor(np.transpose(list(places.values())), dtype=torch.float)
-    #     return Data(x=x, edge_index=cls.hardEdgeIndex, edge_attr=w)
+    #     return Data(x=x, edge_index=Board.Board().hardEdgeIndex, edge_attr=w)
 
     def evaluatePositionForPlayer(cls, player):
-        graph = Batch.from_data_list([Data(x=Board.Board().placesToTensor(player), edge_index=cls.hardEdgeIndex, edge_attr=Board.Board().edgesToTensor(player)).to(cls.device)])
+        graph = Batch.from_data_list([Data(x=Board.Board().placesToTensor(player), edge_index=Board.Board().hardEdgeIndex, edge_attr=Board.Board().edgesToTensor(player)).to(cls.device)])
         glob = player.globalFeaturesToTensor()
         return cls.model(graph, glob, isTrain=False).item()
 
