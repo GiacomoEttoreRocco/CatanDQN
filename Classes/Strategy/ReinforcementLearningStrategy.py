@@ -1,5 +1,5 @@
 from Classes import Bank, Board
-from Classes.MoveTypes import ForcedMoveTypes, InitialMoveTypes, TurnMoveTypes
+from Classes.MoveTypes import *
 from Classes.staticUtilities import *
 from Command import commands, controller
 from Classes.Strategy.Strategy import Strategy
@@ -20,114 +20,91 @@ class ReinforcementLearningStrategy(Strategy):
 
     def bestAction(self, player):  #, previousReward):
         if(player.game.actualTurn<player.game.nplayers):
-            return self.euristicOutput(player, InitialMoveTypes.InitialFirstChoice)
+            return self.chooseParameters(commands.FirstChoiseCommand, player)
         elif(player.game.actualTurn<player.game.nplayers*2):
-            return self.euristicOutput(player, InitialMoveTypes.InitialSecondChoice)
-        else: # ...
-            # state = player.game.getTotalState(player)
-
+            return self.chooseParameters(commands.SecondChoiseCommand, player)
+        else:
             graph = Board.Board().boardStateGraph(player)
             glob = player.globalFeaturesToTensor()
 
             # RICORDATI CHE VANNO GESTITE LE FORCED MOVES, in futuro.
+            idActions = player.availableTurnActionsId()
+            if(len(idActions) == 1 and idActions[0] == 0):
+                print("Only pass turn")
+                return commands.PassTurnCommand, None, True
             bestMove = self.macroDQN.step(graph, glob, player.availableTurnActionsId()) 
-        return self.euristicOutput(player, bestMove) # action, thingNeeded
+            print("Best move RL, riga 36 RLStrategy: index: ", bestMove, "Move: ", idToCommand(bestMove))
+            # print(" -> ", bestMove[0][0], " move: ", idToCommand(bestMove[0][0]))
+
+        return self.chooseParameters(idToCommand(bestMove), player) # bestAction, thingsNeeded, onlyPassTurn
         
-    def chooseParameters(self, action, player):
+    def chooseParameters(self, action, player): # il vecchio evaluate
         if(action == commands.PlaceFreeStreetCommand):
-            return self.euristicOutput(player, ForcedMoveTypes.PlaceFreeStreet)
+            print("Placing free street")
+            return commands.PlaceFreeStreetCommand, self.euristicPlaceStreet(player), None
         
-        if(action == commands.UseRobberCommand): # Yes they are the same method, but must be differentiated becouse of the count of knights.
-            return self.euristicOutput(player, ForcedMoveTypes.UseRobber)  
+        elif(action == commands.UseRobberCommand): # Yes they are the same method, but must be differentiated becouse of the count of knights.
+            print("Using robber")
+            return commands.UseRobberCommand, self.euristicKnight(player), None
 
-        if(action == commands.DiscardResourceCommand):
-            return self.euristicOutput(player, ForcedMoveTypes.DiscardResource)
-        
-        if(action == commands.FirstChoiseCommand):
-            return self.euristicOutput(player, InitialMoveTypes.InitialFirstChoice)   ####
-        
-        if(action == commands.PlaceInitialStreetCommand):
-            return 0, self.euristicOutput(player, InitialMoveTypes.InitialStreetChoice)
-
-        if(action == commands.SecondChoiseCommand):
-            return self.euristicOutput(player, InitialMoveTypes.InitialSecondChoice)
-        
-        if(action == commands.PassTurnCommand):
-            return self.euristicOutput(player, TurnMoveTypes.PassTurn)
-        
-        if(action == commands.BuyDevCardCommand):
-            return self.euristicOutput(player, TurnMoveTypes.BuyDevCard)
-    
-        if(action == commands.PlaceStreetCommand):
-            return self.euristicOutput(player, TurnMoveTypes.PlaceStreet)
-        
-        if(action == commands.PlaceColonyCommand):
-            return self.euristicOutput(player, TurnMoveTypes.PlaceColony)
-
-        if(action == commands.PlaceCityCommand):
-            return self.euristicOutput(player, TurnMoveTypes.PlaceCity)
-
-        if(action == commands.TradeBankCommand):
-            return self.euristicOutput(player, TurnMoveTypes.TradeBank)        
-
-        if(action == commands.UseKnightCommand):
-            return self.euristicOutput(player, TurnMoveTypes.UseKnight)  
-
-        if(action == commands.UseMonopolyCardCommand):
-            return self.euristicOutput(player, TurnMoveTypes.UseMonopolyCard)
-        
-        if(action == commands.UseRoadBuildingCardCommand):
-            return self.euristicOutput(player, TurnMoveTypes.UseRoadBuildingCard)
-        
-        if(action == commands.UseYearOfPlentyCardCommand):
-            return self.euristicOutput(player, TurnMoveTypes.UseYearOfPlentyCard)
-    
-    def euristicOutput(self, player, idAction):
-        if(idAction == ForcedMoveTypes.DiscardResource):
+        elif(action == commands.DiscardResourceCommand):
+            print("Discarding resource")
             return commands.DiscardResourceCommand, self.euristicDiscardResource(player), None
         
-        if(idAction == ForcedMoveTypes.UseRobber):
-            return commands.UseRobberCommand, self.euristicPlaceRobber(player), None
-        
-        elif(idAction == InitialMoveTypes.InitialFirstChoice):
-            # print("INITIAL CHOICE: ", commands.FirstChoiseCommand, self.euristicInitialFirstMove(player), None)
+        elif(action == commands.FirstChoiseCommand):
+            print("InitialFIRSTChoice")
             return commands.FirstChoiseCommand, self.euristicInitialFirstMove(player), None
-
-        elif(idAction == InitialMoveTypes.InitialStreetChoice):
-            return self.euristicPlaceInitialStreet(player)
         
-        elif(idAction == InitialMoveTypes.InitialSecondChoice):
+        elif(action == commands.PlaceInitialStreetCommand):
+            print("Initial STREET Choice")
+            return commands.PlaceInitialStreetCommand, self.euristicPlaceInitialStreet(player)
+
+        elif(action == commands.SecondChoiseCommand):
+            print("Initial SECOND choice")
             return commands.SecondChoiseCommand, self.euristicInitialSecondMove(player), None
         
-        elif(idAction == TurnMoveTypes.PassTurn):
-            return  commands.PassTurnCommand, None, None
+        elif(action == commands.PassTurnCommand):
+            print("Pass turn")
+            return commands.PassTurnCommand, None, None
         
-        elif(idAction == TurnMoveTypes.BuyDevCard):
+        elif(action == commands.BuyDevCardCommand):
+            print("Buying dev card..")
             return  commands.BuyDevCardCommand, None, None
-        
-        elif(idAction == TurnMoveTypes.PlaceStreet):
+    
+        elif(action == commands.PlaceStreetCommand):
+            print("Placing street")
             return  commands.PlaceStreetCommand, self.euristicPlaceStreet(player), None
         
-        elif(idAction == TurnMoveTypes.PlaceColony):
+        elif(action == commands.PlaceColonyCommand):
+            print("Place colony")
             return  commands.PlaceColonyCommand, self.euristicPlaceColony(player), None
-        
-        elif(idAction == TurnMoveTypes.PlaceCity):
+
+        elif(action == commands.PlaceCityCommand):
+            print("Placing city")
             return  commands.PlaceCityCommand, self.euristicPlaceCity(player), None
-        
-        elif(idAction == TurnMoveTypes.TradeBank):
-            return  commands.TradeBankCommand, self.euristicTradeBank(player), None
-        
-        elif(idAction == TurnMoveTypes.UseKnight):
+
+        elif(action == commands.TradeBankCommand):
+            print("Trade bank")
+            return  commands.TradeBankCommand, self.euristicTradeBank(player), None    
+
+        elif(action == commands.UseKnightCommand):
+            print("Use knight card")
             return  commands.UseKnightCommand, self.euristicKnight(player), None
-        
-        elif(idAction == TurnMoveTypes.UseMonopolyCard):
+
+        elif(action == commands.UseMonopolyCardCommand):
+            print("Use monopoly card")
             return  commands.UseMonopolyCardCommand, self.euristicMonopoly(player), None
         
-        elif(idAction == TurnMoveTypes.UseRoadBuildingCard):
+        elif(action == commands.UseRoadBuildingCardCommand):
+            print("Use road building card")
             return  commands.UseRoadBuildingCardCommand, self.euristicRoadBuildingCard(player), None
         
-        elif(idAction == TurnMoveTypes.UseYearOfPlentyCard):
+        elif(action == commands.UseYearOfPlentyCardCommand):
+            print("Use year of plenty card")
             return  commands.UseYearOfPlentyCardCommand, self.euristicYearOfPlenty(player), None
+        
+        else:
+            print("Non existing move selected.")
     
     def resValue(self, resource):
         if(resource == "iron"):
@@ -268,7 +245,7 @@ class ReinforcementLearningStrategy(Strategy):
     
     def euristicKnight(self, player):
         actualDistanceFromEight = 12
-        for tile in player.game.tiles:
+        for tile in Board.Board().tiles:
             blockable = False
             isMyTile = False
             for place in tile.associatedPlaces:
