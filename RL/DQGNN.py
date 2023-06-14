@@ -26,11 +26,6 @@ class DQGNNagent():
         self.optimizer = torch.optim.AdamW(self.policy_net.parameters(), lr=self.LearningRate)
         self.memory = ReplayMemory(1000)
 
-        self.previousGraph = None
-        self.previousGlob = None
-
-        self.previousAction = None
-
         self.decay = 0.9
 
     def epsDecay(self):
@@ -41,7 +36,7 @@ class DQGNNagent():
     def saveInMemory(self, graph, glob, action, reward, nextGraph, nextGlob): # qui è da inserire una transition
         if(reward != None):
             # print("Riga 43 DQGNN, tipo graph: ", type(graph))
-            print("Riga 44 DQGNN, action: ", action)
+            # print("Riga 44 DQGNN, action: ", action)
             self.memory.push(graph, glob, torch.tensor([action]), torch.tensor([reward]), nextGraph, nextGlob)
 
     def selectMove(self, graph, glob, availableMoves):
@@ -52,55 +47,36 @@ class DQGNNagent():
             action = self.greedyAction(graph, glob, availableMoves)
         return action
     
-    # def step(self, graph, glob, previousReward, availableMoves):                                                 
-    #     self.saveInMemory(self.previousState, self.previousAction, previousReward, graph, glob)
-    #     action = self.selectMove(graph, glob, availableMoves) # la differenza sta nel fatto che può essere scelta la mossa random
-    #     self.previousGraph = graph
-    #     self.previousGlob = glob
-    #     self.previousAction = action
-    #     if(self.fixed_EPS > 0.005):
-    #         self.optimize_model()
-    #         self.softUpdate()
-    #     return action
-    
     def step(self, graph, glob, availableMoves):   
         action = self.selectMove(graph, glob, availableMoves) 
-        # self.previousGraph = graph
-        # self.previousGlob = glob
-        # self.previousAction = action
         if(self.EPS > 0.005):
             self.optimize_model()
             self.softUpdate()
         return action
-    
-    # def greedyAction(self, state, availableMoves):
-    #     with torch.no_grad():
-    #         action = self.policy_net(state).max(1)[1].view(1, 1)
-    #     return action
 
     def greedyAction(self, graph, glob, availableMoves):
         with torch.no_grad():
-            q_values = self.policy_net.forward(graph, glob)  # Calcola i valori Q per tutte le azioni
-            valid_q_values = q_values[0][availableMoves]  # Filtra i valori Q validi
-            max_q_value, max_index = valid_q_values.max(0)  # Trova il massimo tra i valori Q validi
-            action = availableMoves[max_index.item()]  # Seleziona l'azione corrispondente all'indice massimo
-            # action = torch.tensor([[action]], dtype=torch.long)
+            q_values = self.policy_net.forward(graph, glob) 
+            print("Print riga 60 DQGNN, q_values: ", q_values)
+            print("Available moves: ", availableMoves)
+            valid_q_values = q_values[0][availableMoves]  
+            print("Print riga 62 DQGNN, valid_q_values: ", valid_q_values)
+            max_q_value, max_index = valid_q_values.max(0) 
+            action = availableMoves[max_index.item()]  
         print("Greedy move!")
         return action
 
     def explorationAction(self, availableMoves):
+        print("Available moves: ", availableMoves)
         random_action = random.choice(availableMoves)
-        # return torch.tensor([[random_action]], dtype=torch.long, device=self.device)
-        print("Exploratory move!")
+        print("Exploratory move! Random choice: ", random_action)
         return random_action
 
     def optimize_model(self):
         if len(self.memory) < self.BATCH_SIZE:
             return
         transitions = self.memory.sample(self.BATCH_SIZE)
-        batch = Transition(*zip(*transitions)) # batch.state mi passa un array di tutti gli stati
-
-        # graph_batch = torch.cat(batch.graph)
+        batch = Transition(*zip(*transitions)) 
         graph_batch = Batch.from_data_list(batch.graph)
         glob_batch = torch.cat(batch.glob)
         reward_batch = torch.cat(batch.reward) # prendi tutti i rewards
@@ -117,17 +93,18 @@ class DQGNNagent():
 
         with torch.no_grad():
             expected_state_action_values = self.GAMMA * self.target_net.forward(next_graph, next_glob).max(1)[0] + reward_batch
-        print("expected_state_action_values shape:", expected_state_action_values.shape)
+        # print("expected_state_action_values shape:", expected_state_action_values.shape)
+        # print("Riga 121 DQGNN, action_batch: ", action_batch)
         state_action_values = self.policy_net.forward(graph_batch, glob_batch)
-        print("state_action_values shape:", state_action_values.shape)
-        state_action_values = state_action_values.gather(1, action_batch)
-        print("action_batch shape:", action_batch.shape)
-        print("state_action_values shape after gather:", state_action_values.shape)
+        # print("Riga 123 DQGNN, state_action_values: ", state_action_values)
+        state_action_values = state_action_values.gather(1, action_batch.unsqueeze(1))
+        # print("Riga 123 DQGNN, state_action_values, POST GATHER: ", state_action_values)
+        # print("action_batch shape:", action_batch.shape)
+        # print("state_action_values shape after gather:", state_action_values.shape)
         self.optimizer.zero_grad()
         loss = self.criterion(state_action_values, expected_state_action_values.unsqueeze(1))
         #print("Loss: ", loss)
         loss.backward()
-
         torch.nn.utils.clip_grad_value_(self.policy_net.parameters(), 100)
         self.optimizer.step()
 
@@ -147,17 +124,6 @@ class ReplayMemory():
         return random.sample(self.memory, batch_size)
     def __len__(self):
         return len(self.memory)
-
-# class DQNetwork(nn.Module):
-#     def __init__(self, observationLenght, n_actions):
-#         super(DQNetwork, self).__init__()
-#         self.layer1 = nn.Linear(observationLenght, 128)
-#         self.layer2 = nn.Linear(128, 128)
-#         self.layer3 = nn.Linear(128, n_actions)
-#     def forward(self, x):
-#         x = F.relu(self.layer1(x))
-#         x = F.relu(self.layer2(x))
-#         return self.layer3(x)
 
 class DQGNN(nn.Module):
   def __init__(self, gnnInputDim, gnnHiddenDim, gnnOutputDim, globInputDim, nActions):

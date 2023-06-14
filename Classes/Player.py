@@ -91,11 +91,11 @@ class Player:
         availableActions = [commands.PassTurnCommand]
         if(availableResourcesForDevCard(self.resources) and len(Board.Board().deck) > 0):
             availableActions.append(commands.BuyDevCardCommand)
-        if(availableResourcesForStreet(self.resources) and self.nStreets < 15 and self.calculatePossibleStreets() != None): 
+        if(availableResourcesForStreet(self.resources) and self.nStreets < 15 and len(self.calculatePossibleStreets()) > 0): 
             availableActions.append(commands.PlaceStreetCommand)
-        if(availableResourcesForColony(self.resources) and self.nColonies < 5 and self.calculatePossibleColonies() != None):
+        if(availableResourcesForColony(self.resources) and self.nColonies < 5 and len(self.calculatePossibleColonies()) > 0):
             availableActions.append(commands.PlaceColonyCommand)
-        if(availableResourcesForCity(self.resources) and self.nCities < 4 and self.calculatePossibleCities() != None):
+        if(availableResourcesForCity(self.resources) and self.nCities < 4 and len(self.calculatePossibleCities()) > 0):
             availableActions.append(commands.PlaceCityCommand)
         canTrade = False
         for resource in self.resources.keys():
@@ -107,7 +107,7 @@ class Player:
             availableActions.append(commands.UseKnightCommand)    
         if(self.monopolyCard >= 1 and not turnCardUsed):
             availableActions.append(commands.UseMonopolyCardCommand)
-        if(self.roadBuildingCard >= 1 and not turnCardUsed):
+        if(self.roadBuildingCard >= 1 and not turnCardUsed and self.nStreets < 14):
             availableActions.append(commands.UseRoadBuildingCardCommand)
         if(self.yearOfPlentyCard >= 1 and not turnCardUsed):
             availableActions.append(commands.UseYearOfPlentyCardCommand)
@@ -117,11 +117,11 @@ class Player:
         availableActions = [TurnMoveTypes.PassTurn.value] 
         if(availableResourcesForDevCard(self.resources) and len(Board.Board().deck) > 0):
             availableActions.append(TurnMoveTypes.BuyDevCard.value) 
-        if(availableResourcesForStreet(self.resources) and self.nStreets < 15 and self.calculatePossibleStreets() != None): 
+        if(availableResourcesForStreet(self.resources) and self.nStreets < 15 and len(self.calculatePossibleStreets()) > 0): 
             availableActions.append(TurnMoveTypes.PlaceStreet.value) 
-        if(availableResourcesForColony(self.resources) and self.nColonies < 5 and self.calculatePossibleColonies() != None):
+        if(availableResourcesForColony(self.resources) and self.nColonies < 5 and len(self.calculatePossibleColonies()) > 0):
             availableActions.append(TurnMoveTypes.PlaceColony.value) 
-        if(availableResourcesForCity(self.resources) and self.nCities < 4 and self.calculatePossibleCities() != None):
+        if(availableResourcesForCity(self.resources) and self.nCities < 4 and len(self.calculatePossibleCities()) > 0):
             availableActions.append(TurnMoveTypes.PlaceCity.value)
         canTrade = False
         for resource in self.resources.keys():
@@ -133,7 +133,7 @@ class Player:
             availableActions.append(TurnMoveTypes.UseKnight.value)
         if(self.monopolyCard >= 1 and not self.turnCardUsed):
             availableActions.append(TurnMoveTypes.UseMonopolyCard.value) 
-        if(self.roadBuildingCard >= 1 and not self.turnCardUsed):
+        if(self.roadBuildingCard >= 1 and not self.turnCardUsed and self.nStreets < 14):
             availableActions.append(TurnMoveTypes.UseRoadBuildingCard.value)
         if(self.yearOfPlentyCard >= 1 and not self.turnCardUsed):
             availableActions.append(TurnMoveTypes.UseYearOfPlentyCard.value)

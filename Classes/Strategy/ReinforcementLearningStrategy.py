@@ -164,6 +164,7 @@ class ReinforcementLearningStrategy(Strategy):
     
     def euristicPlaceColony(self, player):
         possibleColonies = player.calculatePossibleColonies()
+        print("Riga 167, RLS: ", possibleColonies)
         if(len(possibleColonies) == 0):
             print("FATAL ERROR.")
         max = 0

@@ -40,7 +40,7 @@ class GameController:
 
     def executeWithDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
         prevPoints = player._victoryPoints
-        if(player.strategy.name() == "RL" and action != commands.PassTurnCommand):
+        if(player.strategy.name() == "RL" and not onlyPassTurn): # action != commands.PassTurnCommand):
             previousGraph = Board.Board().boardStateGraph(player)
             previousGlob = player.globalFeaturesToTensor()
             actionId = player.strategy.getActionId(action)
@@ -48,11 +48,12 @@ class GameController:
         self.game.ctr.execute(action(player, thingNeeded))
         player.reward = player._victoryPoints - prevPoints
 
-        if(player.strategy.name() == "RL" and action != commands.PassTurnCommand):
+        if(player.strategy.name() == "RL" and not onlyPassTurn): # action != commands.PassTurnCommand):
             graph = Board.Board().boardStateGraph(player)
             glob = player.globalFeaturesToTensor()
             # print("Linea 54 GameController, actionIs: ", actionId.value)
             if(actionId.value > 0):
+                print("Move saved in memory.")
                 player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, player.reward, graph, glob)
 
     def decisionManagerGUI(self, player):
