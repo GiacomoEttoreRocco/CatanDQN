@@ -9,7 +9,6 @@ dictCsvHarbor = {"" : 0, "3:1" : 1, "2:1 crop" : 2, "2:1 iron" : 3, "2:1 wood" :
 
 class Board: 
     instance = None
-
     hardEdgeIndex = torch.tensor([[ 0,  0,  1,  2,  2,  3,  4,  4,  5,  6,  7,  7,  8,  9,  9, 10, 11, 11,
         12, 13, 13, 14, 15, 16, 16, 17, 18, 18, 19, 20, 20, 21, 22, 22, 23, 24,
         24, 25, 26, 27, 28, 28, 29, 30, 30, 31, 32, 32, 33, 34, 34, 35, 36, 36,
@@ -23,6 +22,8 @@ class Board:
 
         if cls.instance is None: 
             cls.instance = super(Board, cls).__new__(cls)
+            # cls.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
+            cls.device = 'cpu'
             cls.robberTile = 0
             cls.deck = ["knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight",
                         "victory_point","victory_point","victory_point","victory_point","victory_point",
@@ -307,6 +308,6 @@ class Board:
         return tensor
     
     def boardStateGraph(cls, player):
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # Definisci il dispositivo
-        return Batch.from_data_list([Data(x=cls.placesStateTensor(player), edge_index= cls.hardEdgeIndex, edge_attr= cls.edgesToTensor(player)).to(device)])
+        # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # Definisci il dispositivo
+        return Batch.from_data_list([Data(x=cls.placesStateTensor(player), edge_index= cls.hardEdgeIndex, edge_attr= cls.edgesToTensor(player)).to(cls.device)])
             

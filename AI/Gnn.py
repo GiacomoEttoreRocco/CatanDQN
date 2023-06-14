@@ -115,6 +115,7 @@ class Net(nn.Module):
   def __init__(self, gnnInputDim, gnnHiddenDim, gnnOutputDim, globInputDim):
     # self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  
     self.device = 'cpu'
+
     super().__init__()
     self.Gnn = Sequential('x, edge_index, edge_attr', [
         (GraphConv(gnnInputDim, gnnHiddenDim), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True),
