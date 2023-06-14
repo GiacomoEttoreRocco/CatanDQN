@@ -931,9 +931,9 @@ class UseRoadBuildingCardCommand:
         self.player.roadBuildingCard -= 1
         e1, e2 = self.edges
         if e1 is not None:
-            self.actions.append(PlaceInitialStreetCommand(self.player, e1))
+            self.actions.append(PlaceFreeStreetCommand(self.player, e1))
         if e2 is not None:
-            self.actions.append(PlaceInitialStreetCommand(self.player, e2))
+            self.actions.append(PlaceFreeStreetCommand(self.player, e2))
         
         for action in self.actions:
             action.execute()

@@ -154,23 +154,24 @@ class ReinforcementLearningStrategy(Strategy):
         return choosenPlace
         
     def euristicPlaceCity(self, player):
-        ownedColonies = player.ownedColonies() # to upgrade in city
+        ownedColonies = player.ownedColonies # to upgrade in city
         max = 0
         choosenColony = -1
         for colony in ownedColonies:
-            if(self.placeValue(colony) > max):
-                max = self.placeValue(colony)
+            if(self.placeValue(Board.Board().places[colony]) > max): # da verificare
+                max = self.placeValue(Board.Board().places[colony])
                 choosenColony = colony
-        return choosenColony
+        return Board.Board().places[choosenColony]
     
     def euristicPlaceColony(self, player):
         possibleColonies = player.calculatePossibleColonies()
         max = 0
-        choosenColony = -1
+        # choosenColony = -1
         for colony in possibleColonies:
             if(self.placeValue(colony) > max):
                 max = self.placeValue(colony)
                 choosenColony = colony
+        # return Board.Board().places[choosenColony] # da sistemare, tornare l'id sarebbe molto più efficente.
         return choosenColony
 
     def euristicTradeBank(self, player):
@@ -200,19 +201,20 @@ class ReinforcementLearningStrategy(Strategy):
         for trade in trades:
             resourceCopy[trade[0]] += 1
             resourceCopy[trade[1]] -= Bank.Bank().resourceToAsk(player, trade[1])
-            if(sum(player.resources) >= 7):
+            if(sum(player.resources.values()) >= 7):
                 return trade
             resourceCopy = player.resources.copy()
+        
+        return random.choice(trades)
 
     def euristicDiscardResource(self, player):
         max = 0
         resToDiscard = None
-        for res in player.resources.keys:
+        for res in player.resources.keys():
             if(player.resources[res] > max):
                 resToDiscard = res
                 max = player.resources[res]
         return resToDiscard
-
         
     def euristicPlaceRobber(self, player):
         actualDistanceFromEight = 12
@@ -248,6 +250,12 @@ class ReinforcementLearningStrategy(Strategy):
             return random.choice(availableStreets) # per ora random
         return None
     
+    def euristicPlaceFreeStreet(self, player):
+        availableStreets = player.calculatePossibleStreets()
+        if(len(availableStreets) != 0):
+            return random.choice(availableStreets) # per ora random
+        return None
+        
     def euristicPlaceKnight(self, player):
         actualDistanceFromEight = 12
         for tile in Board.Board().tiles:
@@ -261,7 +269,7 @@ class ReinforcementLearningStrategy(Strategy):
             if(blockable and not isMyTile):
                 if(actualDistanceFromEight > abs(tile.number - 8)):
                     bestTile = tile
-        return bestTile
+        return bestTile.identificator
     
     def euristicMonopoly(self, player):
         min = 25
@@ -273,7 +281,14 @@ class ReinforcementLearningStrategy(Strategy):
         return toTake
     
     def euristicRoadBuildingCard(self, player):
-        return self.euristicPlaceStreet(player)  # si può chiamare questo, perchè nel momento in cui viene gestito il command di road building card, viene chiamato 2 volte il comando place street
+        availableStreets = player.calculatePossibleStreets()
+        if len(availableStreets) < 2:
+            return availableStreets[0], None
+        edge1 = random.choice(availableStreets)
+        edge2 = random.choice(availableStreets)
+        while edge2 == edge1:
+            edge2 = random.choice(availableStreets)
+        return edge1, edge2
     
     def euristicYearOfPlenty(self, player):
         resources = ["iron", "wood", "clay", "crop", "sheep"]

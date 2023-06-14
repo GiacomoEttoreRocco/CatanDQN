@@ -83,11 +83,14 @@ class DQGNNagent():
             max_q_value, max_index = valid_q_values.max(0)  # Trova il massimo tra i valori Q validi
             action = availableMoves[max_index.item()]  # Seleziona l'azione corrispondente all'indice massimo
             # action = torch.tensor([[action]], dtype=torch.long)
+        print("Greedy move!")
         return action
 
     def explorationAction(self, availableMoves):
         random_action = random.choice(availableMoves)
-        return torch.tensor([[random_action]], dtype=torch.long, device=self.device)
+        # return torch.tensor([[random_action]], dtype=torch.long, device=self.device)
+        print("Exploratory move!")
+        return random_action
 
     def optimize_model(self):
         if len(self.memory) < self.BATCH_SIZE:
