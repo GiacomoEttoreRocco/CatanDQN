@@ -63,9 +63,9 @@ class DQGNNagent():
     
     def step(self, graph, glob, availableMoves):   
         action = self.selectMove(graph, glob, availableMoves) 
-        self.previousGraph = graph
-        self.previousGlob = glob
-        self.previousAction = action
+        # self.previousGraph = graph
+        # self.previousGlob = glob
+        # self.previousAction = action
         if(self.fixed_EPS > 0.005):
             self.optimize_model()
             self.softUpdate()

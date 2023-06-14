@@ -94,15 +94,11 @@ class GameController:
             for event in events:
                 if event.type == pygame.QUIT:
                     pygame.quit()
-
-            
-            print("Player type: ", player.strategy.name())
+            # print("Player type: ", player.strategy.name())
             action, thingNeeded, onlyPassTurn = player.bestAction()
-            print("Action: ", action, "thingNeeded: ", thingNeeded, "OnlyPassTurn: ", onlyPassTurn)
-
+            # print("Action: ", action, "thingNeeded: ", thingNeeded, "OnlyPassTurn: ", onlyPassTurn)
             # self.game.ctr.execute(action(player, thingNeeded))
             self.executeWithDeltaReward(player, action, thingNeeded, onlyPassTurn)
-
             # if(not onlyPassTurn):  
             #     self.saveMove(player) 
 
