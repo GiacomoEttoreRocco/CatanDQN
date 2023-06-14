@@ -139,7 +139,7 @@ if __name__ == '__main__':
 
         start_time = time.time()
         for i in range(0, 10):
-            gameCtrl = c.GameController.GameController(playerStrategies = strategies, withGraphics=True, speed=False, saveOnFile=False)
+            gameCtrl = c.GameController.GameController(playerStrategies = strategies, withGraphics=True, speed=True, saveOnFile=False)
             winner = gameCtrl.playGame()
         end_time = time.time()
         execution_time = end_time - start_time

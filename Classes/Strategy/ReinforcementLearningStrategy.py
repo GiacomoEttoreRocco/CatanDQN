@@ -45,7 +45,7 @@ class ReinforcementLearningStrategy(Strategy):
         
         elif(action == commands.UseRobberCommand): # Yes they are the same method, but must be differentiated becouse of the count of knights.
             print("Using robber")
-            return commands.UseRobberCommand, self.euristicKnight(player), None
+            return commands.UseRobberCommand, self.euristicKnight(player) #, None
 
         elif(action == commands.DiscardResourceCommand):
             print("Discarding resource")
@@ -178,28 +178,28 @@ class ReinforcementLearningStrategy(Strategy):
         resourceCopy = player.resources.copy()
         for trade in trades:
             resourceCopy[trade[0]] += 1
-            resourceCopy[trade[1]] -= Bank().resourceToAsk(player, trade[1])
-            if((player.calculatePossibleCities() > 0 and availableResourcesForCity(resourceCopy)) or (player.calculatePossibleColonies() and availableResourcesForColony(resourceCopy))):
+            resourceCopy[trade[1]] -= Bank.Bank().resourceToAsk(player, trade[1])
+            if((len(player.calculatePossibleCities()) > 0 and availableResourcesForCity(resourceCopy)) or (len(player.calculatePossibleColonies()) > 0 and availableResourcesForColony(resourceCopy))):
                 return trade
             resourceCopy = player.resources.copy()
             
         for trade in trades:
             resourceCopy[trade[0]] += 1
-            resourceCopy[trade[1]] -= Bank().resourceToAsk(player, trade[1])         
+            resourceCopy[trade[1]] -= Bank.Bank().resourceToAsk(player, trade[1])         
             if(player.calculatePossibleStreets() > 0 and availableResourcesForStreet(resourceCopy)):
                 return trade
             resourceCopy = player.resources.copy()  
 
         for trade in trades:
             resourceCopy[trade[0]] += 1
-            resourceCopy[trade[1]] -= Bank().resourceToAsk(player, trade[1])
+            resourceCopy[trade[1]] -= Bank.Bank().resourceToAsk(player, trade[1])
             if(availableResourcesForDevCard(resourceCopy)):
                 return trade
             resourceCopy = player.resources.copy()
             
         for trade in trades:
             resourceCopy[trade[0]] += 1
-            resourceCopy[trade[1]] -= Bank().resourceToAsk(player, trade[1])
+            resourceCopy[trade[1]] -= Bank.Bank().resourceToAsk(player, trade[1])
             if(sum(player.resources) >= 7):
                 return trade
             resourceCopy = player.resources.copy()
@@ -225,7 +225,8 @@ class ReinforcementLearningStrategy(Strategy):
                     if(actualDistanceFromEight > abs(tile.number - 8)):
                         actualDistanceFromEight = abs(tile.number - 8)
                         bestTile = tile
-        return bestTile
+        print("Riga 228, robber tile id: ",bestTile.identificator)
+        return bestTile.identificator
 
     def euristicPlayCard(self, player):
         if player.unusedKnights > 0:
@@ -249,12 +250,12 @@ class ReinforcementLearningStrategy(Strategy):
             blockable = False
             isMyTile = False
             for place in tile.associatedPlaces:
-                if(place.owner != player.id):
+                if(Board.Board().places[place].owner != player.id):
                     blockable = True
-                if(place.owner == player.id):
+                if(Board.Board().places[place].owner == player.id):
                     isMyTile = True
             if(blockable and not isMyTile):
-                if(actualDistanceFromEight < abs(tile.number, 8)):
+                if(actualDistanceFromEight > abs(tile.number - 8)):
                     bestTile = tile
         return bestTile
     
