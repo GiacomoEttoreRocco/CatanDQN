@@ -1,3 +1,4 @@
+from Classes.MoveTypes import TurnMoveTypes
 from Classes.Strategy.Strategy import Strategy
 from Classes.staticUtilities import *
 import Command.commands as commands
@@ -113,29 +114,29 @@ class Player:
         return availableActions
     
     def availableTurnActionsId(self):
-        availableActions = [0] #commands.PassTurnCommand
+        availableActions = [TurnMoveTypes.PassTurn.value] 
         if(availableResourcesForDevCard(self.resources) and len(Board.Board().deck) > 0):
-            availableActions.append(1) # commands.BuyDevCardCommand
+            availableActions.append(TurnMoveTypes.BuyDevCard.value) 
         if(availableResourcesForStreet(self.resources) and self.nStreets < 15 and self.calculatePossibleStreets() != None): 
-            availableActions.append(2) # commands.PlaceStreetCommand
+            availableActions.append(TurnMoveTypes.PlaceStreet.value) 
         if(availableResourcesForColony(self.resources) and self.nColonies < 5 and self.calculatePossibleColonies() != None):
-            availableActions.append(3) # commands.PlaceColonyCommand
+            availableActions.append(TurnMoveTypes.PlaceColony.value) 
         if(availableResourcesForCity(self.resources) and self.nCities < 4 and self.calculatePossibleCities() != None):
-            availableActions.append(4) # commands.PlaceCityCommand
+            availableActions.append(TurnMoveTypes.PlaceCity.value)
         canTrade = False
         for resource in self.resources.keys():
             if(Bank.Bank().resourceToAsk(self, resource) <= self.resources[resource]):
                 canTrade = True
         if(canTrade):
-                availableActions.append(5) # commands.TradeBankCommand
+                availableActions.append(TurnMoveTypes.TradeBank.value) 
         if(self.unusedKnights >= 1 and not self.turnCardUsed):
-            availableActions.append(6) # commands.UseKnightCommand
+            availableActions.append(TurnMoveTypes.UseKnight.value)
         if(self.monopolyCard >= 1 and not self.turnCardUsed):
-            availableActions.append(7) # commands.UseMonopolyCardCommand)
+            availableActions.append(TurnMoveTypes.UseMonopolyCard.value) 
         if(self.roadBuildingCard >= 1 and not self.turnCardUsed):
-            availableActions.append(8) # commands.UseRoadBuildingCardCommand)
+            availableActions.append(TurnMoveTypes.UseRoadBuildingCard.value)
         if(self.yearOfPlentyCard >= 1 and not self.turnCardUsed):
-            availableActions.append(9) # commands.UseYearOfPlentyCardCommand)
+            availableActions.append(TurnMoveTypes.UseYearOfPlentyCard.value)
         return availableActions
 
     def connectedEmptyEdges(self, edge):

@@ -30,7 +30,6 @@ class ReinforcementLearningStrategy(Strategy):
             # RICORDATI CHE VANNO GESTITE LE FORCED MOVES, in futuro.
             idActions = player.availableTurnActionsId()
             if(len(idActions) == 1 and idActions[0] == 0):
-                # print("Only pass turn")
                 return commands.PassTurnCommand, None, True
             bestMove = self.macroDQN.step(graph, glob, player.availableTurnActionsId()) 
             # print("Best move RL, riga 36 RLStrategy: index: ", bestMove, "Move: ", idToCommand(bestMove))
