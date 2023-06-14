@@ -95,6 +95,8 @@ class GameController:
                 if event.type == pygame.QUIT:
                     pygame.quit()
 
+            
+            print("Player type: ", player.strategy.name())
             action, thingNeeded, onlyPassTurn = player.bestAction()
             print("Action: ", action, "thingNeeded: ", thingNeeded, "OnlyPassTurn: ", onlyPassTurn)
 
