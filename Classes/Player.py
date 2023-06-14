@@ -92,9 +92,9 @@ class Player:
             availableActions.append(commands.BuyDevCardCommand)
         if(availableResourcesForStreet(self.resources) and self.nStreets < 15 and self.calculatePossibleStreets() != None): 
             availableActions.append(commands.PlaceStreetCommand)
-        if(availableResourcesForColony(self.resources) and self.nColonies < 5):
+        if(availableResourcesForColony(self.resources) and self.nColonies < 5 and self.calculatePossibleColonies() != None):
             availableActions.append(commands.PlaceColonyCommand)
-        if(availableResourcesForCity(self.resources) and self.nCities < 4):
+        if(availableResourcesForCity(self.resources) and self.nCities < 4 and self.calculatePossibleCities() != None):
             availableActions.append(commands.PlaceCityCommand)
         canTrade = False
         for resource in self.resources.keys():

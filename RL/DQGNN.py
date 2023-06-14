@@ -40,7 +40,8 @@ class DQGNNagent():
 
     def saveInMemory(self, graph, glob, action, reward, nextGraph, nextGlob): # qui è da inserire una transition
         if(reward != None):
-            print("Riga 43 DQGNN, tipo graph: ", type(graph))
+            # print("Riga 43 DQGNN, tipo graph: ", type(graph))
+            print("Riga 44 DQGNN, action: ", action)
             self.memory.push(graph, glob, torch.tensor([action]), torch.tensor([reward]), nextGraph, nextGlob)
 
     def selectMove(self, graph, glob, availableMoves):
