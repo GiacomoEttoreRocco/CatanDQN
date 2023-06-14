@@ -30,77 +30,77 @@ class ReinforcementLearningStrategy(Strategy):
             # RICORDATI CHE VANNO GESTITE LE FORCED MOVES, in futuro.
             idActions = player.availableTurnActionsId()
             if(len(idActions) == 1 and idActions[0] == 0):
-                print("Only pass turn")
+                # print("Only pass turn")
                 return commands.PassTurnCommand, None, True
             bestMove = self.macroDQN.step(graph, glob, player.availableTurnActionsId()) 
-            print("Best move RL, riga 36 RLStrategy: index: ", bestMove, "Move: ", idToCommand(bestMove))
+            # print("Best move RL, riga 36 RLStrategy: index: ", bestMove, "Move: ", idToCommand(bestMove))
             # print(" -> ", bestMove[0][0], " move: ", idToCommand(bestMove[0][0]))
 
         return self.chooseParameters(idToCommand(bestMove), player) # bestAction, thingsNeeded, onlyPassTurn
         
     def chooseParameters(self, action, player): # il vecchio evaluate
         if(action == commands.PlaceFreeStreetCommand):
-            print("Placing free street")
+            # print("Placing free street")
             return commands.PlaceFreeStreetCommand, self.euristicPlaceStreet(player), None
         
         elif(action == commands.UseRobberCommand): # Yes they are the same method, but must be differentiated becouse of the count of knights.
-            print("Using robber")
+            # print("Using robber")
             return commands.UseRobberCommand, self.euristicPlaceRobber(player)
 
         elif(action == commands.DiscardResourceCommand):
-            print("Discarding resource")
+            # print("Discarding resource")
             return commands.DiscardResourceCommand, self.euristicDiscardResource(player)
         
         elif(action == commands.FirstChoiseCommand):
-            print("InitialFIRSTChoice")
+            # print("InitialFIRSTChoice")
             return commands.FirstChoiseCommand, self.euristicInitialFirstMove(player), None
         
         elif(action == commands.PlaceInitialStreetCommand):
-            print("Initial STREET Choice")
+            # print("Initial STREET Choice")
             return commands.PlaceInitialStreetCommand, self.euristicPlaceInitialStreet(player)
 
         elif(action == commands.SecondChoiseCommand):
-            print("Initial SECOND choice")
+            # print("Initial SECOND choice")
             return commands.SecondChoiseCommand, self.euristicInitialSecondMove(player), None
         
         elif(action == commands.PassTurnCommand):
-            print("Pass turn")
+            # print("Pass turn")
             return commands.PassTurnCommand, None, None
         
         elif(action == commands.BuyDevCardCommand):
-            print("Buying dev card..")
+            # print("Buying dev card..")
             return  commands.BuyDevCardCommand, None, None
     
         elif(action == commands.PlaceStreetCommand):
-            print("Placing street")
+            # print("Placing street")
             return  commands.PlaceStreetCommand, self.euristicPlaceStreet(player), None
         
         elif(action == commands.PlaceColonyCommand):
-            print("Place colony")
+            # print("Place colony")
             return  commands.PlaceColonyCommand, self.euristicPlaceColony(player), None
 
         elif(action == commands.PlaceCityCommand):
-            print("Placing city")
+            # print("Placing city")
             return  commands.PlaceCityCommand, self.euristicPlaceCity(player), None
 
         elif(action == commands.TradeBankCommand):
-            print("Trade bank")
+            # print("Trade bank")
             return  commands.TradeBankCommand, self.euristicTradeBank(player), None    
 
         elif(action == commands.UseKnightCommand):
-            print("Use knight card")
+            # print("Use knight card")
             return  commands.UseKnightCommand, self.euristicPlaceKnight(player), None
 
         elif(action == commands.UseMonopolyCardCommand):
-            print("Use monopoly card")
+            # print("Use monopoly card")
             return  commands.UseMonopolyCardCommand, self.euristicMonopoly(player), None
         
         elif(action == commands.UseRoadBuildingCardCommand):
-            print("Use road building card")
+            # print("Use road building card")
             return  commands.UseRoadBuildingCardCommand, self.euristicRoadBuildingCard(player), None
         
         elif(action == commands.UseYearOfPlentyCardCommand):
-            print("Use year of plenty card")
+            # print("Use year of plenty card")
             return  commands.UseYearOfPlentyCardCommand, self.euristicYearOfPlenty(player), None
         
         else:
@@ -165,6 +165,8 @@ class ReinforcementLearningStrategy(Strategy):
     
     def euristicPlaceColony(self, player):
         possibleColonies = player.calculatePossibleColonies()
+        if(len(possibleColonies) == 0):
+            print("FATAL ERROR.")
         max = 0
         # choosenColony = -1
         for colony in possibleColonies:
@@ -231,7 +233,7 @@ class ReinforcementLearningStrategy(Strategy):
                     if(actualDistanceFromEight > abs(tile.number - 8)):
                         actualDistanceFromEight = abs(tile.number - 8)
                         bestTile = tile
-        print("Riga 228, robber tile id: ",bestTile.identificator)
+        # print("Riga 228, robber tile id: ",bestTile.identificator)
         return bestTile.identificator
 
     def euristicPlayCard(self, player):
@@ -274,10 +276,10 @@ class ReinforcementLearningStrategy(Strategy):
     def euristicMonopoly(self, player):
         min = 25
         toTake = ""
-        for res in Bank().resources:
-            if Bank.resources[res] < min:
+        for res in Bank.Bank().resources.keys():
+            if Bank.Bank().resources[res] < min:
                 toTake = res
-                min = Bank.resources[res]
+                min = Bank.Bank().resources[res]
         return toTake
     
     def euristicRoadBuildingCard(self, player):
