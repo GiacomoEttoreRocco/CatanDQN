@@ -94,7 +94,10 @@ class GameController:
             for event in events:
                 if event.type == pygame.QUIT:
                     pygame.quit()
+
             action, thingNeeded, onlyPassTurn = player.bestAction()
+            print("Action: ", action, "thingNeeded: ", thingNeeded, "OnlyPassTurn: ", onlyPassTurn)
+
             # self.game.ctr.execute(action(player, thingNeeded))
             self.executeWithDeltaReward(player, action, thingNeeded, onlyPassTurn)
 

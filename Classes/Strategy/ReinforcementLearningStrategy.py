@@ -236,12 +236,13 @@ class ReinforcementLearningStrategy(Strategy):
     def euristicPlaceRobber(self, player):
         actualDistanceFromEight = 12
         for tile in Board.Board().tiles:
+            blockable = False
+            isMyTile = False
             for place in tile.associatedPlaces:
-                blockable = False
-                isMyTile = False
-                if(place != player.id): # prima c'era place.owner qua
+                # print(place, "-" , player.id)
+                if(Board.Board().places[place].owner != player.id): # prima c'era place.owner qua
                     blockable = True
-                if(place == player.id): # prima c'era place.owner qua
+                if(Board.Board().places[place].owner == player.id): # prima c'era place.owner qua
                     isMyTile = True
                 if(blockable and not isMyTile):
                     if(actualDistanceFromEight < abs(tile.number - 8)):

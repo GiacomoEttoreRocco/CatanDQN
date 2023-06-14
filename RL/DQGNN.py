@@ -78,7 +78,7 @@ class DQGNNagent():
 
     def greedyAction(self, graph, glob, availableMoves):
         with torch.no_grad():
-            q_values = self.policy_net(graph, glob)  # Calcola i valori Q per tutte le azioni
+            q_values = self.policy_net.forward(graph, glob)  # Calcola i valori Q per tutte le azioni
             valid_q_values = q_values[0][availableMoves]  # Filtra i valori Q validi
             max_q_value, max_index = valid_q_values.max(0)  # Trova il massimo tra i valori Q validi
             action = availableMoves[max_index.item()]  # Seleziona l'azione corrispondente all'indice massimo
@@ -163,7 +163,7 @@ class DQGNN(nn.Module):
         # nn.ReLU(inplace=True),
         # nn.Linear(128, 1),
         # nn.Sigmoid()
-        nn.Linear(54*4, 128),
+        nn.Linear(54*4+globInputDim, 128),
         nn.ReLU(inplace=True),
         nn.Linear(128, 128),
         nn.ReLU(inplace=True),
@@ -171,13 +171,33 @@ class DQGNN(nn.Module):
     )
 
 #   def forward(self, graph, glob, isTrain):
+#   def forward(self, graph, glob):
+#     # batch_size, batch = graph.num_graphs, graph.batch
+#     embeds = self.Gnn(graph.x, edge_index = graph.edge_index, edge_attr = graph.edge_attr)
+#     embeds = torch.reshape(embeds, (graph.num_graphs, 54*4))
+#     glob = self.GlobalLayers(glob)
+#     output = torch.cat([embeds, glob], dim=-1)
+#     # output = torch.dropout(output, p = 0.2, train = isTrain)
+#     # output = torch.dropout(output, p = 0.2)
+#     output = self.OutLayers(output)
+#     return output
+  
   def forward(self, graph, glob):
-    batch_size, batch, x, edge_index, edge_attr = graph.num_graphs, graph.batch, graph.x, graph.edge_index, graph.edge_attr
-    embeds = self.Gnn(x, edge_index=edge_index, edge_attr=edge_attr)
-    embeds = torch.reshape(embeds, (batch_size, 54*4))
+    embeds = self.Gnn(graph.x, edge_index=graph.edge_index, edge_attr=graph.edge_attr)
+    # print("Dimensione di embeds:", embeds.size()) # torch.Size([54, 4])
+
+    embeds = torch.reshape(embeds, (graph.num_graphs, 54 * 4))
+    # print("Dimensione di embeds dopo la reshape:", embeds.size()) # torch.Size([1, 216])
+
     glob = self.GlobalLayers(glob)
+    # print("Dimensione di glob:", glob.size()) # torch.Size([1, 9])
+
     output = torch.cat([embeds, glob], dim=-1)
-    # output = torch.dropout(output, p = 0.2, train = isTrain)
-    # output = torch.dropout(output, p = 0.2)
+    # print("Dimensione di output dopo la concatenazione:", output.size()) # torch.Size([1, 225])
+
     output = self.OutLayers(output)
+    # print("Dimensione di output dopo self.OutLayers:", output.size())  # torch.Size([1, 10])
+
     return output
+  
+
