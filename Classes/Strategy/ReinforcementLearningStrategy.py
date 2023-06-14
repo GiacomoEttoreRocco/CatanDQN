@@ -30,7 +30,7 @@ class ReinforcementLearningStrategy(Strategy):
             glob = player.globalFeaturesToTensor()
 
             # RICORDATI CHE VANNO GESTITE LE FORCED MOVES, in futuro.
-            bestMove = self.macroDQN.step(graph, glob, player.previousReward, player.availableTurnActionsId()) 
+            bestMove = self.macroDQN.step(graph, glob, player.availableTurnActionsId()) 
         return self.euristicOutput(player, bestMove) # action, thingNeeded
         
     def chooseParameters(self, action, player):
@@ -235,7 +235,7 @@ class ReinforcementLearningStrategy(Strategy):
         
     def euristicPlaceRobber(self, player):
         actualDistanceFromEight = 12
-        for tile in player.game.tiles:
+        for tile in Board.Board().tiles:
             blockable = False
             isMyTile = False
             for place in tile.associatedPlaces:
@@ -295,7 +295,7 @@ class ReinforcementLearningStrategy(Strategy):
         resources = ["iron", "wood", "clay", "crop", "sheep"]
         return random.choice(resources), random.choice(resources)
 
-    def getActionId(command):
+    def getActionId(self, command):
         if(command == commands.DiscardResourceCommand):
             return ForcedMoveTypes.DiscardResource
         

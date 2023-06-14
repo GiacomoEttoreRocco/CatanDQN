@@ -76,9 +76,9 @@ class DQGNNagent():
     #         action = self.policy_net(state).max(1)[1].view(1, 1)
     #     return action
 
-    def greedyAction(self, state, availableMoves):
+    def greedyAction(self, graph, glob, availableMoves):
         with torch.no_grad():
-            q_values = self.policy_net(state)  # Calcola i valori Q per tutte le azioni
+            q_values = self.policy_net(graph, glob)  # Calcola i valori Q per tutte le azioni
             valid_q_values = q_values[0][availableMoves]  # Filtra i valori Q validi
             max_q_value, max_index = valid_q_values.max(0)  # Trova il massimo tra i valori Q validi
             action = availableMoves[max_index.item()]  # Seleziona l'azione corrispondente all'indice massimo
@@ -170,12 +170,12 @@ class DQGNN(nn.Module):
         nn.Linear(128, nActions)
     )
 
-    def forward(self, graph, glob, isTrain):
-        batch_size, batch, x, edge_index, edge_attr = graph.num_graphs, graph.batch, graph.x, graph.edge_index, graph.edge_attr
-        embeds = self.Gnn(x, edge_index=edge_index, edge_attr=edge_attr)
-        embeds = torch.reshape(embeds, (batch_size, 54*4))
-        glob = self.GlobalLayers(glob)
-        output = torch.cat([embeds, glob], dim=-1)
-        output = torch.dropout(output, p = 0.2, train = isTrain)
-        output = self.OutLayers(output)
-        return output
+  def forward(self, graph, glob, isTrain):
+    batch_size, batch, x, edge_index, edge_attr = graph.num_graphs, graph.batch, graph.x, graph.edge_index, graph.edge_attr
+    embeds = self.Gnn(x, edge_index=edge_index, edge_attr=edge_attr)
+    embeds = torch.reshape(embeds, (batch_size, 54*4))
+    glob = self.GlobalLayers(glob)
+    output = torch.cat([embeds, glob], dim=-1)
+    output = torch.dropout(output, p = 0.2, train = isTrain)
+    output = self.OutLayers(output)
+    return output
