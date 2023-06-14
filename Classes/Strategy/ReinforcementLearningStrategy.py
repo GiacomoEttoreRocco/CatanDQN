@@ -45,11 +45,11 @@ class ReinforcementLearningStrategy(Strategy):
         
         elif(action == commands.UseRobberCommand): # Yes they are the same method, but must be differentiated becouse of the count of knights.
             print("Using robber")
-            return commands.UseRobberCommand, self.euristicKnight(player) #, None
+            return commands.UseRobberCommand, self.euristicPlaceRobber(player)
 
         elif(action == commands.DiscardResourceCommand):
             print("Discarding resource")
-            return commands.DiscardResourceCommand, self.euristicDiscardResource(player), None
+            return commands.DiscardResourceCommand, self.euristicDiscardResource(player)
         
         elif(action == commands.FirstChoiseCommand):
             print("InitialFIRSTChoice")
@@ -89,7 +89,7 @@ class ReinforcementLearningStrategy(Strategy):
 
         elif(action == commands.UseKnightCommand):
             print("Use knight card")
-            return  commands.UseKnightCommand, self.euristicKnight(player), None
+            return  commands.UseKnightCommand, self.euristicPlaceKnight(player), None
 
         elif(action == commands.UseMonopolyCardCommand):
             print("Use monopoly card")
@@ -186,7 +186,7 @@ class ReinforcementLearningStrategy(Strategy):
         for trade in trades:
             resourceCopy[trade[0]] += 1
             resourceCopy[trade[1]] -= Bank.Bank().resourceToAsk(player, trade[1])         
-            if(player.calculatePossibleStreets() > 0 and availableResourcesForStreet(resourceCopy)):
+            if(len(player.calculatePossibleStreets()) > 0 and availableResourcesForStreet(resourceCopy)):
                 return trade
             resourceCopy = player.resources.copy()  
 
@@ -205,10 +205,14 @@ class ReinforcementLearningStrategy(Strategy):
             resourceCopy = player.resources.copy()
 
     def euristicDiscardResource(self, player):
-        resToDiscard = max(player.resources, key = player.resources.get) 
-        if(len(resToDiscard) > 1):
-            resToDiscard = resToDiscard[0]
+        max = 0
+        resToDiscard = None
+        for res in player.resources.keys:
+            if(player.resources[res] > max):
+                resToDiscard = res
+                max = player.resources[res]
         return resToDiscard
+
         
     def euristicPlaceRobber(self, player):
         actualDistanceFromEight = 12
@@ -244,7 +248,7 @@ class ReinforcementLearningStrategy(Strategy):
             return random.choice(availableStreets) # per ora random
         return None
     
-    def euristicKnight(self, player):
+    def euristicPlaceKnight(self, player):
         actualDistanceFromEight = 12
         for tile in Board.Board().tiles:
             blockable = False
