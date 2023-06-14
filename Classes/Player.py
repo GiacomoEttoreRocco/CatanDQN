@@ -118,9 +118,9 @@ class Player:
             availableActions.append(1) # commands.BuyDevCardCommand
         if(availableResourcesForStreet(self.resources) and self.nStreets < 15 and self.calculatePossibleStreets() != None): 
             availableActions.append(2) # commands.PlaceStreetCommand
-        if(availableResourcesForColony(self.resources) and self.nColonies < 5):
+        if(availableResourcesForColony(self.resources) and self.nColonies < 5 and self.calculatePossibleColonies() != None):
             availableActions.append(3) # commands.PlaceColonyCommand
-        if(availableResourcesForCity(self.resources) and self.nCities < 4):
+        if(availableResourcesForCity(self.resources) and self.nCities < 4 and self.calculatePossibleCities() != None):
             availableActions.append(4) # commands.PlaceCityCommand
         canTrade = False
         for resource in self.resources.keys():
@@ -163,7 +163,7 @@ class Player:
         for edge in Board.Board().edges.keys():
             if(Board.Board().edges[edge] == self.id):
                 if(edge == None):
-                    print("Debug, riga 166 player: ", Board.Board().edges[edge]) # debug
+                    print("Debug, FATAL ERROR. Riga 166 player: ", Board.Board().edges[edge]) # debug
                 if(self.connectedEmptyEdges(edge) != None):
                     possibleEdges.extend(self.connectedEmptyEdges(edge))
         return possibleEdges

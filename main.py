@@ -136,7 +136,6 @@ if __name__ == '__main__':
         # strategies = [hybStrategy, purStrategy]
         strategies = [hybStrategy, rlStrategy]
 
-
         start_time = time.time()
         for i in range(0, 10):
             gameCtrl = c.GameController.GameController(playerStrategies = strategies, withGraphics=True, speed=True, saveOnFile=False)

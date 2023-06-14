@@ -51,7 +51,9 @@ class GameController:
         if(player.strategy.name() == "RL" and action != commands.PassTurnCommand):
             graph = Board.Board().boardStateGraph(player)
             glob = player.globalFeaturesToTensor()
-            player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId, player.reward, graph, glob)
+            # print("Linea 54 GameController, actionIs: ", actionId.value)
+            if(actionId.value > 0):
+                player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, player.reward, graph, glob)
 
     def decisionManagerGUI(self, player):
         if(not self.speed and self.withGraphics):
@@ -106,7 +108,6 @@ class GameController:
         action, thingNeeded, onlyPassTurn = player.bestAction()
         # self.game.ctr.execute(action(player, thingNeeded))
         self.executeWithDeltaReward(player, action, thingNeeded, onlyPassTurn)
-
         # if(not onlyPassTurn):  
         #     # self.saveMove(player) 
 

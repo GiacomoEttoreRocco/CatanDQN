@@ -173,7 +173,6 @@ class ReinforcementLearningStrategy(Strategy):
             if(self.placeValue(colony) > max):
                 max = self.placeValue(colony)
                 choosenColony = colony
-        # return Board.Board().places[choosenColony] # da sistemare, tornare l'id sarebbe molto più efficente.
         return choosenColony
 
     def euristicTradeBank(self, player):

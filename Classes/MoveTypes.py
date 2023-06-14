@@ -24,7 +24,6 @@ class InitialMoveTypes(Enum): # idem
     InitialStreetChoice = -2
     InitialSecondChoice = -1
 
-
 def idToCommand(id):
     if id == -6:
         return commands.PlaceFreeStreetCommand
