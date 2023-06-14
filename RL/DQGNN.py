@@ -170,12 +170,14 @@ class DQGNN(nn.Module):
         nn.Linear(128, nActions)
     )
 
-  def forward(self, graph, glob, isTrain):
+#   def forward(self, graph, glob, isTrain):
+  def forward(self, graph, glob):
     batch_size, batch, x, edge_index, edge_attr = graph.num_graphs, graph.batch, graph.x, graph.edge_index, graph.edge_attr
     embeds = self.Gnn(x, edge_index=edge_index, edge_attr=edge_attr)
     embeds = torch.reshape(embeds, (batch_size, 54*4))
     glob = self.GlobalLayers(glob)
     output = torch.cat([embeds, glob], dim=-1)
-    output = torch.dropout(output, p = 0.2, train = isTrain)
+    # output = torch.dropout(output, p = 0.2, train = isTrain)
+    # output = torch.dropout(output, p = 0.2)
     output = self.OutLayers(output)
     return output
