@@ -162,7 +162,6 @@ class Place:
         self.owner = 0
         self.isColony = False
         self.isCity = False
-
         self.touchedTiles = placeTiles[id]
         # print(placeTiles)
 

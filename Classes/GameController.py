@@ -22,13 +22,12 @@ class GameController:
         self.idEpisode = idEpisode 
 
         self.speed = speed
-        self.saveOnFile =saveOnFile
+        self.saveOnFile = saveOnFile
         self.withGraphics = withGraphics
-
-        self.reset()
+        self.playerStrategies = playerStrategies
         self.game = c.Game.Game(len(playerStrategies)) 
 
-        for player, strategy in zip(self.game.players, playerStrategies):
+        for player, strategy in zip(self.game.players, self.playerStrategies):
             player.strategy = strategy
 
         if self.withGraphics:
@@ -42,6 +41,10 @@ class GameController:
         c.Board.Board().reset()
         c.Bank.Bank().reset()
         Gnn.Gnn().reset()
+        self.game.reset()
+        print("GLOBAL RESET")
+        # for player, strategy in zip(self.game.players, self.playerStrategies):
+        #     player.strategy = strategy
 
     def executeWithDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
         prevPoints = player._victoryPoints
@@ -128,7 +131,6 @@ class GameController:
             self.decisionManagerNonGUI(player)
 
     def playGame(self):    
-        self.reset()
         if(self.withGraphics):
             GameView.GameView.setupAndDisplayBoard(self.view)
             GameView.GameView.setupPlaces(self.view)

@@ -14,9 +14,13 @@ class ReinforcementLearningStrategy(Strategy):
         # self.macroDQN = DQNagent(nInputs, nOutputs, criterion) # macro rete decisionale
 
         self.macroDQN = DQGNNagent(11, 10) # macro rete decisionale
+        self.eps = self.macroDQN.EPS
 
     def name(self):
         return "RL"
+    
+    def epsDecay(self):
+        self.macroDQN.epsDecay()
 
     def bestAction(self, player):  #, previousReward):
         if(player.game.actualTurn<player.game.nplayers):

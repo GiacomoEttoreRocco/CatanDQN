@@ -25,8 +25,6 @@ class TestStreetOwner(unittest.TestCase):
     def setUp(self):
         Board.Board().reset()
 
-
-
     def test0(self):
         Move.placeFreeStreet(self.Player1, (41,49))
         Move.placeFreeStreet(self.Player1, (39,40))

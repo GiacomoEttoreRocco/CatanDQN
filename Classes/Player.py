@@ -11,8 +11,9 @@ import AI.Gnn as Gnn
 import torch
 
 class Player: 
-    def __init__(self, id, game, strategy: Strategy()):
+    def __init__(self, id, game, strategy : Strategy()):
         self.id = id
+        # if(strategy == None):
         self.strategy = strategy
         self.game = game
         self.ownedColonies = []
@@ -66,6 +67,30 @@ class Player:
     #         while(toDo >= len(actions)):
     #             toDo = int(input("Index too large. Try again: "))
     #     return actions[toDo][0], actions[toDo][1]
+
+    def reset(self):
+        self.ownedColonies = []
+        self.ownedStreets = []
+        self.ownedCities = []
+        self._victoryPoints = 0
+        self.victoryPointsCards = 0
+        self.boughtCards = 0
+        self.nColonies = 0
+        self.nCities = 0
+        self.nStreets = 0
+        self.usedKnights = 0
+        self.unusedKnights = 0
+        self.justBoughtKnights = 0
+        self.monopolyCard = 0
+        self.justBoughtMonopolyCard = 0
+        self.roadBuildingCard = 0
+        self.justBoughtRoadBuildingCard = 0
+        self.yearOfPlentyCard = 0
+        self.justBoughtYearOfPlentyCard = 0
+        self.turnCardUsed = False
+        self.lastRobberUser = False
+        self.resources = {"wood" : 0, "clay" : 0, "crop": 0, "sheep": 0, "iron": 0}
+        self.ownedHarbors = []
 
     def printStats(self):
         print("ID:  ", self.id," ", self.resources, ".",

@@ -12,12 +12,9 @@ import os
 
 class Game:
     def __init__(self, num_players):
-
         self.ctr = controller.ActionController()
-
         self.dummy = Player.Player(0, self, Strategy)
         self.dummy.victoryPoints = 4
-
         self.nplayers = num_players
         self.players = [Player.Player(i+1, self, None) for i in range(0, num_players)]
         self.largestArmyPlayer = self.dummy
@@ -41,6 +38,22 @@ class Game:
         #     assert self.players[i].nColonies == 0
         #     assert self.players[i].nStreets == 0
         #     assert self.players[i].unusedKnights == 0
+
+    def reset(self):
+        # self.ctr = controller.ActionController()
+        self.dummy = Player.Player(0, self, Strategy)
+        self.dummy.victoryPoints = 4
+        # self.nplayers = num_players
+        for p in self.players:
+            p.reset()
+
+        self.largestArmyPlayer = self.dummy
+        self.longestStreetOwner = self.dummy
+        self.longestStreetLength = 4
+        self.tmpVisitedEdges = []
+        self.dices = [self.rollDice() for _ in range(1000)]
+        self.actualTurn = 0
+        self.currentTurnPlayer = self.players[0] #self.dummy
 
     def dice_production(self, number):
         for tile in Board.Board().tiles:

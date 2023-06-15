@@ -11,7 +11,6 @@ import Classes.Board as Board
 from statistics import mean
 
 class Gnn():
-    
     instance = None
     def __new__(cls, epochs=250, batch=16, learningRate=0.0001):
         if cls.instance is None:
