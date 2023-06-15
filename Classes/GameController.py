@@ -11,7 +11,9 @@ from Command import commands
 import Graphics.GameView as GameView
 import AI.Gnn as Gnn
 import Classes as c
-# from Classes.PlayerTypes import PlayerTypes
+
+from matplotlib import pyplot as plt
+
 
 class GameController:
 
@@ -102,6 +104,7 @@ class GameController:
             # print("Action: ", action, "thingNeeded: ", thingNeeded, "OnlyPassTurn: ", onlyPassTurn)
             # self.game.ctr.execute(action(player, thingNeeded))
             self.executeWithDeltaReward(player, action, thingNeeded, onlyPassTurn)
+
             # if(not onlyPassTurn):  
             #     self.saveMove(player) 
 
@@ -109,6 +112,8 @@ class GameController:
         action, thingNeeded, onlyPassTurn = player.bestAction()
         # self.game.ctr.execute(action(player, thingNeeded))
         self.executeWithDeltaReward(player, action, thingNeeded, onlyPassTurn)
+        # self.plotVictoryPoints(player._victoryPoints, player.id)
+
         # if(not onlyPassTurn):  
         #     # self.saveMove(player) 
 
@@ -146,6 +151,9 @@ class GameController:
                     if(self.withGraphics):
                         pygame.quit()
                     return playerTurn
+                
+            self.plotVictoryPoints(playerTurn._victoryPoints, playerTurn.id)
+            
 
     # def saveMove(self, player):
     #     if(self.saveOnFile):
@@ -160,4 +168,32 @@ class GameController:
     #             self.total.globals[i]['winner'] = 1 if self.total.globals[i]['player_id'] == victoryPlayer.id else 0
     #             del self.total.globals[i]['player_id']
     #         print("Length of total moves of this game: ", len(self.total))
+
+    valueFunction1 = []
+    valueFunction2 = []
+
+    def resetPlot(self):
+        self.valueFunction1 = []
+        self.valueFunction2 = []
+        plt.clf()
+
+    def plotVictoryPoints(self, points, id):
+        plt.figure(1)
+        
+        plt.xlabel('Turns')
+        plt.ylabel('Vicotry points')
+        
+        if id == 1:
+            self.valueFunction1.append(points)
+            plt.plot(self.valueFunction1, color='red', label='Player SL')
+        elif id == 2:
+            self.valueFunction2.append(points)
+            plt.plot(self.valueFunction2, color='orange', label='Player RL')
+        
+
+        handles, labels = plt.gca().get_legend_handles_labels()
+        if len(handles) == 2:
+            plt.legend()
+        # plt.tight_layout()
+        plt.pause(0.001)
 
