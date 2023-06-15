@@ -1,3 +1,4 @@
+import os
 import pygame
 import pygame_gui
 import pandas as pd
@@ -14,10 +15,12 @@ import Classes as c
 
 from matplotlib import pyplot as plt
 
-
 class GameController:
 
-    def __init__(self, playerStrategies, speed=True, saveOnFile=True, withGraphics=False) -> None:
+    def __init__(self, playerStrategies, idEpisode, speed=True, saveOnFile=True, withGraphics=False) -> None:
+
+        self.idEpisode = idEpisode 
+
         self.speed = speed
         self.saveOnFile =saveOnFile
         self.withGraphics = withGraphics
@@ -55,7 +58,7 @@ class GameController:
             glob = player.globalFeaturesToTensor()
             # print("Linea 54 GameController, actionIs: ", actionId.value)
             if(actionId.value > 0):
-                print("Move saved in memory.")
+                # print("Move saved in memory.")
                 player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, player.reward, graph, glob)
 
     def decisionManagerGUI(self, player):
@@ -151,7 +154,6 @@ class GameController:
                     if(self.withGraphics):
                         pygame.quit()
                     return playerTurn
-                
             self.plotVictoryPoints(playerTurn._victoryPoints, playerTurn.id)
             
 
@@ -172,17 +174,24 @@ class GameController:
     valueFunction1 = []
     valueFunction2 = []
     lastId = 2
+    # idEpisode = 0
 
     def resetPlot(self):
         self.valueFunction1 = []
         self.valueFunction2 = []
+        # plt.savefig("plots/episode"+ str(self.idEpisode)+".png")
+        if not os.path.exists("plots"):
+            os.makedirs("plots")
+        plt.savefig("plots/episode{}.png".format(self.idEpisode))
         plt.clf()
+        self.idEpisode = self.idEpisode + 1
+        print("Number of episode: ", self.idEpisode)
 
     def plotVictoryPoints(self, points, id):
         if(id != self.lastId):
             plt.figure(1)
             plt.xlabel('Turns')
-            plt.ylabel('Vicotry points')
+            plt.ylabel('Victory points')
             if id == 1:
                 self.valueFunction1.append(points)
                 plt.plot(self.valueFunction1, color='red', label='Player SL')
@@ -190,9 +199,10 @@ class GameController:
                 self.valueFunction2.append(points)
                 plt.plot(self.valueFunction2, color='orange', label='Player RL')
             handles, labels = plt.gca().get_legend_handles_labels()
-            if len(handles) == 2:
+            if len(handles) <= 2:
                 plt.legend()
             # plt.tight_layout()
+            plt.title("Episode "+ str(self.idEpisode))
             plt.pause(0.001)
             self.lastId = id
 
