@@ -138,13 +138,13 @@ if __name__ == '__main__':
         withGraphics=True
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True, saveOnFile=False)
-
         start_time = time.time()
         for i in range(0, 10):
             # gameCtrl.__init__(strategies, withGraphics, True, False)
-            gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True, saveOnFile=False, )
-            winner = gameCtrl.playGame()
+            gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True, saveOnFile=False)
             gameCtrl.resetPlot()
+            
+            winner = gameCtrl.playGame()
             idEpisode += 1
         end_time = time.time()
         execution_time = end_time - start_time
