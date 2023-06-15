@@ -138,9 +138,8 @@ if __name__ == '__main__':
         withGraphics = False
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True, saveOnFile=False)
-        # gameCtrl.reset()
         start_time = time.time()
-        for i in range(0, 22):
+        for i in range(0, 25):
             winner = gameCtrl.playGame()
             if(winner.strategy.name() == "RL"):
                  winner.strategy.epsDecay()

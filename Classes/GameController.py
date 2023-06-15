@@ -44,6 +44,8 @@ class GameController:
         self.game.reset()
         print("GLOBAL RESET")
         self.idEpisode = idEpisode
+        if(idEpisode > 20):
+            self.resetPlot()
 
     def executeWithDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
         prevPoints = player._victoryPoints
@@ -115,12 +117,7 @@ class GameController:
 
     def decisionManagerNonGUI(self, player):
         action, thingNeeded, onlyPassTurn = player.bestAction()
-        # self.game.ctr.execute(action(player, thingNeeded))
         self.executeWithDeltaReward(player, action, thingNeeded, onlyPassTurn)
-        # self.plotVictoryPoints(player._victoryPoints, player.id)
-
-        # if(not onlyPassTurn):  
-        #     # self.saveMove(player) 
 
     def decisionManager(self, player):
         if(self.withGraphics):
@@ -146,18 +143,12 @@ class GameController:
             else:
                 playerTurn = self.game.players[self.game.actualTurn%self.game.nplayers]
                 self.decisionManager(playerTurn)
-                # print("Generic turn: \n")
-                # print("Board state: ", self.game.getBoardState(playerTurn))
-                # print("Player state: ", self.game.getPlayerGlobalFeaturesState(playerTurn))
                 if(playerTurn._victoryPoints >= 10):
-                    # self.saveToJson(playerTurn)
                     print(f'Winner: {playerTurn.id}, Agent: {playerTurn.strategy.name()}\n')
                     if(self.withGraphics):
                         pygame.quit()
                     return playerTurn
             self.plotVictoryPoints(playerTurn._victoryPoints, playerTurn.id)
-            
-
     # def saveMove(self, player):
     #     if(self.saveOnFile):
     #         places = c.Board.Board().placesToDict(player)
@@ -171,7 +162,6 @@ class GameController:
     #             self.total.globals[i]['winner'] = 1 if self.total.globals[i]['player_id'] == victoryPlayer.id else 0
     #             del self.total.globals[i]['player_id']
     #         print("Length of total moves of this game: ", len(self.total))
-
     valueFunction1 = []
     valueFunction2 = []
     lastId = 2
