@@ -385,7 +385,7 @@ class PlaceInitialStreetCommand:
         return f'{self.__class__.__name__}'
 
 @dataclass
-class PlaceInitialColonyCommand:
+class PlaceInitialColonyCommand: # coincide con il default
     player: Player
     place: cg.Place
 
@@ -424,12 +424,16 @@ class PlaceDefaultCityCommand:
         self.player.nColonies-=1
         self.player.ownedCities.append(self.place.id)
 
+        self.player.ownedColonies.remove(self.place.id) # aggiunto di recente
+
     def undo(self):
         Board.Board().places[self.place.id].isColony = True
         Board.Board().places[self.place.id].isCity = False
         self.player.victoryPointsModification(-1)
         self.player.nCities-=1
         self.player.nColonies+=1
+        self.player.ownedColonies.append(self.place.id) # aggiunto di recente
+
         del self.player.ownedCities[-1]
 
     def redo(self):
