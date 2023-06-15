@@ -10,7 +10,8 @@ from Classes.MoveTypes import TurnMoveTypes
 Transition = namedtuple('Transition', ('graph', 'glob', 'action', 'reward', 'next_graph', 'next_glob'))
 
 class DQGNNagent():
-    def __init__(self, nInputs, nOutputs, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")) -> None:
+    # def __init__(self, nInputs, nOutputs, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")) -> None:
+    def __init__(self, nInputs, nOutputs, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cpu")) -> None:
 
         self.BATCH_SIZE = 16 # 64 # 256
         self.GAMMA = 0.99
