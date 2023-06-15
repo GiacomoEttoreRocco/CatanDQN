@@ -134,22 +134,19 @@ if __name__ == '__main__':
         purStrategy = PureStrategy()
         rlStrategy = ReinforcementLearningStrategy()
         # strategies = [hybStrategy, purStrategy]
-        strategies = [purStrategy, rlStrategy]
+        strategies = [prioStrategy, rlStrategy]
         withGraphics = False
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True, saveOnFile=False)
-        gameCtrl.reset()
+        # gameCtrl.reset()
         start_time = time.time()
-        for i in range(0, 10):
-            # gameCtrl.__init__(strategies, withGraphics, True, False)
-            # gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True, saveOnFile=False)
-            gameCtrl.resetPlot()
+        for i in range(0, 22):
             winner = gameCtrl.playGame()
             if(winner.strategy.name() == "RL"):
-                 rlStrategy.epsDecay()
-                 print(rlStrategy.eps)
-            gameCtrl.reset()
+                 winner.strategy.epsDecay()
+                 print(winner.strategy.getEps())
             idEpisode += 1
+            gameCtrl.reset(idEpisode)
         end_time = time.time()
         execution_time = end_time - start_time
         print(f"Execution time: {execution_time} seconds")

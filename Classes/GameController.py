@@ -37,14 +37,13 @@ class GameController:
         
         self.total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
 
-    def reset(self):
+    def reset(self, idEpisode):
         c.Board.Board().reset()
         c.Bank.Bank().reset()
         Gnn.Gnn().reset()
         self.game.reset()
         print("GLOBAL RESET")
-        # for player, strategy in zip(self.game.players, self.playerStrategies):
-        #     player.strategy = strategy
+        self.idEpisode = idEpisode
 
     def executeWithDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
         prevPoints = player._victoryPoints
@@ -186,25 +185,26 @@ class GameController:
             os.makedirs("plots")
         plt.savefig("plots/episode{}.png".format(self.idEpisode))
         plt.clf()
-        self.idEpisode = self.idEpisode + 1
+        # self.idEpisode = self.idEpisode + 1
         print("Number of episode: ", self.idEpisode)
 
-    def plotVictoryPoints(self, points, id):
-        if(id != self.lastId):
-            plt.figure(1)
-            plt.xlabel('Turns')
-            plt.ylabel('Victory points')
-            if id == 1:
-                self.valueFunction1.append(points)
-                plt.plot(self.valueFunction1, color='red', label='Player SL')
-            elif id == 2:
-                self.valueFunction2.append(points)
-                plt.plot(self.valueFunction2, color='orange', label='Player RL')
-            handles, labels = plt.gca().get_legend_handles_labels()
-            if len(handles) <= 2:
-                plt.legend()
-            # plt.tight_layout()
-            plt.title("Episode "+ str(self.idEpisode))
-            plt.pause(0.001)
-            self.lastId = id
+    def plotVictoryPoints(self, points, idPlayer):
+        if(self.idEpisode > 20):
+            if(idPlayer != self.lastId):
+                plt.figure(1)
+                plt.xlabel('Turns')
+                plt.ylabel('Victory points')
+                if idPlayer == 1:
+                    self.valueFunction1.append(points)
+                    plt.plot(self.valueFunction1, color='red', label='Player SL')
+                elif idPlayer == 2:
+                    self.valueFunction2.append(points)
+                    plt.plot(self.valueFunction2, color='orange', label='Player RL')
+                    handles, labels = plt.gca().get_legend_handles_labels()
+                    if len(handles) <= 2:
+                        plt.legend()
+                    # plt.tight_layout()
+                    plt.title("Episode "+ str(self.idEpisode))
+                    plt.pause(0.001)
+                self.lastId = idPlayer
 

@@ -8,19 +8,23 @@ import random
 
 class ReinforcementLearningStrategy(Strategy):
     def __init__(self): # diventerà un singleton
-        
+        print("RL STRATEGY CONSTRUCTOR")
         # self, nInputs, nOutputs, criterion, device
         # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         # self.macroDQN = DQNagent(nInputs, nOutputs, criterion) # macro rete decisionale
 
         self.macroDQN = DQGNNagent(11, 10) # macro rete decisionale
-        self.eps = self.macroDQN.EPS
+        # self.eps = self.macroDQN.EPS
 
     def name(self):
         return "RL"
     
+    def getEps(self):
+        return self.macroDQN.EPS
+    
     def epsDecay(self):
         self.macroDQN.epsDecay()
+        # self.eps = self.macroDQN.EPS
 
     def bestAction(self, player):  #, previousReward):
         if(player.game.actualTurn<player.game.nplayers):
