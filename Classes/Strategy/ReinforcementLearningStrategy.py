@@ -39,69 +39,68 @@ class ReinforcementLearningStrategy(Strategy):
         
     def chooseParameters(self, action, player): # il vecchio evaluate
         if(action == commands.PlaceFreeStreetCommand):
-            # print("Placing free street")
+            print("Placing free street")
             return commands.PlaceFreeStreetCommand, self.euristicPlaceStreet(player), None
         
         elif(action == commands.UseRobberCommand): # Yes they are the same method, but must be differentiated becouse of the count of knights.
-            # print("Using robber")
+            print("Using robber")
             return commands.UseRobberCommand, self.euristicPlaceRobber(player)
 
         elif(action == commands.DiscardResourceCommand):
-            # print("Discarding resource")
+            print("Discarding resource")
             return commands.DiscardResourceCommand, self.euristicDiscardResource(player)
         
         elif(action == commands.FirstChoiseCommand):
-            # print("InitialFIRSTChoice")
+            print("InitialFIRSTChoice")
             return commands.FirstChoiseCommand, self.euristicInitialFirstMove(player), None
         
         elif(action == commands.PlaceInitialStreetCommand):
-            # print("Initial STREET Choice")
+            print("Initial STREET Choice")
             return commands.PlaceInitialStreetCommand, self.euristicPlaceInitialStreet(player)
 
         elif(action == commands.SecondChoiseCommand):
-            # print("Initial SECOND choice")
+            print("Initial SECOND choice")
             return commands.SecondChoiseCommand, self.euristicInitialSecondMove(player), None
         
         elif(action == commands.PassTurnCommand):
-            # print("Pass turn")
+            print("Pass turn")
             return commands.PassTurnCommand, None, None
         
         elif(action == commands.BuyDevCardCommand):
-            # print("Buying dev card..")
+            print("Buying dev card")
             return  commands.BuyDevCardCommand, None, None
     
         elif(action == commands.PlaceStreetCommand):
-            # print("Placing street")
+            print("Placing street")
             return  commands.PlaceStreetCommand, self.euristicPlaceStreet(player), None
         
         elif(action == commands.PlaceColonyCommand):
-            # print("Place colony")
+            print("Place colony")
             return  commands.PlaceColonyCommand, self.euristicPlaceColony(player), None
 
         elif(action == commands.PlaceCityCommand):
-            # print("Placing city")
+            print("Placing city")
             return  commands.PlaceCityCommand, self.euristicPlaceCity(player), None
 
         elif(action == commands.TradeBankCommand):
-            # print("Trade bank")
+            print("Trade bank")
             return  commands.TradeBankCommand, self.euristicTradeBank(player), None    
 
         elif(action == commands.UseKnightCommand):
-            # print("Use knight card")
+            print("Use knight card")
             return  commands.UseKnightCommand, self.euristicPlaceKnight(player), None
 
         elif(action == commands.UseMonopolyCardCommand):
-            # print("Use monopoly card")
+            print("Use monopoly card")
             return  commands.UseMonopolyCardCommand, self.euristicMonopoly(player), None
         
         elif(action == commands.UseRoadBuildingCardCommand):
-            # print("Use road building card")
+            print("Use road building card")
             return  commands.UseRoadBuildingCardCommand, self.euristicRoadBuildingCard(player), None
         
         elif(action == commands.UseYearOfPlentyCardCommand):
-            # print("Use year of plenty card")
+            print("Use year of plenty card")
             return  commands.UseYearOfPlentyCardCommand, self.euristicYearOfPlenty(player), None
-        
         else:
             print("Non existing move selected.")
     

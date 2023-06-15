@@ -58,19 +58,19 @@ class DQGNNagent():
     def greedyAction(self, graph, glob, availableMoves):
         with torch.no_grad():
             q_values = self.policy_net.forward(graph, glob) 
-            print("Print riga 60 DQGNN, q_values: ", q_values)
-            print("Available moves: ", availableMoves)
+            # print("Print riga 60 DQGNN, q_values: ", q_values)
+            # print("Available moves: ", availableMoves)
             valid_q_values = q_values[0][availableMoves]  
-            print("Print riga 62 DQGNN, valid_q_values: ", valid_q_values)
+            # print("Print riga 62 DQGNN, valid_q_values: ", valid_q_values)
             max_q_value, max_index = valid_q_values.max(0) 
             action = availableMoves[max_index.item()]  
-        print("Greedy move!")
+        # print("Greedy move!")
         return action
 
     def explorationAction(self, availableMoves):
-        print("Available moves: ", availableMoves)
+        # print("Available moves: ", availableMoves)
         random_action = random.choice(availableMoves)
-        print("Exploratory move! Random choice: ", random_action)
+        # print("Exploratory move! Random choice: ", random_action)
         return random_action
 
     def optimize_model(self):
