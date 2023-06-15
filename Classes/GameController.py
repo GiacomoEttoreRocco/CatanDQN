@@ -171,6 +171,7 @@ class GameController:
 
     valueFunction1 = []
     valueFunction2 = []
+    lastId = 2
 
     def resetPlot(self):
         self.valueFunction1 = []
@@ -178,22 +179,20 @@ class GameController:
         plt.clf()
 
     def plotVictoryPoints(self, points, id):
-        plt.figure(1)
-        
-        plt.xlabel('Turns')
-        plt.ylabel('Vicotry points')
-        
-        if id == 1:
-            self.valueFunction1.append(points)
-            plt.plot(self.valueFunction1, color='red', label='Player SL')
-        elif id == 2:
-            self.valueFunction2.append(points)
-            plt.plot(self.valueFunction2, color='orange', label='Player RL')
-        
-
-        handles, labels = plt.gca().get_legend_handles_labels()
-        if len(handles) == 2:
-            plt.legend()
-        # plt.tight_layout()
-        plt.pause(0.001)
+        if(id != self.lastId):
+            plt.figure(1)
+            plt.xlabel('Turns')
+            plt.ylabel('Vicotry points')
+            if id == 1:
+                self.valueFunction1.append(points)
+                plt.plot(self.valueFunction1, color='red', label='Player SL')
+            elif id == 2:
+                self.valueFunction2.append(points)
+                plt.plot(self.valueFunction2, color='orange', label='Player RL')
+            handles, labels = plt.gca().get_legend_handles_labels()
+            if len(handles) == 2:
+                plt.legend()
+            # plt.tight_layout()
+            plt.pause(0.001)
+            self.lastId = id
 
