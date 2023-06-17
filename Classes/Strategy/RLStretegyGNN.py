@@ -17,7 +17,7 @@ class ReinforcementLearningStrategy(Strategy):
         # self.eps = self.macroDQN.EPS
 
     def name(self):
-        return "RL"
+        return "RL-GNN"
     
     def getEps(self):
         return self.macroDQN.EPS
