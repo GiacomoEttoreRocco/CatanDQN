@@ -6,7 +6,7 @@ from Classes import Board
 from Classes.Strategy.HybridStrategy import HybridStrategy
 from Classes.Strategy.PriorityStrategy import PriorityStrategy
 from Classes.Strategy.PureStrategy import PureStrategy
-from Classes.Strategy.ReinforcementLearningStrategy import ReinforcementLearningStrategy
+from Classes.Strategy.RLStretegyGNN import ReinforcementLearningStrategy
 from Classes.Strategy.Strategy import Strategy
 from Command import commands
 import Graphics.GameView as GameView
