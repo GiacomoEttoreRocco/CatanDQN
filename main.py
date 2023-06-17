@@ -144,7 +144,7 @@ if __name__ == '__main__':
         start_time = time.time()
         for i in range(0, 25):
             winner = gameCtrl.playGame()
-            if(winner.strategy.name() == "RL"):
+            if(winner.strategy.name() == "RL-GNN" or winner.strategy.name() == "RL-FF"):
                  winner.strategy.epsDecay()
                  print(winner.strategy.getEps())
             idEpisode += 1
