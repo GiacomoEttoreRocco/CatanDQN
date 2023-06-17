@@ -134,10 +134,15 @@ if __name__ == '__main__':
         prioStrategy = PriorityStrategy()
         hybStrategy = HybridStrategy()
         purStrategy = PureStrategy()
+
         rlStrategyGnn = ReinforcementLearningStrategyGnn()
         rlStrategyFf = ReinforcementLearningStrategyFf()
         # strategies = [hybStrategy, purStrategy]
-        strategies = [prioStrategy, rlStrategyFf]
+        # strategies = [prioStrategy, rlStrategyFf]
+        strategies = [rlStrategyGnn, rlStrategyFf]
+        # strategies = [rlStrategyFf]
+
+
         withGraphics = True
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True, saveOnFile=False)

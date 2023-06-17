@@ -286,7 +286,7 @@ class ReinforcementLearningStrategyFf(Strategy):
         return bestTile.identificator
     
     def euristicMonopoly(self, player):
-        min = 25
+        min = 50
         toTake = ""
         for res in Bank.Bank().resources.keys():
             if Bank.Bank().resources[res] < min:
