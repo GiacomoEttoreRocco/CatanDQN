@@ -206,10 +206,10 @@ class StrategyRLEuristic:
                     blockable = True
                 if(Board.Board().places[place].owner == player.id): # prima c'era place.owner qua
                     isMyTile = True
-                if(blockable and not isMyTile):
-                    if(actualDistanceFromEight > abs(tile.number - 8)):
-                        actualDistanceFromEight = abs(tile.number - 8)
-                        bestTile = tile
+            if(blockable and not isMyTile):
+                if(actualDistanceFromEight > abs(tile.number - 8)):
+                    actualDistanceFromEight = abs(tile.number - 8)
+                    bestTile = tile
         return bestTile.identificator
     
     def euristicPlaceKnight(self, player):
