@@ -1,3 +1,4 @@
+import pygame
 import Classes as c
 from AI.Gnn import Gnn
 # from Classes.PlayerTypes import PlayerTypes
@@ -135,7 +136,7 @@ if __name__ == '__main__':
         rlStrategy = ReinforcementLearningStrategy()
         # strategies = [hybStrategy, purStrategy]
         strategies = [prioStrategy, rlStrategy]
-        withGraphics = False
+        withGraphics = True
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True, saveOnFile=False)
         start_time = time.time()
@@ -146,6 +147,8 @@ if __name__ == '__main__':
                  print(winner.strategy.getEps())
             idEpisode += 1
             gameCtrl.reset(idEpisode)
+        if(withGraphics):
+             pygame.quit()
         end_time = time.time()
         execution_time = end_time - start_time
         print(f"Execution time: {execution_time} seconds")

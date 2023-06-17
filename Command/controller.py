@@ -38,3 +38,7 @@ class ActionController:
             for x in reversed(repr(action).split("\n\t")):
                 l.append(f'{action.player.id}:{x}')
         return l
+    
+    def reset(self):
+        self.redoStack.clear()
+        self.undoStack.clear()

@@ -46,7 +46,7 @@ class Game:
         # self.nplayers = num_players
         for p in self.players:
             p.reset()
-
+        self.ctr.reset()
         self.largestArmyPlayer = self.dummy
         self.longestStreetOwner = self.dummy
         self.longestStreetLength = 4
