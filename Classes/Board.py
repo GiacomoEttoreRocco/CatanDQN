@@ -19,7 +19,6 @@ class Board:
         39, 40, 41, 42, 49, 43, 44, 51, 45, 46, 53, 47, 48, 49, 50, 51, 52, 53]])
     
     def __new__(cls, doPlacement=True):
-
         if cls.instance is None: 
             cls.instance = super(Board, cls).__new__(cls)
             # cls.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
@@ -318,5 +317,6 @@ class Board:
             # edge_index = cls.hardEdgeIndex
             edges_tensor = cls.edgesToTensor(player)
             # print("Riga 320 Board: ", edges_tensor)
+            # print("Riga 320 Board: ", len(edges_tensor))
             return torch.cat([places_state_tensor, edges_tensor], dim=0).to(cls.device)
     

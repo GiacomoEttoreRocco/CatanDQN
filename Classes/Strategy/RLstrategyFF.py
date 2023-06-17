@@ -4,17 +4,14 @@ from Classes.MoveTypes import *
 from Classes.staticUtilities import *
 from Command import commands, controller
 from Classes.Strategy.Strategy import Strategy
-from RL.DQN import DQN
+from RL.DQN import DQNagent
 import random
 
 class ReinforcementLearningStrategyFf(Strategy):
     def __init__(self): # diventerà un singleton
         print("RL STRATEGY CONSTRUCTOR")
-        # self, nInputs, nOutputs, criterion, device
-        # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        # self.macroDQN = DQNagent(nInputs, nOutputs, criterion) # macro rete decisionale
-        self.macroDQN = DQN(54*11 + 72, 10) # macro rete decisionale
-        # self.eps = self.macroDQN.EPS
+
+        self.macroDQN = DQNagent(54*11 + 72 + 9, 10) 
 
     def name(self):
         return "RL-FF"
