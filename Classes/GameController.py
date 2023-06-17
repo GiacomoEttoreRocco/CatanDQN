@@ -6,7 +6,9 @@ from Classes import Board
 from Classes.Strategy.HybridStrategy import HybridStrategy
 from Classes.Strategy.PriorityStrategy import PriorityStrategy
 from Classes.Strategy.PureStrategy import PureStrategy
-from Classes.Strategy.RLStretegyGNN import ReinforcementLearningStrategy
+from Classes.Strategy.RLStrategyGNN import ReinforcementLearningStrategyGnn
+from Classes.Strategy.RLStrategyFF import ReinforcementLearningStrategyFf
+
 from Classes.Strategy.Strategy import Strategy
 from Command import commands
 import Graphics.GameView as GameView
@@ -75,8 +77,8 @@ class GameController:
                     player.strategy = PriorityStrategy()
                 elif(event.ui_element == self.view.hybridButton):
                     player.strategy = HybridStrategy()
-                elif(event.ui_element == self.view.rlButton):
-                    player.strategy = ReinforcementLearningStrategy()
+                # elif(event.ui_element == self.view.rlButton):
+                #     player.strategy = ReinforcementLearningStrategy()
                 elif(event.ui_element == self.view.undoButton):
                     self.game.ctr.undo()
                 elif(event.ui_element == self.view.redoButton):

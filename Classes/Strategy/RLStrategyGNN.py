@@ -6,7 +6,7 @@ from Classes.Strategy.Strategy import Strategy
 from RL.DQGNN import DQGNNagent
 import random
 
-class ReinforcementLearningStrategy(Strategy):
+class ReinforcementLearningStrategyGnn(Strategy):
     def __init__(self): # diventerà un singleton
         print("RL STRATEGY CONSTRUCTOR")
         # self, nInputs, nOutputs, criterion, device

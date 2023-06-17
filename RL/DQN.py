@@ -48,16 +48,16 @@ class DQNagent():
             action = self.greedyAction(state, availableMoves)
         return action
     
-    def step(self, graph, glob, availableMoves):   
-        action = self.selectMove(graph, glob, availableMoves) 
+    def step(self, state, availableMoves):   
+        action = self.selectMove(state, availableMoves) 
         if(self.EPS > 0.005):
             self.optimize_model()
             self.softUpdate()
         return action
 
-    def greedyAction(self, graph, glob, availableMoves):
+    def greedyAction(self, state, availableMoves):
         with torch.no_grad():
-            q_values = self.policy_net.forward(graph, glob) 
+            q_values = self.policy_net.forward(state) 
             valid_q_values = q_values[0][availableMoves]  
             max_q_value, max_index = valid_q_values.max(0) 
             action = availableMoves[max_index.item()]  

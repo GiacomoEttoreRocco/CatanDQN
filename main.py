@@ -10,7 +10,8 @@ from Classes.Strategy.HybridStrategy import HybridStrategy
 
 from Classes.Strategy.PriorityStrategy import PriorityStrategy
 from Classes.Strategy.PureStrategy import PureStrategy
-from Classes.Strategy.RLStretegyGNN import ReinforcementLearningStrategy
+from Classes.Strategy.RLStrategyGNN import ReinforcementLearningStrategyGnn
+from Classes.Strategy.RLStrategyFF import ReinforcementLearningStrategyFf
 
 import time
 
@@ -133,9 +134,10 @@ if __name__ == '__main__':
         prioStrategy = PriorityStrategy()
         hybStrategy = HybridStrategy()
         purStrategy = PureStrategy()
-        rlStrategy = ReinforcementLearningStrategy()
+        rlStrategyGnn = ReinforcementLearningStrategyGnn()
+        rlStrategyFf = ReinforcementLearningStrategyFf()
         # strategies = [hybStrategy, purStrategy]
-        strategies = [prioStrategy, rlStrategy]
+        strategies = [prioStrategy, rlStrategyFf]
         withGraphics = True
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True, saveOnFile=False)
