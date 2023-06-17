@@ -139,8 +139,8 @@ if __name__ == '__main__':
         rlStrategyFf = ReinforcementLearningStrategyFf()
         # strategies = [hybStrategy, purStrategy]
         # strategies = [prioStrategy, rlStrategyFf]
-        # strategies = [rlStrategyGnn, rlStrategyFf]
-        strategies = [rlStrategyFf]
+        strategies = [rlStrategyGnn, rlStrategyFf]
+        # strategies = [rlStrategyFf]
 
 
         withGraphics = True
