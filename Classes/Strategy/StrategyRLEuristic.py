@@ -202,7 +202,6 @@ class StrategyRLEuristic:
             blockable = False
             isMyTile = False
             for place in tile.associatedPlaces:
-                # print(place, "-" , player.id)
                 if(Board.Board().places[place].owner != player.id): # prima c'era place.owner qua
                     blockable = True
                 if(Board.Board().places[place].owner == player.id): # prima c'era place.owner qua
@@ -211,7 +210,22 @@ class StrategyRLEuristic:
                     if(actualDistanceFromEight > abs(tile.number - 8)):
                         actualDistanceFromEight = abs(tile.number - 8)
                         bestTile = tile
-        # print("Riga 228, robber tile id: ",bestTile.identificator)
+        return bestTile.identificator
+    
+    def euristicPlaceKnight(self, player):
+        actualDistanceFromEight = 12
+        for tile in Board.Board().tiles:
+            blockable = False
+            isMyTile = False
+            for place in tile.associatedPlaces:
+                if(Board.Board().places[place].owner != player.id):
+                    blockable = True
+                if(Board.Board().places[place].owner == player.id):
+                    isMyTile = True
+            if(blockable and not isMyTile):
+                if(actualDistanceFromEight > abs(tile.number - 8)):
+                    actualDistanceFromEight = abs(tile.number - 8)
+                    bestTile = tile
         return bestTile.identificator
 
     def euristicPlayCard(self, player):
@@ -235,21 +249,6 @@ class StrategyRLEuristic:
         if(len(availableStreets) != 0):
             return random.choice(availableStreets) # per ora random
         return None
-        
-    def euristicPlaceKnight(self, player):
-        actualDistanceFromEight = 12
-        for tile in Board.Board().tiles:
-            blockable = False
-            isMyTile = False
-            for place in tile.associatedPlaces:
-                if(Board.Board().places[place].owner != player.id):
-                    blockable = True
-                if(Board.Board().places[place].owner == player.id):
-                    isMyTile = True
-            if(blockable and not isMyTile):
-                if(actualDistanceFromEight > abs(tile.number - 8)):
-                    bestTile = tile
-        return bestTile.identificator
     
     def euristicMonopoly(self, player):
         min = 50
