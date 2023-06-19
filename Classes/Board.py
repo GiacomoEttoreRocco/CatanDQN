@@ -228,17 +228,14 @@ class Board:
         for p in cls.places:
             resourceBlockedId = cls.idTileBlocked(p)  
             owned = p.ownedByThisPlayer(playerInTurn)
-
             if p.isCity:
                 ownedType.append(2 * owned) 
             elif p.isColony:
                 ownedType.append(1 * owned) 
             else:
                 ownedType.append(0 * owned)
-
             harbor.append(dictCsvHarbor[p.harbor])
             dices = cls.dicesOfPlace(p)
-
             if len(p.touchedResourses) < 1:
                 resource_1.append(dictCsvResources[None])
                 dice_1.append(0) 
@@ -250,42 +247,34 @@ class Board:
                     underRobber1.append(1)
                 else:
                     underRobber1.append(0)
-
                 dice_1.append(dices[0])
-
             if len(p.touchedResourses) < 2:
                 resource_2.append(dictCsvResources[None])
                 dice_2.append(0) 
                 underRobber2.append(0)
             else:
                 resource_2.append(dictCsvResources[p.touchedResourses[1]])
-
                 if resourceBlockedId == 2:
                     underRobber2.append(1)
                 else:
                     underRobber2.append(0)
-
                 dice_2.append(dices[1])
-
             if len(p.touchedResourses) < 3:
                 resource_3.append(dictCsvResources[None])
                 dice_3.append(0) 
                 underRobber3.append(0)
             else:
                 resource_3.append(dictCsvResources[p.touchedResourses[2]])
-
                 if resourceBlockedId == 3:
                     underRobber3.append(1)
                 else:
                     underRobber3.append(0)
-
                 dice_3.append(dices[2])
-
         tensor = torch.Tensor([ownedType, resource_1, dice_1, underRobber1, resource_2, dice_2, underRobber2, resource_3, dice_3, underRobber3, harbor])
         # print("Riga 285 board: ", tensor)
         return tensor.t()
 
-    def edgesToDict(cls, playerInTurn):
+    def _edgesToDict(cls, playerInTurn):
         data={'is_owned_edge': []}
         for edge in cls.edges.keys():
             if cls.edges[edge] == playerInTurn.id:
@@ -296,7 +285,7 @@ class Board:
                 data['is_owned_edge'].append(0)
         return data
     
-    def edgesToTensor(cls, playerInTurn):
+    def _edgesToTensor(cls, playerInTurn):
         is_owned_edge = []
         for edge, owner in cls.edges.items():
             if owner == playerInTurn.id:
@@ -309,15 +298,11 @@ class Board:
         return tensor
     
     def boardStateGraph(cls, player):
-        # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # Definisci il dispositivo
-        return Batch.from_data_list([Data(x=cls.placesStateTensor(player), edge_index= cls.hardEdgeIndex, edge_attr= cls.edgesToTensor(player)).to(cls.device)])
+        return Batch.from_data_list([Data(x=cls.placesStateTensor(player), edge_index= cls.hardEdgeIndex, edge_attr= cls._edgesToTensor(player)).to(cls.device)])
             
     def boardStateTensor(cls, player):
-            places_state_tensor = cls.placesStateTensor(player).flatten()
-            # print("Riga 317 Board: ", places_state_tensor)
-            # edge_index = cls.hardEdgeIndex
-            edges_tensor = cls.edgesToTensor(player)
-            # print("Riga 320 Board: ", edges_tensor)
-            # print("Riga 320 Board: ", len(edges_tensor))
-            return torch.cat([places_state_tensor, edges_tensor], dim=0).to(cls.device)
+        places_state_tensor = cls.placesStateTensor(player).flatten()
+        edges_tensor = cls._edgesToTensor(player)
+        toRet = torch.cat([places_state_tensor, edges_tensor], dim=0).to(cls.device)
+        return toRet
     

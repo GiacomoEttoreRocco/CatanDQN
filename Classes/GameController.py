@@ -55,9 +55,13 @@ class GameController:
         rlFlag = "RL" in player.strategy.name() and not onlyPassTurn
 
         if(rlFlag): 
-            previousGraph = Board.Board().boardStateGraph(player)
-            previousGlob = player.globalFeaturesToTensor()
-            actionId = player.strategy.getActionId(action)
+            if("GNN" in player.strategy.name()):
+                previousGraph = Board.Board().boardStateGraph(player)
+                previousGlob = player.globalFeaturesToTensor()
+                actionId = player.strategy.getActionId(action)
+            else:
+                previousState = self.game.getTotalState(player)
+                actionId = player.strategy.getActionId(action)
 
         self.game.ctr.execute(action(player, thingNeeded))
         player.reward = player._victoryPoints - prevPoints
@@ -65,11 +69,12 @@ class GameController:
         if(rlFlag): 
             graph = Board.Board().boardStateGraph(player)
             glob = player.globalFeaturesToTensor()
-            if(actionId.value > 0):
+            if(actionId.value > 0 and "GNN" in player.strategy.name()):
                 player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, player.reward, graph, glob)
                 if(actionId.value == 2 and "STREET" in player.strategy.name()):
                     player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), self.game.longest(player), graph, glob)
-
+            elif(actionId.value > 0):
+                player.strategy.macroDQN.saveInMemory(previousState, actionId.value, player.reward, self.game.getTotalState(player))
     def decisionManagerGUI(self, player):
         if(not self.speed and self.withGraphics):
             event = pygame.event.wait()

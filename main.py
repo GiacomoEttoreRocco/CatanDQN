@@ -14,7 +14,7 @@ import time
 from Classes.Strategy.RLStrategyGNNstreetSp import RLStrategyGnnStreet
 
 from Classes.Strategy.RandomEuristic import RandomEuristicStrategy
-from Classes.staticUtilities import plotWinners
+from Classes.staticUtilities import plotWinners2
 
 def printWinners(winners):
         normValue = sum(winners)
@@ -94,14 +94,13 @@ if __name__ == '__main__':
 
         winners = []
         # strategies = [rlStrategyGnn, rEuristic, rlStrategyFf]
-        strategies = [rEuristic, rlSpecializedStreet]
-
-        
-        withGraphics = True # False #  
+        # strategies = [rEuristic, rlSpecializedStreet]
+        strategies = [rlStrategyGnn, rlStrategyFf]
+        withGraphics = False # True #   
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True, saveOnFile=False)
         start_time = time.time()
-        for i in range(0, 5000):
+        for i in range(0, 2000):
             winner = gameCtrl.playGame()
             if(winner.strategy.name() == "RL-GNN" or winner.strategy.name() == "RL-GNN-STREET" or winner.strategy.name() == "RL-FF"):
                  winner.strategy.epsDecay()
@@ -109,14 +108,16 @@ if __name__ == '__main__':
             idEpisode += 1
             winners.append(winner.id)
             gameCtrl.reset(idEpisode)
-            # if(i%50==0):
-            #     plotWinners(winners, rlStrategyGnn.name(), rEuristic.name()) #, rlStrategyFf.name())
+            if(i%50==0):
+                plotWinners2(winners, strategies) #, rlStrategyFf.name())
+            if(i%100==0):
+                plt.savefig("plots/wPlot{}.png".format(i)) 
         if(withGraphics):
              pygame.quit()
         end_time = time.time()
         execution_time = end_time - start_time
         print(f"Execution time: {execution_time} seconds")
-        plt.savefig("plots/wPlot.png")
+        # plt.savefig("plots/wPlot.png")
 
         
 

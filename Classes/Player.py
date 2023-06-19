@@ -281,22 +281,7 @@ class Player:
             self.resources["sheep"],
         ]], dtype=torch.float)
     
-    # def globalFeaturesState(self):
-    #     myCrop = self.resources["crop"]
-    #     myIron = self.resources["iron"]
-    #     myWood = self.resources["wood"]
-    #     myClay = self.resources["clay"]
-    #     mySheep = self.resources["sheep"]
-    #     totResOthers = Bank.Bank().totalResourceOut() - (myCrop + myIron + myWood + myClay + mySheep)
-
-    #     data = {'victory_points': self._victoryPoints, 'cards_bought': self.boughtCards,
-    #             'used_knights': self.usedKnights, 'crop': myCrop, 'iron': myIron,
-    #             'wood': myWood, 'clay': myClay, 'sheep': mySheep, "total_resource_out": totResOthers}
-        
-    #     tensor = torch.Tensor(list(data.values()))
-    #     return tensor
-    
-    def globalFeaturesStateTensor(self):
+    def globalStateTensor(self):
         myCrop = self.resources["crop"]
         myIron = self.resources["iron"]
         myWood = self.resources["wood"]

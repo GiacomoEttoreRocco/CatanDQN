@@ -29,7 +29,7 @@ def blockableTile(player, tile):
     return False
 
 
-def plotWinners(winnerIds, name1, name2):
+def plotWinners2(winnerIds, listOfAgents):
     counter = range(1, len(winnerIds) + 1)
     sum_ones = 0
     sum_twos = 0
@@ -43,16 +43,16 @@ def plotWinners(winnerIds, name1, name2):
         cumulative_ones.append(sum_ones)
         cumulative_twos.append(sum_twos)
     plt.figure(1)
-    plt.plot(counter, cumulative_ones, color='red', label='Player ' + name1)
-    plt.plot(counter, cumulative_twos, color='blue', label='Player ' + name2)
+    plt.plot(counter, cumulative_ones, color='red', label='Player ' + listOfAgents[0].name())
+    plt.plot(counter, cumulative_twos, color='blue', label='Player ' + listOfAgents[1].name())
     plt.xlabel('Episodes')
-    plt.ylabel('Player IDs')
+    plt.ylabel('Player victories')
     handles, labels = plt.gca().get_legend_handles_labels()
     if len(handles) < 3:
         plt.legend()
     plt.pause(0.001)
 
-def plotWinners(winnerIds, name1, name2, name3):
+def plotWinners3(winnerIds, name1, name2, name3):
     counter = range(1, len(winnerIds) + 1)
     sum_ones = 0
     sum_twos = 0
@@ -78,7 +78,7 @@ def plotWinners(winnerIds, name1, name2, name3):
     plt.plot(counter, cumulative_tr, color='orange', label='Player ' + name3)
 
     plt.xlabel('Episodes')
-    plt.ylabel('Player IDs')
+    plt.ylabel('Player victories')
     handles, labels = plt.gca().get_legend_handles_labels()
     if len(handles) < 4:
         plt.legend()

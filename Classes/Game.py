@@ -1,3 +1,4 @@
+import torch
 import Classes.Player as Player
 import Classes.Board as Board
 import Classes.Bank as Bank
@@ -24,21 +25,7 @@ class Game:
         self.dices = [self.rollDice() for _ in range(1000)]
         self.actualTurn = 0
         self.currentTurnPlayer = self.players[0] #self.dummy
-        #self.order = 0
-
-        # DEBUG:
-        # for i in range(num_players):
-        #     assert self.players[i].resourceCount() == 0
-        #     assert self.players[i].victoryPoints == 0
-        #     assert len(self.players[i].ownedStreets) == 0
-        #     assert len(self.players[i].ownedCities) == 0
-        #     assert len(self.players[i].ownedColonies) == 0
-        #     assert len(self.players[i].ownedHarbors) == 0
-        #     assert self.players[i].nCities == 0
-        #     assert self.players[i].nColonies == 0
-        #     assert self.players[i].nStreets == 0
-        #     assert self.players[i].unusedKnights == 0
-
+        
     def reset(self):
         # self.ctr = controller.ActionController()
         self.dummy = Player.Player(0, self, Strategy)
@@ -163,11 +150,10 @@ class Game:
         return toRet   
     
     def getTotalState(self, player):
-        state = Board.Board().placesState(player) + player.globalFeaturesState() # da capire come, probabilmente bisogna assemblare i 3 tensori
+        boardState = Board.Board().boardStateTensor(player)
+        playerState = player.globalStateTensor()
+        # print(boardState.size())
+        # print(playerState.size())
+        state = torch.cat((boardState, playerState), dim=0)  
+        # print(state.size())
         return state
-
-    def getBoardState(self, player):
-        return Board.Board().placesState(player)
-    
-    def getPlayerGlobalFeaturesState(self, player):
-        return player.globalFeaturesState()

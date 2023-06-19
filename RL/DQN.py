@@ -73,10 +73,19 @@ class DQNagent():
             return
         transitions = self.memory.sample(self.BATCH_SIZE)
         batch = Transition(*zip(*transitions)) 
+        
         state_batch = torch.cat(batch.state)
         reward_batch = torch.cat(batch.reward) # prendi tutti i rewards
         action_batch = torch.cat(batch.action) # prendi tutte le actions
         next_state = torch.cat(batch.next_state)
+
+        print("state_batch size:", state_batch.size())
+        print("reward_batch size:", reward_batch.size())
+        print("action_batch size:", action_batch.size())
+        print("next_state size:", next_state.size())
+        print("expected_state_action_values size:", expected_state_action_values.size())
+        print("state_action_values size:", state_action_values.size())
+
         with torch.no_grad():
             expected_state_action_values = self.GAMMA * self.target_net.forward(next_state).max(1)[0] + reward_batch
         state_action_values = self.policy_net.forward(state_batch)
