@@ -71,6 +71,7 @@ class DQGNNagent():
     def optimize_model(self):
         if len(self.memory) < self.BATCH_SIZE:
             return
+        # print("optimizing...")
         transitions = self.memory.sample(self.BATCH_SIZE)
         batch = Transition(*zip(*transitions)) 
         graph_batch = Batch.from_data_list(batch.graph)
