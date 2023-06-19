@@ -15,6 +15,8 @@ from Classes.Strategy.RLStrategyFF import ReinforcementLearningStrategyFf
 
 import time
 
+from Classes.Strategy.RandomEuristic import RandomEuristicStrategy
+
 def printWinners(winners):
         normValue = sum(winners)
         toPrint = [0.0, 0.0, 0.0, 0.0]
@@ -134,12 +136,12 @@ if __name__ == '__main__':
 
         rlStrategyGnn = ReinforcementLearningStrategyGnn()
         rlStrategyFf = ReinforcementLearningStrategyFf()
-        randomEuristic = RandomEuristic()
+        rEuristic = RandomEuristicStrategy()
         # strategies = [hybStrategy, purStrategy]
         # strategies = [prioStrategy, rlStrategyFf]
-        strategies = [rlStrategyGnn, rlStrategyFf]
+        # strategies = [rlStrategyGnn, rlStrategyFf]
         # strategies = [rlStrategyFf]
-
+        strategies = [rlStrategyGnn, rEuristic]
 
         withGraphics = True
         idEpisode = 0
