@@ -28,6 +28,6 @@ class RandomEuristicStrategy(StrategyEuristic):
             if(len(idActions) == 1 and idActions[0] == 0):
                 return commands.PassTurnCommand, None, True
             # bestMove = self.macroDQN.step(graph, glob, player.availableTurnActionsId()) 
-            bestMove = random.choice(bestMove)
+            bestMove = random.choice(idActions)
         return self.chooseParameters(idToCommand(bestMove), player) # bestAction, thingsNeeded, onlyPassTurn
         
