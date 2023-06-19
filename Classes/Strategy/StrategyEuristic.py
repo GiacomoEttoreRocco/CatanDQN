@@ -115,7 +115,6 @@ class StrategyEuristic:
             if(self.placeValue(place) > max):
                 max = self.placeValue(place)
                 choosenPlace = place
-                # print(place, " value: ", max)
         return choosenPlace
     
     def euristicPlaceInitialStreet(self, player):

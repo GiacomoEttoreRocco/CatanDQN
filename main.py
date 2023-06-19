@@ -126,24 +126,18 @@ def writeOnCsv(i, winners):
         # performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=1, withGraphics=True, speed=True)
 
 if __name__ == '__main__':
-        prioStrategy = PriorityStrategy()
-        hybStrategy = HybridStrategy()
-        purStrategy = PureStrategy()
-
-        rlStrategyGnn = ReinforcementLearningStrategyGnn()
-        rlStrategyFf = ReinforcementLearningStrategyFf()
-        rEuristic = RandomEuristicStrategy()
-        # strategies = [hybStrategy, purStrategy]
-        # strategies = [prioStrategy, rlStrategyFf]
-        # strategies = [rlStrategyGnn, rlStrategyFf]
-        # strategies = [rlStrategyFf]
-        strategies = [rlStrategyGnn, rEuristic]
-
+        # prioStrategy = PriorityStrategy()
+        # hybStrategy = HybridStrategy()
+        # purStrategy = PureStrategy()
+        # rlStrategyGnn = ReinforcementLearningStrategyGnn()
+        # rlStrategyFf = ReinforcementLearningStrategyFf()
+        # rEuristic = RandomEuristicStrategy()
+        strategies = [ReinforcementLearningStrategyGnn(), RandomEuristicStrategy()]
         withGraphics = True
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True, saveOnFile=False)
         start_time = time.time()
-        for i in range(0, 25):
+        for i in range(0, 5):
             winner = gameCtrl.playGame()
             if(winner.strategy.name() == "RL-GNN" or winner.strategy.name() == "RL-FF"):
                  winner.strategy.epsDecay()

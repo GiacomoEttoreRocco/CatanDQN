@@ -20,7 +20,7 @@ from matplotlib import pyplot as plt
 class GameController:
 
     def __init__(self, playerStrategies, idEpisode, speed=True, saveOnFile=True, withGraphics=False) -> None:
-
+        self.prelimit = 0 # episodes before plots
         self.idEpisode = idEpisode 
 
         self.speed = speed
@@ -46,7 +46,7 @@ class GameController:
         self.game.reset()
         print("GLOBAL RESET")
         self.idEpisode = idEpisode
-        if(idEpisode > 20):
+        if(idEpisode > self.prelimit):
             self.resetPlot()
 
     def executeWithDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
@@ -148,8 +148,7 @@ class GameController:
                 self.decisionManager(playerTurn)
                 if(playerTurn._victoryPoints >= 10):
                     print(f'Winner: {playerTurn.id}, Agent: {playerTurn.strategy.name()}\n')
-                    # if(self.withGraphics):
-                    #     pygame.quit()
+                    self.plotVictoryPoints(playerTurn._victoryPoints, playerTurn.id)
                     return playerTurn
             self.plotVictoryPoints(playerTurn._victoryPoints, playerTurn.id)
     # def saveMove(self, player):
@@ -182,19 +181,20 @@ class GameController:
         print("Number of episode: ", self.idEpisode)
 
     def plotVictoryPoints(self, points, idPlayer):
-        if(self.idEpisode > 20):
+        prelimit = self.prelimit
+        if(self.idEpisode > prelimit):
             if(idPlayer != self.lastId):
                 plt.figure(1)
                 plt.xlabel('Turns')
                 plt.ylabel('Victory points')
                 if idPlayer == 1:
                     self.valueFunction1.append(points)
-                    plt.plot(self.valueFunction1, color='red', label='Player ' + self.game.players[1].strategy.name())
+                    plt.plot(self.valueFunction1, color='red', label='Player ' + self.game.players[0].strategy.name())
                 elif idPlayer == 2:
                     self.valueFunction2.append(points)
-                    plt.plot(self.valueFunction2, color='orange', label='Player ' + self.game.players[2].strategy.name())
+                    plt.plot(self.valueFunction2, color='orange', label='Player ' + self.game.players[1].strategy.name())
                     handles, labels = plt.gca().get_legend_handles_labels()
-                    if len(handles) <= 2:
+                    if len(handles) < 3:
                         plt.legend()
                     # plt.tight_layout()
                     plt.title("Episode "+ str(self.idEpisode))

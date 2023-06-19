@@ -34,10 +34,8 @@ class ReinforcementLearningStrategyFf(StrategyEuristic):
             glob = player.globalFeaturesToTensor()
             # print("Riga 38, RLSFF: ", boardFeatures.unsqueeze(0))
             # print("Riga 38, RLSFF: ", glob)
-
             # print("Dimensioni di boardFeatures:", boardFeatures.size())
             # print("Dimensioni di glob:", glob.size())
-
             state = torch.cat([boardFeatures, glob], dim=1)
             # RICORDATI CHE VANNO GESTITE LE FORCED MOVES, in futuro.
 
