@@ -134,6 +134,7 @@ if __name__ == '__main__':
 
         rlStrategyGnn = ReinforcementLearningStrategyGnn()
         rlStrategyFf = ReinforcementLearningStrategyFf()
+        randomEuristic = RandomEuristic()
         # strategies = [hybStrategy, purStrategy]
         # strategies = [prioStrategy, rlStrategyFf]
         strategies = [rlStrategyGnn, rlStrategyFf]
