@@ -128,9 +128,6 @@ def writeOnCsv(i, winners):
         # performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=1, withGraphics=True, speed=True)
 
 if __name__ == '__main__':
-        # types = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID]
-        # types = [PlayerTypes.HYBRID, PlayerTypes.HYBRID] #, PlayerTypes.HYBRID, PlayerTypes.HYBRID]
-        # types = [PlayerTypes.PRIORITY, PlayerTypes.PURE]
         prioStrategy = PriorityStrategy()
         hybStrategy = HybridStrategy()
         purStrategy = PureStrategy()

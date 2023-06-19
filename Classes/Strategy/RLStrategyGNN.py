@@ -1,18 +1,14 @@
 from Classes import Bank, Board
 from Classes.MoveTypes import *
-from Classes.Strategy.StrategyRLEuristic import StrategyRLEuristic
+from Classes.Strategy.StrategyEuristic import StrategyEuristic
 from Classes.staticUtilities import *
 from Command import commands, controller
 from RL.DQGNN import DQGNNagent
 import random
 
-class ReinforcementLearningStrategyGnn(StrategyRLEuristic):
+class ReinforcementLearningStrategyGnn(StrategyEuristic):
     def __init__(self): # diventerà un singleton
         print("RL STRATEGY CONSTRUCTOR")
-        # self, nInputs, nOutputs, criterion, device
-        # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        # self.macroDQN = DQNagent(nInputs, nOutputs, criterion) # macro rete decisionale
-
         self.macroDQN = DQGNNagent(11, 10) # macro rete decisionale
         # self.eps = self.macroDQN.EPS
 

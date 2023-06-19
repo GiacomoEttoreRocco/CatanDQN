@@ -5,7 +5,7 @@ from Classes.staticUtilities import availableResourcesForCity, availableResource
 from Command import commands
 
 
-class StrategyRLEuristic:
+class StrategyEuristic:
     def __init__(self):
         ...
         pass 
