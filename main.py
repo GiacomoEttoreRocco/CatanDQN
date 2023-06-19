@@ -95,7 +95,7 @@ if __name__ == '__main__':
         winners = []
         # strategies = [rlStrategyGnn, rEuristic, rlStrategyFf]
         # strategies = [rEuristic, rlSpecializedStreet]
-        strategies = [rlStrategyGnn, rlStrategyFf]
+        strategies = [rlSpecializedStreet, rlStrategyFf]
         withGraphics = False # True #   
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True, saveOnFile=False)

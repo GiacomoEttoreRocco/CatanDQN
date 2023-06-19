@@ -72,7 +72,7 @@ class GameController:
             if(actionId.value > 0 and "GNN" in player.strategy.name()):
                 player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, player.reward, graph, glob)
                 if(actionId.value == 2 and "STREET" in player.strategy.name()):
-                    player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), self.game.longest(player), graph, glob)
+                    player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player.reward, graph, glob)
             elif(actionId.value > 0):
                 # print("d")
                 player.strategy.macroDQN.saveInMemory(previousState, actionId.value, player.reward, self.game.getTotalState(player))
