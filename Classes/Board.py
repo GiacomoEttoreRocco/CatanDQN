@@ -32,6 +32,7 @@ class Board:
             cls.graph = CatanGraph.CatanGraph()
             cls.tiles = cls.graph.tiles
             cls.places = cls.graph.places
+            # print("Riga 35 board, dovrebbero essere tutti 0: ", cls.places)
             cls.edges = cls.graph.edges
             cls.numbers = np.random.permutation(cls.graph.numbers)
             cls.resources = np.random.permutation(cls.graph.resources)
@@ -84,9 +85,6 @@ class Board:
             for p in t.associatedPlaces:
                 if(t.resource != None and t.resource != "desert"):
                     cls.places[p].touchedResourses.append(t.resource)
-                # cls.placeTiles[p].append(t.identificator) # temp
-        # for pi in range(0, len(cls.placeTiles)):
-        #     print(pi, ":", cls.placeTiles[pi])
 
     def __repr__(cls):
         s = ""

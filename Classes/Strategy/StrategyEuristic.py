@@ -86,31 +86,25 @@ class StrategyEuristic:
     
     def resValue(self, resource):
         if(resource == "iron"):
-            return 5
+            return 0.5
         elif(resource == "crop"):
-            return 5
+            return 0.5
         elif(resource == "wood"):
-            return 4
+            return 0.4
         elif(resource == "clay"):
-            return 4
+            return 0.4
         elif(resource == "sheep"):
-            return 3
+            return 0.3
         else:
             return 0
     
     def diceEvaluationFunction(self, diceValue):
-        return 1 / (1 + abs(diceValue - 8))
+        return 7.0 / (1.0 + abs(diceValue - 7.0))
     
     def placeValue(self, place):
         value = 0
-        if(place.touchedTiles == 2):
-            value = -6
-        elif(place.touchedTiles == 1):
-            value = -12
-
         for tile in place.touchedTiles:
             value += self.resValue(Board.Board().tiles[tile].resource) * self.diceEvaluationFunction(Board.Board().tiles[tile].number)
-
         return value
         
     def euristicInitialFirstMove(self, player):
@@ -121,6 +115,7 @@ class StrategyEuristic:
             if(self.placeValue(place) > max):
                 max = self.placeValue(place)
                 choosenPlace = place
+                # print(place, " value: ", max)
         return choosenPlace
     
     def euristicPlaceInitialStreet(self, player):
@@ -149,7 +144,6 @@ class StrategyEuristic:
     
     def euristicPlaceColony(self, player):
         possibleColonies = player.calculatePossibleColonies()
-        # print("Riga 167, RLS: ", possibleColonies)
         if(len(possibleColonies) == 0):
             print("FATAL ERROR.")
         max = 0

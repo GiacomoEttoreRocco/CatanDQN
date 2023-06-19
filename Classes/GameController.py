@@ -189,10 +189,10 @@ class GameController:
                 plt.ylabel('Victory points')
                 if idPlayer == 1:
                     self.valueFunction1.append(points)
-                    plt.plot(self.valueFunction1, color='red', label='Player SL')
+                    plt.plot(self.valueFunction1, color='red', label='Player ' + self.game.players[1].strategy.name())
                 elif idPlayer == 2:
                     self.valueFunction2.append(points)
-                    plt.plot(self.valueFunction2, color='orange', label='Player RL')
+                    plt.plot(self.valueFunction2, color='orange', label='Player ' + self.game.players[2].strategy.name())
                     handles, labels = plt.gca().get_legend_handles_labels()
                     if len(handles) <= 2:
                         plt.legend()
