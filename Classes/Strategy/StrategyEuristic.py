@@ -104,13 +104,13 @@ class StrategyEuristic:
     def placeValue(self, place):
         value = 0
         if(place.touchedTiles == 2):
-            value = -2
+            value = -6
         elif(place.touchedTiles == 1):
-            value = -2
+            value = -12
 
         for tile in place.touchedTiles:
             value += self.resValue(Board.Board().tiles[tile].resource) * self.diceEvaluationFunction(Board.Board().tiles[tile].number)
-            
+
         return value
         
     def euristicInitialFirstMove(self, player):
