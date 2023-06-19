@@ -25,7 +25,7 @@ class Board:
             cls.device = 'cpu'
             cls.robberTile = 0
             cls.deck = ["knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight",
-                        "victory_point","victory_point","victory_point","victory_point","victory_point",
+                        "victory_point","victory_point","victory_point","victory_point","victory_point","victory_point","victory_point","victory_point",
                         "year_of_plenty","year_of_plenty","monopoly","monopoly", "road_building","road_building"]
             #   SHUFFLE DECK
             cls.deck = np.random.permutation(cls.deck)

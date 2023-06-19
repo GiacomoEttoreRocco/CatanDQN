@@ -1,18 +1,14 @@
 import pygame
 import Classes as c
 from AI.Gnn import Gnn
-# from Classes.PlayerTypes import PlayerTypes
 import pandas as pd
 import numpy as np
 import csv
-import shutil
 from Classes.Strategy.HybridStrategy import HybridStrategy
-
 from Classes.Strategy.PriorityStrategy import PriorityStrategy
 from Classes.Strategy.PureStrategy import PureStrategy
 from Classes.Strategy.RLStrategyGNN import ReinforcementLearningStrategyGnn
 from Classes.Strategy.RLStrategyFF import ReinforcementLearningStrategyFf
-
 import time
 
 from Classes.Strategy.RandomEuristic import RandomEuristicStrategy
