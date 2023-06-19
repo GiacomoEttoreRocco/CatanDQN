@@ -21,6 +21,7 @@ def ownedTileByPlayer(player, tile):
 
 def blockableTile(player, tile):
     for place in tile.associatedPlaces:
-        if Board.Board().places[place].owner != player.id and Board.Board().places[place].owner != 0:
+        if Board.Board().places[place].owner != player.id and Board.Board().places[place].owner != 0 and not ownedTileByPlayer(player, tile):
+            # print("Owner: " , Board.Board().places[place].owner)
             return True
     return False

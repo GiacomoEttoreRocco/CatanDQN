@@ -196,16 +196,20 @@ class StrategyEuristic:
         return resToDiscard
         
     def euristicPlaceRobber(self, player):
-        bestTile = random.choice(Board.Board().tiles)
+        # bestTile = random.choice(Board.Board().tiles)
+        bestTile = None
         for tile in Board.Board().tiles:
             if tile.resource != "desert" and blockableTile(player, tile):
+                bestTile = tile
                 return bestTile.identificator
         return bestTile.identificator
     
     def euristicPlaceKnight(self, player):
-        bestTile = random.choice(Board.Board().tiles)
+        # bestTile = random.choice(Board.Board().tiles)
+        bestTile = None
         for tile in Board.Board().tiles:
             if tile.resource != "desert" and blockableTile(player, tile):
+                bestTile = tile
                 return bestTile.identificator
         return bestTile.identificator
 

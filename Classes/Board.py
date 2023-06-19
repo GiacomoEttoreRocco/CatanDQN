@@ -32,7 +32,6 @@ class Board:
             cls.graph = CatanGraph.CatanGraph()
             cls.tiles = cls.graph.tiles
             cls.places = cls.graph.places
-            # print("Riga 35 board, dovrebbero essere tutti 0: ", cls.places)
             cls.edges = cls.graph.edges
             cls.numbers = np.random.permutation(cls.graph.numbers)
             cls.resources = np.random.permutation(cls.graph.resources)

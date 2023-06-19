@@ -20,7 +20,7 @@ from matplotlib import pyplot as plt
 class GameController:
 
     def __init__(self, playerStrategies, idEpisode, speed=True, saveOnFile=True, withGraphics=False) -> None:
-        self.prelimit = 0 # episodes before plots
+        self.prelimit = 10 # episodes before plots
         self.idEpisode = idEpisode 
 
         self.speed = speed
