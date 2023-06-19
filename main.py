@@ -11,6 +11,7 @@ from Classes.Strategy.PureStrategy import PureStrategy
 from Classes.Strategy.RLStrategyGNN import ReinforcementLearningStrategyGnn
 from Classes.Strategy.RLStrategyFF import ReinforcementLearningStrategyFf
 import time
+from Classes.Strategy.RLStrategyGNNstreetSp import RLStrategyGnnStreet
 
 from Classes.Strategy.RandomEuristic import RandomEuristicStrategy
 from Classes.staticUtilities import plotWinners
@@ -88,22 +89,28 @@ if __name__ == '__main__':
         rlStrategyGnn = ReinforcementLearningStrategyGnn()
         rlStrategyFf = ReinforcementLearningStrategyFf()
         rEuristic = RandomEuristicStrategy()
+
+        rlSpecializedStreet = RLStrategyGnnStreet()
+
         winners = []
-        strategies = [rlStrategyGnn, rEuristic, rlStrategyFf]
-        withGraphics = False # True # 
+        # strategies = [rlStrategyGnn, rEuristic, rlStrategyFf]
+        strategies = [rEuristic, rlSpecializedStreet]
+
+        
+        withGraphics = True # False #  
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True, saveOnFile=False)
         start_time = time.time()
         for i in range(0, 5000):
             winner = gameCtrl.playGame()
-            if(winner.strategy.name() == "RL-GNN" or winner.strategy.name() == "RL-FF"):
+            if(winner.strategy.name() == "RL-GNN" or winner.strategy.name() == "RL-GNN-STREET" or winner.strategy.name() == "RL-FF"):
                  winner.strategy.epsDecay()
                  print(winner.strategy.getEps())
             idEpisode += 1
             winners.append(winner.id)
             gameCtrl.reset(idEpisode)
-            if(i%50==0):
-                plotWinners(winners, rlStrategyGnn.name(), rEuristic.name(), rlStrategyFf.name())
+            # if(i%50==0):
+            #     plotWinners(winners, rlStrategyGnn.name(), rEuristic.name()) #, rlStrategyFf.name())
         if(withGraphics):
              pygame.quit()
         end_time = time.time()

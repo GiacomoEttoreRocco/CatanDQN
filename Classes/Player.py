@@ -189,7 +189,7 @@ class Player:
         for edge in Board.Board().edges.keys():
             if(Board.Board().edges[edge] == self.id):
                 if(edge == None):
-                    print("Debug, FATAL ERROR. Riga 166 player: ", Board.Board().edges[edge]) # debug
+                    print("Debug, FATAL ERROR. Riga 192 player: ", Board.Board().edges[edge]) # debug
                 if(self.connectedEmptyEdges(edge) != None):
                     possibleEdges.extend(self.connectedEmptyEdges(edge))
         return possibleEdges

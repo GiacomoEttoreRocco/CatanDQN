@@ -226,6 +226,8 @@ class StrategyEuristic:
 
     def euristicPlaceStreet(self, player):
         availableStreets = player.calculatePossibleStreets()
+        # print(availableStreets)
+        # print(player.calculatePossibleStreetsId())
         if(len(availableStreets) != 0):
             return random.choice(availableStreets) # per ora random
         return None

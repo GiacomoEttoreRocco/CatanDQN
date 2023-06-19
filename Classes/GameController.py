@@ -59,7 +59,7 @@ class GameController:
         self.game.ctr.execute(action(player, thingNeeded))
         player.reward = player._victoryPoints - prevPoints
 
-        if(player.strategy.name() == "RL" and not onlyPassTurn): # action != commands.PassTurnCommand):
+        if("RL" in player.strategy.name() and not onlyPassTurn): # action != commands.PassTurnCommand):
             graph = Board.Board().boardStateGraph(player)
             glob = player.globalFeaturesToTensor()
             # print("Linea 54 GameController, actionIs: ", actionId.value)
