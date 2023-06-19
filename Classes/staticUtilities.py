@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 from Classes import Board
 
 
@@ -25,3 +27,28 @@ def blockableTile(player, tile):
             # print("Owner: " , Board.Board().places[place].owner)
             return True
     return False
+
+
+def plotWinners(winnerIds, name1, name2):
+    counter = range(1, len(winnerIds) + 1)
+    sum_ones = 0
+    sum_twos = 0
+    cumulative_ones = []
+    cumulative_twos = []
+    for num in winnerIds:
+        if num == 1:
+            sum_ones += 1
+        elif num == 2:
+            sum_twos += 1
+        cumulative_ones.append(sum_ones)
+        cumulative_twos.append(sum_twos)
+    plt.figure(1)
+    plt.plot(counter, cumulative_ones, color='red', label='Player ' + name1)
+    plt.plot(counter, cumulative_twos, color='blue', label='Player ' + name2)
+    plt.xlabel('Episodes')
+    plt.ylabel('Player IDs')
+    handles, labels = plt.gca().get_legend_handles_labels()
+    if len(handles) < 3:
+        plt.legend()
+    plt.pause(0.001)
+

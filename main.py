@@ -12,6 +12,7 @@ from Classes.Strategy.RLStrategyFF import ReinforcementLearningStrategyFf
 import time
 
 from Classes.Strategy.RandomEuristic import RandomEuristicStrategy
+from Classes.staticUtilities import plotWinners
 
 def printWinners(winners):
         normValue = sum(winners)
@@ -79,75 +80,34 @@ def writeOnCsv(i, winners):
         writer = csv.writer(f)
         writer.writerow([i, *winners])
 
-# def simulationMain():
-#     SHOW = True
-
-#     if not SHOW:
-#         numberOfRepetitions = 1
-#         maxPerformanceResults = 0
-
-#         for idx in range(numberOfRepetitions):
-#             training(idx, iterations=2, numberOfTrainingGames=5, numberOfValidationGames=5)
-            
-#             results = []
-#             playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
-#             results.append(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=15, withGraphics=False))
-
-#             playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PURE]
-#             results.append(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=15, withGraphics=False))
-            
-#             playerTypes = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.PURE]
-#             results.append(performanceEvaluation(idx, playerTypes=playerTypes, numberOfTestingGames=15, withGraphics=False))
-
-#             if maxPerformanceResults<sum(results):
-#                 print(f'Saving best weights in iteration {idx}...')
-#                 maxPerformanceResults = sum(results)
-#                 shutil.copyfile('AI/model_weights.pth', 'AI/best_model_weights.pth')
-
-#             writeOnCsv(idx, results)
-#     else:
-#         for idx in range(1):
-#             results = []
-#             playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.HYBRID]
-#             results.append(performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=25, withGraphics=True))
-
-#             playerTypes = [PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PRIORITY, PlayerTypes.PURE]
-#             results.append(performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=25, withGraphics=True))
-            
-#             playerTypes = [PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.HYBRID, PlayerTypes.PURE]
-#             results.append(performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=25, withGraphics=True))
-
-        #     with open('best_results.csv', 'a') as f:
-        #         writer = csv.writer(f)
-        #         writer.writerow(results)
-
-        # Gnn().modelWeightsPath = "AI/best_model_weights.pth"
-        # playerTypes = [PlayerTypes.PRIORITY,PlayerTypes.PRIORITY,PlayerTypes.PRIORITY,PlayerTypes.HYBRID]
-        # performanceEvaluation(0, playerTypes=playerTypes, numberOfTestingGames=1, withGraphics=True, speed=True)
-
 if __name__ == '__main__':
         # prioStrategy = PriorityStrategy()
         # hybStrategy = HybridStrategy()
         # purStrategy = PureStrategy()
-        # rlStrategyGnn = ReinforcementLearningStrategyGnn()
+        rlStrategyGnn = ReinforcementLearningStrategyGnn()
         # rlStrategyFf = ReinforcementLearningStrategyFf()
-        # rEuristic = RandomEuristicStrategy()
-        strategies = [ReinforcementLearningStrategyGnn(), RandomEuristicStrategy()]
-        withGraphics = True
+        rEuristic = RandomEuristicStrategy()
+        winners = []
+        strategies = [rlStrategyGnn, rEuristic]
+        withGraphics = False # True
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True, saveOnFile=False)
         start_time = time.time()
-        for i in range(0, 5):
+        for i in range(0, 500):
             winner = gameCtrl.playGame()
             if(winner.strategy.name() == "RL-GNN" or winner.strategy.name() == "RL-FF"):
                  winner.strategy.epsDecay()
                  print(winner.strategy.getEps())
             idEpisode += 1
+            winners.append(winner.id)
             gameCtrl.reset(idEpisode)
+            plotWinners(winners, rlStrategyGnn.name(), rEuristic.name())
         if(withGraphics):
              pygame.quit()
         end_time = time.time()
         execution_time = end_time - start_time
         print(f"Execution time: {execution_time} seconds")
+
+        
 
 

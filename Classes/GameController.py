@@ -46,8 +46,8 @@ class GameController:
         self.game.reset()
         print("GLOBAL RESET")
         self.idEpisode = idEpisode
-        if(idEpisode > self.prelimit):
-            self.resetPlot()
+        # if(idEpisode > self.prelimit):
+        #     self.resetPlot()
 
     def executeWithDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
         prevPoints = player._victoryPoints
@@ -98,25 +98,14 @@ class GameController:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     print("Escape")
-            # if event.type == pygame.QUIT:
                     print("Quitting")
-                    # pygame.quit()
             self.view.updateGameScreen()
             self.view.manager.process_events(event) 
         else:
             events = pygame.event.get()
-            ############################
-            # for event in events:
-            #     if event.type == pygame.QUIT:
-            #         pygame.quit()
-            ############################
             action, thingNeeded, onlyPassTurn = player.bestAction()
-            # print("Action: ", action, "thingNeeded: ", thingNeeded, "OnlyPassTurn: ", onlyPassTurn)
-            # self.game.ctr.execute(action(player, thingNeeded))
             self.executeWithDeltaReward(player, action, thingNeeded, onlyPassTurn)
 
-            # if(not onlyPassTurn):  
-            #     self.saveMove(player) 
 
     def decisionManagerNonGUI(self, player):
         action, thingNeeded, onlyPassTurn = player.bestAction()
@@ -148,9 +137,10 @@ class GameController:
                 self.decisionManager(playerTurn)
                 if(playerTurn._victoryPoints >= 10):
                     print(f'Winner: {playerTurn.id}, Agent: {playerTurn.strategy.name()}\n')
-                    self.plotVictoryPoints(playerTurn._victoryPoints, playerTurn.id)
+                    # self.plotVictoryPoints(playerTurn._victoryPoints, playerTurn.id)
                     return playerTurn
-            self.plotVictoryPoints(playerTurn._victoryPoints, playerTurn.id)
+            # self.plotVictoryPoints(playerTurn._victoryPoints, playerTurn.id)
+            #################################################################
     # def saveMove(self, player):
     #     if(self.saveOnFile):
     #         places = c.Board.Board().placesToDict(player)

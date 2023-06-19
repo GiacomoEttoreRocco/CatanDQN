@@ -143,6 +143,7 @@ class StrategyEuristic:
     
     def euristicPlaceColony(self, player):
         possibleColonies = player.calculatePossibleColonies()
+        choosenColony = random.choice(possibleColonies)
         if(len(possibleColonies) == 0):
             print("FATAL ERROR.")
         max = 0
@@ -196,8 +197,8 @@ class StrategyEuristic:
         return resToDiscard
         
     def euristicPlaceRobber(self, player):
-        # bestTile = random.choice(Board.Board().tiles)
-        bestTile = None
+        bestTile = random.choice(Board.Board().tiles)
+        # bestTile = None
         for tile in Board.Board().tiles:
             if tile.resource != "desert" and blockableTile(player, tile):
                 bestTile = tile
@@ -205,8 +206,8 @@ class StrategyEuristic:
         return bestTile.identificator
     
     def euristicPlaceKnight(self, player):
-        # bestTile = random.choice(Board.Board().tiles)
-        bestTile = None
+        bestTile = random.choice(Board.Board().tiles)
+        # bestTile = None
         for tile in Board.Board().tiles:
             if tile.resource != "desert" and blockableTile(player, tile):
                 bestTile = tile
