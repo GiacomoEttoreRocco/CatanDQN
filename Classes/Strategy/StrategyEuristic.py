@@ -1,7 +1,7 @@
 import random
 from Classes import Bank, Board
 from Classes.MoveTypes import ForcedMoveTypes, InitialMoveTypes, TurnMoveTypes
-from Classes.staticUtilities import availableResourcesForCity, availableResourcesForColony, availableResourcesForDevCard, availableResourcesForStreet
+from Classes.staticUtilities import availableResourcesForCity, availableResourcesForColony, availableResourcesForDevCard, availableResourcesForStreet, blockableTile
 from Command import commands
 
 
@@ -203,35 +203,17 @@ class StrategyEuristic:
         return resToDiscard
         
     def euristicPlaceRobber(self, player):
-        actualDistanceFromEight = 12
+        bestTile = random.choice(Board.Board().tiles)
         for tile in Board.Board().tiles:
-            blockable = False
-            isMyTile = False
-            for place in tile.associatedPlaces:
-                if(Board.Board().places[place].owner != player.id): # prima c'era place.owner qua
-                    blockable = True
-                if(Board.Board().places[place].owner == player.id): # prima c'era place.owner qua
-                    isMyTile = True
-            if(blockable and not isMyTile):
-                if(actualDistanceFromEight > abs(tile.number - 8)):
-                    actualDistanceFromEight = abs(tile.number - 8)
-                    bestTile = tile
+            if tile.resource != "desert" and blockableTile(player, tile):
+                return bestTile.identificator
         return bestTile.identificator
     
     def euristicPlaceKnight(self, player):
-        actualDistanceFromEight = 12
+        bestTile = random.choice(Board.Board().tiles)
         for tile in Board.Board().tiles:
-            blockable = False
-            isMyTile = False
-            for place in tile.associatedPlaces:
-                if(Board.Board().places[place].owner != player.id):
-                    blockable = True
-                if(Board.Board().places[place].owner == player.id):
-                    isMyTile = True
-            if(blockable and not isMyTile):
-                if(actualDistanceFromEight > abs(tile.number - 8)):
-                    actualDistanceFromEight = abs(tile.number - 8)
-                    bestTile = tile
+            if tile.resource != "desert" and blockableTile(player, tile):
+                return bestTile.identificator
         return bestTile.identificator
 
     def euristicPlayCard(self, player):
