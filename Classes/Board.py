@@ -1,3 +1,4 @@
+import random
 import numpy as np
 import Classes.CatanGraph as CatanGraph
 import torch
@@ -28,6 +29,9 @@ class Board:
                         "victory_point","victory_point","victory_point","victory_point","victory_point","victory_point","victory_point","victory_point",
                         "year_of_plenty","year_of_plenty","monopoly","monopoly", "road_building","road_building"]
             #   SHUFFLE DECK
+
+            np.random.seed(2983)
+            
             cls.deck = np.random.permutation(cls.deck)
             cls.graph = CatanGraph.CatanGraph()
             cls.tiles = cls.graph.tiles

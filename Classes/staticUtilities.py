@@ -52,3 +52,35 @@ def plotWinners(winnerIds, name1, name2):
         plt.legend()
     plt.pause(0.001)
 
+def plotWinners(winnerIds, name1, name2, name3):
+    counter = range(1, len(winnerIds) + 1)
+    sum_ones = 0
+    sum_twos = 0
+    sum_tr = 0
+    cumulative_ones = []
+    cumulative_twos = []
+    cumulative_tr = []
+
+    for num in winnerIds:
+        if num == 1:
+            sum_ones += 1
+        elif num == 2:
+            sum_twos += 1
+        else:
+            sum_tr += 1
+        cumulative_ones.append(sum_ones)
+        cumulative_twos.append(sum_twos)
+        cumulative_tr.append(sum_tr)
+
+    plt.figure(1)
+    plt.plot(counter, cumulative_ones, color='red', label='Player ' + name1)
+    plt.plot(counter, cumulative_twos, color='blue', label='Player ' + name2)
+    plt.plot(counter, cumulative_tr, color='orange', label='Player ' + name3)
+
+    plt.xlabel('Episodes')
+    plt.ylabel('Player IDs')
+    handles, labels = plt.gca().get_legend_handles_labels()
+    if len(handles) < 4:
+        plt.legend()
+    plt.pause(0.001)
+

@@ -1,3 +1,4 @@
+from matplotlib import pyplot as plt
 import pygame
 import Classes as c
 from AI.Gnn import Gnn
@@ -85,15 +86,15 @@ if __name__ == '__main__':
         # hybStrategy = HybridStrategy()
         # purStrategy = PureStrategy()
         rlStrategyGnn = ReinforcementLearningStrategyGnn()
-        # rlStrategyFf = ReinforcementLearningStrategyFf()
+        rlStrategyFf = ReinforcementLearningStrategyFf()
         rEuristic = RandomEuristicStrategy()
         winners = []
-        strategies = [rlStrategyGnn, rEuristic]
-        withGraphics = False # True
+        strategies = [rlStrategyGnn, rEuristic, rlStrategyFf]
+        withGraphics = False # True # 
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True, saveOnFile=False)
         start_time = time.time()
-        for i in range(0, 500):
+        for i in range(0, 5000):
             winner = gameCtrl.playGame()
             if(winner.strategy.name() == "RL-GNN" or winner.strategy.name() == "RL-FF"):
                  winner.strategy.epsDecay()
@@ -101,12 +102,14 @@ if __name__ == '__main__':
             idEpisode += 1
             winners.append(winner.id)
             gameCtrl.reset(idEpisode)
-            plotWinners(winners, rlStrategyGnn.name(), rEuristic.name())
+            if(i%50==0):
+                plotWinners(winners, rlStrategyGnn.name(), rEuristic.name(), rlStrategyFf.name())
         if(withGraphics):
              pygame.quit()
         end_time = time.time()
         execution_time = end_time - start_time
         print(f"Execution time: {execution_time} seconds")
+        plt.savefig("plots/wPlot.png")
 
         
 

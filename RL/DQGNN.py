@@ -15,7 +15,7 @@ class DQGNNagent():
         print("DQGNNAgent CONSTRUCTOR")
         self.BATCH_SIZE = 16 # 64 # 256
         self.GAMMA = 0.99
-        self.EPS = 0.5
+        self.EPS = 1.0
         self.TAU = 0.005 # 0.005
         self.LearningRate = 1e-3
         self.device = device
@@ -26,7 +26,7 @@ class DQGNNagent():
         self.optimizer = torch.optim.AdamW(self.policy_net.parameters(), lr=self.LearningRate)
         self.memory = ReplayMemory(1000)
 
-        self.decay = 0.995
+        self.decay = 0.999
 
     def epsDecay(self):
         self.EPS = self.EPS * self.decay

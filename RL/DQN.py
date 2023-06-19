@@ -16,7 +16,7 @@ class DQNagent():
         print("DQNgent CONSTRUCTOR")
         self.BATCH_SIZE = 16 
         self.GAMMA = 0.99
-        self.EPS = 0.5
+        self.EPS = 1.0
         self.TAU = 0.005 
         self.LearningRate = 1e-3
         self.device = device
