@@ -30,7 +30,7 @@ class DQGNNagent():
 
     def epsDecay(self):
         self.EPS = self.EPS * self.decay
-        print("decay invoked.")
+        # print("decay invoked.")
         if(self.EPS < 0.0001):
             self.EPS = 0
 

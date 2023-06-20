@@ -62,7 +62,7 @@ if __name__ == '__main__':
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
         start_time = time.time()
         saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results.csv")
-        for i in range(0, 100):
+        for i in range(0, 500):
             print(".", end='')
             finalPoints = gameCtrl.playGameForTraining()
             saveInCsv(finalPoints, "csvFolder/results.csv")
