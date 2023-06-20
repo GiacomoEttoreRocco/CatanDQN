@@ -11,8 +11,9 @@ Transition = namedtuple('Transition', ('graph', 'glob', 'action', 'reward', 'nex
 
 class L2DQGNNagent():
     # def __init__(self, nInputs, nOutputs, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")) -> None:
-    def __init__(self, nInputs, nOutputs, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cpu")) -> None:
+    def __init__(self, name, nInputs, nOutputs, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cpu")) -> None:
         # print("DQGNNAgent CONSTRUCTOR")
+        self.name = name
 
         self.BATCH_SIZE = 16 # 64 # 256
         self.GAMMA = 0.99
@@ -74,7 +75,8 @@ class L2DQGNNagent():
     def optimize_model(self, fatherDQN):
         if len(self.memory) < self.BATCH_SIZE:
             return
-        # print("optimizing...")
+        if(self.name == "colonies"):
+            print("optimizing... "+ self.name)
         transitions = self.memory.sample(self.BATCH_SIZE)
         batch = Transition(*zip(*transitions)) 
         graph_batch = Batch.from_data_list(batch.graph)

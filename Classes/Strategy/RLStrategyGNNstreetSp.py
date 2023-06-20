@@ -12,8 +12,8 @@ class RLStrategyGnnStreet(StrategyEuristic):
     def __init__(self): # diventerà un singleton
         self.macroDQN = DQGNNagent(11, 10) # macro rete decisionale
 
-        self.streetDQN = L2DQGNNagent(11, 72)
-        self.colonyDQN = L2DQGNNagent(11, 54)
+        self.streetDQN = L2DQGNNagent("street", 11, 72)
+        self.colonyDQN = L2DQGNNagent("colonies", 11, 54)
 
         # self.initialColonyDQN = DQGNNagent(11, 54)
 
@@ -69,6 +69,7 @@ class RLStrategyGnnStreet(StrategyEuristic):
 
         elif(action == commands.SecondChoiseCommand):
             # print("Initial SECOND choice")
+            # return commands.SecondChoiseCommand, self.euristicInitialSecondMove(player), None
             return commands.SecondChoiseCommand, self.DQNPlaceInitialColony(player), None
         
         elif(action == commands.PassTurnCommand):
@@ -142,6 +143,11 @@ class RLStrategyGnnStreet(StrategyEuristic):
         choosenColony = self.colonyDQN.step(graph, glob, possibleColoniesId, self.macroDQN)
         # print(choosenColony)
         return Board.Board().places[choosenColony]
+    
+    def euristicInitialFirstMove(self, player):
+        availablePlaces = player.calculatePossibleInitialColonies()
+        choosenPlace = random.choice(availablePlaces)
+        return choosenPlace
     
     
     
