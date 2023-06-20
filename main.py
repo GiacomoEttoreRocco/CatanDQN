@@ -1,13 +1,13 @@
 from matplotlib import pyplot as plt
 import pygame
 import Classes as c
-from AI.Gnn import Gnn
+# from AI.Gnn import Gnn
 import pandas as pd
 import numpy as np
 import csv
-from Classes.Strategy.HybridStrategy import HybridStrategy
-from Classes.Strategy.PriorityStrategy import PriorityStrategy
-from Classes.Strategy.PureStrategy import PureStrategy
+# from Classes.Strategy.HybridStrategy import HybridStrategy
+# from Classes.Strategy.PriorityStrategy import PriorityStrategy
+# from Classes.Strategy.PureStrategy import PureStrategy
 from Classes.Strategy.RLStrategyGNN import ReinforcementLearningStrategyGnn
 from Classes.Strategy.RLStrategyFF import ReinforcementLearningStrategyFf
 import time
@@ -57,7 +57,7 @@ def training(playerStrategies, iterationProcessIndex, iterations, numberOfTraini
         # printWinners(winners)
         allGames.to_json("./json/testing_game.json")
         
-        Gnn().trainModel(validate=True)
+        # Gnn().trainModel(validate=True)
 
 def performanceEvaluation(iterationProcessIndex, playerTypes, numberOfTestingGames, withGraphics, speed):
     print("PERFORMANCE EVALUATION STARTED...")

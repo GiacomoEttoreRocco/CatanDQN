@@ -3,9 +3,9 @@ import pygame
 import pygame_gui
 import pandas as pd
 from Classes import Board
-from Classes.Strategy.HybridStrategy import HybridStrategy
-from Classes.Strategy.PriorityStrategy import PriorityStrategy
-from Classes.Strategy.PureStrategy import PureStrategy
+# from Classes.Strategy.HybridStrategy import HybridStrategy
+# from Classes.Strategy.PriorityStrategy import PriorityStrategy
+# from Classes.Strategy.PureStrategy import PureStrategy
 from Classes.Strategy.RLStrategyGNN import ReinforcementLearningStrategyGnn
 from Classes.Strategy.RLStrategyFF import ReinforcementLearningStrategyFf
 
@@ -42,7 +42,7 @@ class GameController:
     def reset(self, idEpisode):
         c.Board.Board().reset()
         c.Bank.Bank().reset()
-        Gnn.Gnn().reset()
+        # Gnn.Gnn().reset()
         self.game.reset()
         print("GLOBAL RESET")
         self.idEpisode = idEpisode
@@ -91,15 +91,15 @@ class GameController:
         if(not self.speed and self.withGraphics):
             event = pygame.event.wait()
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                if(event.ui_element == self.view.pureButton):
-                    player.strategy = PureStrategy()
-                elif(event.ui_element == self.view.priorityButton):
-                    player.strategy = PriorityStrategy()
-                elif(event.ui_element == self.view.hybridButton):
-                    player.strategy = HybridStrategy()
+                # if(event.ui_element == self.view.pureButton):
+                #     player.strategy = PureStrategy()
+                # elif(event.ui_element == self.view.priorityButton):
+                #     player.strategy = PriorityStrategy()
+                # elif(event.ui_element == self.view.hybridButton):
+                #     player.strategy = HybridStrategy()
                 # elif(event.ui_element == self.view.rlButton):
                 #     player.strategy = ReinforcementLearningStrategy()
-                elif(event.ui_element == self.view.undoButton):
+                if(event.ui_element == self.view.undoButton):
                     self.game.ctr.undo()
                 elif(event.ui_element == self.view.redoButton):
                     self.game.ctr.redo()
