@@ -10,8 +10,9 @@ class RLStrategyGnnStreet(StrategyEuristic):
     def __init__(self): # diventerà un singleton
         self.macroDQN = DQGNNagent(11, 10) # macro rete decisionale
         self.streetDQN = DQGNNagent(11, 72)
-
         self.colonyDQN = DQGNNagent(11, 54)
+
+        self.initialColonyDQN = DQGNNagent(11, 54)
 
     def name(self):
         return "RL-GNN-STREET"
@@ -120,6 +121,16 @@ class RLStrategyGnnStreet(StrategyEuristic):
     def DQNPlaceColony(self, player):
         print("Specialized colony placed.")
         possibleColoniesId = [Board.Board().places.index(place) for place in player.calculatePossibleColonies()]
+
+        graph = Board.Board().boardStateGraph(player)
+        glob = player.globalFeaturesToTensor()
+        choosenColony = self.colonyDQN.step(graph, glob, possibleColoniesId)
+        # print(choosenColony)
+        return Board.Board().places[choosenColony]
+    
+    def DQNPlaceColony(self, player):
+        print("Specialized initial colony placed.")
+        possibleColoniesId = [Board.Board().places.index(place) for place in player.calculatePossibleInitialColonies()]
 
         graph = Board.Board().boardStateGraph(player)
         glob = player.globalFeaturesToTensor()
