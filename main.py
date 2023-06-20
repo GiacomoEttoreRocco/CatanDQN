@@ -108,7 +108,7 @@ if __name__ == '__main__':
             idEpisode += 1
             winners.append(winner.id)
             gameCtrl.reset(idEpisode)
-            if(i%50==0):
+            if(i%10==0):
                 plotWinners2(winners, strategies) #, rlStrategyFf.name())
             if(i%100==0):
                 plt.savefig("plots/wPlot{}.png".format(i)) 

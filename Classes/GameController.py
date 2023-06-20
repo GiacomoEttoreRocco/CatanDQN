@@ -69,13 +69,22 @@ class GameController:
         if(rlFlag): 
             graph = Board.Board().boardStateGraph(player)
             glob = player.globalFeaturesToTensor()
+            # print("Riga 72, game controller: ", player.reward)
+
             if(actionId.value > 0 and "GNN" in player.strategy.name()):
-                player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, player.reward, graph, glob)
+                # player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, player.reward, graph, glob)
+                player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, player._victoryPoints, graph, glob)
+
                 if(actionId.value == 2 and "STREET" in player.strategy.name()):
-                    player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player.reward, graph, glob)
+                    # player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player.reward, graph, glob)
+                    player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player._victoryPoints, graph, glob)
+
             elif(actionId.value > 0):
                 # print("d")
-                player.strategy.macroDQN.saveInMemory(previousState, actionId.value, player.reward, self.game.getTotalState(player))
+                # player.strategy.macroDQN.saveInMemory(previousState, actionId.value, player.reward, self.game.getTotalState(player))
+                player.strategy.macroDQN.saveInMemory(previousState, actionId.value, player._victoryPoints, self.game.getTotalState(player))
+
+                
     def decisionManagerGUI(self, player):
         if(not self.speed and self.withGraphics):
             event = pygame.event.wait()
