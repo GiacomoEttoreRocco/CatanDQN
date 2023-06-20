@@ -59,7 +59,9 @@ class RLStrategyGnnStreet(StrategyEuristic):
         
         elif(action == commands.FirstChoiseCommand):
             # print("InitialFIRSTChoice")
-            return commands.FirstChoiseCommand, self.euristicInitialFirstMove(player), None
+            # return commands.FirstChoiseCommand, self.euristicInitialFirstMove(player), None
+            return commands.FirstChoiseCommand, self.DQNPlaceInitialColony(player), None
+
         
         elif(action == commands.PlaceInitialStreetCommand):
             # print("Initial STREET Choice")
@@ -67,7 +69,7 @@ class RLStrategyGnnStreet(StrategyEuristic):
 
         elif(action == commands.SecondChoiseCommand):
             # print("Initial SECOND choice")
-            return commands.SecondChoiseCommand, self.euristicInitialSecondMove(player), None
+            return commands.SecondChoiseCommand, self.DQNPlaceInitialColony(player), None
         
         elif(action == commands.PassTurnCommand):
             # print("Pass turn")
@@ -132,13 +134,14 @@ class RLStrategyGnnStreet(StrategyEuristic):
         # print(choosenColony)
         return Board.Board().places[choosenColony]
     
-    # def DQNPlaceColony(self, player):
-    #     print("Specialized initial colony placed.")
-    #     possibleColoniesId = [Board.Board().places.index(place) for place in player.calculatePossibleInitialColonies()]
-
-    #     graph = Board.Board().boardStateGraph(player)
-    #     glob = player.globalFeaturesToTensor()
-    #     choosenColony = self.colonyDQN.step(graph, glob, possibleColoniesId)
-    #     # print(choosenColony)
-    #     return Board.Board().places[choosenColony]
+    def DQNPlaceInitialColony(self, player):
+        print("Specialized initial colony placed.")
+        possibleColoniesId = [Board.Board().places.index(place) for place in player.calculatePossibleInitialColonies()]
+        graph = Board.Board().boardStateGraph(player)
+        glob = player.globalFeaturesToTensor()
+        choosenColony = self.colonyDQN.step(graph, glob, possibleColoniesId, self.macroDQN)
+        # print(choosenColony)
+        return Board.Board().places[choosenColony]
+    
+    
     
