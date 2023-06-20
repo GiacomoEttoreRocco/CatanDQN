@@ -110,12 +110,12 @@ class StrategyEuristic:
     def euristicInitialFirstMove(self, player):
         availablePlaces = player.calculatePossibleInitialColonies()
         # max = 0
-        choosenPlace = -1
+        # choosenPlace = -1
         # for place in availablePlaces:
         #     if(self.placeValue(place) > max):
         #         max = self.placeValue(place)
         #         choosenPlace = place
-        choosenPlace = random.choose(availablePlaces)
+        choosenPlace = random.choice(availablePlaces)
         return choosenPlace
     
     def euristicPlaceInitialStreet(self, player):
@@ -124,12 +124,13 @@ class StrategyEuristic:
     
     def euristicInitialSecondMove(self, player):
         availablePlaces = player.calculatePossibleInitialColonies()
-        max = 0
-        choosenPlace = -1
-        for place in availablePlaces:
-            if(self.placeValue(place) > max):
-                max = self.placeValue(place)
-                choosenPlace = place
+        # max = 0
+        # choosenPlace = -1
+        # for place in availablePlaces:
+        #     if(self.placeValue(place) > max):
+        #         max = self.placeValue(place)
+        #         choosenPlace = place
+        choosenPlace = random.choice(availablePlaces)
         return choosenPlace
         
     def euristicPlaceCity(self, player):
