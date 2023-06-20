@@ -147,14 +147,14 @@ class StrategyEuristic:
     def euristicPlaceColony(self, player):
         possibleColonies = player.calculatePossibleColonies()
         choosenColony = random.choice(possibleColonies)
-        if(len(possibleColonies) == 0):
-            print("FATAL ERROR.")
-        max = 0
-        # choosenColony = -1
-        for colony in possibleColonies:
-            if(self.placeValue(colony) > max):
-                max = self.placeValue(colony)
-                choosenColony = colony
+        # if(len(possibleColonies) == 0):
+        #     print("FATAL ERROR.")
+        # max = 0
+        # # choosenColony = -1
+        # for colony in possibleColonies:
+        #     if(self.placeValue(colony) > max):
+        #         max = self.placeValue(colony)
+        #         choosenColony = colony
         return choosenColony
 
     def euristicTradeBank(self, player):
