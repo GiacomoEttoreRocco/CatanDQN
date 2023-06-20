@@ -158,6 +158,8 @@ class GameController:
                     print(f'Winner: {playerTurn.id}, Agent: {playerTurn.strategy.name()}\n')
                     # self.plotVictoryPoints(playerTurn._victoryPoints, playerTurn.id)
                     return playerTurn
+                if(self.game.actualTurn > 1000):
+                    return playerTurn
             # self.plotVictoryPoints(playerTurn._victoryPoints, playerTurn.id)
             #################################################################
     # def saveMove(self, player):

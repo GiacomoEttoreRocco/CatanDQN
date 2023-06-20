@@ -21,7 +21,7 @@ class RLStrategyGnnStreet(StrategyEuristic):
         return "RL-GNN-STREET"
     
     def getEps(self):
-        return self.macroDQN.EPS, self.streetDQN.EPS
+        return self.macroDQN.EPS #, self.streetDQN.EPS
     
     def epsDecay(self):
         self.macroDQN.epsDecay()
@@ -126,7 +126,7 @@ class RLStrategyGnnStreet(StrategyEuristic):
         return list(Board.Board().edges.keys())[bestStreet]
     
     def DQNPlaceColony(self, player):
-        print("Specialized colony placed.")
+        # print("Specialized colony placed.")
         possibleColoniesId = [Board.Board().places.index(place) for place in player.calculatePossibleColonies()]
 
         graph = Board.Board().boardStateGraph(player)
@@ -136,7 +136,7 @@ class RLStrategyGnnStreet(StrategyEuristic):
         return Board.Board().places[choosenColony]
     
     def DQNPlaceInitialColony(self, player):
-        print("Specialized initial colony placed.")
+        # print("Specialized initial colony placed.")
         possibleColoniesId = [Board.Board().places.index(place) for place in player.calculatePossibleInitialColonies()]
         graph = Board.Board().boardStateGraph(player)
         glob = player.globalFeaturesToTensor()

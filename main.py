@@ -76,7 +76,6 @@ def training(playerStrategies, iterationProcessIndex, iterations, numberOfTraini
 #     print(f'PERFORMANCE EVALUATION FINISHED. RESULT: {winners[0]/sum(winners)*100.0} %') 
 #     return winners[0]/sum(winners)*100.0
 
-    
 def writeOnCsv(i, winners):
     with open('results.csv', 'a') as f:
         writer = csv.writer(f)
@@ -93,9 +92,13 @@ if __name__ == '__main__':
         rlSpecializedStreet = RLStrategyGnnStreet()
 
         winners = []
+
         # strategies = [rlStrategyGnn, rEuristic, rlStrategyFf]
         # strategies = [rEuristic, rlSpecializedStreet]
-        strategies = [rlSpecializedStreet, rEuristic]
+        # strategies = [rlSpecializedStreet, rEuristic]
+
+        strategies = [rlSpecializedStreet, rlStrategyFf]
+
         withGraphics = False # True #    
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)

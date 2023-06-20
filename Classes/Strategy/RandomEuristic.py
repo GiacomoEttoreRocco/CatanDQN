@@ -7,8 +7,8 @@ from RL.DQGNN import DQGNNagent
 import random
 
 class RandomEuristicStrategy(StrategyEuristic):
-    def __init__(self): # diventerà un singleton
-        print("RANDOM EURISTIC CONSTRUCTOR")
+    # def __init__(self): 
+        # print("RANDOM EURISTIC CONSTRUCTOR")
         # self.macroDQN = DQGNNagent(11, 10) 
         # self.eps = self.macroDQN.EPS
 
