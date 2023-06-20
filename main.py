@@ -95,8 +95,8 @@ if __name__ == '__main__':
         winners = []
         # strategies = [rlStrategyGnn, rEuristic, rlStrategyFf]
         # strategies = [rEuristic, rlSpecializedStreet]
-        strategies = [rlStrategyGnn, rEuristic]
-        withGraphics = False # True #   
+        strategies = [rlSpecializedStreet, rEuristic]
+        withGraphics = True # False #    
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True, saveOnFile=False)
         start_time = time.time()

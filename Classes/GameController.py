@@ -75,10 +75,12 @@ class GameController:
                 # player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, player.reward, graph, glob)
                 player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, player._victoryPoints, graph, glob)
 
-                if(actionId.value == 2 and "STREET" in player.strategy.name()):
+                if("STREET" in player.strategy.name()):
                     # player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player.reward, graph, glob)
-                    player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player._victoryPoints, graph, glob)
-
+                    if(actionId.value == 2):
+                        player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player._victoryPoints, graph, glob)
+                    if(actionId.value == 3):
+                        player.strategy.colonyDQN.saveInMemory(previousGraph, previousGlob, Board.Board().places.index(thingNeeded), player._victoryPoints, graph, glob)
             elif(actionId.value > 0):
                 # print("d")
                 # player.strategy.macroDQN.saveInMemory(previousState, actionId.value, player.reward, self.game.getTotalState(player))

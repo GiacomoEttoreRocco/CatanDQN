@@ -10,7 +10,8 @@ class RLStrategyGnnStreet(StrategyEuristic):
     def __init__(self): # diventerà un singleton
         self.macroDQN = DQGNNagent(11, 10) # macro rete decisionale
         self.streetDQN = DQGNNagent(11, 72)
-        # self.colonyDQN = DQGNNagent(11, 54)
+
+        self.colonyDQN = DQGNNagent(11, 54)
 
     def name(self):
         return "RL-GNN-STREET"
@@ -77,7 +78,7 @@ class RLStrategyGnnStreet(StrategyEuristic):
         
         elif(action == commands.PlaceColonyCommand):
             # print("Place colony")
-            return  commands.PlaceColonyCommand, self.euristicPlaceColony(player), None
+            return  commands.PlaceColonyCommand, self.DQNPlaceColony(player), None
 
         elif(action == commands.PlaceCityCommand):
             # print("Placing city")
@@ -115,3 +116,25 @@ class RLStrategyGnnStreet(StrategyEuristic):
         bestStreet = self.streetDQN.step(graph, glob, availableStreetsId)
         # print(bestStreet)
         return list(Board.Board().edges.keys())[bestStreet]
+    
+    def DQNPlaceColony(self, player):
+        print("Specialized colony placed.")
+        possibleColoniesId = [Board.Board().places.index(place) for place in player.calculatePossibleColonies()]
+
+        graph = Board.Board().boardStateGraph(player)
+        glob = player.globalFeaturesToTensor()
+        choosenColony = self.colonyDQN.step(graph, glob, possibleColoniesId)
+        return choosenColony
+    
+    # def euristicPlaceColony(self, player):
+    #     possibleColonies = player.calculatePossibleColonies()
+    #     choosenColony = random.choice(possibleColonies)
+    #     # if(len(possibleColonies) == 0):
+    #     #     print("FATAL ERROR.")
+    #     # max = 0
+    #     # # choosenColony = -1
+    #     # for colony in possibleColonies:
+    #     #     if(self.placeValue(colony) > max):
+    #     #         max = self.placeValue(colony)
+    #     #         choosenColony = colony
+    #     return choosenColony
