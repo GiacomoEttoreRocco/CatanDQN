@@ -12,20 +12,8 @@ from Classes.Strategy.RLStrategyGNN import ReinforcementLearningStrategyGnn
 from Classes.Strategy.RLStrategyFF import ReinforcementLearningStrategyFf
 import time
 from Classes.Strategy.RLStrategyGNNstreetSp import RLStrategyGnnStreet
-
 from Classes.Strategy.RandomEuristic import RandomEuristicStrategy
 from Classes.staticUtilities import plotWinners2
-
-# def printWinners(winners):
-#         normValue = sum(winners)
-#         toPrint = [0.0, 0.0, 0.0, 0.0]
-#         for i, v in enumerate(winners):
-#             toPrint[i] = v/normValue
-#         s = ""
-#         for i, vperc in enumerate(toPrint):
-#             s = s + "Player " + str(i+1)+ ": " + str(round(vperc*100.0,2)) + " % "
-#         print(s)
-#         print(winners)
 
 def training(playerStrategies, iterationProcessIndex, iterations, numberOfTrainingGames, numberOfValidationGames):
     winners = [0.0] * len(playerStrategies)
@@ -40,11 +28,9 @@ def training(playerStrategies, iterationProcessIndex, iterations, numberOfTraini
             winner = game.playGameWithGraphic()
             winners[winner.id-1]+=1
             allGames = pd.concat([allGames, game.total], ignore_index=True)
-        
         print("Length of total moves of allGames: ", len(allGames))
         # printWinners(winners)
         allGames.to_json("./json/training_game.json")
-
         allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})   
         for numGame in range(numberOfValidationGames): 
             print('game: ', numGame+1, "/", numberOfValidationGames) 
@@ -68,9 +54,7 @@ if __name__ == '__main__':
         rlStrategyGnn = ReinforcementLearningStrategyGnn()
         rlStrategyFf = ReinforcementLearningStrategyFf()
         rEuristic = RandomEuristicStrategy()
-
         rlSpecializedStreet = RLStrategyGnnStreet()
-
         winners = []
         strategies = [rlSpecializedStreet, rlStrategyFf]
 
