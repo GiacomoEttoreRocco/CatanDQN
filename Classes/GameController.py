@@ -194,11 +194,13 @@ class GameController:
             else:
                 playerTurn = self.game.players[self.game.actualTurn%self.game.nplayers]
                 self.decisionManager(playerTurn)
-                if(playerTurn._victoryPoints >= 10 or self.game.actualTurn >= 100): 
+                if(playerTurn._victoryPoints >= 10 or self.game.actualTurn >= 120): 
                     # print(f'Winner: {playerTurn.id}, Agent: {playerTurn.strategy.name()}\n')
                     toReturn = []
                     for player in self.game.players:
                         toReturn.append(player._victoryPoints)
+                        if("RL" in player.strategy.name()):
+                            player.strategy.epsDecay()
                     # print(toReturn)
                     return toReturn
 

@@ -56,19 +56,19 @@ if __name__ == '__main__':
         rEuristic = RandomEuristicStrategy()
         rlSpecializedStreet = RLStrategyGnnStreet()
         # winners = []
-        strategies = [rlStrategyGnn, rEuristic]
+        strategies = [rlStrategyFf, rEuristic]
         withGraphics = False # True #    
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
         start_time = time.time()
         saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results.csv")
-        for i in range(0, 1000):
+        for i in range(0, 100):
             print(".", end='')
             finalPoints = gameCtrl.playGameForTraining()
             saveInCsv(finalPoints, "csvFolder/results.csv")
             # idEpisode += 1
             gameCtrl.reset(idEpisode)
-            if(i%100==0):
+            if(i%100==0 and i > 0):
                  print(".")
             # plotWinners2(winners, strategies) 
         # if(withGraphics):
