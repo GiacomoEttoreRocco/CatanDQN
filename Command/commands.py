@@ -286,8 +286,6 @@ class DiceProductionCommand:
                     for p in tile.associatedPlaces:
                         if(Board.Board().places[p].owner != 0):
                             if(Board.Board().places[p].isColony):
-                                # print(Board.Board().places[p].owner)
-                                # print("Riga 290 commands: ", Board.Board().places[p])
                                 self.actions.append(BankGiveResourceCommand(self.game.players[Board.Board().places[p].owner-1], tile.resource))
                             elif(Board.Board().places[p].isCity):
                                 self.actions.append(BankGiveResourceCommand(self.game.players[Board.Board().places[p].owner-1], tile.resource))

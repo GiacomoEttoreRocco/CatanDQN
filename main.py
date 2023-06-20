@@ -16,16 +16,16 @@ from Classes.Strategy.RLStrategyGNNstreetSp import RLStrategyGnnStreet
 from Classes.Strategy.RandomEuristic import RandomEuristicStrategy
 from Classes.staticUtilities import plotWinners2
 
-def printWinners(winners):
-        normValue = sum(winners)
-        toPrint = [0.0, 0.0, 0.0, 0.0]
-        for i, v in enumerate(winners):
-            toPrint[i] = v/normValue
-        s = ""
-        for i, vperc in enumerate(toPrint):
-            s = s + "Player " + str(i+1)+ ": " + str(round(vperc*100.0,2)) + " % "
-        print(s)
-        print(winners)
+# def printWinners(winners):
+#         normValue = sum(winners)
+#         toPrint = [0.0, 0.0, 0.0, 0.0]
+#         for i, v in enumerate(winners):
+#             toPrint[i] = v/normValue
+#         s = ""
+#         for i, vperc in enumerate(toPrint):
+#             s = s + "Player " + str(i+1)+ ": " + str(round(vperc*100.0,2)) + " % "
+#         print(s)
+#         print(winners)
 
 def training(playerStrategies, iterationProcessIndex, iterations, numberOfTrainingGames, numberOfValidationGames):
     winners = [0.0] * len(playerStrategies)
@@ -54,27 +54,7 @@ def training(playerStrategies, iterationProcessIndex, iterations, numberOfTraini
             allGames = pd.concat([allGames, game.total], ignore_index=True)
 
         print("Length of total moves of allGames: ", len(allGames))
-        # printWinners(winners)
         allGames.to_json("./json/testing_game.json")
-        
-        # Gnn().trainModel(validate=True)
-
-# def performanceEvaluation(iterationProcessIndex, playerTypes, numberOfTestingGames, withGraphics, speed):
-#     print("PERFORMANCE EVALUATION STARTED...")
-#     winners = [0.0, 0.0]
-#     special = playerTypes[-1]
-#     for numGame in range(numberOfTestingGames): 
-#         np.random.shuffle(playerTypes)
-#         print('game: ', numGame+1, "/", numberOfTestingGames) 
-#         game = c.GameController.GameController(playerTypes=playerTypes, withGraphics=withGraphics, speed=speed, )
-#         winner = game.playGameWithGraphic()
-#         if winner.type == special:
-#             winners[0]+=1
-#         else:
-#             winners[1]+=1
-    
-#     print(f'PERFORMANCE EVALUATION FINISHED. RESULT: {winners[0]/sum(winners)*100.0} %') 
-#     return winners[0]/sum(winners)*100.0
 
 def writeOnCsv(i, winners):
     with open('results.csv', 'a') as f:
@@ -92,11 +72,6 @@ if __name__ == '__main__':
         rlSpecializedStreet = RLStrategyGnnStreet()
 
         winners = []
-
-        # strategies = [rlStrategyGnn, rEuristic, rlStrategyFf]
-        # strategies = [rEuristic, rlSpecializedStreet]
-        # strategies = [rlSpecializedStreet, rEuristic]
-
         strategies = [rlSpecializedStreet, rlStrategyFf]
 
         withGraphics = False # True #    
@@ -111,10 +86,7 @@ if __name__ == '__main__':
             idEpisode += 1
             winners.append(winner.id)
             gameCtrl.reset(idEpisode)
-            # if(i%10==0):
-            plotWinners2(winners, strategies) #, rlStrategyFf.name())
-            # if(i%100==0):
-            #     plt.savefig("plots/wPlot{}.png".format(i)) 
+            plotWinners2(winners, strategies) 
         if(withGraphics):
              pygame.quit()
         end_time = time.time()
