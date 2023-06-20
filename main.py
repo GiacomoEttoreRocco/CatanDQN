@@ -59,22 +59,22 @@ def training(playerStrategies, iterationProcessIndex, iterations, numberOfTraini
         
         # Gnn().trainModel(validate=True)
 
-def performanceEvaluation(iterationProcessIndex, playerTypes, numberOfTestingGames, withGraphics, speed):
-    print("PERFORMANCE EVALUATION STARTED...")
-    winners = [0.0, 0.0]
-    special = playerTypes[-1]
-    for numGame in range(numberOfTestingGames): 
-        np.random.shuffle(playerTypes)
-        print('game: ', numGame+1, "/", numberOfTestingGames) 
-        game = c.GameController.GameController(playerTypes=playerTypes, withGraphics=withGraphics, speed=speed, saveOnFile=False)
-        winner = game.playGameWithGraphic()
-        if winner.type == special:
-            winners[0]+=1
-        else:
-            winners[1]+=1
+# def performanceEvaluation(iterationProcessIndex, playerTypes, numberOfTestingGames, withGraphics, speed):
+#     print("PERFORMANCE EVALUATION STARTED...")
+#     winners = [0.0, 0.0]
+#     special = playerTypes[-1]
+#     for numGame in range(numberOfTestingGames): 
+#         np.random.shuffle(playerTypes)
+#         print('game: ', numGame+1, "/", numberOfTestingGames) 
+#         game = c.GameController.GameController(playerTypes=playerTypes, withGraphics=withGraphics, speed=speed, )
+#         winner = game.playGameWithGraphic()
+#         if winner.type == special:
+#             winners[0]+=1
+#         else:
+#             winners[1]+=1
     
-    print(f'PERFORMANCE EVALUATION FINISHED. RESULT: {winners[0]/sum(winners)*100.0} %') 
-    return winners[0]/sum(winners)*100.0
+#     print(f'PERFORMANCE EVALUATION FINISHED. RESULT: {winners[0]/sum(winners)*100.0} %') 
+#     return winners[0]/sum(winners)*100.0
 
     
 def writeOnCsv(i, winners):
@@ -98,7 +98,7 @@ if __name__ == '__main__':
         strategies = [rlSpecializedStreet, rEuristic]
         withGraphics = True # False #    
         idEpisode = 0
-        gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=False, saveOnFile=False)
+        gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
         start_time = time.time()
         for i in range(0, 2000):
             winner = gameCtrl.playGame()

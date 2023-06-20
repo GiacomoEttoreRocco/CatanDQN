@@ -19,12 +19,11 @@ from matplotlib import pyplot as plt
 
 class GameController:
 
-    def __init__(self, playerStrategies, idEpisode, speed=True, saveOnFile=True, withGraphics=False) -> None:
+    def __init__(self, playerStrategies, idEpisode, speed=True, withGraphics=False) -> None:
         self.prelimit = 10 # episodes before plots
         self.idEpisode = idEpisode 
 
         self.speed = speed
-        self.saveOnFile = saveOnFile
         self.withGraphics = withGraphics
         self.playerStrategies = playerStrategies
         self.game = c.Game.Game(len(playerStrategies)) 
