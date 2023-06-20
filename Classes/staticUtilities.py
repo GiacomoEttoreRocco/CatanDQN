@@ -86,6 +86,7 @@ def saveInCsv(data, nome_file):
     with open(nome_file, 'a', newline='') as file_csv:
         writer = csv.writer(file_csv)
         writer.writerow(data)
+    # print(".", end='')
 
 def plotCsvColumns(nome_file):
     with open(nome_file, 'r') as file_csv:

@@ -62,15 +62,17 @@ if __name__ == '__main__':
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
         start_time = time.time()
         saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results.csv")
-        for i in range(0, 500):
+        for i in range(0, 1000):
+            print(".", end='')
             finalPoints = gameCtrl.playGameForTraining()
             saveInCsv(finalPoints, "csvFolder/results.csv")
             # idEpisode += 1
             gameCtrl.reset(idEpisode)
+            if(i%100==0):
+                 print(".")
             # plotWinners2(winners, strategies) 
-            print(".", end='')
-        if(withGraphics):
-             pygame.quit()
+        # if(withGraphics):
+        #      pygame.quit()
         end_time = time.time()
         execution_time = end_time - start_time
         print(f"Execution time: {execution_time} seconds")
