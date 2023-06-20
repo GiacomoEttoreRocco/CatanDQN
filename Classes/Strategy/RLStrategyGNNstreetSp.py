@@ -124,7 +124,8 @@ class RLStrategyGnnStreet(StrategyEuristic):
         graph = Board.Board().boardStateGraph(player)
         glob = player.globalFeaturesToTensor()
         choosenColony = self.colonyDQN.step(graph, glob, possibleColoniesId)
-        return choosenColony
+        # print(choosenColony)
+        return Board.Board().places[choosenColony]
     
     # def euristicPlaceColony(self, player):
     #     possibleColonies = player.calculatePossibleColonies()
