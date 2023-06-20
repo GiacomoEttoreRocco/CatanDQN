@@ -57,7 +57,6 @@ if __name__ == '__main__':
         rlSpecializedStreet = RLStrategyGnnStreet()
         # winners = []
         strategies = [rlSpecializedStreet, rEuristic]
-
         withGraphics = False # True #    
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)

@@ -97,8 +97,8 @@ def plotCsvColumns(nome_file):
     colonna2 = [float(row[1]) for row in data]
     
     # Traccia i valori delle colonne
-    plt.plot(colonna1, color='red', label='Colonna 1')
-    plt.plot(colonna2, color='blue', label='Colonna 2')
+    plt.scatter(colonna1, color='red', label='Colonna 1')
+    plt.scatter(colonna2, color='blue', label='Colonna 2')
     
     # Imposta i titoli degli assi e la legenda
     plt.xlabel('Indice')
@@ -108,7 +108,96 @@ def plotCsvColumns(nome_file):
     # Mostra il grafico
     plt.show()
 
-def plotCsvColumnsWithHeaders(nome_file):
+# def plotCsvColumnsWithHeaders(nome_file):
+#     with open(nome_file, 'r') as file_csv:
+#         reader = csv.reader(file_csv)
+#         headers = next(reader)  # Salta le etichette delle colonne
+#         data = list(reader)
+    
+#     # Estrai i dati dalle colonne
+#     colonna1 = [float(row[0]) for row in data]
+#     colonna2 = [float(row[1]) for row in data]
+    
+#     # Traccia i valori delle colonne
+#     plt.plot(colonna1, color='red', label=headers[0])
+#     plt.plot(colonna2, color='blue', label=headers[1])
+    
+#     # Imposta i titoli degli assi e la legenda
+#     plt.xlabel('Indice')
+#     plt.ylabel('Valore')
+#     plt.legend()
+    
+#     # Mostra il grafico
+#     plt.show()
+
+# def plotCsvColumnsWithHeaders(nome_file, interval, nome1, nome2):
+#     with open(nome_file, 'r') as file_csv:
+#         reader = csv.reader(file_csv)
+#         headers = next(reader)  # Salta le etichette delle colonne
+#         data = list(reader)
+#     # Estrai i dati dalle colonne
+#     colonna1 = [float(row[0]) for row in data]
+#     colonna2 = [float(row[1]) for row in data]
+#     # Calcola i punti medi ogni 10 punti
+#     punti_medi_colonna1 = []
+#     punti_medi_colonna2 = []
+#     for i in range(0, len(colonna1), interval):
+#         media_colonna1 = sum(colonna1[i:i+interval]) / float(interval)
+#         media_colonna2 = sum(colonna2[i:i+interval]) / float(interval)
+#         punti_medi_colonna1.append(media_colonna1)
+#         punti_medi_colonna2.append(media_colonna2)
+#     # Crea un array di indici per i punti medi
+#     indici_punti_medi = range(0, len(colonna1), interval)
+#     # Traccia i punti medi come line plot
+#     plt.plot(indici_punti_medi, punti_medi_colonna1, color='red', label='Media ogni 10 punti ('+nome1+')')
+#     plt.plot(indici_punti_medi, punti_medi_colonna2, color='blue', label='Media ogni 10 punti ('+nome2+')')
+#     # Imposta i titoli degli assi e la legenda
+#     plt.xlabel('Indice')
+#     plt.ylabel('Valore')
+#     plt.legend()
+#     # Mostra il grafico
+#     plt.show()
+
+def plotCsvColumnsWithHeaders(nome_file, interval, nome1, nome2):
+    with open(nome_file, 'r') as file_csv:
+        reader = csv.reader(file_csv)
+        headers = next(reader)  # Salta le etichette delle colonne
+        data = list(reader)
+
+    # Estrai i dati dalle colonne
+    colonna1 = [float(row[0]) for row in data]
+    colonna2 = [float(row[1]) for row in data]
+
+    # Calcola i punti medi ogni interval punti
+    punti_medi_colonna1 = []
+    punti_medi_colonna2 = []
+    for i in range(0, len(colonna1), interval):
+        if i + interval <= len(colonna1):
+            media_colonna1 = sum(colonna1[i:i+interval]) / float(interval)
+            media_colonna2 = sum(colonna2[i:i+interval]) / float(interval)
+        else:
+            media_colonna1 = sum(colonna1[i:]) / float(len(colonna1) - i)
+            media_colonna2 = sum(colonna2[i:]) / float(len(colonna2) - i)
+        punti_medi_colonna1.append(media_colonna1)
+        punti_medi_colonna2.append(media_colonna2)
+
+    # Crea un array di indici per i punti medi
+    indici_punti_medi = range(0, len(colonna1), interval)
+
+    # Traccia i punti medi come line plot
+    plt.plot(indici_punti_medi, punti_medi_colonna1, color='red', label='Media ogni ' + str(interval) + ' punti (' + nome1 + ')')
+    plt.plot(indici_punti_medi, punti_medi_colonna2, color='blue', label='Media ogni ' + str(interval) + ' punti (' + nome2 + ')')
+
+    # Imposta i titoli degli assi e la legenda
+    plt.xlabel('Indice')
+    plt.ylabel('Valore')
+    plt.legend()
+
+    # Mostra il grafico
+    plt.show()
+
+
+def scatterCsvColumnsWithHeaders(nome_file):
     with open(nome_file, 'r') as file_csv:
         reader = csv.reader(file_csv)
         headers = next(reader)  # Salta le etichette delle colonne
@@ -118,9 +207,12 @@ def plotCsvColumnsWithHeaders(nome_file):
     colonna1 = [float(row[0]) for row in data]
     colonna2 = [float(row[1]) for row in data]
     
+    # Crea un array di indici per l'asse x
+    indici = range(len(colonna1))
+    
     # Traccia i valori delle colonne
-    plt.plot(colonna1, color='red', label=headers[0])
-    plt.plot(colonna2, color='blue', label=headers[1])
+    plt.scatter(indici, colonna1, color='red', label=headers[0])
+    plt.scatter(indici, colonna2, color='blue', label=headers[1])
     
     # Imposta i titoli degli assi e la legenda
     plt.xlabel('Indice')
