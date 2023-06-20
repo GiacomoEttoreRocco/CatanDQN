@@ -30,7 +30,7 @@ class Board:
                         "year_of_plenty","year_of_plenty","monopoly","monopoly", "road_building","road_building"]
             #   SHUFFLE DECK
 
-            # np.random.seed(2983)
+            np.random.seed(2983)
             
             cls.deck = np.random.permutation(cls.deck)
             cls.graph = CatanGraph.CatanGraph()
