@@ -8,7 +8,6 @@ import random
 
 class RLStrategyGnnStreet(StrategyEuristic):
     def __init__(self): # diventerà un singleton
-        print("RL STRATEGY CONSTRUCTOR")
         self.macroDQN = DQGNNagent(11, 10) # macro rete decisionale
         self.streetDQN = DQGNNagent(11, 72)
 

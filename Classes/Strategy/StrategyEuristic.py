@@ -84,37 +84,38 @@ class StrategyEuristic:
         else:
             print("Non existing move selected.")
     
-    def resValue(self, resource):
-        if(resource == "iron"):
-            return 0.5
-        elif(resource == "crop"):
-            return 0.5
-        elif(resource == "wood"):
-            return 0.4
-        elif(resource == "clay"):
-            return 0.4
-        elif(resource == "sheep"):
-            return 0.3
-        else:
-            return 0
+    # def resValue(self, resource):
+    #     if(resource == "iron"):
+    #         return 0.5
+    #     elif(resource == "crop"):
+    #         return 0.5
+    #     elif(resource == "wood"):
+    #         return 0.4
+    #     elif(resource == "clay"):
+    #         return 0.4
+    #     elif(resource == "sheep"):
+    #         return 0.3
+    #     else:
+    #         return 0
     
-    def diceEvaluationFunction(self, diceValue):
-        return 7.0 / (1.0 + abs(diceValue - 7.0))
+    # def diceEvaluationFunction(self, diceValue):
+    #     return 7.0 / (1.0 + abs(diceValue - 7.0))
     
-    def placeValue(self, place):
-        value = 0
-        for tile in place.touchedTiles:
-            value += self.resValue(Board.Board().tiles[tile].resource) * self.diceEvaluationFunction(Board.Board().tiles[tile].number)
-        return value
+    # def placeValue(self, place):
+    #     value = 0
+    #     for tile in place.touchedTiles:
+    #         value += self.resValue(Board.Board().tiles[tile].resource) * self.diceEvaluationFunction(Board.Board().tiles[tile].number)
+    #     return value
         
     def euristicInitialFirstMove(self, player):
         availablePlaces = player.calculatePossibleInitialColonies()
-        max = 0
+        # max = 0
         choosenPlace = -1
-        for place in availablePlaces:
-            if(self.placeValue(place) > max):
-                max = self.placeValue(place)
-                choosenPlace = place
+        # for place in availablePlaces:
+        #     if(self.placeValue(place) > max):
+        #         max = self.placeValue(place)
+        #         choosenPlace = place
+        choosenPlace = random.choose(availablePlaces)
         return choosenPlace
     
     def euristicPlaceInitialStreet(self, player):
