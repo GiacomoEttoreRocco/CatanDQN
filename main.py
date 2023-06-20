@@ -13,7 +13,7 @@ from Classes.Strategy.RLStrategyFF import ReinforcementLearningStrategyFf
 import time
 from Classes.Strategy.RLStrategyGNNstreetSp import RLStrategyGnnStreet
 from Classes.Strategy.RandomEuristic import RandomEuristicStrategy
-from Classes.staticUtilities import plotWinners2
+from Classes.staticUtilities import plotCsvColumns, plotCsvColumnsWithHeaders, plotWinners2, saveInCsv
 
 def training(playerStrategies, iterationProcessIndex, iterations, numberOfTrainingGames, numberOfValidationGames):
     winners = [0.0] * len(playerStrategies)
@@ -55,28 +55,28 @@ if __name__ == '__main__':
         rlStrategyFf = ReinforcementLearningStrategyFf()
         rEuristic = RandomEuristicStrategy()
         rlSpecializedStreet = RLStrategyGnnStreet()
-        winners = []
-        strategies = [rlSpecializedStreet, rlStrategyFf]
+        # winners = []
+        strategies = [rlSpecializedStreet, rEuristic]
 
         withGraphics = False # True #    
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
         start_time = time.time()
-        for i in range(0, 2000):
-            winner = gameCtrl.playGame()
-            if(winner.strategy.name() == "RL-GNN" or winner.strategy.name() == "RL-GNN-STREET" or winner.strategy.name() == "RL-FF"):
-                 winner.strategy.epsDecay()
-                 print(winner.strategy.getEps())
-            idEpisode += 1
-            winners.append(winner.id)
+        saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results.csv")
+        for i in range(0, 500):
+            finalPoints = gameCtrl.playGameForTraining()
+            saveInCsv(finalPoints, "csvFolder/results.csv")
+            # idEpisode += 1
             gameCtrl.reset(idEpisode)
-            plotWinners2(winners, strategies) 
+            # plotWinners2(winners, strategies) 
+            print(".", end='')
         if(withGraphics):
              pygame.quit()
         end_time = time.time()
         execution_time = end_time - start_time
         print(f"Execution time: {execution_time} seconds")
         # plt.savefig("plots/wPlot.png")
+        plotCsvColumnsWithHeaders("csvFolder/results.csv")
 
         
 

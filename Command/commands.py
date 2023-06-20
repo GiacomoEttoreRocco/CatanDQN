@@ -226,8 +226,8 @@ class BankGiveResourceCommand:
             if Bank.Bank().resources[self.resource] > 0:
                 self.actions.append(AddResourceToPlayer(self.player, self.resource))
                 self.actions.append(RemoveResourceToBank(self.resource))
-            else:
-                print(f'Bank does not have {self.resource} anymore. Request by Player {self.player.id}')
+            # else:
+                # print(f'Bank does not have {self.resource} anymore. Request by Player {self.player.id}')
         for action in self.actions:
             action.execute()
 

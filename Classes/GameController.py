@@ -43,7 +43,7 @@ class GameController:
         c.Bank.Bank().reset()
         # Gnn.Gnn().reset()
         self.game.reset()
-        print("GLOBAL RESET")
+        # print("GLOBAL RESET")
         self.idEpisode = idEpisode
         # if(idEpisode > self.prelimit):
         #     self.resetPlot()
@@ -154,7 +154,7 @@ class GameController:
             else:
                 playerTurn = self.game.players[self.game.actualTurn%self.game.nplayers]
                 self.decisionManager(playerTurn)
-                if(playerTurn._victoryPoints >= 10):
+                if(playerTurn._victoryPoints >= 10): # max length
                     print(f'Winner: {playerTurn.id}, Agent: {playerTurn.strategy.name()}\n')
                     # self.plotVictoryPoints(playerTurn._victoryPoints, playerTurn.id)
                     return playerTurn
@@ -179,6 +179,28 @@ class GameController:
     valueFunction2 = []
     lastId = 2
     # idEpisode = 0
+
+    def playGameForTraining(self):    
+        if(self.withGraphics):
+            GameView.GameView.setupAndDisplayBoard(self.view)
+            GameView.GameView.setupPlaces(self.view)
+            GameView.GameView.updateGameScreen(self.view)
+        self.game.actualTurn = 0       
+        reverseTurnOffSet = [*list(range(self.game.nplayers)), *list(reversed(range(self.game.nplayers)))]
+        while True:
+            if(self.game.actualTurn < self.game.nplayers*2):
+                playerTurn = self.game.players[reverseTurnOffSet[self.game.actualTurn]] 
+                self.decisionManager(playerTurn)
+            else:
+                playerTurn = self.game.players[self.game.actualTurn%self.game.nplayers]
+                self.decisionManager(playerTurn)
+                if(playerTurn._victoryPoints >= 10 or self.game.actualTurn >= 100): 
+                    # print(f'Winner: {playerTurn.id}, Agent: {playerTurn.strategy.name()}\n')
+                    toReturn = []
+                    for player in self.game.players:
+                        toReturn.append(player._victoryPoints)
+                    # print(toReturn)
+                    return toReturn
 
     def resetPlot(self):
         self.valueFunction1 = []

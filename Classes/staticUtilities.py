@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
-
+import csv
 from Classes import Board
-
 
 def availableResourcesForColony(resDict):
     return resDict["wood"] >= 1 and resDict["clay"] >= 1 and resDict["sheep"] >= 1 and resDict["crop"] >= 1
@@ -27,7 +26,6 @@ def blockableTile(player, tile):
             # print("Owner: " , Board.Board().places[place].owner)
             return True
     return False
-
 
 def plotWinners2(winnerIds, listOfAgents):
     counter = range(1, len(winnerIds) + 1)
@@ -84,3 +82,50 @@ def plotWinners3(winnerIds, name1, name2, name3):
         plt.legend()
     plt.pause(0.001)
 
+def saveInCsv(data, nome_file):
+    with open(nome_file, 'a', newline='') as file_csv:
+        writer = csv.writer(file_csv)
+        writer.writerow(data)
+
+def plotCsvColumns(nome_file):
+    with open(nome_file, 'r') as file_csv:
+        reader = csv.reader(file_csv)
+        data = list(reader)
+    
+    # Estrai i dati dalle colonne
+    colonna1 = [float(row[0]) for row in data]
+    colonna2 = [float(row[1]) for row in data]
+    
+    # Traccia i valori delle colonne
+    plt.plot(colonna1, color='red', label='Colonna 1')
+    plt.plot(colonna2, color='blue', label='Colonna 2')
+    
+    # Imposta i titoli degli assi e la legenda
+    plt.xlabel('Indice')
+    plt.ylabel('Valore')
+    plt.legend()
+    
+    # Mostra il grafico
+    plt.show()
+
+def plotCsvColumnsWithHeaders(nome_file):
+    with open(nome_file, 'r') as file_csv:
+        reader = csv.reader(file_csv)
+        headers = next(reader)  # Salta le etichette delle colonne
+        data = list(reader)
+    
+    # Estrai i dati dalle colonne
+    colonna1 = [float(row[0]) for row in data]
+    colonna2 = [float(row[1]) for row in data]
+    
+    # Traccia i valori delle colonne
+    plt.plot(colonna1, color='red', label=headers[0])
+    plt.plot(colonna2, color='blue', label=headers[1])
+    
+    # Imposta i titoli degli assi e la legenda
+    plt.xlabel('Indice')
+    plt.ylabel('Valore')
+    plt.legend()
+    
+    # Mostra il grafico
+    plt.show()
