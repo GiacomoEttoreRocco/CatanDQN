@@ -56,7 +56,7 @@ if __name__ == '__main__':
         rEuristic = RandomEuristicStrategy()
         rlSpecializedStreet = RLStrategyGnnStreet()
         # winners = []
-        strategies = [rlSpecializedStreet, rEuristic]
+        strategies = [rlStrategyGnn, rEuristic]
         withGraphics = False # True #    
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
@@ -75,7 +75,7 @@ if __name__ == '__main__':
         execution_time = end_time - start_time
         print(f"Execution time: {execution_time} seconds")
         # plt.savefig("plots/wPlot.png")
-        plotCsvColumnsWithHeaders("csvFolder/results.csv")
+        # plotCsvColumnsWithHeaders("csvFolder/results.csv")
 
         
 
