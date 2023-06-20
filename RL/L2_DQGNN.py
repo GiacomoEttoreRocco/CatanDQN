@@ -75,7 +75,7 @@ class L2DQGNNagent():
     def optimize_model(self, fatherDQN):
         if len(self.memory) < self.BATCH_SIZE:
             return
-        print("optimizing... "+ self.name)
+        # print("optimizing... "+ self.name)
         transitions = self.memory.sample(self.BATCH_SIZE)
         batch = Transition(*zip(*transitions)) 
         graph_batch = Batch.from_data_list(batch.graph)
