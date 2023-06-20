@@ -10,6 +10,7 @@ class RLStrategyGnnStreet(StrategyEuristic):
     def __init__(self): # diventerà un singleton
         self.macroDQN = DQGNNagent(11, 10) # macro rete decisionale
         self.streetDQN = DQGNNagent(11, 72)
+        # self.colonyDQN = DQGNNagent(11, 54)
 
     def name(self):
         return "RL-GNN-STREET"
@@ -114,10 +115,3 @@ class RLStrategyGnnStreet(StrategyEuristic):
         bestStreet = self.streetDQN.step(graph, glob, availableStreetsId)
         # print(bestStreet)
         return list(Board.Board().edges.keys())[bestStreet]
-
-    # def euristicPlaceStreet(self, player):
-    #     availableStreets = player.calculatePossibleStreets()
-    #     # print(availableStreets)
-    #     if(len(availableStreets) != 0):
-    #         return random.choice(availableStreets) # per ora random
-    #     return None
