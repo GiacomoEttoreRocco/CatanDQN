@@ -98,7 +98,7 @@ if __name__ == '__main__':
         strategies = [rlSpecializedStreet, rEuristic]
         withGraphics = True # False #    
         idEpisode = 0
-        gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True, saveOnFile=False)
+        gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=False, saveOnFile=False)
         start_time = time.time()
         for i in range(0, 2000):
             winner = gameCtrl.playGame()
@@ -108,10 +108,10 @@ if __name__ == '__main__':
             idEpisode += 1
             winners.append(winner.id)
             gameCtrl.reset(idEpisode)
-            if(i%10==0):
-                plotWinners2(winners, strategies) #, rlStrategyFf.name())
-            if(i%100==0):
-                plt.savefig("plots/wPlot{}.png".format(i)) 
+            # if(i%10==0):
+            plotWinners2(winners, strategies) #, rlStrategyFf.name())
+            # if(i%100==0):
+            #     plt.savefig("plots/wPlot{}.png".format(i)) 
         if(withGraphics):
              pygame.quit()
         end_time = time.time()

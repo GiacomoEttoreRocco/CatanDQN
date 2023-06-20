@@ -6,13 +6,16 @@ from Command import commands, controller
 from RL.DQGNN import DQGNNagent
 import random
 
+from RL.L2_DQGNN import L2DQGNNagent
+
 class RLStrategyGnnStreet(StrategyEuristic):
     def __init__(self): # diventerà un singleton
         self.macroDQN = DQGNNagent(11, 10) # macro rete decisionale
-        self.streetDQN = DQGNNagent(11, 72)
-        self.colonyDQN = DQGNNagent(11, 54)
 
-        self.initialColonyDQN = DQGNNagent(11, 54)
+        self.streetDQN = L2DQGNNagent(11, 72)
+        self.colonyDQN = L2DQGNNagent(11, 54)
+
+        # self.initialColonyDQN = DQGNNagent(11, 54)
 
     def name(self):
         return "RL-GNN-STREET"
@@ -23,6 +26,7 @@ class RLStrategyGnnStreet(StrategyEuristic):
     def epsDecay(self):
         self.macroDQN.epsDecay()
         self.streetDQN.epsDecay()
+        self.colonyDQN.epsDecay()
         # self.eps = self.macroDQN.EPS
 
     def bestAction(self, player):  #, previousReward):
@@ -114,7 +118,7 @@ class RLStrategyGnnStreet(StrategyEuristic):
 
         graph = Board.Board().boardStateGraph(player)
         glob = player.globalFeaturesToTensor()
-        bestStreet = self.streetDQN.step(graph, glob, availableStreetsId)
+        bestStreet = self.streetDQN.step(graph, glob, availableStreetsId, self.macroDQN)
         # print(bestStreet)
         return list(Board.Board().edges.keys())[bestStreet]
     
@@ -124,29 +128,17 @@ class RLStrategyGnnStreet(StrategyEuristic):
 
         graph = Board.Board().boardStateGraph(player)
         glob = player.globalFeaturesToTensor()
-        choosenColony = self.colonyDQN.step(graph, glob, possibleColoniesId)
+        choosenColony = self.colonyDQN.step(graph, glob, possibleColoniesId, self.macroDQN)
         # print(choosenColony)
         return Board.Board().places[choosenColony]
     
-    def DQNPlaceColony(self, player):
-        print("Specialized initial colony placed.")
-        possibleColoniesId = [Board.Board().places.index(place) for place in player.calculatePossibleInitialColonies()]
+    # def DQNPlaceColony(self, player):
+    #     print("Specialized initial colony placed.")
+    #     possibleColoniesId = [Board.Board().places.index(place) for place in player.calculatePossibleInitialColonies()]
 
-        graph = Board.Board().boardStateGraph(player)
-        glob = player.globalFeaturesToTensor()
-        choosenColony = self.colonyDQN.step(graph, glob, possibleColoniesId)
-        # print(choosenColony)
-        return Board.Board().places[choosenColony]
+    #     graph = Board.Board().boardStateGraph(player)
+    #     glob = player.globalFeaturesToTensor()
+    #     choosenColony = self.colonyDQN.step(graph, glob, possibleColoniesId)
+    #     # print(choosenColony)
+    #     return Board.Board().places[choosenColony]
     
-    # def euristicPlaceColony(self, player):
-    #     possibleColonies = player.calculatePossibleColonies()
-    #     choosenColony = random.choice(possibleColonies)
-    #     # if(len(possibleColonies) == 0):
-    #     #     print("FATAL ERROR.")
-    #     # max = 0
-    #     # # choosenColony = -1
-    #     # for colony in possibleColonies:
-    #     #     if(self.placeValue(colony) > max):
-    #     #         max = self.placeValue(colony)
-    #     #         choosenColony = colony
-    #     return choosenColony
