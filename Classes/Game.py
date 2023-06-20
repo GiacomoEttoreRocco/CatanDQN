@@ -38,7 +38,7 @@ class Game:
         self.longestStreetOwner = self.dummy
         self.longestStreetLength = 4
         self.tmpVisitedEdges = []
-        self.dices = [self.rollDice() for _ in range(1000)]
+        self.dices = [self.rollDice() for _ in range(1200)]
         self.actualTurn = 0
         self.currentTurnPlayer = self.players[0] #self.dummy
 
