@@ -135,13 +135,14 @@ class StrategyEuristic:
         
     def euristicPlaceCity(self, player):
         ownedColonies = player.ownedColonies # to upgrade in city
-        max = 0
-        choosenColony = -1
-        for colony in ownedColonies:
-            if(self.placeValue(Board.Board().places[colony]) > max): # da verificare
-                max = self.placeValue(Board.Board().places[colony])
-                choosenColony = colony
-        return Board.Board().places[choosenColony]
+        # max = 0
+        # choosenColony = -1
+        # for colony in ownedColonies:
+        #     if(self.placeValue(Board.Board().places[colony]) > max): # da verificare
+        #         max = self.placeValue(Board.Board().places[colony])
+        #         choosenColony = colony
+        choosenPlace = random.choice(ownedColonies)
+        return Board.Board().places[choosenPlace]
     
     def euristicPlaceColony(self, player):
         possibleColonies = player.calculatePossibleColonies()
