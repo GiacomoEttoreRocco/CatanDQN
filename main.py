@@ -66,6 +66,7 @@ if __name__ == '__main__':
         seed = 2
         for seed in range(1, 20):
             rlStrategyGnn = ReinforcementLearningStrategyGnn()
+            print("Riga 69 main: ", rlStrategyGnn)
             print("Should be 1: ", rlStrategyGnn.getEps())
             # start_time = time.time()
             saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results"+str(seed)+".csv")
@@ -75,10 +76,10 @@ if __name__ == '__main__':
                 saveInCsv(finalPoints, "csvFolder/results"+str(seed)+".csv")
                 # finalPoints = gameCtrl.playGame()
                 # idEpisode += 1
+                print("Defenetly NOT 1: ", rlStrategyGnn.getEps())
                 gameCtrl.reset(idEpisode)
                 if(i%100==0 and i > 0):
                     print(".")
-            print("Defenetly NOT 1: ", rlStrategyGnn.getEps())
             
         #####################################################################################
         #####################################################################################

@@ -11,7 +11,7 @@ import AI.Gnn as Gnn
 import torch
 
 class Player: 
-    def __init__(self, id, game, strategy : Strategy()):
+    def __init__(self, id, game, strategy : Strategy):
         self.id = id
         # if(strategy == None):
         self.strategy = strategy

@@ -29,6 +29,7 @@ class GameController:
         self.game = c.Game.Game(len(playerStrategies)) 
 
         for player, strategy in zip(self.game.players, self.playerStrategies):
+            print("Riga 32 gamecontroller:", strategy)
             player.strategy = strategy
 
         if self.withGraphics:
@@ -199,7 +200,7 @@ class GameController:
                     for player in self.game.players:
                         toReturn.append(player._victoryPoints)
                         if("RL" in player.strategy.name()):
-                            # print("d")   
+                            print("-")
                             player.strategy.epsDecay()
                     # print(toReturn)
                     return toReturn
