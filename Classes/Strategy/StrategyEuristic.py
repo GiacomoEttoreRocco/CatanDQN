@@ -201,19 +201,19 @@ class StrategyEuristic:
     def euristicPlaceRobber(self, player):
         bestTile = random.choice(Board.Board().tiles)
         # bestTile = None
-        for tile in Board.Board().tiles:
-            if tile.resource != "desert" and blockableTile(player, tile):
-                bestTile = tile
-                return bestTile.identificator
+        # for tile in Board.Board().tiles:
+        #     if tile.resource != "desert" and blockableTile(player, tile):
+        #         bestTile = tile
+        #         return bestTile.identificator
         return bestTile.identificator
     
     def euristicPlaceKnight(self, player):
         bestTile = random.choice(Board.Board().tiles)
-        # bestTile = None
-        for tile in Board.Board().tiles:
-            if tile.resource != "desert" and blockableTile(player, tile):
-                bestTile = tile
-                return bestTile.identificator
+        # # bestTile = None
+        # for tile in Board.Board().tiles:
+        #     if tile.resource != "desert" and blockableTile(player, tile):
+        #         bestTile = tile
+        #         return bestTile.identificator
         return bestTile.identificator
 
     def euristicPlayCard(self, player):
@@ -242,11 +242,12 @@ class StrategyEuristic:
     
     def euristicMonopoly(self, player):
         min = 50
-        toTake = ""
-        for res in Bank.Bank().resources.keys():
-            if Bank.Bank().resources[res] < min:
-                toTake = res
-                min = Bank.Bank().resources[res]
+        # toTake = ""
+        toTake = random.choice(list(Bank.Bank().resources.keys()))
+        # for res in Bank.Bank().resources.keys():
+        #     if Bank.Bank().resources[res] < min:
+        #         toTake = res
+        #         min = Bank.Bank().resources[res]
         return toTake
     
     def euristicRoadBuildingCard(self, player):

@@ -73,7 +73,7 @@ if __name__ == '__main__':
             
             # start_time = time.time()
             saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results"+str(seed)+".csv")
-            for i in range(0, 500):
+            for i in range(0, 50):
                 print(".", end='', flush = True)
                 finalPoints = gameCtrl.playGameForTraining()
                 saveInCsv(finalPoints, "csvFolder/results"+str(seed)+".csv")
