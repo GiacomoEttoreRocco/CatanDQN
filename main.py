@@ -76,9 +76,11 @@ if __name__ == '__main__':
                 # finalPoints = gameCtrl.playGame()
                 # idEpisode += 1
                 # print("Defenetly updated: ", rlStrategyGnn.getEps(), flush = True)
-                gameCtrl.reset()
-            print("Defenetly updated: ", rlStrategyGnn.getEps(), flush = True)
+                gameCtrl.reset(strategies)
+            print(" Defenetly updated: ", rlStrategyGnn.getEps(), flush = True)
             rlStrategyGnn = ReinforcementLearningStrategyGnn()
+            strategies = [rlStrategyGnn, rEuristic]
+            gameCtrl.reset(strategies)
             
         #####################################################################################
         #####################################################################################

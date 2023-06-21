@@ -29,7 +29,7 @@ class GameController:
         self.game = c.Game.Game(len(playerStrategies)) 
 
         for player, strategy in zip(self.game.players, self.playerStrategies):
-            print("Riga 32 gamecontroller:", strategy)
+            # print("Riga 32 gamecontroller:", strategy)
             player.strategy = strategy
 
         if self.withGraphics:
@@ -39,7 +39,7 @@ class GameController:
         
         self.total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
 
-    def reset(self):
+    def reset(self, newStrat):
         c.Board.Board().reset()
         c.Bank.Bank().reset()
         # Gnn.Gnn().reset()
@@ -48,6 +48,11 @@ class GameController:
         # self.idEpisode = idEpisode
         # if(idEpisode > self.prelimit):
         #     self.resetPlot()
+        self.playerStrategies = newStrat
+
+        for player, strategy in zip(self.game.players, newStrat):
+            # print("Riga 32 gamecontroller:", strategy)
+            player.strategy = strategy
 
     def executeWithDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
         prevPoints = player._victoryPoints
