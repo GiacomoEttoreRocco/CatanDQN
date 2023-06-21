@@ -64,20 +64,27 @@ if __name__ == '__main__':
         #####################################################################################
         #####################################################################################
         seed = 2
-        for seed in range(1, 20):
+    
+        for seed in range(0, 20):
+            winrates = [0,0]
             # print("Riga 69 main: ", rlStrategyGnn)
-            print("Should be 1: ", rlStrategyGnn.getEps())
+            print("Starting. Eps should be 1: ", rlStrategyGnn.getEps())
             # start_time = time.time()
             saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results"+str(seed)+".csv")
             for i in range(0, 1000):
                 print(".", end='', flush = True)
                 finalPoints = gameCtrl.playGameForTraining()
                 saveInCsv(finalPoints, "csvFolder/results"+str(seed)+".csv")
+                if(finalPoints[0] > finalPoints[1]):
+                    winrates[0]+=1
+                else:
+                    winrates[1]+=1
                 # finalPoints = gameCtrl.playGame()
                 # idEpisode += 1
                 # print("Defenetly updated: ", rlStrategyGnn.getEps(), flush = True)
-                gameCtrl.reset(strategies)
-            print(" Defenetly updated: ", rlStrategyGnn.getEps(), flush = True)
+                gameCtrl.reset(strategies, seed)
+            print("Winrates: ", winrates)
+            print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
             rlStrategyGnn = ReinforcementLearningStrategyGnn()
             strategies = [rlStrategyGnn, rEuristic]
             gameCtrl.reset(strategies)

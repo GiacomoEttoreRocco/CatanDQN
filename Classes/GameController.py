@@ -39,8 +39,8 @@ class GameController:
         
         self.total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
 
-    def reset(self, newStrat):
-        c.Board.Board().reset()
+    def reset(self, newStrat, seed):
+        c.Board.Board().reset(seed)
         c.Bank.Bank().reset()
         # Gnn.Gnn().reset()
         self.game.reset()
