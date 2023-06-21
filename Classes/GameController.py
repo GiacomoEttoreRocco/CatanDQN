@@ -73,7 +73,6 @@ class GameController:
             if(actionId.value > 0 and "GNN" in player.strategy.name()):
                 # player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, player.reward, graph, glob)
                 player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, player._victoryPoints, graph, glob)
-
                 if("STREET" in player.strategy.name()):
                     # player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player.reward, graph, glob)
                     if(actionId.value == 2):
@@ -200,6 +199,7 @@ class GameController:
                     for player in self.game.players:
                         toReturn.append(player._victoryPoints)
                         if("RL" in player.strategy.name()):
+                            # print("d")   
                             player.strategy.epsDecay()
                     # print(toReturn)
                     return toReturn

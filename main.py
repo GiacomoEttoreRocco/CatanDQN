@@ -56,24 +56,36 @@ if __name__ == '__main__':
         rEuristic = RandomEuristicStrategy()
         rlSpecializedStreet = RLStrategyGnnStreet()
         # winners = []
-        strategies = [rlStrategyFf, rEuristic]
-        withGraphics = False # True #    
+        strategies = [rlSpecializedStreet, rEuristic]
+        # withGraphics = True 
+        withGraphics = False #    
+
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
-        start_time = time.time()
-        saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results.csv")
-        for i in range(0, 500):
-            print(".", end='')
-            finalPoints = gameCtrl.playGameForTraining()
-            saveInCsv(finalPoints, "csvFolder/results.csv")
-            # idEpisode += 1
-            gameCtrl.reset(idEpisode)
-            if(i%100==0 and i > 0):
-                 print(".")
+
+        #####################################################################################
+        #####################################################################################
+        for seed in range(0, 10):
+            start_time = time.time()
+            saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results"+str(seed)+".csv")
+            for i in range(0, 1000):
+                print(".", end='')
+                finalPoints = gameCtrl.playGameForTraining()
+                saveInCsv(finalPoints, "csvFolder/resultss"+str(seed)+".csv")
+                # finalPoints = gameCtrl.playGame()
+                # idEpisode += 1
+                gameCtrl.reset(idEpisode)
+                if(i%100==0 and i > 0):
+                    print(".")
+
+        #####################################################################################
+        #####################################################################################
+        
             # plotWinners2(winners, strategies) 
         # if(withGraphics):
         #      pygame.quit()
         end_time = time.time()
+        print("Epsilon reached: ", rlStrategyGnn.getEps())
         execution_time = end_time - start_time
         print(f"Execution time: {execution_time} seconds")
         # plt.savefig("plots/wPlot.png")
