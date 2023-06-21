@@ -65,7 +65,7 @@ if __name__ == '__main__':
         #####################################################################################
         seed = 2
     
-        for seed in range(9, 12):
+        for seed in range(12, 16):
             winrates = [0,0]
             # print("Riga 69 main: ", rlStrategyGnn)
             # print("Starting. Eps should be 1: ", rlStrategyGnn.getEps())
