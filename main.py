@@ -75,10 +75,9 @@ if __name__ == '__main__':
                 saveInCsv(finalPoints, "csvFolder/results"+str(seed)+".csv")
                 # finalPoints = gameCtrl.playGame()
                 # idEpisode += 1
-                print("Defenetly updated: ", rlStrategyGnn.getEps(), flush = True)
+                # print("Defenetly updated: ", rlStrategyGnn.getEps(), flush = True)
                 gameCtrl.reset()
-                if(i%100==0 and i > 0):
-                    print(".")
+            print("Defenetly updated: ", rlStrategyGnn.getEps(), flush = True)
             rlStrategyGnn = ReinforcementLearningStrategyGnn()
             
         #####################################################################################
