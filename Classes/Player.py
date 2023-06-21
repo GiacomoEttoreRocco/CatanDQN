@@ -38,9 +38,7 @@ class Player:
         self.lastRobberUser = False
         self.resources = {"wood" : 0, "clay" : 0, "crop": 0, "sheep": 0, "iron": 0}
         self.ownedHarbors = []
-
         # for RL stuff
-
         self.reward = 0
 
     def __eq__(self, other):
@@ -249,7 +247,7 @@ class Player:
                     if(resourceToTake != resource):
                         possibleTrades.append((resourceToTake, resource))
         return possibleTrades
-
+    
     def resourceCount(self):
         return sum(self.resources.values())
 
