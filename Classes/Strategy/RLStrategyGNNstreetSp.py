@@ -15,6 +15,8 @@ class RLStrategyGnnStreet(StrategyEuristic):
         self.streetDQN = L2DQGNNagent("street", 11, 72)
         self.colonyDQN = L2DQGNNagent("colonies", 11, 54)
 
+        self.tradeDQN = L2DQGNNagent("trades", 11, 5)
+
         # self.initialColonyDQN = DQGNNagent(11, 54)
 
     def name(self):
@@ -27,6 +29,7 @@ class RLStrategyGnnStreet(StrategyEuristic):
         self.macroDQN.epsDecay()
         self.streetDQN.epsDecay()
         self.colonyDQN.epsDecay()
+        self.tradeDQN.epsDecay()
         # self.eps = self.macroDQN.EPS
 
     def bestAction(self, player):  #, previousReward):
@@ -62,7 +65,6 @@ class RLStrategyGnnStreet(StrategyEuristic):
             # return commands.FirstChoiseCommand, self.euristicInitialFirstMove(player), None
             return commands.FirstChoiseCommand, self.DQNPlaceInitialColony(player), None
 
-        
         elif(action == commands.PlaceInitialStreetCommand):
             # print("Initial STREET Choice")
             return commands.PlaceInitialStreetCommand, self.euristicPlaceInitialStreet(player)
@@ -94,7 +96,7 @@ class RLStrategyGnnStreet(StrategyEuristic):
 
         elif(action == commands.TradeBankCommand):
             # print("Trade bank")
-            return  commands.TradeBankCommand, self.euristicTradeBank(player), None    
+            return  commands.TradeBankCommand, self.DQNTradeBank(player), None    
 
         elif(action == commands.UseKnightCommand):
             # print("Use knight card")
@@ -144,10 +146,14 @@ class RLStrategyGnnStreet(StrategyEuristic):
         # print(choosenColony)
         return Board.Board().places[choosenColony]
     
-    def euristicInitialFirstMove(self, player):
-        availablePlaces = player.calculatePossibleInitialColonies()
-        choosenPlace = random.choice(availablePlaces)
-        return choosenPlace
+    def DQNTradeBank(self, player):
+        availableTradesId = [list(Bank.Bank().resources.keys()).index(trade) for trade in player.calculatePossibleTradesId()]
+        graph = Board.Board().boardStateGraph(player)
+        glob = player.globalFeaturesToTensor()
+        choosenTrade = self.tradeDQN.step(graph, glob, availableTradesId, self.macroDQN)
+        return random.choice(choosenTrade)
+    
+
     
     
     

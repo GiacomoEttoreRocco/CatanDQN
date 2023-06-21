@@ -56,7 +56,7 @@ if __name__ == '__main__':
         rEuristic = RandomEuristicStrategy()
         rlSpecializedStreet = RLStrategyGnnStreet()
         # winners = []
-        strategies = [rlStrategyGnn, rEuristic]
+        strategies = [rlSpecializedStreet, rEuristic]
         # withGraphics = True 
         withGraphics = False #    
         idEpisode = 0
@@ -65,13 +65,15 @@ if __name__ == '__main__':
         #####################################################################################
         seed = 2
     
-        for seed in range(0, 20):
+        for seed in range(1, 20):
             winrates = [0,0]
             # print("Riga 69 main: ", rlStrategyGnn)
-            print("Starting. Eps should be 1: ", rlStrategyGnn.getEps())
+            # print("Starting. Eps should be 1: ", rlStrategyGnn.getEps())
+            print("Starting. Eps should be 1: ", rlSpecializedStreet.getEps())
+            
             # start_time = time.time()
             saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results"+str(seed)+".csv")
-            for i in range(0, 1000):
+            for i in range(0, 500):
                 print(".", end='', flush = True)
                 finalPoints = gameCtrl.playGameForTraining()
                 saveInCsv(finalPoints, "csvFolder/results"+str(seed)+".csv")
@@ -82,11 +84,15 @@ if __name__ == '__main__':
                 # finalPoints = gameCtrl.playGame()
                 # idEpisode += 1
                 # print("Defenetly updated: ", rlStrategyGnn.getEps(), flush = True)
-                gameCtrl.reset(strategies, seed)
+                gameCtrl.reset(strategies)
             print("Winrates: ", winrates)
-            print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
-            rlStrategyGnn = ReinforcementLearningStrategyGnn()
-            strategies = [rlStrategyGnn, rEuristic]
+            # print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
+            print("Definitely updated, final eps: ", rlSpecializedStreet.getEps(), flush = True)
+
+            # rlStrategyGnn = ReinforcementLearningStrategyGnn()
+            rlSpecializedStreet = RLStrategyGnnStreet()
+
+            strategies = [rlSpecializedStreet, rEuristic]
             gameCtrl.reset(strategies)
             
         #####################################################################################

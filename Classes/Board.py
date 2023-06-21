@@ -19,7 +19,7 @@ class Board:
         35, 26, 37, 28, 29, 38, 30, 31, 40, 32, 33, 42, 34, 35, 44, 36, 37, 46,
         39, 40, 41, 42, 49, 43, 44, 51, 45, 46, 53, 47, 48, 49, 50, 51, 52, 53]])
     
-    def __new__(cls, doPlacement=True):
+    def __new__(cls):# doPlacement=True):
         if cls.instance is None: 
             cls.instance = super(Board, cls).__new__(cls)
             # cls.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
@@ -28,29 +28,27 @@ class Board:
             cls.deck = ["knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight",
                         "victory_point","victory_point","victory_point","victory_point","victory_point","victory_point","victory_point","victory_point",
                         "year_of_plenty","year_of_plenty","monopoly","monopoly", "road_building","road_building"]
-        return cls.instance
+            #   SHUFFLE DECK
+            seed = random.choice([1,3,4,5,6])
+            np.random.seed(seed)
             
-    def initialize(cls, seed):
-        #   SHUFFLE DECK
-        
-        np.random.seed(seed)
-        
-        cls.deck = np.random.permutation(cls.deck)
-        cls.graph = CatanGraph.CatanGraph()
-        cls.tiles = cls.graph.tiles
-        cls.places = cls.graph.places
-        cls.edges = cls.graph.edges
-        cls.numbers = np.random.permutation(cls.graph.numbers)
-        cls.resources = np.random.permutation(cls.graph.resources)
-        cls.harbors = np.random.permutation(cls.graph.harbors)
-        cls.EdgesOnTheSea = np.random.permutation(cls.graph.EdgesOnTheSea)
+            cls.deck = np.random.permutation(cls.deck)
+            cls.graph = CatanGraph.CatanGraph()
+            cls.tiles = cls.graph.tiles
+            cls.places = cls.graph.places
+            cls.edges = cls.graph.edges
+            cls.numbers = np.random.permutation(cls.graph.numbers)
+            cls.resources = np.random.permutation(cls.graph.resources)
+            cls.harbors = np.random.permutation(cls.graph.harbors)
+            cls.EdgesOnTheSea = np.random.permutation(cls.graph.EdgesOnTheSea)
 
-        # if(doPlacement):
-        cls.tilesPlacement(cls)
+            # if(doPlacement):
+            cls.tilesPlacement(cls)
 
-    def reset(cls, seed):
+        return cls.instance
+
+    def reset(cls):
         Board.instance = None
-        Board.Board().initialize(seed)
 
     def availableForHarbor(cls, edge):
         p1 = edge[0]

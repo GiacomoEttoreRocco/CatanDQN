@@ -2,7 +2,7 @@ import os
 import pygame
 import pygame_gui
 import pandas as pd
-from Classes import Board
+from Classes import Bank, Board
 # from Classes.Strategy.HybridStrategy import HybridStrategy
 # from Classes.Strategy.PriorityStrategy import PriorityStrategy
 # from Classes.Strategy.PureStrategy import PureStrategy
@@ -39,8 +39,8 @@ class GameController:
         
         self.total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
 
-    def reset(self, newStrat, seed):
-        c.Board.Board().reset(seed)
+    def reset(self, newStrat):
+        c.Board.Board().reset()
         c.Bank.Bank().reset()
         # Gnn.Gnn().reset()
         self.game.reset()
@@ -85,6 +85,9 @@ class GameController:
                         player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player._victoryPoints, graph, glob)
                     if(actionId.value == 3):
                         player.strategy.colonyDQN.saveInMemory(previousGraph, previousGlob, Board.Board().places.index(thingNeeded), player._victoryPoints, graph, glob)
+                    if(actionId.value == 5): 
+                        player.strategy.tradeDQN.saveInMemory(previousGraph, previousGlob, Bank.Bank().resources[thingNeeded], player._victoryPoints, graph, glob)
+                       
             elif(actionId.value > 0):
                 # print("d")
                 # player.strategy.macroDQN.saveInMemory(previousState, actionId.value, player.reward, self.game.getTotalState(player))
