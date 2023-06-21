@@ -56,18 +56,18 @@ if __name__ == '__main__':
         rEuristic = RandomEuristicStrategy()
         rlSpecializedStreet = RLStrategyGnnStreet()
         # winners = []
-        strategies = [rlSpecializedStreet, rEuristic]
+        strategies = [rlStrategyGnn, rEuristic]
         # withGraphics = True 
         withGraphics = False #    
-
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
-
         #####################################################################################
         #####################################################################################
         seed = 2
-        for seed in range(3, 5):
-            start_time = time.time()
+        for seed in range(1, 20):
+            rlStrategyGnn = ReinforcementLearningStrategyGnn()
+            print("Should be 1: ", rlStrategyGnn.getEps())
+            # start_time = time.time()
             saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results"+str(seed)+".csv")
             for i in range(0, 1000):
                 print(".", end='')
@@ -78,16 +78,16 @@ if __name__ == '__main__':
                 gameCtrl.reset(idEpisode)
                 if(i%100==0 and i > 0):
                     print(".")
+            print("Defenetly NOT 1: ", rlStrategyGnn.getEps())
+            
         #####################################################################################
         #####################################################################################
-        
             # plotWinners2(winners, strategies) 
         # if(withGraphics):
         #      pygame.quit()
-        end_time = time.time()
-        print("Epsilon reached: ", rlStrategyGnn.getEps())
-        execution_time = end_time - start_time
-        print(f"Execution time: {execution_time} seconds")
+        # end_time = time.time()
+        # execution_time = end_time - start_time
+        # print(f"Execution time: {execution_time} seconds")
         # plt.savefig("plots/wPlot.png")
         # plotCsvColumnsWithHeaders("csvFolder/results.csv")
 
