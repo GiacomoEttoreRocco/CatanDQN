@@ -222,3 +222,71 @@ def scatterCsvColumnsWithHeaders(nome_file):
     
     # Mostra il grafico
     plt.show()
+
+def idToTrade(n):
+    if(n == 0):
+        return ("wood", "clay")
+    if(n == 1):
+        return ("wood", "crop")
+    if(n == 2):
+        return ("wood", "sheep")
+    if(n == 3):
+        return ("wood", "iron")
+    if(n == 4):
+        return ("clay", "wood")
+    if(n == 5):
+        return ("clay", "crop")
+    if(n == 6):
+        return ("clay", "sheep")
+    if(n == 7):
+        return ("clay", "iron")
+    if(n == 8):
+        return ("crop", "wood")
+    if(n == 9):
+        return ("crop", "clay")
+    if(n == 10):
+        return ("crop", "sheep")
+    if(n == 11):
+        return ("crop", "iron")
+    if(n == 12):
+        return ("sheep", "wood")
+    if(n == 13):
+        return ("sheep", "clay")
+    if(n == 14):
+        return ("sheep", "crop")
+    if(n == 15):
+        return ("sheep", "iron")
+    if(n == 16):
+        return ("iron", "wood")
+    if(n == 17):
+        return ("iron", "clay")
+    if(n == 18):
+        return ("iron", "crop")
+    if(n == 19):
+        return ("iron", "sheep")
+    
+def tradesToId(trade):
+    temp = 0
+    if(trade[0] == "wood"):
+        temp+=0
+    elif(trade[0] == "clay"):
+        temp+=4
+    elif(trade[0] == "crop"):
+        temp+=8
+    elif(trade[0] == "sheep"):
+        temp+=12
+    elif(trade[0] == "iron"):
+        temp+=16
+    if(trade[1] == "wood"):
+        temp+=0
+    elif(trade[1] == "clay"):
+        temp+=1
+    elif(trade[1] == "crop"):
+        temp+=2
+    elif(trade[1] == "sheep"):
+        temp+=3
+    elif(trade[1] == "iron"):
+        temp+=4     
+    return temp 
+
+

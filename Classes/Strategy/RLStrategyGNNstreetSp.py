@@ -15,7 +15,7 @@ class RLStrategyGnnStreet(StrategyEuristic):
         self.streetDQN = L2DQGNNagent("street", 11, 72)
         self.colonyDQN = L2DQGNNagent("colonies", 11, 54)
 
-        self.tradeDQN = L2DQGNNagent("trades", 11, 5)
+        self.tradeDQN = L2DQGNNagent("trades", 11, 20)
 
         # self.initialColonyDQN = DQGNNagent(11, 54)
 
@@ -147,11 +147,17 @@ class RLStrategyGnnStreet(StrategyEuristic):
         return Board.Board().places[choosenColony]
     
     def DQNTradeBank(self, player):
-        availableTradesId = [list(Bank.Bank().resources.keys()).index(trade) for trade in player.calculatePossibleTradesId()]
+        # print("trade spec")
+        trades = player.calculatePossibleTrades()
+        tradesIds = []
+        for trade in trades:
+            tradesIds.append(tradesToId(trade))
+
         graph = Board.Board().boardStateGraph(player)
         glob = player.globalFeaturesToTensor()
-        choosenTrade = self.tradeDQN.step(graph, glob, availableTradesId, self.macroDQN)
-        return random.choice(choosenTrade)
+
+        choosenTrade = self.tradeDQN.step(graph, glob, tradesIds, self.macroDQN)
+        return idToTrade(choosenTrade)
     
 
     

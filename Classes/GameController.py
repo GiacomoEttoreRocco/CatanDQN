@@ -10,6 +10,7 @@ from Classes.Strategy.RLStrategyGNN import ReinforcementLearningStrategyGnn
 from Classes.Strategy.RLStrategyFF import ReinforcementLearningStrategyFf
 
 from Classes.Strategy.Strategy import Strategy
+from Classes.staticUtilities import tradesToId
 from Command import commands
 import Graphics.GameView as GameView
 import AI.Gnn as Gnn
@@ -86,7 +87,7 @@ class GameController:
                     if(actionId.value == 3):
                         player.strategy.colonyDQN.saveInMemory(previousGraph, previousGlob, Board.Board().places.index(thingNeeded), player._victoryPoints, graph, glob)
                     if(actionId.value == 5): 
-                        player.strategy.tradeDQN.saveInMemory(previousGraph, previousGlob, Bank.Bank().resources[thingNeeded], player._victoryPoints, graph, glob)
+                        player.strategy.tradeDQN.saveInMemory(previousGraph, previousGlob, tradesToId(thingNeeded), player._victoryPoints, graph, glob)
                        
             elif(actionId.value > 0):
                 # print("d")
