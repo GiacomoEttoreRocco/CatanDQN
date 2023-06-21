@@ -4,6 +4,6 @@ from Classes.Strategy.RLStrategyGNN import ReinforcementLearningStrategyGnn
 
 from Classes.staticUtilities import plotCsvColumnsWithHeaders
 
-plotCsvColumnsWithHeaders("csvFolder/results9.csv", 70, "RL-GNN", "REUR")
+plotCsvColumnsWithHeaders("csvFolder/results2.csv", 20, "RL-GNN", "REUR")
 
 

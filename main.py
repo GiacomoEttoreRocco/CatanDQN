@@ -65,19 +65,19 @@ if __name__ == '__main__':
 
         #####################################################################################
         #####################################################################################
-        for seed in range(0, 10):
+        seed = 2
+        for seed in range(3, 5):
             start_time = time.time()
             saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results"+str(seed)+".csv")
             for i in range(0, 1000):
                 print(".", end='')
                 finalPoints = gameCtrl.playGameForTraining()
-                saveInCsv(finalPoints, "csvFolder/resultss"+str(seed)+".csv")
+                saveInCsv(finalPoints, "csvFolder/results"+str(seed)+".csv")
                 # finalPoints = gameCtrl.playGame()
                 # idEpisode += 1
                 gameCtrl.reset(idEpisode)
                 if(i%100==0 and i > 0):
                     print(".")
-
         #####################################################################################
         #####################################################################################
         

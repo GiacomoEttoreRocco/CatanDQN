@@ -159,35 +159,34 @@ class StrategyEuristic:
 
     def euristicTradeBank(self, player):
         trades = player.calculatePossibleTrades()
-        resourceCopy = player.resources.copy()
-        for trade in trades:
-            resourceCopy[trade[0]] += 1
-            resourceCopy[trade[1]] -= Bank.Bank().resourceToAsk(player, trade[1])
-            if((len(player.calculatePossibleCities()) > 0 and availableResourcesForCity(resourceCopy)) or (len(player.calculatePossibleColonies()) > 0 and availableResourcesForColony(resourceCopy))):
-                return trade
-            resourceCopy = player.resources.copy()
+        # resourceCopy = player.resources.copy()
+        # for trade in trades:
+        #     resourceCopy[trade[0]] += 1
+        #     resourceCopy[trade[1]] -= Bank.Bank().resourceToAsk(player, trade[1])
+        #     if((len(player.calculatePossibleCities()) > 0 and availableResourcesForCity(resourceCopy)) or (len(player.calculatePossibleColonies()) > 0 and availableResourcesForColony(resourceCopy))):
+        #         return trade
+        #     resourceCopy = player.resources.copy()
             
-        for trade in trades:
-            resourceCopy[trade[0]] += 1
-            resourceCopy[trade[1]] -= Bank.Bank().resourceToAsk(player, trade[1])         
-            if(len(player.calculatePossibleStreets()) > 0 and availableResourcesForStreet(resourceCopy)):
-                return trade
-            resourceCopy = player.resources.copy()  
+        # for trade in trades:
+        #     resourceCopy[trade[0]] += 1
+        #     resourceCopy[trade[1]] -= Bank.Bank().resourceToAsk(player, trade[1])         
+        #     if(len(player.calculatePossibleStreets()) > 0 and availableResourcesForStreet(resourceCopy)):
+        #         return trade
+        #     resourceCopy = player.resources.copy()  
 
-        for trade in trades:
-            resourceCopy[trade[0]] += 1
-            resourceCopy[trade[1]] -= Bank.Bank().resourceToAsk(player, trade[1])
-            if(availableResourcesForDevCard(resourceCopy)):
-                return trade
-            resourceCopy = player.resources.copy()
+        # for trade in trades:
+        #     resourceCopy[trade[0]] += 1
+        #     resourceCopy[trade[1]] -= Bank.Bank().resourceToAsk(player, trade[1])
+        #     if(availableResourcesForDevCard(resourceCopy)):
+        #         return trade
+        #     resourceCopy = player.resources.copy()
             
-        for trade in trades:
-            resourceCopy[trade[0]] += 1
-            resourceCopy[trade[1]] -= Bank.Bank().resourceToAsk(player, trade[1])
-            if(sum(player.resources.values()) >= 7):
-                return trade
-            resourceCopy = player.resources.copy()
-        
+        # for trade in trades:
+        #     resourceCopy[trade[0]] += 1
+        #     resourceCopy[trade[1]] -= Bank.Bank().resourceToAsk(player, trade[1])
+        #     if(sum(player.resources.values()) >= 7):
+        #         return trade
+        #     resourceCopy = player.resources.copy()
         return random.choice(trades)
 
     def euristicDiscardResource(self, player):
