@@ -39,13 +39,13 @@ class GameController:
         
         self.total = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
 
-    def reset(self, idEpisode):
+    def reset(self):
         c.Board.Board().reset()
         c.Bank.Bank().reset()
         # Gnn.Gnn().reset()
         self.game.reset()
         # print("GLOBAL RESET")
-        self.idEpisode = idEpisode
+        # self.idEpisode = idEpisode
         # if(idEpisode > self.prelimit):
         #     self.resetPlot()
 
@@ -200,8 +200,8 @@ class GameController:
                     for player in self.game.players:
                         toReturn.append(player._victoryPoints)
                         if("RL" in player.strategy.name()):
-                            print("-")
                             player.strategy.epsDecay()
+                            # print(player.strategy.getEps())
                     # print(toReturn)
                     return toReturn
 
