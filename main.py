@@ -13,6 +13,7 @@ from Classes.Strategy.RLStrategyFF import ReinforcementLearningStrategyFf
 import time
 from Classes.Strategy.RLStrategyGNNstreetSp import RLStrategyGnnHierarchical
 from Classes.Strategy.RandomEuristic import RandomEuristicStrategy
+from Classes.Strategy.StrategyRandom import StrategyRandom
 from Classes.staticUtilities import plotCsvColumns, plotCsvColumnsWithHeaders, plotWinners2, saveInCsv
 
 def training(playerStrategies, iterationProcessIndex, iterations, numberOfTrainingGames, numberOfValidationGames):
@@ -109,15 +110,15 @@ if __name__ == '__main__':
         # strategies = [rlSpecializedStreet, rEuristic]
         # strategies = [rEuristic, rEuristic]
         # rlStrategyFf = ReinforcementLearningStrategyFf()
-        rlStrategyGnn = ReinforcementLearningStrategyGnn()
+        randomStrategy = StrategyRandom()
         rEuristic = RandomEuristicStrategy()
-        strategies = [rlStrategyGnn, rEuristic]
+        strategies = [randomStrategy, rEuristic]
         withGraphics = False # True    
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
         for seed in range(1, 11):
             winrates = [0,0]
-            print("Starting. Eps should be 1: ", rlStrategyGnn.getEps()) # questo
+            # print("Starting. Eps should be 1: ", .getEps()) # questo
             saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results"+str(seed)+".csv")
             for i in range(0, 200):
                 print(".", end='', flush = True)
@@ -129,9 +130,11 @@ if __name__ == '__main__':
                     winrates[1]+=1
                 gameCtrl.reset(strategies)
             print("Winrates: ", winrates)
-            print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
-            rlStrategyGnn = ReinforcementLearningStrategyGnn()
-            strategies = [rlStrategyGnn, rEuristic]
+            # print("Definitely updated, final eps: ", .getEps(), flush = True)
+            # rlStrategyGnn = ReinforcementLearningStrategyGnn()
+            randomStrategy = StrategyRandom()
+
+            strategies = [randomStrategy, rEuristic]
             gameCtrl.reset(strategies)
             
         #####################################################################################
