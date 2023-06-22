@@ -18,14 +18,16 @@ class ReinforcementLearningStrategyFf(StrategyEuristic):
         self.tradeDQN = L2DQNagent("trades", 54*11 + 72 + 9, 20)
 
     def name(self):
-        return "RL-FF"
+        return "RL-FF-HIER"
     
     def getEps(self):
         return self.macroDQN.EPS
     
     def epsDecay(self):
         self.macroDQN.epsDecay()
-        # self.eps = self.macroDQN.EPS
+        self.streetDQN.epsDecay()
+        self.colonyDQN.epsDecay()
+        self.tradeDQN.epsDecay()
 
     def bestAction(self, player):  #, previousReward):
         if(player.game.actualTurn<player.game.nplayers):

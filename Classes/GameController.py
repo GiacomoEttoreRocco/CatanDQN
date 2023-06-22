@@ -80,7 +80,7 @@ class GameController:
             if(actionId.value > 0 and "GNN" in player.strategy.name()):
                 # player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, player.reward, graph, glob)
                 player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, player._victoryPoints, graph, glob)
-                if("STREET" in player.strategy.name()):
+                if("HIER" in player.strategy.name()):
                     # player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player.reward, graph, glob)
                     if(actionId.value == 2):
                         player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player._victoryPoints, graph, glob)
@@ -90,9 +90,16 @@ class GameController:
                         player.strategy.tradeDQN.saveInMemory(previousGraph, previousGlob, tradesToId(thingNeeded), player._victoryPoints, graph, glob)
                        
             elif(actionId.value > 0):
-                # print("d")
-                # player.strategy.macroDQN.saveInMemory(previousState, actionId.value, player.reward, self.game.getTotalState(player))
                 player.strategy.macroDQN.saveInMemory(previousState, actionId.value, player._victoryPoints, self.game.getTotalState(player))
+                if("HIER" in player.strategy.name()):
+                    print("riga 95 game controller")
+                    # player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player.reward, graph, glob)
+                    if(actionId.value == 2):
+                        player.strategy.streetDQN.saveInMemory(previousState, list(Board.Board().edges.keys()).index(thingNeeded), player._victoryPoints, self.game.getTotalState(player))
+                    if(actionId.value == 3):
+                        player.strategy.colonyDQN.saveInMemory(previousState, Board.Board().places.index(thingNeeded), player._victoryPoints, self.game.getTotalState(player))
+                    if(actionId.value == 5): 
+                        player.strategy.tradeDQN.saveInMemory(previousState, tradesToId(thingNeeded), player._victoryPoints, self.game.getTotalState(player))
 
                 
     def decisionManagerGUI(self, player):
