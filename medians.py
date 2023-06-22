@@ -4,7 +4,7 @@ import numpy as np
 import csv
 import statistics
 
-csv_files = ["csvFolder/results{}.csv".format(i) for i in range(1, 11)]
+csv_files = ["csvFolder/RanVsEur/results{}.csv".format(i) for i in range(1, 11)]
 
 def getAllfirstElements(row_index, column_index, csv_files):
     first_elements = []
@@ -83,9 +83,8 @@ def plot_experiment_results(mean_array, q1_array, q3_array, name):
     plt.xlabel('Mean of every 5 episodes (total number of episodes = 1000)')
     plt.ylabel('Mean points at turn 100*')
     plt.title('Trend of values ​​with quartile range')
-    plt.legend(fontsize="7")
+    plt.legend(fontsize="7", loc='lower left')
     # plt.show()
-
 # meansGNN = []
 # meansRAN = []
 
