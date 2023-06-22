@@ -126,19 +126,19 @@ class ReinforcementLearningStrategyFfHier(StrategyEuristic):
         
     def DQNFFPlaceStreet(self, player):
         availableStreetsId = [list(Board.Board().edges.keys()).index(edge) for edge in player.calculatePossibleStreets()]
-        state = self.game.getTotalState(player)
+        state = self.player.game.getTotalState(player)
         bestStreet = self.streetDQN.step(state, availableStreetsId, self.macroDQN)
         return list(Board.Board().edges.keys())[bestStreet]
     
     def DQNFFPlaceColony(self, player):
         possibleColoniesId = [Board.Board().places.index(place) for place in player.calculatePossibleColonies()]
-        state = self.game.getTotalState(player)
+        state = self.player.game.getTotalState(player)
         choosenColony = self.colonyDQN.step(state, possibleColoniesId, self.macroDQN)
         return Board.Board().places[choosenColony]
     
     def DQNFFPlaceInitialColony(self, player):
         possibleColoniesId = [Board.Board().places.index(place) for place in player.calculatePossibleInitialColonies()]
-        state = self.game.getTotalState(player)
+        state = self.player.game.getTotalState(player)
         choosenColony = self.colonyDQN.step(state, possibleColoniesId, self.macroDQN)
         return Board.Board().places[choosenColony]
     
@@ -147,6 +147,6 @@ class ReinforcementLearningStrategyFfHier(StrategyEuristic):
         tradesIds = []
         for trade in trades:
             tradesIds.append(tradesToId(trade))
-        state = self.game.getTotalState(player)
+        state = self.player.game.getTotalState(player)
         choosenTrade = self.tradeDQN.step(state, tradesIds, self.macroDQN)
         return idToTrade(choosenTrade)
