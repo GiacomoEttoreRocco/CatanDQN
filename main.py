@@ -56,7 +56,8 @@ if __name__ == '__main__':
         rEuristic = RandomEuristicStrategy()
         rlSpecializedStreet = RLStrategyGnnStreet()
         # winners = []
-        strategies = [rlSpecializedStreet, rEuristic]
+        # strategies = [rlSpecializedStreet, rEuristic]
+        strategies = [rEuristic, rEuristic]
         # withGraphics = True 
         withGraphics = False #    
         idEpisode = 0
@@ -68,9 +69,8 @@ if __name__ == '__main__':
         for seed in range(1, 19):
             winrates = [0,0]
             # print("Riga 69 main: ", rlStrategyGnn)
-            print("Starting. Eps should be 1: ", rlStrategyGnn.getEps())
+            # print("Starting. Eps should be 1: ", rlStrategyGnn.getEps())
             # print("Starting. Eps should be 1: ", rlSpecializedStreet.getEps())
-            
             # start_time = time.time()
             saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results"+str(seed)+".csv")
             for i in range(0, 1000):
@@ -90,7 +90,8 @@ if __name__ == '__main__':
             # print("Definitely updated, final eps: ", rlSpecializedStreet.getEps(), flush = True)
 
             rlStrategyGnn = ReinforcementLearningStrategyGnn()
-            strategies = [rlStrategyGnn, rEuristic]
+            # strategies = [rlStrategyGnn, rEuristic]
+            strategies = [rEuristic, rEuristic]
             # rlSpecializedStreet = RLStrategyGnnStreet()
             # strategies = [rlSpecializedStreet, rEuristic]
             gameCtrl.reset(strategies)

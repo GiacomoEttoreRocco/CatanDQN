@@ -4,7 +4,7 @@ import numpy as np
 import csv
 import statistics
 
-csv_files = ["csvFolder/results{}.csv".format(seed) for seed in range(1, 18)]
+csv_files = ["csvFolder/results{}.csv".format(seed) for seed in range(1, 19)]
 
 def getAllfirstElements(row_index, column_index, csv_files):
     first_elements = []
@@ -108,7 +108,7 @@ for row in range(1, 1000):
 # plot_experiment_results(calculateRowMeans(gnnRes), calculateFirstQuartiles(gnnRes), calculateThirdQuartiles(gnnRes))
 # plot_experiment_results(calculateRowMeans(ranRes), calculateFirstQuartiles(ranRes), calculateThirdQuartiles(ranRes))
 
-plot_experiment_results(riassumi(calculateRowMeans(gnnRes), 5), riassumi(calculateFirstQuartiles(gnnRes), 5), riassumi(calculateThirdQuartiles(gnnRes), 5), "DQN-Hierarchiacal")
+plot_experiment_results(riassumi(calculateRowMeans(gnnRes), 5), riassumi(calculateFirstQuartiles(gnnRes), 5), riassumi(calculateThirdQuartiles(gnnRes), 5), "RAN")
 plot_experiment_results(riassumi(calculateRowMeans(ranRes), 5), riassumi(calculateFirstQuartiles(ranRes), 5), riassumi(calculateThirdQuartiles(ranRes), 5), "RAN")
 
 plt.show()
