@@ -171,7 +171,7 @@ class RemoveResourceToPlayer:
     unduable: bool = True
     def execute(self):
         # assert self.player.resources[self.resource]>0, f"Player {self.player.id} can't EXECUTE this action becouse it has not {self.resource}"
-        print("Riga 174, commands: ", self.resource)
+        # print("Riga 174, commands: ", self.resource)
         if(self.resource != None and self.player.resources[self.resource] > 0):
             self.player.resources[self.resource] -= 1
         else:
