@@ -68,8 +68,8 @@ if __name__ == '__main__':
         for seed in range(1, 19):
             winrates = [0,0]
             # print("Riga 69 main: ", rlStrategyGnn)
-            # print("Starting. Eps should be 1: ", rlStrategyGnn.getEps())
-            print("Starting. Eps should be 1: ", rlSpecializedStreet.getEps())
+            print("Starting. Eps should be 1: ", rlStrategyGnn.getEps())
+            # print("Starting. Eps should be 1: ", rlSpecializedStreet.getEps())
             
             # start_time = time.time()
             saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results"+str(seed)+".csv")
