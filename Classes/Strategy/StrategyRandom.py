@@ -139,7 +139,7 @@ class StrategyRandom:
         resToDiscard = []
         for res in player.resources.keys():
             if(player.resources[res] > 0):
-                resToDiscard.append(res)
+                resToDiscard = res
         return resToDiscard
         
     def randomicPlaceRobber(self, player):
