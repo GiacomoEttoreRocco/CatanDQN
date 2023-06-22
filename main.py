@@ -104,19 +104,20 @@ if __name__ == '__main__':
         # prioStrategy = PriorityStrategy()
         # hybStrategy = HybridStrategy()
         # purStrategy = PureStrategy()
-        # rlHier = RLStrategyGnnHierarchical()
+        rlHier = RLStrategyGnnHierarchical()
         # strategies = [rlSpecializedStreet, rEuristic]
         # strategies = [rEuristic, rEuristic]
         # rlStrategyFf = ReinforcementLearningStrategyFf()
         randomStrategy = RandomPlayer()
-        rEuristic = EuristicPlayer()
-        strategies = [randomStrategy, rEuristic]
+        # rEuristic = EuristicPlayer()
+        strategies = [rlHier, randomStrategy] #, rEuristic]
         withGraphics = False # True    
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
         for seed in range(1, 11):
             winrates = [0,0]
-            # print("Starting. Eps should be 1: ", .getEps()) # questo
+            # print("Starting. Eps should be 1: ", .getEps()) # questo 
+            print("Starting. Eps should be 1: ", rlHier.getEps()) # questo 
             saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results"+str(seed)+".csv")
             for i in range(0, 200):
                 print(".", end='', flush = True)
@@ -129,8 +130,10 @@ if __name__ == '__main__':
                 gameCtrl.reset(strategies)
             print("Winrates: ", winrates)
             # print("Definitely updated, final eps: ", .getEps(), flush = True)
+            print("Definitely updated, final eps: ", rlHier.getEps(), flush = True)
             # rlStrategyGnn = ReinforcementLearningStrategyGnn()
-            strategies = [randomStrategy, rEuristic]
+            rlHier = RLStrategyGnnHierarchical()
+            strategies = [rlHier, randomStrategy] #, rEuristic]
             gameCtrl.reset(strategies)
             
         #####################################################################################

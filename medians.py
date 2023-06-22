@@ -4,7 +4,7 @@ import numpy as np
 import csv
 import statistics
 
-csv_files = ["csvFolder/results{}.csv".format(seed) for seed in range(1, 16)]
+csv_files = ["csvFolder/RanVsEur/results{}.csv".format(i) for i in range(1, 11)]
 
 def getAllfirstElements(row_index, column_index, csv_files):
     first_elements = []
@@ -92,7 +92,7 @@ def plot_experiment_results(mean_array, q1_array, q3_array, name):
 gnnRes = []
 ranRes = []
 
-for row in range(1, 1000):
+for row in range(1, 201):
     # print(row)
     x = getAllfirstElements(row, 0, csv_files)
     y = getAllfirstElements(row, 1, csv_files)
@@ -107,8 +107,8 @@ for row in range(1, 1000):
 # plot_experiment_results(calculateRowMeans(gnnRes), calculateFirstQuartiles(gnnRes), calculateThirdQuartiles(gnnRes))
 # plot_experiment_results(calculateRowMeans(ranRes), calculateFirstQuartiles(ranRes), calculateThirdQuartiles(ranRes))
 
-plot_experiment_results(riassumi(calculateRowMeans(gnnRes), 5), riassumi(calculateFirstQuartiles(gnnRes), 5), riassumi(calculateThirdQuartiles(gnnRes), 5), "DQN FF")
-plot_experiment_results(riassumi(calculateRowMeans(ranRes), 5), riassumi(calculateFirstQuartiles(ranRes), 5), riassumi(calculateThirdQuartiles(ranRes), 5), "RAN")
+plot_experiment_results(riassumi(calculateRowMeans(gnnRes), 3), riassumi(calculateFirstQuartiles(gnnRes), 3), riassumi(calculateThirdQuartiles(gnnRes), 3), "HierarchicalDQN")
+plot_experiment_results(riassumi(calculateRowMeans(ranRes), 3), riassumi(calculateFirstQuartiles(ranRes), 3), riassumi(calculateThirdQuartiles(ranRes), 3), "Euristic")
 
 plt.show()
 # plt.show()
