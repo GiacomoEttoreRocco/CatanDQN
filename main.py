@@ -95,7 +95,9 @@ if __name__ == '__main__':
             print("Definitely updated, final eps: ", rlStrategyFf.getEps(), flush = True)
 
 
-            rlStrategyGnn = ReinforcementLearningStrategyGnn()
+            # rlStrategyGnn = ReinforcementLearningStrategyGnn()
+            rlStrategyFf = ReinforcementLearningStrategyFf()
+
             # strategies = [rlStrategyGnn, rEuristic]
             # strategies = [rEuristic, rEuristic]
             strategies = [rlStrategyFf, rEuristic]
