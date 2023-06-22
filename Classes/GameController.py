@@ -92,7 +92,7 @@ class GameController:
             elif(actionId.value > 0):
                 player.strategy.macroDQN.saveInMemory(previousState, actionId.value, player._victoryPoints, self.game.getTotalState(player))
                 if("HIER" in player.strategy.name()):
-                    print("riga 95 game controller")
+                    # print("riga 95 game controller")
                     # player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player.reward, graph, glob)
                     if(actionId.value == 2):
                         player.strategy.streetDQN.saveInMemory(previousState, list(Board.Board().edges.keys()).index(thingNeeded), player._victoryPoints, self.game.getTotalState(player))

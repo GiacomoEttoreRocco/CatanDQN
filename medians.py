@@ -4,7 +4,7 @@ import numpy as np
 import csv
 import statistics
 
-csv_files = ["csvFolder/RanVsEur/results{}.csv".format(i) for i in range(1, 11)]
+csv_files = ["csvFolder/results{}.csv".format(i) for i in range(1, 11)]
 
 def getAllfirstElements(row_index, column_index, csv_files):
     first_elements = []
