@@ -49,8 +49,9 @@ def writeOnCsv(i, winners):
 
 if __name__ == '__main__':
         rlStrategyFfHier = ReinforcementLearningStrategyFfHier()
-        rEuristic = EuristicPlayer()
-        strategies = [rlStrategyFfHier, rEuristic] #, rEuristic]
+        # rEuristic = EuristicPlayer()
+        randomPlayer = RandomPlayer()
+        strategies = [rlStrategyFfHier, randomPlayer] #, rEuristic]
         withGraphics = False # True    
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
@@ -74,7 +75,7 @@ if __name__ == '__main__':
             # rlStrategyGnn = ReinforcementLearningStrategyGnn()
             rlStrategyFfHier = ReinforcementLearningStrategyFfHier()
 
-            strategies = [rlStrategyFfHier, rEuristic] # randomStrategy] #, rEuristic]
+            strategies = [rlStrategyFfHier, randomPlayer] # randomStrategy] #, rEuristic]
             gameCtrl.reset(strategies)
             
         #####################################################################################
