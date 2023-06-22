@@ -47,18 +47,72 @@ def writeOnCsv(i, winners):
         writer = csv.writer(f)
         writer.writerow([i, *winners])
 
+def compareHierVsEur():
+        rEuristic = RandomEuristicStrategy()
+        rlHier = RLStrategyGnnHierarchical()
+        strategies = [rlHier, rEuristic]
+        withGraphics = False    
+        idEpisode = 0
+        gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
+        for seed in range(10, 11):
+            winrates = [0,0]
+            print("Starting. Eps should be 1: ", rlHier.getEps())
+            saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results"+str(seed)+".csv")
+            for i in range(0, 200):
+                print(".", end='', flush = True)
+                finalPoints = gameCtrl.playGameForTraining()
+                saveInCsv(finalPoints, "csvFolder/results"+str(seed)+".csv")
+                if(finalPoints[0] > finalPoints[1]):
+                    winrates[0]+=1
+                else:
+                    winrates[1]+=1
+                gameCtrl.reset(strategies)
+            print("Winrates: ", winrates)
+            print("Definitely updated, final eps: ", rlHier.getEps(), flush = True)
+            rlHier = RLStrategyGnnHierarchical()
+            strategies = [rlHier, rEuristic]
+            gameCtrl.reset(strategies)
+
+def compare():
+        rlStrategyGnn = ReinforcementLearningStrategyGnn()
+        rlStrategyFf = ReinforcementLearningStrategyFf()
+        rEuristic = RandomEuristicStrategy()
+        rlHier = RLStrategyGnnHierarchical()
+        strategies = [rlStrategyFf, rEuristic]
+        withGraphics = False    
+        idEpisode = 0
+        gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
+        for seed in range(1, 10):
+            winrates = [0,0]
+            print("Starting. Eps should be 1: ", rlHier.getEps())
+            saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results"+str(seed)+".csv")
+            for i in range(0, 200):
+                print(".", end='', flush = True)
+                finalPoints = gameCtrl.playGameForTraining()
+                saveInCsv(finalPoints, "csvFolder/results"+str(seed)+".csv")
+                if(finalPoints[0] > finalPoints[1]):
+                    winrates[0]+=1
+                else:
+                    winrates[1]+=1
+                gameCtrl.reset(strategies)
+            print("Winrates: ", winrates)
+            print("Definitely updated, final eps: ", rlHier.getEps(), flush = True)
+            rlHier = RLStrategyGnnHierarchical()
+            strategies = [rlHier, rEuristic]
+            gameCtrl.reset(strategies)
+
 if __name__ == '__main__':
         # prioStrategy = PriorityStrategy()
         # hybStrategy = HybridStrategy()
         # purStrategy = PureStrategy()
-        rlStrategyGnn = ReinforcementLearningStrategyGnn()
-        rlStrategyFf = ReinforcementLearningStrategyFf()
+        # rlStrategyGnn = ReinforcementLearningStrategyGnn()
+        # rlStrategyFf = ReinforcementLearningStrategyFf()
         rEuristic = RandomEuristicStrategy()
         rlHier = RLStrategyGnnHierarchical()
         # winners = []
         # strategies = [rlSpecializedStreet, rEuristic]
         # strategies = [rEuristic, rEuristic]
-        strategies = [rlStrategyFf, rEuristic]
+        strategies = [rlHier, rEuristic]
 
         # withGraphics = True 
         withGraphics = False #    
@@ -68,7 +122,7 @@ if __name__ == '__main__':
         #####################################################################################
         seed = 2
     
-        for seed in range(1, 19):
+        for seed in range(1, 10):
             winrates = [0,0]
             # print("Riga 69 main: ", rlStrategyGnn)
             # print("Starting. Eps should be 1: ", rlStrategyGnn.getEps())
@@ -77,7 +131,7 @@ if __name__ == '__main__':
 
             # start_time = time.time()
             saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results"+str(seed)+".csv")
-            for i in range(0, 1000):
+            for i in range(0, 200):
                 print(".", end='', flush = True)
                 finalPoints = gameCtrl.playGameForTraining()
                 saveInCsv(finalPoints, "csvFolder/results"+str(seed)+".csv")
