@@ -231,23 +231,22 @@ class StrategyEuristic:
         # print(availableStreets)
         # print(player.calculatePossibleStreetsId())
         if(len(availableStreets) != 0):
-            return random.choice(availableStreets) # per ora random
+            return random.choice(availableStreets) 
         return None
     
     def euristicPlaceFreeStreet(self, player):
         availableStreets = player.calculatePossibleStreets()
         if(len(availableStreets) != 0):
-            return random.choice(availableStreets) # per ora random
+            return random.choice(availableStreets) 
         return None
     
     def euristicMonopoly(self, player):
         min = 50
-        # toTake = ""
         toTake = random.choice(list(Bank.Bank().resources.keys()))
-        # for res in Bank.Bank().resources.keys():
-        #     if Bank.Bank().resources[res] < min:
-        #         toTake = res
-        #         min = Bank.Bank().resources[res]
+        for res in Bank.Bank().resources.keys():
+            if Bank.Bank().resources[res] < min:
+                toTake = res
+                min = Bank.Bank().resources[res]
         return toTake
     
     def euristicRoadBuildingCard(self, player):
