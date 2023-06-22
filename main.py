@@ -5,14 +5,12 @@ import Classes as c
 import pandas as pd
 import numpy as np
 import csv
-# from Classes.Strategy.HybridStrategy import HybridStrategy
-# from Classes.Strategy.PriorityStrategy import PriorityStrategy
-# from Classes.Strategy.PureStrategy import PureStrategy
 from Classes.Strategy.RLStrategyGNN import ReinforcementLearningStrategyGnn
 from Classes.Strategy.RLStrategyFF import ReinforcementLearningStrategyFf
 import time
 from Classes.Strategy.RLStrategyGNNstreetSp import RLStrategyGnnHierarchical
-from Classes.Strategy.RandomEuristic import RandomEuristicStrategy
+from Classes.Strategy.EurPlayer import EuristicPlayer
+from Classes.Strategy.RanPlayer import RandomPlayer
 from Classes.Strategy.StrategyRandom import StrategyRandom
 from Classes.staticUtilities import plotCsvColumns, plotCsvColumnsWithHeaders, plotWinners2, saveInCsv
 
@@ -49,7 +47,7 @@ def writeOnCsv(i, winners):
         writer.writerow([i, *winners])
 
 def compareHierVsEur():
-        rEuristic = RandomEuristicStrategy()
+        rEuristic = EuristicPlayer()
         rlHier = RLStrategyGnnHierarchical()
         strategies = [rlHier, rEuristic]
         withGraphics = False    
@@ -77,7 +75,7 @@ def compareHierVsEur():
 def compare():
         rlStrategyGnn = ReinforcementLearningStrategyGnn()
         rlStrategyFf = ReinforcementLearningStrategyFf()
-        rEuristic = RandomEuristicStrategy()
+        rEuristic = EuristicPlayer()
         rlHier = RLStrategyGnnHierarchical()
         strategies = [rlStrategyFf, rEuristic]
         withGraphics = False    
@@ -110,8 +108,8 @@ if __name__ == '__main__':
         # strategies = [rlSpecializedStreet, rEuristic]
         # strategies = [rEuristic, rEuristic]
         # rlStrategyFf = ReinforcementLearningStrategyFf()
-        randomStrategy = StrategyRandom()
-        rEuristic = RandomEuristicStrategy()
+        randomStrategy = RandomPlayer()
+        rEuristic = EuristicPlayer()
         strategies = [randomStrategy, rEuristic]
         withGraphics = False # True    
         idEpisode = 0
@@ -132,8 +130,6 @@ if __name__ == '__main__':
             print("Winrates: ", winrates)
             # print("Definitely updated, final eps: ", .getEps(), flush = True)
             # rlStrategyGnn = ReinforcementLearningStrategyGnn()
-            randomStrategy = StrategyRandom()
-
             strategies = [randomStrategy, rEuristic]
             gameCtrl.reset(strategies)
             

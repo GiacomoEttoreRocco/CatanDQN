@@ -1,12 +1,11 @@
 from Classes import Bank, Board
 from Classes.MoveTypes import *
-from Classes.Strategy.StrategyEuristic import StrategyEuristic
+from Classes.Strategy.StrategyRandom import StrategyRandom
 from Classes.staticUtilities import *
 from Command import commands, controller
-from RL.DQGNN import DQGNNagent
 import random
 
-class EuristicStrategy(StrategyEuristic):
+class RandomPlayer(StrategyRandom):
     # def __init__(self): 
         # print("RANDOM EURISTIC CONSTRUCTOR")
         # self.macroDQN = DQGNNagent(11, 10) 
