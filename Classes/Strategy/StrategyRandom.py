@@ -136,7 +136,7 @@ class StrategyRandom:
         return random.choice(trades)
 
     def randomicDiscardResource(self, player):
-        resToDiscard = []
+        resToDiscard = None
         for res in player.resources.keys():
             if(player.resources[res] > 0):
                 resToDiscard = res

@@ -130,7 +130,7 @@ if __name__ == '__main__':
             print("Winrates: ", winrates)
             # print("Definitely updated, final eps: ", .getEps(), flush = True)
             # rlStrategyGnn = ReinforcementLearningStrategyGnn()
-            strategies = [rEuristic, rEuristic]
+            strategies = [randomStrategy, rEuristic]
             gameCtrl.reset(strategies)
             
         #####################################################################################
