@@ -105,14 +105,15 @@ if __name__ == '__main__':
         # prioStrategy = PriorityStrategy()
         # hybStrategy = HybridStrategy()
         # purStrategy = PureStrategy()
-        # rlStrategyGnn = ReinforcementLearningStrategyGnn()
-        # rlStrategyFf = ReinforcementLearningStrategyFf()
-        rEuristic = RandomEuristicStrategy()
-        rlHier = RLStrategyGnnHierarchical()
-        # winners = []
+        # rlHier = RLStrategyGnnHierarchical()
         # strategies = [rlSpecializedStreet, rEuristic]
         # strategies = [rEuristic, rEuristic]
-        strategies = [rlHier, rEuristic]
+        # rlStrategyFf = ReinforcementLearningStrategyFf()
+
+        rlStrategyGnn = ReinforcementLearningStrategyGnn()
+        rEuristic = RandomEuristicStrategy()
+
+        strategies = [rlStrategyGnn, rEuristic]
 
         # withGraphics = True 
         withGraphics = False #    
@@ -122,14 +123,9 @@ if __name__ == '__main__':
         #####################################################################################
         seed = 2
     
-        for seed in range(1, 10):
+        for seed in range(1, 11):
             winrates = [0,0]
-            # print("Riga 69 main: ", rlStrategyGnn)
-            # print("Starting. Eps should be 1: ", rlStrategyGnn.getEps())
-            print("Starting. Eps should be 1: ", rlHier.getEps())
-            # print("Starting. Eps should be 1: ", rlStrategyFf.getEps())
-
-            # start_time = time.time()
+            print("Starting. Eps should be 1: ", rlStrategyGnn.getEps()) # questo
             saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results"+str(seed)+".csv")
             for i in range(0, 200):
                 print(".", end='', flush = True)
@@ -139,26 +135,11 @@ if __name__ == '__main__':
                     winrates[0]+=1
                 else:
                     winrates[1]+=1
-                # finalPoints = gameCtrl.playGame()
-                # idEpisode += 1
-                # print("Defenetly updated: ", rlStrategyGnn.getEps(), flush = True)
                 gameCtrl.reset(strategies)
             print("Winrates: ", winrates)
-            # print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
-            print("Definitely updated, final eps: ", rlHier.getEps(), flush = True)
-            # print("Definitely updated, final eps: ", rlStrategyFf.getEps(), flush = True)
-
-
-            # rlStrategyGnn = ReinforcementLearningStrategyGnn()
-            # rlStrategyFf = ReinforcementLearningStrategyFf()
-            # rEuristic1 = RandomEuristicStrategy()
-            # rEuristic2 = RandomEuristicStrategy()
-            # strategies = [rlStrategyGnn, rEuristic]
-            # strategies = [rEuristic, rEuristic]
-            # strategies = [rlStrategyFf, rEuristic]
-            # strategies = [rEuristic1, rEuristic2]
-            rlHier = RLStrategyGnnHierarchical()
-            strategies = [rlHier, rEuristic]
+            print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
+            rlStrategyGnn = ReinforcementLearningStrategyGnn()
+            strategies = [rlStrategyGnn, rEuristic]
             gameCtrl.reset(strategies)
             
         #####################################################################################
