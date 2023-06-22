@@ -8,7 +8,7 @@ import csv
 from Classes.Strategy.RLStrategyGNN import ReinforcementLearningStrategyGnn
 from Classes.Strategy.RLStrategyFF import ReinforcementLearningStrategyFf
 import time
-from Classes.Strategy.RLStrategyGNNstreetSp import RLStrategyGnnHierarchical
+from Classes.Strategy.RLStrategyGNNhier import RLStrategyGnnHierarchical
 from Classes.Strategy.EurPlayer import EuristicPlayer
 from Classes.Strategy.RanPlayer import RandomPlayer
 from Classes.Strategy.StrategyRandom import StrategyRandom

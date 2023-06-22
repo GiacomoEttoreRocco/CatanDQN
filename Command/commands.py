@@ -424,7 +424,7 @@ class PlaceDefaultCityCommand:
         self.player.nCities+=1
         self.player.nColonies-=1
         self.player.ownedCities.append(self.place.id)
-
+        print(self.place.id)
         self.player.ownedColonies.remove(self.place.id) # aggiunto di recente
 
     def undo(self):
