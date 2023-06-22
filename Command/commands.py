@@ -424,8 +424,9 @@ class PlaceDefaultCityCommand:
         self.player.nCities+=1
         self.player.nColonies-=1
         self.player.ownedCities.append(self.place.id)
-        print(self.place.id)
-        self.player.ownedColonies.remove(self.place.id) # aggiunto di recente
+        # print(self.place.id)
+        if(self.place.id in self.player.ownedColonies):
+            self.player.ownedColonies.remove(self.place.id) 
 
     def undo(self):
         Board.Board().places[self.place.id].isColony = True

@@ -7,6 +7,8 @@ from Command import commands, controller
 from RL.DQN import DQNagent
 import random
 
+from RL.L2_DQN import L2DQNagent
+
 class ReinforcementLearningStrategyFf(StrategyEuristic):
     def __init__(self):
         self.macroDQN = DQNagent(54*11 + 72 + 9, 10) 
@@ -121,44 +123,28 @@ class ReinforcementLearningStrategyFf(StrategyEuristic):
             print("Non existing move selected.")
         
     def DQNFFPlaceStreet(self, player):
-        # print("Specialized street")
-        # availableStreets = player.calculatePossibleStreets()
         availableStreetsId = [list(Board.Board().edges.keys()).index(edge) for edge in player.calculatePossibleStreets()]
-
-        graph = Board.Board().boardStateGraph(player)
-        glob = player.globalFeaturesToTensor()
-        bestStreet = self.streetDQN.step(graph, glob, availableStreetsId, self.macroDQN)
-        # print(bestStreet)
+        state = self.game.getTotalState(player)
+        bestStreet = self.streetDQN.step(state, availableStreetsId, self.macroDQN)
         return list(Board.Board().edges.keys())[bestStreet]
     
     def DQNFFPlaceColony(self, player):
-        # print("Specialized colony placed.")
         possibleColoniesId = [Board.Board().places.index(place) for place in player.calculatePossibleColonies()]
-
-        graph = Board.Board().boardStateGraph(player)
-        glob = player.globalFeaturesToTensor()
-        choosenColony = self.colonyDQN.step(graph, glob, possibleColoniesId, self.macroDQN)
-        # print(choosenColony)
+        state = self.game.getTotalState(player)
+        choosenColony = self.colonyDQN.step(state, possibleColoniesId, self.macroDQN)
         return Board.Board().places[choosenColony]
     
     def DQNFFPlaceInitialColony(self, player):
-        # print("Specialized initial colony placed.")
         possibleColoniesId = [Board.Board().places.index(place) for place in player.calculatePossibleInitialColonies()]
-        graph = Board.Board().boardStateGraph(player)
-        glob = player.globalFeaturesToTensor()
-        choosenColony = self.colonyDQN.step(graph, glob, possibleColoniesId, self.macroDQN)
-        # print(choosenColony)
+        state = self.game.getTotalState(player)
+        choosenColony = self.colonyDQN.step(state, possibleColoniesId, self.macroDQN)
         return Board.Board().places[choosenColony]
     
     def DQNFFTradeBank(self, player):
-        # print("trade spec")
         trades = player.calculatePossibleTrades()
         tradesIds = []
         for trade in trades:
             tradesIds.append(tradesToId(trade))
-
-        graph = Board.Board().boardStateGraph(player)
-        glob = player.globalFeaturesToTensor()
-
-        choosenTrade = self.tradeDQN.step(graph, glob, tradesIds, self.macroDQN)
+        state = self.game.getTotalState(player)
+        choosenTrade = self.tradeDQN.step(state, tradesIds, self.macroDQN)
         return idToTrade(choosenTrade)
