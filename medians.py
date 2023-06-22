@@ -78,7 +78,7 @@ def calculateThirdQuartiles(matrix):
 
 def plot_experiment_results(mean_array, q1_array, q3_array, name):
     x = np.arange(1, len(mean_array) + 1)
-    plt.ylim(2, 10)
+    plt.ylim(2, 11)
     plt.plot(x, mean_array, label='Media ' + name)
     plt.fill_between(x, q1_array, q3_array, alpha=0.3, label='Intervallo quartili')
     plt.xlabel('Mean of every 15 episodes (total number of episodes = 1000)')
@@ -108,8 +108,8 @@ for row in range(1, 1000):
 # plot_experiment_results(calculateRowMeans(gnnRes), calculateFirstQuartiles(gnnRes), calculateThirdQuartiles(gnnRes))
 # plot_experiment_results(calculateRowMeans(ranRes), calculateFirstQuartiles(ranRes), calculateThirdQuartiles(ranRes))
 
-plot_experiment_results(riassumi(calculateRowMeans(gnnRes), 15), riassumi(calculateFirstQuartiles(gnnRes), 15), riassumi(calculateThirdQuartiles(gnnRes), 15), "DQN")
-plot_experiment_results(riassumi(calculateRowMeans(ranRes), 15), riassumi(calculateFirstQuartiles(ranRes), 15), riassumi(calculateThirdQuartiles(ranRes), 15), "RAN")
+plot_experiment_results(riassumi(calculateRowMeans(gnnRes), 10), riassumi(calculateFirstQuartiles(gnnRes), 10), riassumi(calculateThirdQuartiles(gnnRes), 10), "DQN")
+plot_experiment_results(riassumi(calculateRowMeans(ranRes), 10), riassumi(calculateFirstQuartiles(ranRes), 10), riassumi(calculateThirdQuartiles(ranRes), 10), "RAN")
 
 plt.show()
 # plt.show()
