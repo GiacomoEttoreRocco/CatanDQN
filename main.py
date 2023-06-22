@@ -65,7 +65,7 @@ if __name__ == '__main__':
         #####################################################################################
         seed = 2
     
-        for seed in range(12, 16):
+        for seed in range(1, 19):
             winrates = [0,0]
             # print("Riga 69 main: ", rlStrategyGnn)
             # print("Starting. Eps should be 1: ", rlStrategyGnn.getEps())
@@ -86,13 +86,13 @@ if __name__ == '__main__':
                 # print("Defenetly updated: ", rlStrategyGnn.getEps(), flush = True)
                 gameCtrl.reset(strategies)
             print("Winrates: ", winrates)
-            # print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
-            print("Definitely updated, final eps: ", rlSpecializedStreet.getEps(), flush = True)
+            print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
+            # print("Definitely updated, final eps: ", rlSpecializedStreet.getEps(), flush = True)
 
-            # rlStrategyGnn = ReinforcementLearningStrategyGnn()
-            rlSpecializedStreet = RLStrategyGnnStreet()
-
-            strategies = [rlSpecializedStreet, rEuristic]
+            rlStrategyGnn = ReinforcementLearningStrategyGnn()
+            strategies = [rlStrategyGnn, rEuristic]
+            # rlSpecializedStreet = RLStrategyGnnStreet()
+            # strategies = [rlSpecializedStreet, rEuristic]
             gameCtrl.reset(strategies)
             
         #####################################################################################

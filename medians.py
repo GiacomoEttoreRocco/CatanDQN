@@ -4,7 +4,7 @@ import numpy as np
 import csv
 import statistics
 
-csv_files = ["csvFolder/results{}.csv".format(seed) for seed in range(1, 14)]
+csv_files = ["csvFolder/results{}.csv".format(seed) for seed in range(1, 18)]
 
 def getAllfirstElements(row_index, column_index, csv_files):
     first_elements = []
@@ -83,8 +83,8 @@ def plot_experiment_results(mean_array, q1_array, q3_array, name):
     plt.fill_between(x, q1_array, q3_array, alpha=0.3, label='Quartile interval')
     plt.xlabel('Mean of every 5 episodes (total number of episodes = 1000)')
     plt.ylabel('Mean points at turn 100*')
-    plt.title('Andamento dei valori con intervallo quartili')
-    plt.legend()
+    plt.title('Trend of values ​​with quartile range')
+    plt.legend(fontsize="7")
     # plt.show()
 
 # meansGNN = []
