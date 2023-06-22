@@ -11,7 +11,7 @@ import csv
 from Classes.Strategy.RLStrategyGNN import ReinforcementLearningStrategyGnn
 from Classes.Strategy.RLStrategyFF import ReinforcementLearningStrategyFf
 import time
-from Classes.Strategy.RLStrategyGNNstreetSp import RLStrategyGnnStreet
+from Classes.Strategy.RLStrategyGNNstreetSp import RLStrategyGnnHierarchical
 from Classes.Strategy.RandomEuristic import RandomEuristicStrategy
 from Classes.staticUtilities import plotCsvColumns, plotCsvColumnsWithHeaders, plotWinners2, saveInCsv
 
@@ -54,7 +54,7 @@ if __name__ == '__main__':
         rlStrategyGnn = ReinforcementLearningStrategyGnn()
         rlStrategyFf = ReinforcementLearningStrategyFf()
         rEuristic = RandomEuristicStrategy()
-        rlSpecializedStreet = RLStrategyGnnStreet()
+        rlHier = RLStrategyGnnHierarchical()
         # winners = []
         # strategies = [rlSpecializedStreet, rEuristic]
         # strategies = [rEuristic, rEuristic]
@@ -72,7 +72,7 @@ if __name__ == '__main__':
             winrates = [0,0]
             # print("Riga 69 main: ", rlStrategyGnn)
             # print("Starting. Eps should be 1: ", rlStrategyGnn.getEps())
-            print("Starting. Eps should be 1: ", rlSpecializedStreet.getEps())
+            print("Starting. Eps should be 1: ", rlHier.getEps())
             # print("Starting. Eps should be 1: ", rlStrategyFf.getEps())
 
             # start_time = time.time()
@@ -91,7 +91,7 @@ if __name__ == '__main__':
                 gameCtrl.reset(strategies)
             print("Winrates: ", winrates)
             # print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
-            print("Definitely updated, final eps: ", rlSpecializedStreet.getEps(), flush = True)
+            print("Definitely updated, final eps: ", rlHier.getEps(), flush = True)
             # print("Definitely updated, final eps: ", rlStrategyFf.getEps(), flush = True)
 
 
@@ -103,8 +103,8 @@ if __name__ == '__main__':
             # strategies = [rEuristic, rEuristic]
             # strategies = [rlStrategyFf, rEuristic]
             # strategies = [rEuristic1, rEuristic2]
-            rlSpecializedStreet = RLStrategyGnnStreet()
-            strategies = [rlSpecializedStreet, rEuristic]
+            rlHier = RLStrategyGnnHierarchical()
+            strategies = [rlHier, rEuristic]
             gameCtrl.reset(strategies)
             
         #####################################################################################

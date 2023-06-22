@@ -8,7 +8,7 @@ import random
 
 from RL.L2_DQGNN import L2DQGNNagent
 
-class RLStrategyGnnStreet(StrategyEuristic):
+class RLStrategyGnnHierarchical(StrategyEuristic):
     def __init__(self): # diventerà un singleton
         self.macroDQN = DQGNNagent(11, 10) # macro rete decisionale
 
