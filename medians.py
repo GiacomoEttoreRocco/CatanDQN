@@ -4,7 +4,7 @@ import numpy as np
 import csv
 import statistics
 
-csv_files = ["csvFolder/results{}.csv".format(seed) for seed in range(1, 19)]
+csv_files = ["csvFolder/results{}.csv".format(seed) for seed in range(1, 16)]
 
 def getAllfirstElements(row_index, column_index, csv_files):
     first_elements = []
@@ -48,7 +48,6 @@ def plotMeansColumnsWithHeaders(colonna1, colonna2, interval, nome1, nome2):
     plt.show()
 # print(get_first_elements(2, 1, csv_files))
 # plotMeansColumnsWithHeaders(meansGNN, meansRAN, 15, "x", "y")
-
 
 def riassumi(data, interval):
     # Calcola i punti medi ogni interval punti
@@ -108,7 +107,7 @@ for row in range(1, 1000):
 # plot_experiment_results(calculateRowMeans(gnnRes), calculateFirstQuartiles(gnnRes), calculateThirdQuartiles(gnnRes))
 # plot_experiment_results(calculateRowMeans(ranRes), calculateFirstQuartiles(ranRes), calculateThirdQuartiles(ranRes))
 
-plot_experiment_results(riassumi(calculateRowMeans(gnnRes), 5), riassumi(calculateFirstQuartiles(gnnRes), 5), riassumi(calculateThirdQuartiles(gnnRes), 5), "RAN")
+plot_experiment_results(riassumi(calculateRowMeans(gnnRes), 5), riassumi(calculateFirstQuartiles(gnnRes), 5), riassumi(calculateThirdQuartiles(gnnRes), 5), "DQN FF")
 plot_experiment_results(riassumi(calculateRowMeans(ranRes), 5), riassumi(calculateFirstQuartiles(ranRes), 5), riassumi(calculateThirdQuartiles(ranRes), 5), "RAN")
 
 plt.show()

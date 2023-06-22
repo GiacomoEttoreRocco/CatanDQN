@@ -5,7 +5,7 @@ from Classes.staticUtilities import availableResourcesForCity, availableResource
 from Command import commands
 
 
-class StrategyEuristic:
+class StrategyRandom:
     def __init__(self):
         ...
         pass 
@@ -20,27 +20,27 @@ class StrategyEuristic:
     def chooseParameters(self, action, player): # il vecchio evaluate
         if(action == commands.PlaceFreeStreetCommand):
             # print("Placing free street")
-            return commands.PlaceFreeStreetCommand, self.euristicPlaceStreet(player), None
+            return commands.PlaceFreeStreetCommand, self.randomicPlaceStreet(player), None
         
         elif(action == commands.UseRobberCommand): # Yes they are the same method, but must be differentiated becouse of the count of knights.
             # print("Using robber")
-            return commands.UseRobberCommand, self.euristicPlaceRobber(player)
+            return commands.UseRobberCommand, self.randomicPlaceRobber(player)
 
         elif(action == commands.DiscardResourceCommand):
             # print("Discarding resource")
-            return commands.DiscardResourceCommand, self.euristicDiscardResource(player)
+            return commands.DiscardResourceCommand, self.randomicDiscardResource(player)
         
         elif(action == commands.FirstChoiseCommand):
             # print("InitialFIRSTChoice")
-            return commands.FirstChoiseCommand, self.euristicInitialFirstMove(player), None
+            return commands.FirstChoiseCommand, self.randomicInitialFirstMove(player), None
         
         elif(action == commands.PlaceInitialStreetCommand):
             # print("Initial STREET Choice")
-            return commands.PlaceInitialStreetCommand, self.euristicPlaceInitialStreet(player)
+            return commands.PlaceInitialStreetCommand, self.randomicPlaceInitialStreet(player)
 
         elif(action == commands.SecondChoiseCommand):
             # print("Initial SECOND choice")
-            return commands.SecondChoiseCommand, self.euristicInitialSecondMove(player), None
+            return commands.SecondChoiseCommand, self.randomicInitialSecondMove(player), None
         
         elif(action == commands.PassTurnCommand):
             # print("Pass turn")
@@ -52,35 +52,35 @@ class StrategyEuristic:
     
         elif(action == commands.PlaceStreetCommand):
             # print("Placing street")
-            return  commands.PlaceStreetCommand, self.euristicPlaceStreet(player), None
+            return  commands.PlaceStreetCommand, self.randomicPlaceStreet(player), None
         
         elif(action == commands.PlaceColonyCommand):
             # print("Place colony")
-            return  commands.PlaceColonyCommand, self.euristicPlaceColony(player), None
+            return  commands.PlaceColonyCommand, self.randomicPlaceColony(player), None
 
         elif(action == commands.PlaceCityCommand):
             # print("Placing city")
-            return  commands.PlaceCityCommand, self.euristicPlaceCity(player), None
+            return  commands.PlaceCityCommand, self.randomicPlaceCity(player), None
 
         elif(action == commands.TradeBankCommand):
             # print("Trade bank")
-            return  commands.TradeBankCommand, self.euristicTradeBank(player), None    
+            return  commands.TradeBankCommand, self.randomicTradeBank(player), None    
 
         elif(action == commands.UseKnightCommand):
             # print("Use knight card")
-            return  commands.UseKnightCommand, self.euristicPlaceKnight(player), None
+            return  commands.UseKnightCommand, self.randomicPlaceKnight(player), None
 
         elif(action == commands.UseMonopolyCardCommand):
             # print("Use monopoly card")
-            return  commands.UseMonopolyCardCommand, self.euristicMonopoly(player), None
+            return  commands.UseMonopolyCardCommand, self.randomicMonopoly(player), None
         
         elif(action == commands.UseRoadBuildingCardCommand):
             # print("Use road building card")
-            return  commands.UseRoadBuildingCardCommand, self.euristicRoadBuildingCard(player), None
+            return  commands.UseRoadBuildingCardCommand, self.randomicRoadBuildingCard(player), None
         
         elif(action == commands.UseYearOfPlentyCardCommand):
             # print("Use year of plenty card")
-            return  commands.UseYearOfPlentyCardCommand, self.euristicYearOfPlenty(player), None
+            return  commands.UseYearOfPlentyCardCommand, self.randomicYearOfPlenty(player), None
         else:
             print("Non existing move selected.")
     
@@ -107,150 +107,77 @@ class StrategyEuristic:
             value += self.resValue(Board.Board().tiles[tile].resource) * self.diceEvaluationFunction(Board.Board().tiles[tile].number)
         return value
         
-    def euristicInitialFirstMove(self, player):
+    def randomicInitialFirstMove(self, player):
         availablePlaces = player.calculatePossibleInitialColonies()
-        max = 0
-        choosenPlace = -1
-        for place in availablePlaces:
-            if(self.placeValue(place) > max):
-                max = self.placeValue(place)
-                choosenPlace = place
         choosenPlace = random.choice(availablePlaces)
         return choosenPlace
     
-    def euristicPlaceInitialStreet(self, player):
+    def randomicPlaceInitialStreet(self, player):
         availableStreets = player.calculatePossibleInitialStreets()
         return random.choice(availableStreets)
     
-    def euristicInitialSecondMove(self, player):
+    def randomicInitialSecondMove(self, player):
         availablePlaces = player.calculatePossibleInitialColonies()
-        max = 0
-        choosenPlace = -1
-        for place in availablePlaces:
-            if(self.placeValue(place) > max):
-                max = self.placeValue(place)
-                choosenPlace = place
         choosenPlace = random.choice(availablePlaces)
         return choosenPlace
         
-    def euristicPlaceCity(self, player):
+    def randomicPlaceCity(self, player):
         ownedColonies = player.ownedColonies # to upgrade in city
-        max = 0
-        choosenColony = -1
-        for colony in ownedColonies:
-            if(self.placeValue(Board.Board().places[colony]) > max): # da verificare
-                max = self.placeValue(Board.Board().places[colony])
-                choosenColony = colony
         choosenPlace = random.choice(ownedColonies)
         return Board.Board().places[choosenPlace]
     
-    def euristicPlaceColony(self, player):
+    def randomicPlaceColony(self, player):
         possibleColonies = player.calculatePossibleColonies()
         choosenColony = random.choice(possibleColonies)
-        if(len(possibleColonies) == 0):
-            print("FATAL ERROR.")
-        max = 0
-        # choosenColony = -1
-        for colony in possibleColonies:
-            if(self.placeValue(colony) > max):
-                max = self.placeValue(colony)
-                choosenColony = colony
         return choosenColony
 
-    def euristicTradeBank(self, player):
+    def randomicTradeBank(self, player):
         trades = player.calculatePossibleTrades()
-        # resourceCopy = player.resources.copy()
-        # for trade in trades:
-        #     resourceCopy[trade[0]] += 1
-        #     resourceCopy[trade[1]] -= Bank.Bank().resourceToAsk(player, trade[1])
-        #     if((len(player.calculatePossibleCities()) > 0 and availableResourcesForCity(resourceCopy)) or (len(player.calculatePossibleColonies()) > 0 and availableResourcesForColony(resourceCopy))):
-        #         return trade
-        #     resourceCopy = player.resources.copy()
-            
-        # for trade in trades:
-        #     resourceCopy[trade[0]] += 1
-        #     resourceCopy[trade[1]] -= Bank.Bank().resourceToAsk(player, trade[1])         
-        #     if(len(player.calculatePossibleStreets()) > 0 and availableResourcesForStreet(resourceCopy)):
-        #         return trade
-        #     resourceCopy = player.resources.copy()  
-
-        # for trade in trades:
-        #     resourceCopy[trade[0]] += 1
-        #     resourceCopy[trade[1]] -= Bank.Bank().resourceToAsk(player, trade[1])
-        #     if(availableResourcesForDevCard(resourceCopy)):
-        #         return trade
-        #     resourceCopy = player.resources.copy()
-            
-        # for trade in trades:
-        #     resourceCopy[trade[0]] += 1
-        #     resourceCopy[trade[1]] -= Bank.Bank().resourceToAsk(player, trade[1])
-        #     if(sum(player.resources.values()) >= 7):
-        #         return trade
-        #     resourceCopy = player.resources.copy()
         return random.choice(trades)
 
-    def euristicDiscardResource(self, player):
-        max = 0
-        resToDiscard = None
+    def randomicDiscardResource(self, player):
+        resToDiscard = []
         for res in player.resources.keys():
-            if(player.resources[res] > max):
-                resToDiscard = res
-                max = player.resources[res]
+            if(player.resources[res] > 0):
+                resToDiscard.append(res)
         return resToDiscard
         
-    def euristicPlaceRobber(self, player):
+    def randomicPlaceRobber(self, player):
         bestTile = random.choice(Board.Board().tiles)
-        # bestTile = None
-        # for tile in Board.Board().tiles:
-        #     if tile.resource != "desert" and blockableTile(player, tile):
-        #         bestTile = tile
-        #         return bestTile.identificator
         return bestTile.identificator
     
-    def euristicPlaceKnight(self, player):
+    def randomicPlaceKnight(self, player):
         bestTile = random.choice(Board.Board().tiles)
-        # # bestTile = None
-        # for tile in Board.Board().tiles:
-        #     if tile.resource != "desert" and blockableTile(player, tile):
-        #         bestTile = tile
-        #         return bestTile.identificator
         return bestTile.identificator
 
-    def euristicPlayCard(self, player):
+    def randomicPlayCard(self, player):
         if player.unusedKnights > 0:
-            return self.euristicPlayKnight(player)
+            return self.randomicPlayKnight(player)
         if player.monopolyCard > 0:
-            return self.euristicMonopoly(player)
+            return self.randomicMonopoly(player)
         if player.roadBuildingCard > 0:
-            return self.euristicRoadBuildingCard(player)
+            return self.randomicRoadBuildingCard(player)
         if player.yearOfPlenty > 0:
-            return self.euristicYearOfPlenty(player)
+            return self.randomicYearOfPlenty(player)
 
-    def euristicPlaceStreet(self, player):
-        availableStreets = player.calculatePossibleStreets()
-        # print(availableStreets)
-        # print(player.calculatePossibleStreetsId())
-        if(len(availableStreets) != 0):
-            return random.choice(availableStreets) # per ora random
-        return None
-    
-    def euristicPlaceFreeStreet(self, player):
+    def randomicPlaceStreet(self, player):
         availableStreets = player.calculatePossibleStreets()
         if(len(availableStreets) != 0):
-            return random.choice(availableStreets) # per ora random
+            return random.choice(availableStreets)
         return None
     
-    def euristicMonopoly(self, player):
+    def randomicPlaceFreeStreet(self, player):
+        availableStreets = player.calculatePossibleStreets()
+        if(len(availableStreets) != 0):
+            return random.choice(availableStreets)
+        return None
+    
+    def randomicMonopoly(self, player):
         min = 50
-        # toTake = ""
         toTake = random.choice(list(Bank.Bank().resources.keys()))
-        # for res in Bank.Bank().resources.keys():
-        #     if Bank.Bank().resources[res] < min:
-        #         toTake = res
-        #         min = Bank.Bank().resources[res]
         return toTake
     
-    def euristicRoadBuildingCard(self, player):
+    def randomicRoadBuildingCard(self, player):
         availableStreets = player.calculatePossibleStreets()
         if len(availableStreets) < 2:
             return availableStreets[0], None
@@ -260,7 +187,7 @@ class StrategyEuristic:
             edge2 = random.choice(availableStreets)
         return edge1, edge2
     
-    def euristicYearOfPlenty(self, player):
+    def randomicYearOfPlenty(self, player):
         resources = ["iron", "wood", "clay", "crop", "sheep"]
         return random.choice(resources), random.choice(resources)
 

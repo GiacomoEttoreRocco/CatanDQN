@@ -72,8 +72,8 @@ if __name__ == '__main__':
             winrates = [0,0]
             # print("Riga 69 main: ", rlStrategyGnn)
             # print("Starting. Eps should be 1: ", rlStrategyGnn.getEps())
-            # print("Starting. Eps should be 1: ", rlSpecializedStreet.getEps())
-            print("Starting. Eps should be 1: ", rlStrategyFf.getEps())
+            print("Starting. Eps should be 1: ", rlSpecializedStreet.getEps())
+            # print("Starting. Eps should be 1: ", rlStrategyFf.getEps())
 
             # start_time = time.time()
             saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results"+str(seed)+".csv")
@@ -91,19 +91,20 @@ if __name__ == '__main__':
                 gameCtrl.reset(strategies)
             print("Winrates: ", winrates)
             # print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
-            # print("Definitely updated, final eps: ", rlSpecializedStreet.getEps(), flush = True)
-            print("Definitely updated, final eps: ", rlStrategyFf.getEps(), flush = True)
+            print("Definitely updated, final eps: ", rlSpecializedStreet.getEps(), flush = True)
+            # print("Definitely updated, final eps: ", rlStrategyFf.getEps(), flush = True)
 
 
             # rlStrategyGnn = ReinforcementLearningStrategyGnn()
-            rlStrategyFf = ReinforcementLearningStrategyFf()
-
+            # rlStrategyFf = ReinforcementLearningStrategyFf()
+            # rEuristic1 = RandomEuristicStrategy()
+            # rEuristic2 = RandomEuristicStrategy()
             # strategies = [rlStrategyGnn, rEuristic]
             # strategies = [rEuristic, rEuristic]
-            strategies = [rlStrategyFf, rEuristic]
-
-            # rlSpecializedStreet = RLStrategyGnnStreet()
-            # strategies = [rlSpecializedStreet, rEuristic]
+            # strategies = [rlStrategyFf, rEuristic]
+            # strategies = [rEuristic1, rEuristic2]
+            rlSpecializedStreet = RLStrategyGnnStreet()
+            strategies = [rlSpecializedStreet, rEuristic]
             gameCtrl.reset(strategies)
             
         #####################################################################################
