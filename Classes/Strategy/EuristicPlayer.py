@@ -6,7 +6,7 @@ from Command import commands, controller
 from RL.DQGNN import DQGNNagent
 import random
 
-class RandomEuristicStrategy(StrategyEuristic):
+class EuristicStrategy(StrategyEuristic):
     # def __init__(self): 
         # print("RANDOM EURISTIC CONSTRUCTOR")
         # self.macroDQN = DQGNNagent(11, 10) 
