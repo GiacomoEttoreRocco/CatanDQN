@@ -109,20 +109,12 @@ if __name__ == '__main__':
         # strategies = [rlSpecializedStreet, rEuristic]
         # strategies = [rEuristic, rEuristic]
         # rlStrategyFf = ReinforcementLearningStrategyFf()
-
         rlStrategyGnn = ReinforcementLearningStrategyGnn()
         rEuristic = RandomEuristicStrategy()
-
         strategies = [rlStrategyGnn, rEuristic]
-
-        # withGraphics = True 
-        withGraphics = False #    
+        withGraphics = False # True    
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
-        #####################################################################################
-        #####################################################################################
-        seed = 2
-    
         for seed in range(1, 11):
             winrates = [0,0]
             print("Starting. Eps should be 1: ", rlStrategyGnn.getEps()) # questo
