@@ -70,32 +70,23 @@ class DQNagent():
     def optimize_model(self):
         if len(self.memory) < self.BATCH_SIZE:
             return
-        # print("optimizing ff...")
         transitions = self.memory.sample(self.BATCH_SIZE)
         batch = Transition(*zip(*transitions)) 
-        
-        state_batch = torch.stack(batch.state)
-        reward_batch = torch.stack(batch.reward) # prendi tutti i rewards
-        action_batch = torch.stack(batch.action) # prendi tutte le actions
-        next_state = torch.stack(batch.next_state)
+        state_batch = torch.cat(batch.state)
+        # print("Riga 76, DQN: ", state_batch.size())
+        reward_batch = torch.cat(batch.reward)  # prendi tutti i rewards
+        # print("Riga 78, DQN: ", reward_batch.size())
+        action_batch = torch.cat(batch.action)  # prendi tutte le actions
+        # print("Riga 80, DQN: ", action_batch.unsqueeze(1).size())
+        action_batch = action_batch.unsqueeze(1)
 
-
-        # print("Dimensioni dei tensori dopo la concatenazione:")
-        # print("state_batch:", state_batch.size()) # 16, 675
-        # print("reward_batch:", reward_batch.size()) # 16, 1
-        # print("action_batch:", action_batch.size()) # 16, 1
-        # print("next_state:", next_state.size()) # 16, 675
+        next_state = torch.cat(batch.next_state)
 
         with torch.no_grad():
             expected_state_action_values = self.GAMMA * self.target_net.forward(next_state).max(1)[0] + reward_batch
             # print("Dimensione di expected_state_action_values:", expected_state_action_values.size()) # 16 x 16 
 
-        state_action_values = self.policy_net.forward(state_batch)
-        # print("Dimensione di state_action_values prima di gather:", state_action_values.size()) # 16 , 10
-
-        state_action_values = state_action_values.gather(1, action_batch)
-        # print("Dimensione di state_action_values dopo gather:", state_action_values.size())
-
+        state_action_values = self.policy_net.forward(state_batch).gather(1, action_batch)
         self.optimizer.zero_grad()
         loss = self.criterion(state_action_values, expected_state_action_values.unsqueeze(1))
         loss.backward()

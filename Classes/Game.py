@@ -154,6 +154,6 @@ class Game:
         playerState = player.globalStateTensor()
         # print(boardState.size())
         # print(playerState.size())
-        state = torch.cat((boardState, playerState), dim=0)  
+        state = torch.cat((boardState, playerState), dim=0).unsqueeze(0)
         # print(state.size())
         return state
