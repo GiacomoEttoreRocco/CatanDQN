@@ -8,7 +8,7 @@ from RL.DQN import DQNagent
 import random
 
 class ReinforcementLearningStrategyFf(StrategyEuristic):
-    def __init__(self): # diventerà un singleton
+    def __init__(self): 
         # print("RL STRATEGY CONSTRUCTOR")
 
         self.macroDQN = DQNagent(54*11 + 72 + 9, 10) 
