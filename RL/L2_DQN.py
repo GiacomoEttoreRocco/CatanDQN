@@ -69,6 +69,7 @@ class L2DQNagent():
         return random_action
 
     def optimize_model(self, fatherDQN):
+        print("optimizing")
         if len(self.memory) < self.BATCH_SIZE:
             return
         transitions = self.memory.sample(self.BATCH_SIZE)

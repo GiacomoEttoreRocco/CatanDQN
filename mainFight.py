@@ -3,7 +3,7 @@ from Classes.Strategy.RLStrategyFFhier import ReinforcementLearningStrategyFfHie
 from Classes.Strategy.RanPlayer import RandomPlayer
 import Classes as c
 
-withGraphics = False
+withGraphics = True
 
 def append_to_text_file(file_path, text, data_list):
     with open(file_path, 'a') as file:
@@ -22,8 +22,6 @@ def doGame(gameCtrl, agent1, agent2, path1, path2):
 
 rlStrategyFfHier = ReinforcementLearningStrategyFfHier(0)
 randomPlayer = RandomPlayer()
-
-# va settata epsilon a 1!!!!!!!!
 
 strategies = [rlStrategyFfHier, randomPlayer] 
 gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
