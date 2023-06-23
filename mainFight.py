@@ -5,6 +5,12 @@ import Classes as c
 
 withGraphics = True
 
+def append_to_text_file(file_path, text, data_list):
+    with open(file_path, 'a') as file:
+        file.write(text + '\n')
+        for item in data_list:
+            file.write(str(item) + '\n')
+
 def doGame(agent1, agent2, path1, path2):
     strategies = [rlStrategyFfHier, randomPlayer]
     gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
@@ -19,6 +25,8 @@ randomPlayer = RandomPlayer()
 
 print(rlStrategyFfHier.name())
 print(randomPlayer.name())
-res = doGame(rlStrategyFfHier, randomPlayer, "Weights/HierFFVsRan/weights"+str(1), "")
+for i in range(0, 5):
+    res = doGame(rlStrategyFfHier, randomPlayer, "Weights/HierFFVsRan/weights"+str(1), "")
+    append_to_text_file("Torneo.txt", "HierFFVsRandom")
 
 print(res)
