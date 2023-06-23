@@ -168,6 +168,7 @@ class RLStrategyGnnHierarchical(StrategyEuristic):
         print("Successfully saved.")
 
     def loadWeights(self, filepath):
+        print("Starting loading weights...")
         self.macroDQN.policy_net.load_weights(filepath+".pth")
         self.macroDQN.target_net.load_weights(filepath+".pth")
 
@@ -179,6 +180,8 @@ class RLStrategyGnnHierarchical(StrategyEuristic):
 
         self.tradeDQN.policy_net.load_weights(filepath+"trade.pth")
         self.tradeDQN.target_net.load_weights(filepath+"trade.pth")
+        print("Successfully loaded.")
+
 
     
 

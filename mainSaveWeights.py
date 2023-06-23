@@ -75,7 +75,7 @@ if __name__ == '__main__':
             # print("Definitely updated, final eps: ", .getEps(), flush = True)
             print("Definitely updated, final eps: ", rlStrategyFfHier.getEps(), flush = True)
             # rlStrategyGnn = ReinforcementLearningStrategyGnn()
-            rlStrategyFfHier.saveWeights("Weights/HierFFVsRan/weights"+str(seed)+".pth")
+            rlStrategyFfHier.saveWeights("Weights/HierFFVsRan/weights"+str(seed))
             rlStrategyFfHier = ReinforcementLearningStrategyFfHier()
 
             strategies = [rlStrategyFfHier, randomPlayer] # randomStrategy] #, rEuristic]
