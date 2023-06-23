@@ -882,7 +882,8 @@ class TradeBankCommand:
 
     def execute(self):
         toTake, toGive = self.coupleOfResources
-        print("RIga 884 commands: ", toTake, toGive)
+        print("Riga 884 commands: ", toTake, toGive)
+        print("Riga 885 commands, resource to ask: ", Bank.Bank().resourceToAsk(self.player, toGive))
 
         self.actions.append(BankGiveResourceCommand(self.player, toTake))
         self.actions.extend([PlayerSpendResourceCommand(self.player, toGive) for _ in range(0, Bank.Bank().resourceToAsk(self.player, toGive))])
