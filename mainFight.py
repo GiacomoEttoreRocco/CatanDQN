@@ -21,23 +21,27 @@ def doGame(gameCtrl, agent1, agent2, path1, path2):
         agent2 = agent2.loadWeights(path2)
     return gameCtrl.playTurnamentGame()
 
+
+allAgents = []
+
 rlStrategyFfHier = ReinforcementLearningStrategyFfHier(0)
 randomPlayer = RandomPlayer()
 
 #Andata
-# strategies = [rlStrategyFfHier, randomPlayer] 
-# gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
+strategies = [rlStrategyFfHier, randomPlayer] 
+gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
 
-# for i in range(1, 10):
-#     res = doGame(gameCtrl, rlStrategyFfHier, randomPlayer, "Weights/HierFFVsRan/weights"+str(1), "")
-#     append_to_text_file("Torneo.txt", "HierFFVsRandom1", res)
-#     rlStrategyFfHier = ReinforcementLearningStrategyFfHier(0)
-#     randomPlayer = RandomPlayer()
-#     strategies = [rlStrategyFfHier, randomPlayer] 
-#     gameCtrl.reset(strategies)
-#     print(res)
+for i in range(1, 10):
+    res = doGame(gameCtrl, rlStrategyFfHier, randomPlayer, "Weights/HierFFVsRan/weights"+str(1), "")
+    append_to_text_file("Torneo.txt", "HierFFVsRandom1", res)
+    rlStrategyFfHier = ReinforcementLearningStrategyFfHier(0)
+    randomPlayer = RandomPlayer()
+    strategies = [rlStrategyFfHier, randomPlayer] 
+    gameCtrl.reset(strategies)
+    print(res)
 
 #Ritorno
+
 strategies = [randomPlayer, rlStrategyFfHier] 
 gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
 
