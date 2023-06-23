@@ -29,7 +29,7 @@ class L2DQNagent():
         self.optimizer = torch.optim.AdamW(self.policy_net.parameters(), lr=self.LearningRate)
         self.memory = ReplayMemory(1000)
 
-        self.decay = 0.99
+        self.decay = 0.994
 
     def epsDecay(self):
         self.EPS = self.EPS * self.decay
