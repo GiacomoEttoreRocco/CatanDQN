@@ -4,24 +4,17 @@ import numpy as np
 import csv
 import statistics
 
-# csv_filesEurVsRan = ["csvFolder/EurVsRan/results{}.csv".format(i) for i in range(1, 11)]
-# csv_filesHierGnnVsRan = ["csvFolder/HierGnnVsRan/results{}.csv".format(i) for i in range(1, 11)]
-# csv_filesHierFFVsRan = ["csvFolder/HierFFVsRan/results{}.csv".format(i) for i in range(1, 11)]
-# csv_filesOrchGnnVsRan = ["csvFolder/OrchGnnVsRan/results{}.csv".format(i) for i in range(1, 11)]
-# csv_filesOrchFFVsRan = ["csvFolder/OrchFFVsRan/results{}.csv".format(i) for i in range(1, 11)]
+csv_filesEurVsRan = ["csvFolder/EurVsRan/results{}.csv".format(i) for i in range(1, 11)]
+csv_filesHierGnnVsRan = ["csvFolder/HierGnnVsRan/results{}.csv".format(i) for i in range(1, 11)]
+csv_filesHierFFVsRan = ["csvFolder/HierFFVsRan/results{}.csv".format(i) for i in range(1, 11)]
+csv_filesOrchGnnVsRan = ["csvFolder/OrchGnnVsRan/results{}.csv".format(i) for i in range(1, 11)]
+csv_filesOrchFFVsRan = ["csvFolder/OrchFFVsRan/results{}.csv".format(i) for i in range(1, 11)]
 
 # csv_filesRanVsEur = ["csvFolder/RanVsEur/results{}.csv".format(i) for i in range(1, 11)]
 # csv_filesGnnHierVsEur = ["csvFolder/GnnHierVsEur/results{}.csv".format(i) for i in range(1, 11)]
 # csv_filesHierFFVsEur = ["csvFolder/HierFFVsEur/results{}.csv".format(i) for i in range(1, 11)]
 # csv_filesOrchGnnVsEur = ["csvFolder/OrchGnnVsEur/results{}.csv".format(i) for i in range(1, 11)]
 # csv_filesOrchFFVsEur = ["csvFolder/OrchFFVsEur/results{}.csv".format(i) for i in range(1, 11)]
-
-
-
-
-
-
-
 
 def getAllfirstElements(row_index, column_index, csv_files):
     first_elements = []
@@ -105,15 +98,15 @@ def plot_experiment_results(mean_array, q1_array, q3_array, name):
 # meansGNN = []
 # meansRAN = []
 
-gnnRes = []
-ranRes = []
+EurVsRan = []
+HierGnnVsRan = []
 
 for row in range(1, 301):
     # print(row)
-    x = getAllfirstElements(row, 0, csv_files)
-    y = getAllfirstElements(row, 1, csv_files)
-    gnnRes.append(x)
-    ranRes.append(y)
+    x = getAllfirstElements(row, 0, csv_filesEurVsRan)
+    y = getAllfirstElements(row, 0, csv_filesHierGnnVsRan)
+    EurVsRan.append(x)
+    HierGnnVsRan.append(y)
 
 # print(np.mean(gnnRes[1]))
 # print(np.mean(ranRes[1]))
@@ -123,8 +116,8 @@ for row in range(1, 301):
 # plot_experiment_results(calculateRowMeans(gnnRes), calculateFirstQuartiles(gnnRes), calculateThirdQuartiles(gnnRes))
 # plot_experiment_results(calculateRowMeans(ranRes), calculateFirstQuartiles(ranRes), calculateThirdQuartiles(ranRes))
 
-plot_experiment_results(riassumi(calculateRowMeans(gnnRes), 3), riassumi(calculateFirstQuartiles(gnnRes), 3), riassumi(calculateThirdQuartiles(gnnRes), 3), "HierarchicalDQN")
-plot_experiment_results(riassumi(calculateRowMeans(ranRes), 3), riassumi(calculateFirstQuartiles(ranRes), 3), riassumi(calculateThirdQuartiles(ranRes), 3), "Euristic")
+plot_experiment_results(riassumi(calculateRowMeans(EurVsRan), 3), riassumi(calculateFirstQuartiles(EurVsRan), 3), riassumi(calculateThirdQuartiles(EurVsRan), 3), "Euristic")
+plot_experiment_results(riassumi(calculateRowMeans(HierGnnVsRan), 3), riassumi(calculateFirstQuartiles(HierGnnVsRan), 3), riassumi(calculateThirdQuartiles(HierGnnVsRan), 3), "HiearchicalGnn")
 
 plt.show()
 # plt.show()
