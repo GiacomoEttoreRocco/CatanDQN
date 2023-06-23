@@ -12,7 +12,8 @@ def append_to_text_file(file_path, text, data_list):
             file.write(str(item) + '\n')
 
 def doGame(agent1, agent2, path1, path2):
-    strategies = [rlStrategyFfHier, randomPlayer]
+    strategies = [agent1, agent2]
+
     gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
     if("RL" in agent1.name()):
         agent1 = agent1.loadWeights(path1)
@@ -23,10 +24,13 @@ def doGame(agent1, agent2, path1, path2):
 rlStrategyFfHier = ReinforcementLearningStrategyFfHier()
 randomPlayer = RandomPlayer()
 
-print(rlStrategyFfHier.name())
-print(randomPlayer.name())
+rlStrategyFfHier = ReinforcementLearningStrategyFfHier()
+randomPlayer = RandomPlayer()
+
 for i in range(0, 5):
     res = doGame(rlStrategyFfHier, randomPlayer, "Weights/HierFFVsRan/weights"+str(1), "")
-    append_to_text_file("Torneo.txt", "HierFFVsRandom")
+    # append_to_text_file("Torneo.txt", "HierFFVsRandom", res)
+    rlStrategyFfHier = ReinforcementLearningStrategyFfHier()
+    randomPlayer = RandomPlayer()
 
 print(res)
