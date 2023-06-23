@@ -64,6 +64,14 @@ O_GNN2_green.loadWeights("Weights/OrchGnnVsRan/weights"+str(2))
 EURISTIC_PLAYER = EuristicPlayer()
 RANDOM_PLAYER = RandomPlayer()
 
+H_GNN1_self = ReinforcementLearningStrategyGnnHier(0)
+H_GNN1_self.loadWeights("Weights/HierGnnVsHierGnn/weights"+str(1))
+
+H_GNN2_self = ReinforcementLearningStrategyGnnHier(0)
+H_GNN2_self.loadWeights("Weights/HierGnnVsHierGnn/weights"+str(2))
+
+
+
 blueAgents = [H_FF1_blue, H_FF2_blue, H_GNN1_blue, H_GNN2_blue, O_FF1_blue, O_FF2_blue, O_GNN1_blue, O_GNN2_blue]
 greenAgents = [H_FF1_green, H_FF2_green, H_GNN1_green, H_GNN2_green, O_FF1_green, O_FF2_green, O_GNN1_green, O_GNN2_green]
 
@@ -78,11 +86,13 @@ otherAgents = [EURISTIC_PLAYER, RANDOM_PLAYER, H_FF2_blue, H_GNN1_blue, H_GNN2_b
 glob = 0.0
 totalGames = 0.0
 
+examAgent = H_GNN1_blue # H_GNN1_self
+
 for agent in otherAgents:
 
-    strategies = [H_FF1_blue, agent] 
+    strategies = [examAgent, agent] 
 
-    yourName = H_FF1_blue.name()
+    yourName = examAgent.name()
 
     gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
     gameCtrl.reset() 
@@ -93,7 +103,6 @@ for agent in otherAgents:
 
     for i in range(1, 5):
         totalGames+=1
-        strategies = [H_FF1_blue, agent] 
         res = gameCtrl.playTurnamentGame()
         gameCtrl.reset() 
         name = res[0]
@@ -106,9 +115,16 @@ for agent in otherAgents:
         else:
             meansAt120 += res[2][0] 
 
+    strategies = [agent, examAgent] 
+
+    yourName = examAgent.name()
+
+    gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
+    gameCtrl.reset() 
+
+
     for i in range(1, 5):
         totalGames+=1
-        strategies = [agent, H_FF1_blue] 
         res = gameCtrl.playTurnamentGame()
         gameCtrl.reset() 
 
@@ -124,6 +140,6 @@ for agent in otherAgents:
 
     glob += wons
 
-    print(H_FF1_blue.name() + "and " + agent.name() + " over. Winrate: ", wons,  "/10.0 " , "MeansAt120: ", meansAt120/10.0)
+    print(yourName + "and " + agent.name() + " over. Winrate: ", wons,  "/10.0 " , "MeansAt120: ", meansAt120/10.0)
 
 print("Global: ",glob,"/", totalGames)

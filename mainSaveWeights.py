@@ -9,7 +9,7 @@ from Classes.Strategy.RLStrategyFFhier import ReinforcementLearningStrategyFfHie
 from Classes.Strategy.RLStrategyGNN import ReinforcementLearningStrategyGnn
 from Classes.Strategy.RLStrategyFF import ReinforcementLearningStrategyFf
 import time
-from Classes.Strategy.RLStrategyGNNhier import RLStrategyGnnHierarchical
+from Classes.Strategy.RLStrategyGNNhier import ReinforcementLearningStrategyGnnHier
 from Classes.Strategy.EurPlayer import EuristicPlayer
 from Classes.Strategy.RanPlayer import RandomPlayer
 from Classes.Strategy.StrategyRandom import StrategyRandom
@@ -433,8 +433,8 @@ if __name__ == '__main__':
     
 
 # # # HIERARCHICALGNN VS HIERARCHICALGNN
-    rlStrategyGnnHier1 = RLStrategyGnnHierarchical(1)
-    rlStrategyGnnHier2 = RLStrategyGnnHierarchical(1)
+    rlStrategyGnnHier1 = ReinforcementLearningStrategyGnnHier(1)
+    rlStrategyGnnHier2 = ReinforcementLearningStrategyGnnHier(1)
 
     # rEuristic = EuristicPlayer()
     randomPlayer = RandomPlayer()
@@ -446,6 +446,8 @@ if __name__ == '__main__':
     winrates = [0,0]
     # print("Starting. Eps should be 1: ", .getEps()) # questo 
     print("Starting. Eps should be 1: ", rlStrategyGnnHier1.getEps()) # questo 
+    print("Starting. Eps should be 1: ", rlStrategyGnnHier2.getEps()) # questo 
+
     saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/HierGnnVsHierGnn/results"+str(0)+".csv")
     for i in range(0, 3000):
         finalPoints = gameCtrl.playGameForTraining()
@@ -456,6 +458,11 @@ if __name__ == '__main__':
         else:
             winrates[1]+=1
         gameCtrl.reset()
+
+        if(i%100 == 0):
+            print("Eps should NOT be 1: ", rlStrategyGnnHier1.getEps()) # questo 
+            print("Eps should NOT be 1: ", rlStrategyGnnHier2.getEps()) # questo 
+
     print("Winrates: ", winrates)
     # print("Definitely updated, final eps: ", .getEps(), flush = True)
     print("Definitely updated, final eps: ", rlStrategyGnnHier1.getEps(), flush = True)
