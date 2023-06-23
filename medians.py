@@ -4,7 +4,24 @@ import numpy as np
 import csv
 import statistics
 
-csv_files = ["csvFolder/RanVsEur/results{}.csv".format(i) for i in range(1, 11)]
+# csv_filesEurVsRan = ["csvFolder/EurVsRan/results{}.csv".format(i) for i in range(1, 11)]
+# csv_filesHierGnnVsRan = ["csvFolder/HierGnnVsRan/results{}.csv".format(i) for i in range(1, 11)]
+# csv_filesHierFFVsRan = ["csvFolder/HierFFVsRan/results{}.csv".format(i) for i in range(1, 11)]
+# csv_filesOrchGnnVsRan = ["csvFolder/OrchGnnVsRan/results{}.csv".format(i) for i in range(1, 11)]
+# csv_filesOrchFFVsRan = ["csvFolder/OrchFFVsRan/results{}.csv".format(i) for i in range(1, 11)]
+
+# csv_filesRanVsEur = ["csvFolder/RanVsEur/results{}.csv".format(i) for i in range(1, 11)]
+# csv_filesGnnHierVsEur = ["csvFolder/GnnHierVsEur/results{}.csv".format(i) for i in range(1, 11)]
+# csv_filesHierFFVsEur = ["csvFolder/HierFFVsEur/results{}.csv".format(i) for i in range(1, 11)]
+# csv_filesOrchGnnVsEur = ["csvFolder/OrchGnnVsEur/results{}.csv".format(i) for i in range(1, 11)]
+# csv_filesOrchFFVsEur = ["csvFolder/OrchFFVsEur/results{}.csv".format(i) for i in range(1, 11)]
+
+
+
+
+
+
+
 
 def getAllfirstElements(row_index, column_index, csv_files):
     first_elements = []
@@ -91,7 +108,7 @@ def plot_experiment_results(mean_array, q1_array, q3_array, name):
 gnnRes = []
 ranRes = []
 
-for row in range(1, 201):
+for row in range(1, 301):
     # print(row)
     x = getAllfirstElements(row, 0, csv_files)
     y = getAllfirstElements(row, 1, csv_files)

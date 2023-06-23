@@ -20,7 +20,7 @@ class RLStrategyGnnHierarchical(StrategyEuristic):
         # self.initialColonyDQN = DQGNNagent(11, 54)
 
     def name(self):
-        return "RL-GNN-STREET"
+        return "RL-GNN-HIER"
     
     def getEps(self):
         return self.macroDQN.EPS #, self.streetDQN.EPS
