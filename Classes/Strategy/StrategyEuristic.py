@@ -250,13 +250,13 @@ class StrategyEuristic:
     
     def euristicRoadBuildingCard(self, player):
         availableStreets = player.calculatePossibleStreets()
-        if len(availableStreets) < 2:
-            return availableStreets[0], None
+        # if len(availableStreets) < 2:
+        #     return availableStreets[0], None
         edge1 = random.choice(availableStreets)
-        edge2 = random.choice(availableStreets)
-        while edge2 == edge1:
-            edge2 = random.choice(availableStreets)
-        return edge1, edge2
+        # edge2 = random.choice(availableStreets)
+        # while edge2 == edge1:
+            # edge2 = random.choice(availableStreets)
+        return edge1#, edge2
     
     def euristicYearOfPlenty(self, player):
         resources = ["iron", "wood", "clay", "crop", "sheep"]

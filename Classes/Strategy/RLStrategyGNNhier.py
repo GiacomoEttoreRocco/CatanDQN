@@ -106,7 +106,7 @@ class RLStrategyGnnHierarchical(StrategyEuristic):
         
         elif(action == commands.UseRoadBuildingCardCommand):
             # print("Use road building card")
-            return  commands.UseRoadBuildingCardCommand, self.euristicRoadBuildingCard(player), None
+            return  commands.UseRoadBuildingCardCommand, self.DQNPlaceStreet(player), None
         
         elif(action == commands.UseYearOfPlentyCardCommand):
             # print("Use year of plenty card")

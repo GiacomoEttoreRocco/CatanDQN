@@ -116,7 +116,7 @@ class ReinforcementLearningStrategyFfHier(StrategyEuristic):
         
         elif(action == commands.UseRoadBuildingCardCommand):
             # print("Use road building card")
-            return  commands.UseRoadBuildingCardCommand, self.euristicRoadBuildingCard(player), None
+            return  commands.UseRoadBuildingCardCommand, self.DQNFFPlaceStreet(player), None
         
         elif(action == commands.UseYearOfPlentyCardCommand):
             # print("Use year of plenty card")

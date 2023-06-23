@@ -932,29 +932,33 @@ class UseMonopolyCardCommand:
 @dataclass
 class UseRoadBuildingCardCommand:
     player: Player
-    edges: tuple()
+    edge: tuple()
     actions: list() = field(default_factory = list)
 
     def execute(self):
         self.player.roadBuildingCard -= 1
-        e1, e2 = self.edges
+        e1 = self.edge
+
         if e1 is not None:
             self.actions.append(PlaceFreeStreetCommand(self.player, e1))
-        if e2 is not None:
-            self.actions.append(PlaceFreeStreetCommand(self.player, e2))
         
-        for action in self.actions:
-            action.execute()
+        self.actions[0].execute()
+        e2 = self.player.strategy.chooseParameters(PlaceFreeStreetCommand, self.player)
 
+        if e2 is not None:
+            self.actions.append(PlaceFreeStreetCommand(self.player, e1))
+        self.actions[1].execute()
+        
     def undo(self):
         self.player.roadBuildingCard += 1
         for action in self.actions:
             action.undo()
 
-    def redo(self):
-        self.player.roadBuildingCard += 1
-        for action in self.actions:
-            action.redo()
+    # def redo(self):
+    #     self.player.roadBuildingCard += 1
+    #     for action in self.actions:
+    #         action.redo()
+
     def __repr__(self) -> str:
         s = f'{self.__class__.__name__}'
         for action in self.actions:
