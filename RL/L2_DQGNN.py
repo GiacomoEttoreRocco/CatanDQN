@@ -31,7 +31,7 @@ class L2DQGNNagent():
         self.memory = ReplayMemory(1000)
 
         # self.decay = 0.997
-        self.decay = 0.994
+        self.decay = 0.9994
 
 
     def epsDecay(self):

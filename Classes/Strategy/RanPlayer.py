@@ -7,7 +7,7 @@ import random
 
 class RandomPlayer(StrategyRandom):
     def name(self):
-        return "REUR"
+        return "RAN"
 
     def bestAction(self, player):  #, previousReward):
         if(player.game.actualTurn<player.game.nplayers):
