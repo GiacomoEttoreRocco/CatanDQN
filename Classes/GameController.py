@@ -228,7 +228,7 @@ class GameController:
         reverseTurnOffSet = [*list(range(self.game.nplayers)), *list(reversed(range(self.game.nplayers)))]
         pointsAt100 = []
         pointsAtFinal = []
-        notSaved = True
+        notSaved = False
         while True:
             if(self.game.actualTurn < self.game.nplayers*2):
                 playerTurn = self.game.players[reverseTurnOffSet[self.game.actualTurn]] 
@@ -236,7 +236,8 @@ class GameController:
             else:
                 playerTurn = self.game.players[self.game.actualTurn%self.game.nplayers]
                 self.decisionManager(playerTurn)
-                if(self.game.actualTurn == 121 and notSaved): 
+                if(self.game.actualTurn == 121 and not saved): 
+                    saved = True
                     for player in self.game.players:
                         pointsAt100.append(player._victoryPoints)
                 if(playerTurn._victoryPoints >= 10):

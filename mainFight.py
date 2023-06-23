@@ -28,10 +28,9 @@ gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpis
 
 for i in range(1, 10, 2):
     res = doGame(gameCtrl, rlStrategyFfHier, randomPlayer, "Weights/HierFFVsRan/weights"+str(1), "")
-    # append_to_text_file("Torneo.txt", "HierFFVsRandom", res)
+    append_to_text_file("Torneo.txt", "HierFFVsRandom", res)
     rlStrategyFfHier = ReinforcementLearningStrategyFfHier(0)
     randomPlayer = RandomPlayer()
     strategies = [rlStrategyFfHier, randomPlayer] 
     gameCtrl.reset(strategies)
-
-print(res)
+    print(res)
