@@ -240,10 +240,11 @@ class GameController:
                     for player in self.game.players:
                         pointsAt100.append(player._victoryPoints)
                 if(playerTurn._victoryPoints >= 10):
+                    pointsAt100 = []
                     if(self.game.actualTurn <= 120):
                         for player in self.game.players:
                             pointsAt100.append(player._victoryPoints)
-                    return player.strategy.name(), pointsAt100
+                    return player.strategy.name(), pointsAt100, self.game.actualTurn
 
     def resetPlot(self):
         self.valueFunction1 = []

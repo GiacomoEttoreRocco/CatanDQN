@@ -18,6 +18,6 @@ def doGame(agent1, agent2, path1, path2):
 rlStrategyFfHier = ReinforcementLearningStrategyFfHier()
 randomPlayer = RandomPlayer()
 
-# print(rlStrategyFfHier.name())
-# print(randomPlayer.name())
-doGame(rlStrategyFfHier, randomPlayer, "Weights/HierFFVsRan/weights"+str(1), "")
+print(rlStrategyFfHier.name())
+print(randomPlayer.name())
+# doGame(rlStrategyFfHier, randomPlayer, "Weights/HierFFVsRan/weights"+str(1), "")

@@ -40,9 +40,14 @@ class ReinforcementLearningStrategyGnn(StrategyEuristic):
         return self.chooseParameters(idToCommand(bestMove), player) # bestAction, thingsNeeded, onlyPassTurn
     
     def saveWeights(self, filepath):
+        print("Saving weights...")
         self.macroDQN.policy_net.save_weights(filepath)
+        print("Successfully saved.")
 
     def loadWeights(self, filepath):
+        print("Starting loading weights...")
         self.macroDQN.policy_net.load_weights(filepath)
         self.macroDQN.target_net.load_weights(filepath)
+        print("Successfully loaded.")
+
         
