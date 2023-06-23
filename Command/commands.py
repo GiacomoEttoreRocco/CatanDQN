@@ -881,6 +881,7 @@ class TradeBankCommand:
     actions: list[Action] = field(default_factory=list)
 
     def execute(self):
+        print("RIga 884 commands: ", toTake, toGive)
         toTake, toGive = self.coupleOfResources
         self.actions.append(BankGiveResourceCommand(self.player, toTake))
         self.actions.extend([PlayerSpendResourceCommand(self.player, toGive) for _ in range(0, Bank.Bank().resourceToAsk(self.player, toGive))])

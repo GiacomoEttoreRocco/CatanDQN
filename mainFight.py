@@ -24,7 +24,7 @@ rlStrategyFfHier = ReinforcementLearningStrategyFfHier(0)
 randomPlayer = RandomPlayer()
 
 strategies = [rlStrategyFfHier, randomPlayer] 
-gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
+gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=False)
 
 for i in range(0, 5):
     res = doGame(gameCtrl, rlStrategyFfHier, randomPlayer, "Weights/HierFFVsRan/weights"+str(1), "")

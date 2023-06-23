@@ -120,14 +120,12 @@ class GameController:
                     self.game.ctr.redo()
                 elif(event.ui_element == self.view.doButton):
                     action, thingNeeded, onlyPassTurn = player.bestAction()
-                    # self.game.ctr.execute(action(player, thingNeeded))
+                    print("Riga 123 game controller: ", action)
                     self.executeWithDeltaReward(player, action, thingNeeded, onlyPassTurn) 
                 elif(event.ui_element == self.view.stack.scroll_bar.bottom_button):
                     self.view.stack.scroll_bar.set_scroll_from_start_percentage(self.view.stack.scroll_bar.start_percentage+0.1)
-                    # self.view.updateGameScreen(True)
                 elif(event.ui_element == self.view.stack.scroll_bar.top_button):
                     self.view.stack.scroll_bar.set_scroll_from_start_percentage(self.view.stack.scroll_bar.start_percentage-0.1)
-                    # self.view.updateGameScreen(True)
                 else:
                     print("Nothing clicked")
             if event.type == pygame.KEYDOWN:
