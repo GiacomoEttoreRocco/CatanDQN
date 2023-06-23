@@ -8,8 +8,9 @@ csv_filesEurVsRan = ["csvFolder/EurVsRan/results{}.csv".format(i) for i in range
 csv_filesHierGnnVsRan = ["csvFolder/HierGnnVsRan/results{}.csv".format(i) for i in range(1, 11)]
 csv_filesHierFFVsRan = ["csvFolder/HierFFVsRan/results{}.csv".format(i) for i in range(1, 11)]
 csv_filesOrchGnnVsRan = ["csvFolder/OrchGnnVsRan/results{}.csv".format(i) for i in range(1, 11)]
-
 csv_filesOrchFFVsRan = ["csvFolder/OrchFFVsRan/results{}.csv".format(i) for i in range(1, 11)]
+csv_filesRanVsRan = ["csvFolder/RanVsRan/results{}.csv".format(i) for i in range(1, 11)]
+
 
 # csv_filesRanVsEur = ["csvFolder/RanVsEur/results{}.csv".format(i) for i in range(1, 11)]
 # csv_filesGnnHierVsEur = ["csvFolder/GnnHierVsEur/results{}.csv".format(i) for i in range(1, 11)]
@@ -90,20 +91,18 @@ def plot_experiment_results(mean_array, q1_array, q3_array, name):
     x = np.arange(1, len(mean_array) + 1)
     plt.ylim(2, 11)
     plt.plot(x, mean_array, label='Mean ' + name)
-    plt.fill_between(x, q1_array, q3_array, alpha=0.3, label='Quartile interval')
-    plt.xlabel('Mean of every 5 episodes (total number of episodes = 1000)')
+    plt.fill_between(x, q1_array, q3_array, alpha=0.2, label='Quartile interval')
+    plt.xlabel('Mean of every 10 episodes (total number of episodes = 300)')
     plt.ylabel('Mean points at turn 100*')
     plt.title('Trend of values ​​with quartile range')
     plt.legend(fontsize="7", loc='lower left', bbox_to_anchor=(1, 0.5))
-    # plt.show()
-# meansGNN = []
-# meansRAN = []
 
 EurVsRan = []
 HierGnnVsRan = []
 HierFFVsRan = []
 OrchGnnVsRan = []
 OrchFFVsRan = []
+RanVsRan = []
 
 
 for row in range(1, 301):
@@ -113,6 +112,7 @@ for row in range(1, 301):
     z = getAllfirstElements(row, 0, csv_filesHierFFVsRan)
     w = getAllfirstElements(row, 0, csv_filesOrchGnnVsRan)
     a = getAllfirstElements(row, 0, csv_filesOrchFFVsRan)
+    b = getAllfirstElements(row, 0, csv_filesRanVsRan)
 
     # y = getAllfirstElements(row, 0, csv_files)
 
@@ -121,23 +121,16 @@ for row in range(1, 301):
     HierFFVsRan.append(z)
     OrchGnnVsRan.append(w)
     OrchFFVsRan.append(a)
+    RanVsRan.append(b)
 
+resumeValue = 10
 
-# print(np.mean(gnnRes[1]))
-# print(np.mean(ranRes[1]))
-# print(calculateRowMeans(gnnRes))
-
-# print(len(gnnRes))
-# plot_experiment_results(calculateRowMeans(gnnRes), calculateFirstQuartiles(gnnRes), calculateThirdQuartiles(gnnRes))
-# plot_experiment_results(calculateRowMeans(ranRes), calculateFirstQuartiles(ranRes), calculateThirdQuartiles(ranRes))
-
-resumeValue = 5
-
-plot_experiment_results(riassumi(calculateRowMeans(EurVsRan), resumeValue), riassumi(calculateFirstQuartiles(EurVsRan), resumeValue), riassumi(calculateThirdQuartiles(EurVsRan), resumeValue), "Euristic")
+plot_experiment_results(riassumi(calculateRowMeans(OrchFFVsRan), resumeValue), riassumi(calculateFirstQuartiles(OrchFFVsRan), resumeValue), riassumi(calculateThirdQuartiles(OrchFFVsRan), resumeValue), "OrchestratorFF")
 plot_experiment_results(riassumi(calculateRowMeans(HierGnnVsRan), resumeValue), riassumi(calculateFirstQuartiles(HierGnnVsRan), resumeValue), riassumi(calculateThirdQuartiles(HierGnnVsRan), resumeValue), "HiearchicalGnn")
 plot_experiment_results(riassumi(calculateRowMeans(HierFFVsRan), resumeValue), riassumi(calculateFirstQuartiles(HierFFVsRan), resumeValue), riassumi(calculateThirdQuartiles(HierFFVsRan), resumeValue), "HiearchicalFF")
 plot_experiment_results(riassumi(calculateRowMeans(OrchGnnVsRan), resumeValue), riassumi(calculateFirstQuartiles(OrchGnnVsRan), resumeValue), riassumi(calculateThirdQuartiles(OrchGnnVsRan), resumeValue), "OrchestratorGnn")
-plot_experiment_results(riassumi(calculateRowMeans(OrchFFVsRan), resumeValue), riassumi(calculateFirstQuartiles(OrchFFVsRan), resumeValue), riassumi(calculateThirdQuartiles(OrchFFVsRan), resumeValue), "OrchestratorFF")
+plot_experiment_results(riassumi(calculateRowMeans(EurVsRan), resumeValue), riassumi(calculateFirstQuartiles(EurVsRan), resumeValue), riassumi(calculateThirdQuartiles(EurVsRan), resumeValue), "Euristic")
+plot_experiment_results(riassumi(calculateRowMeans(RanVsRan), resumeValue), riassumi(calculateFirstQuartiles(RanVsRan), resumeValue), riassumi(calculateThirdQuartiles(RanVsRan), resumeValue), "Random")
 
 plt.show()
 # plt.show()
