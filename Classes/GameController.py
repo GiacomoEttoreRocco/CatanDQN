@@ -228,6 +228,7 @@ class GameController:
             GameView.GameView.updateGameScreen(self.view)
         self.game.actualTurn = 0       
         reverseTurnOffSet = [*list(range(self.game.nplayers)), *list(reversed(range(self.game.nplayers)))]
+        pointsAt100 = []
         while True:
             if(self.game.actualTurn < self.game.nplayers*2):
                 playerTurn = self.game.players[reverseTurnOffSet[self.game.actualTurn]] 
@@ -236,15 +237,14 @@ class GameController:
                 playerTurn = self.game.players[self.game.actualTurn%self.game.nplayers]
                 self.decisionManager(playerTurn)
                 if(self.game.actualTurn == 120): 
-                    pointsAt100 = []
                     for player in self.game.players:
                         pointsAt100.append(player._victoryPoints)
                 if(playerTurn._victoryPoints >= 10):
-                    pointsAt100 = []
-                    if(self.game.actualTurn <= 120):
+                    print(playerTurn.strategy.name())
+                    if(self.game.actualTurn < 120):
                         for player in self.game.players:
                             pointsAt100.append(player._victoryPoints)
-                    return player.strategy.name(), pointsAt100, self.game.actualTurn
+                    return playerTurn.strategy.name(), pointsAt100, self.game.actualTurn
 
     def resetPlot(self):
         self.valueFunction1 = []
