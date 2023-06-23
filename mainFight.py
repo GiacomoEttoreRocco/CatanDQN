@@ -20,4 +20,6 @@ randomPlayer = RandomPlayer()
 
 print(rlStrategyFfHier.name())
 print(randomPlayer.name())
-# doGame(rlStrategyFfHier, randomPlayer, "Weights/HierFFVsRan/weights"+str(1), "")
+res = doGame(rlStrategyFfHier, randomPlayer, "Weights/HierFFVsRan/weights"+str(1), "")
+
+print(res)
