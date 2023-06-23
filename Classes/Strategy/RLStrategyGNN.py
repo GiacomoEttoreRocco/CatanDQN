@@ -38,4 +38,11 @@ class ReinforcementLearningStrategyGnn(StrategyEuristic):
             # print("Best move RL, riga 36 RLStrategy: index: ", bestMove, "Move: ", idToCommand(bestMove))
             # print(" -> ", bestMove[0][0], " move: ", idToCommand(bestMove[0][0]))
         return self.chooseParameters(idToCommand(bestMove), player) # bestAction, thingsNeeded, onlyPassTurn
+    
+    def saveWeights(self, filepath):
+        self.macroDQN.policy_net.save_weights(filepath)
+
+    def loadWeights(self, filepath):
+        self.macroDQN.policy_net.load_weights(filepath)
+        self.macroDQN.target_net.load_weights(filepath)
         

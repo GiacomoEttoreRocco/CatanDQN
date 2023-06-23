@@ -159,6 +159,25 @@ class RLStrategyGnnHierarchical(StrategyEuristic):
         choosenTrade = self.tradeDQN.step(graph, glob, tradesIds, self.macroDQN)
         return idToTrade(choosenTrade)
     
+    def saveWeights(self, filepath, filepath1, filepath2, filepath3):
+        self.macroDQN.policy_net.save_weights(filepath)
+        self.streetDQN.policy_net.save_weights(filepath1)
+        self.colonyDQN.policy_net.save_weights(filepath2)
+        self.tradeDQN.policy_net.save_weights(filepath3)
+
+    def loadWeights(self, filepath, filepath1, filepath2, filepath3):
+        self.macroDQN.policy_net.load_weights(filepath)
+        self.macroDQN.target_net.load_weights(filepath)
+
+        self.streetDQN.policy_net.load_weights(filepath1)
+        self.streetDQN.target_net.load_weights(filepath1)
+
+        self.colonyDQN.policy_net.load_weights(filepath2)
+        self.colonyDQN.target_net.load_weights(filepath2)
+
+        self.tradeDQN.policy_net.load_weights(filepath3)
+        self.tradeDQN.target_net.load_weights(filepath3)
+    
 
     
     
