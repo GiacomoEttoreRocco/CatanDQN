@@ -151,22 +151,24 @@ class ReinforcementLearningStrategyFfHier(StrategyEuristic):
         choosenTrade = self.tradeDQN.step(state, tradesIds, self.macroDQN)
         return idToTrade(choosenTrade)
     
-    def saveWeights(self, filepath, filepath1, filepath2, filepath3):
+    def saveWeights(self, filepath):
+        print("Saving weights...")
         self.macroDQN.policy_net.save_weights(filepath)
-        self.streetDQN.policy_net.save_weights(filepath1)
-        self.colonyDQN.policy_net.save_weights(filepath2)
-        self.tradeDQN.policy_net.save_weights(filepath3)
+        self.streetDQN.policy_net.save_weights("street_"+filepath)
+        self.colonyDQN.policy_net.save_weights("colony_"+filepath)
+        self.tradeDQN.policy_net.save_weights("trade_"+filepath)
+        print("Successfully saved.")
 
-    def loadWeights(self, filepath, filepath1, filepath2, filepath3):
+    def loadWeights(self, filepath):
         self.macroDQN.policy_net.load_weights(filepath)
         self.macroDQN.target_net.load_weights(filepath)
 
-        self.streetDQN.policy_net.load_weights(filepath1)
-        self.streetDQN.target_net.load_weights(filepath1)
+        self.streetDQN.policy_net.load_weights("street_"+filepath)
+        self.streetDQN.target_net.load_weights("street_"+filepath)
 
-        self.colonyDQN.policy_net.load_weights(filepath2)
-        self.colonyDQN.target_net.load_weights(filepath2)
+        self.colonyDQN.policy_net.load_weights("colony_"+filepath)
+        self.colonyDQN.target_net.load_weights("colony_"+filepath)
 
-        self.tradeDQN.policy_net.load_weights(filepath3)
-        self.tradeDQN.target_net.load_weights(filepath3)
+        self.tradeDQN.policy_net.load_weights("trade_"+filepath)
+        self.tradeDQN.target_net.load_weights("trade_"+filepath)
 

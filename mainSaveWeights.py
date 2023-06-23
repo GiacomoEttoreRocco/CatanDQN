@@ -60,12 +60,12 @@ if __name__ == '__main__':
             winrates = [0,0]
             # print("Starting. Eps should be 1: ", .getEps()) # questo 
             print("Starting. Eps should be 1: ", rlStrategyFfHier.getEps()) # questo 
-            saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/results"+str(seed)+".csv")
+            saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/HierFFVsRan/results"+str(seed)+".csv")
             for i in range(0, 300):
                 # print(".", end='', flush = True)
                 finalPoints = gameCtrl.playGameForTraining()
                 print(finalPoints[0], end='.', flush = True)
-                saveInCsv(finalPoints, "csvFolder/results"+str(seed)+".csv")
+                saveInCsv(finalPoints, "csvFolder/HierFFVsRan/results"+str(seed)+".csv")
                 if(finalPoints[0] > finalPoints[1]):
                     winrates[0]+=1
                 else:
@@ -75,7 +75,7 @@ if __name__ == '__main__':
             # print("Definitely updated, final eps: ", .getEps(), flush = True)
             print("Definitely updated, final eps: ", rlStrategyFfHier.getEps(), flush = True)
             # rlStrategyGnn = ReinforcementLearningStrategyGnn()
-            rlStrategyFfHier.saveWeights("Wheigts"+str(seed)+".pth")
+            rlStrategyFfHier.saveWeights("Weights/HierFFVsRan/weights"+str(seed)+".pth")
             rlStrategyFfHier = ReinforcementLearningStrategyFfHier()
 
             strategies = [rlStrategyFfHier, randomPlayer] # randomStrategy] #, rEuristic]
