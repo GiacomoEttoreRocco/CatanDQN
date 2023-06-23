@@ -92,7 +92,6 @@ for agent in otherAgents:
         strategies = [H_FF1_blue, agent] 
         res = gameCtrl.playTurnamentGame()
         gameCtrl.reset() 
-
         name = res[0]
 
         if(yourName == res[0]):
@@ -118,4 +117,4 @@ for agent in otherAgents:
         else:
             meansAt120 += res[2][0] 
 
-    print(H_FF1_blue.name() + "and " + agent.name() + " over. Winrate: ", wons/10.0 , "MeansAt120: ", meansAt120/10.0)
+    print(H_FF1_blue.name() + "and " + agent.name() + " over. Winrate: ", wons,  "/10.0 " , "MeansAt120: ", meansAt120/10.0)

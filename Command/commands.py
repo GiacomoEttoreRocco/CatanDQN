@@ -276,6 +276,7 @@ class DiceProductionCommand:
     actions: list[Action] = field(default_factory=list)
 
     def __post_init__(self):
+        # print("Riga 279 commands: ", self.game.actualTurn)
         self.dice = self.game.dices[self.game.actualTurn]
 
     def execute(self):

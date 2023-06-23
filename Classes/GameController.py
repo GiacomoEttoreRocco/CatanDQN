@@ -218,8 +218,7 @@ class GameController:
                             # print(player.strategy.getEps())
                     # print(toReturn)
                     return toReturn
-            if(self.game.actualTurn > 1000):
-                return self.game.dummy
+
                 
     def playTurnamentGame(self):    
         if(self.withGraphics):
@@ -232,6 +231,8 @@ class GameController:
         pointsAtFinal = []
         saved = False
         while True:
+            if(self.game.actualTurn > 1000):
+                return self.game.dummy, pointsAt100, pointsAtFinal
             if(self.game.actualTurn < self.game.nplayers*2):
                 playerTurn = self.game.players[reverseTurnOffSet[self.game.actualTurn]] 
                 self.decisionManager(playerTurn)
