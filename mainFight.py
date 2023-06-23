@@ -3,7 +3,7 @@ from Classes.Strategy.RLStrategyFFhier import ReinforcementLearningStrategyFfHie
 from Classes.Strategy.RanPlayer import RandomPlayer
 import Classes as c
 
-withGraphics = True
+withGraphics = False
 
 def append_to_text_file(file_path, text, data_list):
     with open(file_path, 'a') as file:
@@ -11,10 +11,9 @@ def append_to_text_file(file_path, text, data_list):
         for item in data_list:
             file.write(str(item) + '\n')
 
-def doGame(agent1, agent2, path1, path2):
+def doGame(gameCtrl, agent1, agent2, path1, path2):
     strategies = [agent1, agent2]
 
-    gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
     if("RL" in agent1.name()):
         agent1 = agent1.loadWeights(path1)
     if("RL" in agent2.name()):
@@ -24,13 +23,17 @@ def doGame(agent1, agent2, path1, path2):
 rlStrategyFfHier = ReinforcementLearningStrategyFfHier()
 randomPlayer = RandomPlayer()
 
-rlStrategyFfHier = ReinforcementLearningStrategyFfHier()
-randomPlayer = RandomPlayer()
+# va settata epsilon a 1!!!!!!!!
+
+strategies = [rlStrategyFfHier, randomPlayer] 
+gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
 
 for i in range(0, 5):
     res = doGame(rlStrategyFfHier, randomPlayer, "Weights/HierFFVsRan/weights"+str(1), "")
     # append_to_text_file("Torneo.txt", "HierFFVsRandom", res)
     rlStrategyFfHier = ReinforcementLearningStrategyFfHier()
     randomPlayer = RandomPlayer()
+    strategies = [rlStrategyFfHier, randomPlayer] 
+    gameCtrl.reset(strategies)
 
 print(res)
