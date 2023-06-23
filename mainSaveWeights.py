@@ -49,7 +49,7 @@ def writeOnCsv(i, winners):
 
 if __name__ == '__main__':
     # HIERARCHICALFF VS RANDOM
-        rlStrategyFfHier = ReinforcementLearningStrategyFfHier()
+        rlStrategyFfHier = ReinforcementLearningStrategyFfHier(1)
         # rEuristic = EuristicPlayer()
         randomPlayer = RandomPlayer()
         strategies = [rlStrategyFfHier, randomPlayer] #, rEuristic]
@@ -76,7 +76,7 @@ if __name__ == '__main__':
             print("Definitely updated, final eps: ", rlStrategyFfHier.getEps(), flush = True)
             # rlStrategyGnn = ReinforcementLearningStrategyGnn()
             rlStrategyFfHier.saveWeights("Weights/HierFFVsRan/weights"+str(seed))
-            rlStrategyFfHier = ReinforcementLearningStrategyFfHier()
+            rlStrategyFfHier = ReinforcementLearningStrategyFfHier(1)
 
             strategies = [rlStrategyFfHier, randomPlayer] # randomStrategy] #, rEuristic]
             gameCtrl.reset(strategies)

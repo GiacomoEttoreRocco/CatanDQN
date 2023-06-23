@@ -243,13 +243,13 @@ class Player:
         possibleTrades = []
         for resource in self.resources.keys():
             if(self.resources[resource] >= Bank.Bank().resourceToAsk(self, resource)):
-                print("Riga 246 player: ", self.resources[resource], ">=", Bank.Bank().resourceToAsk(self, resource))
+                # print("Riga 246 player: ", self.resources[resource], ">=", Bank.Bank().resourceToAsk(self, resource))
                 for resourceToTake in self.resources.keys():
                     if(resourceToTake != resource):
                         possibleTrades.append((resourceToTake, resource))
-        print("########################################")
-        print(possibleTrades)
-        print("########################################")
+        # print("########################################")
+        # print(possibleTrades)
+        # print("########################################")
         return possibleTrades
     
     def resourceCount(self):
