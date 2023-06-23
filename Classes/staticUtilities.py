@@ -266,27 +266,46 @@ def idToTrade(n):
         return ("iron", "sheep")
     
 def tradesToId(trade):
-    temp = 0
-    if(trade[0] == "wood"):
-        temp+=0
-    elif(trade[0] == "clay"):
-        temp+=4
-    elif(trade[0] == "crop"):
-        temp+=8
-    elif(trade[0] == "sheep"):
-        temp+=12
-    elif(trade[0] == "iron"):
-        temp+=16
-    if(trade[1] == "wood"):
-        temp+=0
-    elif(trade[1] == "clay"):
-        temp+=1
-    elif(trade[1] == "crop"):
-        temp+=2
-    elif(trade[1] == "sheep"):
-        temp+=3
-    elif(trade[1] == "iron"):
-        temp+=4     
-    return temp 
+    if(trade[0] == "wood" and trade[1] == "clay"):
+        return 0 
+    if(trade[0] == "wood" and trade[1] == "crop"):
+        return 1
+    if(trade[0] == "wood" and trade[1] == "sheep"):
+        return 2
+    if(trade[0] == "wood" and trade[1] == "iron"):
+        return 3
+    
+    if(trade[0] == "clay" and trade[1] == "wood"):
+        return 4
+    if(trade[0] == "clay" and trade[1] == "crop"):
+        return 5
+    if(trade[0] == "clay" and trade[1] == "sheep"):
+        return 6
+    if(trade[0] == "clay" and trade[1] == "iron"):
+        return 7
+    if(trade[0] == "crop" and trade[1] == "wood"):
+        return 8
+    if(trade[0] == "crop" and trade[1] == "clay"):
+        return 9
+    if(trade[0] == "crop" and trade[1] == "sheep"):
+        return 10
+    if(trade[0] == "crop" and trade[1] == "iron"):
+        return 11
+    if(trade[0] == "sheep" and trade[1] == "wood"):
+        return 12
+    if(trade[0] == "sheep" and trade[1] == "clay"):
+        return 13
+    if(trade[0] == "sheep" and trade[1] == "crop"):
+        return 14
+    if(trade[0] == "sheep" and trade[1] == "iron"):
+        return 15
+    if(trade[0] == "iron" and trade[1] == "wood"):
+        return 16
+    if(trade[0] == "iron" and trade[1] == "clay"):
+        return 17
+    if(trade[0] == "iron" and trade[1] == "crop"):
+        return 18
+    if(trade[0] == "iron" and trade[1] == "sheep"):
+        return 19
 
 
