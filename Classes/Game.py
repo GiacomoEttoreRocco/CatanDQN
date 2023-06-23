@@ -22,7 +22,7 @@ class Game:
         self.longestStreetOwner = self.dummy
         self.longestStreetLength = 4
         self.tmpVisitedEdges = []
-        self.dices = [self.rollDice() for _ in range(1000)]
+        self.dices = [self.rollDice() for _ in range(1200)]
         self.actualTurn = 0
         self.currentTurnPlayer = self.players[0] #self.dummy
         
@@ -31,8 +31,8 @@ class Game:
         self.dummy = Player.Player(0, self, Strategy)
         self.dummy.victoryPoints = 4
         # self.nplayers = num_players
-        for p in self.players:
-            p.reset()
+        # for p in self.players:
+        #     p.reset()
         self.ctr.reset()
         self.largestArmyPlayer = self.dummy
         self.longestStreetOwner = self.dummy
@@ -40,7 +40,7 @@ class Game:
         self.tmpVisitedEdges = []
         self.dices = [self.rollDice() for _ in range(1200)]
         self.actualTurn = 0
-        self.currentTurnPlayer = self.players[0] #self.dummy
+        self.currentTurnPlayer = None
 
     def dice_production(self, number):
         for tile in Board.Board().tiles:
