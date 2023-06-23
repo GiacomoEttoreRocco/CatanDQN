@@ -11,7 +11,7 @@ Transition = namedtuple('Transition', ('state', 'action', 'reward', 'next_state'
 
 class L2DQNagent():
     # def __init__(self, nInputs, nOutputs, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")) -> None:
-    def __init__(self, name, nInputs, eps, nOutputs, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cpu")) -> None:
+    def __init__(self, name, nInputs, nOutputs, eps, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cpu")) -> None:
         # print("DQNgent CONSTRUCTOR")
         self.name = name # per ora non serve a un cazzo, serve in caso di debug
         self.BATCH_SIZE = 16 
