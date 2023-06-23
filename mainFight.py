@@ -7,9 +7,10 @@ withGraphics = True
 
 def append_to_text_file(file_path, text, data_list):
     with open(file_path, 'a') as file:
-        file.write(text + '\n')
+        file.write(text + ': ')
         for item in data_list:
-            file.write(str(item) + '\n')
+            file.write(str(item) + ' ')
+        file.write("\n")
 
 def doGame(gameCtrl, agent1, agent2, path1, path2):
     strategies = [agent1, agent2]
@@ -23,14 +24,30 @@ def doGame(gameCtrl, agent1, agent2, path1, path2):
 rlStrategyFfHier = ReinforcementLearningStrategyFfHier(0)
 randomPlayer = RandomPlayer()
 
-strategies = [rlStrategyFfHier, randomPlayer] 
+#Andata
+# strategies = [rlStrategyFfHier, randomPlayer] 
+# gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
+
+# for i in range(1, 10):
+#     res = doGame(gameCtrl, rlStrategyFfHier, randomPlayer, "Weights/HierFFVsRan/weights"+str(1), "")
+#     append_to_text_file("Torneo.txt", "HierFFVsRandom1", res)
+#     rlStrategyFfHier = ReinforcementLearningStrategyFfHier(0)
+#     randomPlayer = RandomPlayer()
+#     strategies = [rlStrategyFfHier, randomPlayer] 
+#     gameCtrl.reset(strategies)
+#     print(res)
+
+#Ritorno
+strategies = [randomPlayer, rlStrategyFfHier] 
 gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
 
-for i in range(1, 10, 2):
-    res = doGame(gameCtrl, rlStrategyFfHier, randomPlayer, "Weights/HierFFVsRan/weights"+str(1), "")
-    append_to_text_file("Torneo.txt", "HierFFVsRandom", res)
+for i in range(1, 10):
+    # res = doGame(gameCtrl, rlStrategyFfHier, randomPlayer, "Weights/HierFFVsRan/weights"+str(1), "")
+    res = doGame(gameCtrl, randomPlayer, rlStrategyFfHier, "", "Weights/HierFFVsRan/weights"+str(1))
+
+    append_to_text_file("Torneo.txt", "HierFFVsRandom1", res)
     rlStrategyFfHier = ReinforcementLearningStrategyFfHier(0)
     randomPlayer = RandomPlayer()
-    strategies = [rlStrategyFfHier, randomPlayer] 
+    strategies = [randomPlayer, rlStrategyFfHier] 
     gameCtrl.reset(strategies)
     print(res)

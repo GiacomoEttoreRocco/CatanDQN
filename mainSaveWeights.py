@@ -48,6 +48,13 @@ def writeOnCsv(i, winners):
         writer.writerow([i, *winners])
 
 if __name__ == '__main__':
+        
+
+    outFor = 11
+    inFor = 600
+
+
+
     # HIERARCHICALFF VS RANDOM
         rlStrategyFfHier = ReinforcementLearningStrategyFfHier(1)
         # rEuristic = EuristicPlayer()
@@ -56,12 +63,12 @@ if __name__ == '__main__':
         withGraphics = False # True    
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
-        for seed in range(1, 10):
+        for seed in range(1, outFor):
             winrates = [0,0]
             # print("Starting. Eps should be 1: ", .getEps()) # questo 
             print("Starting. Eps should be 1: ", rlStrategyFfHier.getEps()) # questo 
             saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/HierFFVsRan/results"+str(seed)+".csv")
-            for i in range(0, 500):
+            for i in range(0, inFor):
                 # print(".", end='', flush = True)
                 finalPoints = gameCtrl.playGameForTraining()
                 print(finalPoints[0], end='.', flush = True)
@@ -84,19 +91,19 @@ if __name__ == '__main__':
 ###################################################################################################################################################
 
     # # OrchFF VS EURISTIC
-        rlStrategyFf = ReinforcementLearningStrategyFf()
+        rlStrategyFf = ReinforcementLearningStrategyFf(1)
         rEuristic = EuristicPlayer()
         # randomPlayer = RandomPlayer()
         strategies = [rlStrategyFf, rEuristic] #, rEuristic]
         withGraphics = False # True    
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
-        for seed in range(1, 11):
+        for seed in range(1, outFor):
             winrates = [0,0]
             # print("Starting. Eps should be 1: ", .getEps()) # questo 
             print("Starting. Eps should be 1: ", rlStrategyFf.getEps()) # questo 
             saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/OrchFFVsEur/results"+str(seed)+".csv")
-            for i in range(0, 300):
+            for i in range(0, inFor):
                 print(".", end='', flush = True)
                 finalPoints = gameCtrl.playGameForTraining()
                 saveInCsv(finalPoints, "csvFolder/OrchFFVsEur/results"+str(seed)+".csv")
@@ -109,294 +116,309 @@ if __name__ == '__main__':
             # print("Definitely updated, final eps: ", .getEps(), flush = True)
             print("Definitely updated, final eps: ", rlStrategyFf.getEps(), flush = True)
             # rlStrategyGnn = ReinforcementLearningStrategyGnn()
-            rlStrategyFf = ReinforcementLearningStrategyFf()
+            rlStrategyFf.saveWeights("Weights/OrchFFVsEur/weights"+str(seed))
+
+            rlStrategyFf = ReinforcementLearningStrategyFf(1)
 
             strategies = [rlStrategyFf, rEuristic] # randomStrategy] #, rEuristic]
             gameCtrl.reset(strategies)
 
     # # HierarchicalGNN VS EURISTIC
-    #     rlGnnHier = RLStrategyGnnHierarchical()
-    #     rEuristic = EuristicPlayer()
-    #     # randomPlayer = RandomPlayer()
-    #     strategies = [rlGnnHier, rEuristic] #, rEuristic]
-    #     withGraphics = False # True    
-    #     idEpisode = 0
-    #     gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
-    #     for seed in range(1, 11):
-    #         winrates = [0,0]
-    #         # print("Starting. Eps should be 1: ", .getEps()) # questo 
-    #         print("Starting. Eps should be 1: ", rlGnnHier.getEps()) # questo 
-    #         saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/HierGnnVsEur/results"+str(seed)+".csv")
-    #         for i in range(0, 300):
-    #             print(".", end='', flush = True)
-    #             finalPoints = gameCtrl.playGameForTraining()
-    #             saveInCsv(finalPoints, "csvFolder/HierGnnVsEur/results"+str(seed)+".csv")
-    #             if(finalPoints[0] > finalPoints[1]):
-    #                 winrates[0]+=1
-    #             else:
-    #                 winrates[1]+=1
-    #             gameCtrl.reset(strategies)
-    #         print("Winrates: ", winrates)
-    #         # print("Definitely updated, final eps: ", .getEps(), flush = True)
-    #         print("Definitely updated, final eps: ", rlGnnHier.getEps(), flush = True)
-    #         # rlStrategyGnn = ReinforcementLearningStrategyGnn()
-    #         rlGnnHier = RLStrategyGnnHierarchical()
+        rlGnnHier = RLStrategyGnnHierarchical(1)
+        rEuristic = EuristicPlayer()
+        # randomPlayer = RandomPlayer()
+        strategies = [rlGnnHier, rEuristic] #, rEuristic]
+        withGraphics = False # True    
+        idEpisode = 0
+        gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
+        for seed in range(1, outFor):
+            winrates = [0,0]
+            # print("Starting. Eps should be 1: ", .getEps()) # questo 
+            print("Starting. Eps should be 1: ", rlGnnHier.getEps()) # questo 
+            saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/HierGnnVsEur/results"+str(seed)+".csv")
+            for i in range(0, inFor):
+                print(".", end='', flush = True)
+                finalPoints = gameCtrl.playGameForTraining()
+                saveInCsv(finalPoints, "csvFolder/HierGnnVsEur/results"+str(seed)+".csv")
+                if(finalPoints[0] > finalPoints[1]):
+                    winrates[0]+=1
+                else:
+                    winrates[1]+=1
+                gameCtrl.reset(strategies)
+            print("Winrates: ", winrates)
+            # print("Definitely updated, final eps: ", .getEps(), flush = True)
+            print("Definitely updated, final eps: ", rlGnnHier.getEps(), flush = True)
+            # rlStrategyGnn = ReinforcementLearningStrategyGnn()
+            rlGnnHier.saveWeights("Weights/HierGnnVsEur/weights"+str(seed))
 
-    #         strategies = [rlGnnHier, rEuristic] # randomStrategy] #, rEuristic]
-    #         gameCtrl.reset(strategies)
+            rlGnnHier = RLStrategyGnnHierarchical(1)
+
+            strategies = [rlGnnHier, rEuristic] # randomStrategy] #, rEuristic]
+            gameCtrl.reset(strategies)
 
     # # # HIERARCHICALFF VS EURISTIC
-    #     rlStrategyFfHier = ReinforcementLearningStrategyFfHier()
-    #     rEuristic = EuristicPlayer()
-    #     # randomPlayer = RandomPlayer()
-    #     strategies = [rlStrategyFfHier, rEuristic] #, rEuristic]
-    #     withGraphics = False # True    
-    #     idEpisode = 0
-    #     gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
-    #     for seed in range(1, 11):
-    #         winrates = [0,0]
-    #         # print("Starting. Eps should be 1: ", .getEps()) # questo 
-    #         print("Starting. Eps should be 1: ", rlStrategyFfHier.getEps()) # questo 
-    #         saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/HierFFVsEur/results"+str(seed)+".csv")
-    #         for i in range(0, 300):
-    #             print(".", end='', flush = True)
-    #             finalPoints = gameCtrl.playGameForTraining()
-    #             saveInCsv(finalPoints, "csvFolder/HierFFVsEur/results"+str(seed)+".csv")
-    #             if(finalPoints[0] > finalPoints[1]):
-    #                 winrates[0]+=1
-    #             else:
-    #                 winrates[1]+=1
-    #             gameCtrl.reset(strategies)
-    #         print("Winrates: ", winrates)
-    #         # print("Definitely updated, final eps: ", .getEps(), flush = True)
-    #         print("Definitely updated, final eps: ", rlStrategyFfHier.getEps(), flush = True)
-    #         # rlStrategyGnn = ReinforcementLearningStrategyGnn()
-    #         rlStrategyFfHier = ReinforcementLearningStrategyFfHier()
+        rlStrategyFfHier = ReinforcementLearningStrategyFfHier(1)
+        rEuristic = EuristicPlayer()
+        # randomPlayer = RandomPlayer()
+        strategies = [rlStrategyFfHier, rEuristic] #, rEuristic]
+        withGraphics = False # True    
+        idEpisode = 0
+        gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
+        for seed in range(1, outFor):
+            winrates = [0,0]
+            # print("Starting. Eps should be 1: ", .getEps()) # questo 
+            print("Starting. Eps should be 1: ", rlStrategyFfHier.getEps()) # questo 
+            saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/HierFFVsEur/results"+str(seed)+".csv")
+            for i in range(0, inFor):
+                print(".", end='', flush = True)
+                finalPoints = gameCtrl.playGameForTraining()
+                saveInCsv(finalPoints, "csvFolder/HierFFVsEur/results"+str(seed)+".csv")
+                if(finalPoints[0] > finalPoints[1]):
+                    winrates[0]+=1
+                else:
+                    winrates[1]+=1
+                gameCtrl.reset(strategies)
+            print("Winrates: ", winrates)
+            # print("Definitely updated, final eps: ", .getEps(), flush = True)
+            print("Definitely updated, final eps: ", rlStrategyFfHier.getEps(), flush = True)
+            # rlStrategyGnn = ReinforcementLearningStrategyGnn()
+            rlStrategyFfHier.saveWeights("Weights/HierFFVsEur/weights"+str(seed))
 
-    #         strategies = [rlStrategyFfHier, rEuristic] # randomStrategy] #, rEuristic]
-    #         gameCtrl.reset(strategies)
+            rlStrategyFfHier = ReinforcementLearningStrategyFfHier(1)
+
+            strategies = [rlStrategyFfHier, rEuristic] # randomStrategy] #, rEuristic]
+            gameCtrl.reset(strategies)
 
     # # # HIERARCHICALGNN VS RANDOM
-    #     rlStrategyGnnHier = RLStrategyGnnHierarchical()
-    #     # rEuristic = EuristicPlayer()
-    #     randomPlayer = RandomPlayer()
-    #     strategies = [rlStrategyGnnHier, randomPlayer] #, rEuristic]
-    #     withGraphics = False # True    
-    #     idEpisode = 0
-    #     gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
-    #     for seed in range(1, 11):
-    #         winrates = [0,0]
-    #         # print("Starting. Eps should be 1: ", .getEps()) # questo 
-    #         print("Starting. Eps should be 1: ", rlStrategyGnnHier.getEps()) # questo 
-    #         saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/HierGnnVsRan/results"+str(seed)+".csv")
-    #         for i in range(0, 300):
-    #             print(".", end='', flush = True)
-    #             finalPoints = gameCtrl.playGameForTraining()
-    #             saveInCsv(finalPoints, "csvFolder/HierGnnVsRan/results"+str(seed)+".csv")
-    #             if(finalPoints[0] > finalPoints[1]):
-    #                 winrates[0]+=1
-    #             else:
-    #                 winrates[1]+=1
-    #             gameCtrl.reset(strategies)
-    #         print("Winrates: ", winrates)
-    #         # print("Definitely updated, final eps: ", .getEps(), flush = True)
-    #         print("Definitely updated, final eps: ", rlStrategyGnnHier.getEps(), flush = True)
-    #         # rlStrategyGnn = ReinforcementLearningStrategyGnn()
-    #         rlStrategyGnnHier = RLStrategyGnnHierarchical()
+        rlStrategyGnnHier = RLStrategyGnnHierarchical(1)
+        # rEuristic = EuristicPlayer()
+        randomPlayer = RandomPlayer()
+        strategies = [rlStrategyGnnHier, randomPlayer] #, rEuristic]
+        withGraphics = False # True    
+        idEpisode = 0
+        gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
+        for seed in range(1, outFor):
+            winrates = [0,0]
+            # print("Starting. Eps should be 1: ", .getEps()) # questo 
+            print("Starting. Eps should be 1: ", rlStrategyGnnHier.getEps()) # questo 
+            saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/HierGnnVsRan/results"+str(seed)+".csv")
+            for i in range(0, inFor):
+                print(".", end='', flush = True)
+                finalPoints = gameCtrl.playGameForTraining()
+                saveInCsv(finalPoints, "csvFolder/HierGnnVsRan/results"+str(seed)+".csv")
+                if(finalPoints[0] > finalPoints[1]):
+                    winrates[0]+=1
+                else:
+                    winrates[1]+=1
+                gameCtrl.reset(strategies)
+            print("Winrates: ", winrates)
+            # print("Definitely updated, final eps: ", .getEps(), flush = True)
+            print("Definitely updated, final eps: ", rlStrategyGnnHier.getEps(), flush = True)
+            # rlStrategyGnn = ReinforcementLearningStrategyGnn()
+            rlStrategyGnnHier.saveWeights("Weights/HierGnnVsRan/weights"+str(seed))
 
-    #         strategies = [rlStrategyGnnHier, randomPlayer] # randomStrategy] #, rEuristic]
-    #         gameCtrl.reset(strategies)
+            rlStrategyGnnHier = RLStrategyGnnHierarchical(1)
+
+            strategies = [rlStrategyGnnHier, randomPlayer] # randomStrategy] #, rEuristic]
+            gameCtrl.reset(strategies)
 
     # # ORCHESTRATORFF VS RANDOM 
-    #     rlStrategyFf = ReinforcementLearningStrategyFf()
+        rlStrategyFf = ReinforcementLearningStrategyFf(1)
 
-    #     # rEuristic = EuristicPlayer()
-    #     randomPlayer = RandomPlayer()
-    #     strategies = [rlStrategyFf, randomPlayer] #, rEuristic]
-    #     withGraphics = False # True    
-    #     idEpisode = 0
-    #     gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
-    #     for seed in range(1, 11):
-    #         winrates = [0,0]
-    #         # print("Starting. Eps should be 1: ", .getEps()) # questo 
-    #         print("Starting. Eps should be 1: ", rlStrategyFf.getEps()) # questo 
-    #         saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/OrchFFVsRan/results"+str(seed)+".csv")
-    #         for i in range(0, 300):
-    #             print(".", end='', flush = True)
-    #             finalPoints = gameCtrl.playGameForTraining()
-    #             saveInCsv(finalPoints, "csvFolder/OrchFFVsRan/results"+str(seed)+".csv")
-    #             if(finalPoints[0] > finalPoints[1]):
-    #                 winrates[0]+=1
-    #             else:
-    #                 winrates[1]+=1
-    #             gameCtrl.reset(strategies)
-    #         print("Winrates: ", winrates)
-    #         # print("Definitely updated, final eps: ", .getEps(), flush = True)
-    #         print("Definitely updated, final eps: ", rlStrategyFf.getEps(), flush = True)
-    #         rlStrategyFf = ReinforcementLearningStrategyFf()
+        # rEuristic = EuristicPlayer()
+        randomPlayer = RandomPlayer()
+        strategies = [rlStrategyFf, randomPlayer] #, rEuristic]
+        withGraphics = False # True    
+        idEpisode = 0
+        gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
+        for seed in range(1, outFor):
+            winrates = [0,0]
+            # print("Starting. Eps should be 1: ", .getEps()) # questo 
+            print("Starting. Eps should be 1: ", rlStrategyFf.getEps()) # questo 
+            saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/OrchFFVsRan/results"+str(seed)+".csv")
+            for i in range(0, inFor):
+                print(".", end='', flush = True)
+                finalPoints = gameCtrl.playGameForTraining()
+                saveInCsv(finalPoints, "csvFolder/OrchFFVsRan/results"+str(seed)+".csv")
+                if(finalPoints[0] > finalPoints[1]):
+                    winrates[0]+=1
+                else:
+                    winrates[1]+=1
+                gameCtrl.reset(strategies)
+            print("Winrates: ", winrates)
+            # print("Definitely updated, final eps: ", .getEps(), flush = True)
+            print("Definitely updated, final eps: ", rlStrategyFf.getEps(), flush = True)
 
-    #         strategies = [rlStrategyFf, randomPlayer] # randomStrategy] #, rEuristic]
-    #         gameCtrl.reset(strategies)
+            rlStrategyFf.saveWeights("Weights/OrchFFVsRan/weights"+str(seed))
+
+            rlStrategyFf = ReinforcementLearningStrategyFf(1)
+
+            strategies = [rlStrategyFf, randomPlayer] # randomStrategy] #, rEuristic]
+            gameCtrl.reset(strategies)
 
     # # ORCHESTRATORGNN VS RANDOM 
-    #     rlStrategyGnn = ReinforcementLearningStrategyGnn()
+        rlStrategyGnn = ReinforcementLearningStrategyGnn(1)
 
-    #     # rEuristic = EuristicPlayer()
-    #     randomPlayer = RandomPlayer()
-    #     strategies = [rlStrategyGnn, randomPlayer] #, rEuristic]
-    #     withGraphics = False # True    
-    #     idEpisode = 0
-    #     gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
-    #     for seed in range(1, 11):
-    #         winrates = [0,0]
-    #         # print("Starting. Eps should be 1: ", .getEps()) # questo 
-    #         print("Starting. Eps should be 1: ", rlStrategyGnn.getEps()) # questo 
-    #         saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/OrchGnnVsRan/results"+str(seed)+".csv")
-    #         for i in range(0, 300):
-    #             print(".", end='', flush = True)
-    #             finalPoints = gameCtrl.playGameForTraining()
-    #             saveInCsv(finalPoints, "csvFolder/OrchGnnVsRan/results"+str(seed)+".csv")
-    #             if(finalPoints[0] > finalPoints[1]):
-    #                 winrates[0]+=1
-    #             else:
-    #                 winrates[1]+=1
-    #             gameCtrl.reset(strategies)
-    #         print("Winrates: ", winrates)
-    #         # print("Definitely updated, final eps: ", .getEps(), flush = True)
-    #         print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
-    #         rlStrategyGnn = ReinforcementLearningStrategyGnn()
+        # rEuristic = EuristicPlayer()
+        randomPlayer = RandomPlayer()
+        strategies = [rlStrategyGnn, randomPlayer] #, rEuristic]
+        withGraphics = False # True    
+        idEpisode = 0
+        gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
+        for seed in range(1, outFor):
+            winrates = [0,0]
+            # print("Starting. Eps should be 1: ", .getEps()) # questo 
+            print("Starting. Eps should be 1: ", rlStrategyGnn.getEps()) # questo 
+            saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/OrchGnnVsRan/results"+str(seed)+".csv")
+            for i in range(0, inFor):
+                print(".", end='', flush = True)
+                finalPoints = gameCtrl.playGameForTraining()
+                saveInCsv(finalPoints, "csvFolder/OrchGnnVsRan/results"+str(seed)+".csv")
+                if(finalPoints[0] > finalPoints[1]):
+                    winrates[0]+=1
+                else:
+                    winrates[1]+=1
+                gameCtrl.reset(strategies)
+            print("Winrates: ", winrates)
+            # print("Definitely updated, final eps: ", .getEps(), flush = True)
+            print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
+            rlStrategyGnn.saveWeights("Weights/OrchGnnVsRan/weights"+str(seed))
 
-    #         strategies = [rlStrategyGnn, randomPlayer] # randomStrategy] #, rEuristic]
-    #         gameCtrl.reset(strategies)
+            rlStrategyGnn = ReinforcementLearningStrategyGnn(1)
+
+            strategies = [rlStrategyGnn, randomPlayer] # randomStrategy] #, rEuristic]
+            gameCtrl.reset(strategies)
 
     # # ORCHESTRATORGNN VS EURISTIC
-    #     rlStrategyGnn = ReinforcementLearningStrategyGnn()
+        rlStrategyGnn = ReinforcementLearningStrategyGnn(1)
 
-    #     rEuristic = EuristicPlayer()
-    #     # randomPlayer = RandomPlayer()
-    #     strategies = [rlStrategyGnn, rEuristic] #, rEuristic]
-    #     withGraphics = False # True    
-    #     idEpisode = 0
-    #     gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
-    #     for seed in range(1, 11):
-    #         winrates = [0,0]
-    #         # print("Starting. Eps should be 1: ", .getEps()) # questo 
-    #         print("Starting. Eps should be 1: ", rlStrategyGnn.getEps()) # questo 
-    #         saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/OrchGnnVsEur/results"+str(seed)+".csv")
-    #         for i in range(0, 300):
-    #             print(".", end='', flush = True)
-    #             finalPoints = gameCtrl.playGameForTraining()
-    #             saveInCsv(finalPoints, "csvFolder/OrchGnnVsEur/results"+str(seed)+".csv")
-    #             if(finalPoints[0] > finalPoints[1]):
-    #                 winrates[0]+=1
-    #             else:
-    #                 winrates[1]+=1
-    #             gameCtrl.reset(strategies)
-    #         print("Winrates: ", winrates)
-    #         # print("Definitely updated, final eps: ", .getEps(), flush = True)
-    #         print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
-    #         rlStrategyGnn = ReinforcementLearningStrategyGnn()
+        rEuristic = EuristicPlayer()
+        # randomPlayer = RandomPlayer()
+        strategies = [rlStrategyGnn, rEuristic] #, rEuristic]
+        withGraphics = False # True    
+        idEpisode = 0
+        gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
+        for seed in range(1, outFor):
+            winrates = [0,0]
+            # print("Starting. Eps should be 1: ", .getEps()) # questo 
+            print("Starting. Eps should be 1: ", rlStrategyGnn.getEps()) # questo 
+            saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/OrchGnnVsEur/results"+str(seed)+".csv")
+            for i in range(0, inFor):
+                print(".", end='', flush = True)
+                finalPoints = gameCtrl.playGameForTraining()
+                saveInCsv(finalPoints, "csvFolder/OrchGnnVsEur/results"+str(seed)+".csv")
+                if(finalPoints[0] > finalPoints[1]):
+                    winrates[0]+=1
+                else:
+                    winrates[1]+=1
+                gameCtrl.reset(strategies)
+            print("Winrates: ", winrates)
+            # print("Definitely updated, final eps: ", .getEps(), flush = True)
+            print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
+            rlStrategyGnn.saveWeights("Weights//weights"+str(seed))
 
-    #         strategies = [rlStrategyGnn, rEuristic] # randomStrategy] #, rEuristic]
-    #         gameCtrl.reset(strategies)
+            rlStrategyGnn = ReinforcementLearningStrategyGnn(1)
+
+            strategies = [rlStrategyGnn, rEuristic] # randomStrategy] #, rEuristic]
+            gameCtrl.reset(strategies)
 
 
 # # RANDOM VS EURISTIC
-#         # rlStrategyGnn = ReinforcementLearningStrategyGnn()
+        # rlStrategyGnn = ReinforcementLearningStrategyGnn()
 
-#         rEuristic = EuristicPlayer()
-#         randomPlayer = RandomPlayer()
-#         strategies = [randomPlayer, rEuristic] #, rEuristic]
-#         withGraphics = False # True    
-#         idEpisode = 0
-#         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
-#         for seed in range(1, 11):
-#             winrates = [0,0]
-#             # print("Starting. Eps should be 1: ", .getEps()) # questo 
-#             # print("Starting. Eps should be 1: ", rlStrategyGnn.getEps()) # questo 
-#             saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/RanVsEur/results"+str(seed)+".csv")
-#             for i in range(0, 300):
-#                 print(".", end='', flush = True)
-#                 finalPoints = gameCtrl.playGameForTraining()
-#                 saveInCsv(finalPoints, "csvFolder/RanVsEur/results"+str(seed)+".csv")
-#                 if(finalPoints[0] > finalPoints[1]):
-#                     winrates[0]+=1
-#                 else:
-#                     winrates[1]+=1
-#                 gameCtrl.reset(strategies)
-#             print("Winrates: ", winrates)
-#             # print("Definitely updated, final eps: ", .getEps(), flush = True)
-#             # print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
-#             # rlStrategyGnn = ReinforcementLearningStrategyGnn()
+        rEuristic = EuristicPlayer()
+        randomPlayer = RandomPlayer()
+        strategies = [randomPlayer, rEuristic] #, rEuristic]
+        withGraphics = False # True    
+        idEpisode = 0
+        gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
+        for seed in range(1, outFor):
+            winrates = [0,0]
+            # print("Starting. Eps should be 1: ", .getEps()) # questo 
+            # print("Starting. Eps should be 1: ", rlStrategyGnn.getEps()) # questo 
+            saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/RanVsEur/results"+str(seed)+".csv")
+            for i in range(0, inFor):
+                print(".", end='', flush = True)
+                finalPoints = gameCtrl.playGameForTraining()
+                saveInCsv(finalPoints, "csvFolder/RanVsEur/results"+str(seed)+".csv")
+                if(finalPoints[0] > finalPoints[1]):
+                    winrates[0]+=1
+                else:
+                    winrates[1]+=1
+                gameCtrl.reset(strategies)
+            print("Winrates: ", winrates)
+            # print("Definitely updated, final eps: ", .getEps(), flush = True)
+            # print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
+            # rlStrategyGnn = ReinforcementLearningStrategyGnn()
 
-#             strategies = [randomPlayer, rEuristic] # randomStrategy] #, rEuristic]
-#             gameCtrl.reset(strategies)
+            strategies = [randomPlayer, rEuristic] # randomStrategy] #, rEuristic]
+            gameCtrl.reset(strategies)
 
-
-# # EURISTIC VS RANDOM 
-        # # rlStrategyGnn = ReinforcementLearningStrategyGnn()
-
-        # rEuristic = EuristicPlayer()
-        # randomPlayer = RandomPlayer()
-        # strategies = [rEuristic, randomPlayer] #, rEuristic]
-        # withGraphics = False # True    
-        # idEpisode = 0
-        # gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
-        # for seed in range(1, 11):
-        #     winrates = [0,0]
-        #     # print("Starting. Eps should be 1: ", .getEps()) # questo 
-        #     # print("Starting. Eps should be 1: ", rlStrategyGnn.getEps()) # questo 
-        #     saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/EurVsRan/results"+str(seed)+".csv")
-        #     for i in range(0, 300):
-        #         print(".", end='', flush = True)
-        #         finalPoints = gameCtrl.playGameForTraining()
-        #         saveInCsv(finalPoints, "csvFolder/EurVsRan/results"+str(seed)+".csv")
-        #         if(finalPoints[0] > finalPoints[1]):
-        #             winrates[0]+=1
-        #         else:
-        #             winrates[1]+=1
-        #         gameCtrl.reset(strategies)
-        #     print("Winrates: ", winrates)
-        #     # print("Definitely updated, final eps: ", .getEps(), flush = True)
-        #     # print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
-        #     # rlStrategyGnn = ReinforcementLearningStrategyGnn()
-
-        #     strategies = [rEuristic, randomPlayer] # randomStrategy] #, rEuristic]
-        #     gameCtrl.reset(strategies)
 
 # # EURISTIC VS RANDOM 
-#         # rlStrategyGnn = ReinforcementLearningStrategyGnn()
+        # rlStrategyGnn = ReinforcementLearningStrategyGnn()
 
-#         # rEuristic1 = EuristicPlayer()
-#         # rEuristic2 = EuristicPlayer()
+        rEuristic = EuristicPlayer()
+        randomPlayer = RandomPlayer()
+        strategies = [rEuristic, randomPlayer] #, rEuristic]
+        withGraphics = False # True    
+        idEpisode = 0
+        gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
+        for seed in range(1, outFor):
+            winrates = [0,0]
+            # print("Starting. Eps should be 1: ", .getEps()) # questo 
+            # print("Starting. Eps should be 1: ", rlStrategyGnn.getEps()) # questo 
+            saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/EurVsRan/results"+str(seed)+".csv")
+            for i in range(0, inFor):
+                print(".", end='', flush = True)
+                finalPoints = gameCtrl.playGameForTraining()
+                saveInCsv(finalPoints, "csvFolder/EurVsRan/results"+str(seed)+".csv")
+                if(finalPoints[0] > finalPoints[1]):
+                    winrates[0]+=1
+                else:
+                    winrates[1]+=1
+                gameCtrl.reset(strategies)
+            print("Winrates: ", winrates)
+            # print("Definitely updated, final eps: ", .getEps(), flush = True)
+            # print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
+            # rlStrategyGnn = ReinforcementLearningStrategyGnn()
 
-#         randomPlayer1 = RandomPlayer()
-#         randomPlayer2 = RandomPlayer()
+            strategies = [rEuristic, randomPlayer] # randomStrategy] #, rEuristic]
+            gameCtrl.reset(strategies)
 
-#         strategies = [randomPlayer1, randomPlayer2] #, rEuristic]
-#         withGraphics = False # True    
-#         idEpisode = 0
-#         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
-#         for seed in range(1, 11):
-#             winrates = [0,0]
-#             # print("Starting. Eps should be 1: ", .getEps()) # questo 
-#             # print("Starting. Eps should be 1: ", rlStrategyGnn.getEps()) # questo 
-#             saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/RanVsRan/results"+str(seed)+".csv")
-#             for i in range(0, 300):
-#                 print(".", end='', flush = True)
-#                 finalPoints = gameCtrl.playGameForTraining()
-#                 saveInCsv(finalPoints, "csvFolder/RanVsRan/results"+str(seed)+".csv")
-#                 if(finalPoints[0] > finalPoints[1]):
-#                     winrates[0]+=1
-#                 else:
-#                     winrates[1]+=1
-#                 gameCtrl.reset(strategies)
-#             print("Winrates: ", winrates)
-#             # print("Definitely updated, final eps: ", .getEps(), flush = True)
-#             # print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
-#             # rlStrategyGnn = ReinforcementLearningStrategyGnn()
+# EURISTIC VS RANDOM 
+        # rlStrategyGnn = ReinforcementLearningStrategyGnn()
 
-#             # strategies = [rEuristic, randomPlayer] # randomStrategy] #, rEuristic]
-#             strategies = [randomPlayer1, randomPlayer2] #, rEuristic]
-#             gameCtrl.reset(strategies)
+        # rEuristic1 = EuristicPlayer()
+        # rEuristic2 = EuristicPlayer()
+
+        randomPlayer1 = RandomPlayer()
+        randomPlayer2 = RandomPlayer()
+
+        strategies = [randomPlayer1, randomPlayer2] #, rEuristic]
+        withGraphics = False # True    
+        idEpisode = 0
+        gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
+        for seed in range(1, outFor):
+            winrates = [0,0]
+            # print("Starting. Eps should be 1: ", .getEps()) # questo 
+            # print("Starting. Eps should be 1: ", rlStrategyGnn.getEps()) # questo 
+            saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/RanVsRan/results"+str(seed)+".csv")
+            for i in range(0, inFor):
+                print(".", end='', flush = True)
+                finalPoints = gameCtrl.playGameForTraining()
+                saveInCsv(finalPoints, "csvFolder/RanVsRan/results"+str(seed)+".csv")
+                if(finalPoints[0] > finalPoints[1]):
+                    winrates[0]+=1
+                else:
+                    winrates[1]+=1
+                gameCtrl.reset(strategies)
+            print("Winrates: ", winrates)
+            # print("Definitely updated, final eps: ", .getEps(), flush = True)
+            # print("Definitely updated, final eps: ", rlStrategyGnn.getEps(), flush = True)
+            # rlStrategyGnn = ReinforcementLearningStrategyGnn()
+
+            # strategies = [rEuristic, randomPlayer] # randomStrategy] #, rEuristic]
+            strategies = [randomPlayer1, randomPlayer2] #, rEuristic]
+            gameCtrl.reset(strategies)
         

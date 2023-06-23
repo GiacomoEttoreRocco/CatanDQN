@@ -1,0 +1,21 @@
+ANDATA:
+HierFFVsRandom1: RL-FF-HIER [7, 4] [10, 4] 146 
+HierFFVsRandom1: RL-FF-HIER [6, 3] [10, 3] 184 
+HierFFVsRandom1: RL-FF-HIER [] [10, 3] 102 
+HierFFVsRandom1: RL-FF-HIER [4, 2] [10, 2] 792 
+HierFFVsRandom1: RL-FF-HIER [9, 4] [10, 5] 132 
+HierFFVsRandom1: RL-FF-HIER [] [10, 2] 72 
+HierFFVsRandom1: RL-FF-HIER [] [10, 3] 96 
+HierFFVsRandom1: REUR [7, 8] [8, 10] 147 
+HierFFVsRandom1: RL-FF-HIER [6, 3] [10, 6] 540 
+
+RITORNO:
+HierFFVsRandom1: RL-FF-HIER [2, 7] [3, 10] 157 
+HierFFVsRandom1: RL-FF-HIER [4, 7] [4, 11] 145 
+HierFFVsRandom1: REUR [5, 6] [11, 5] 208 
+HierFFVsRandom1: RL-FF-HIER [] [3, 10] 113 
+HierFFVsRandom1: RL-FF-HIER [4, 7] [6, 10] 195 
+HierFFVsRandom1: RL-FF-HIER [4, 4] [5, 10] 197 
+HierFFVsRandom1: RL-FF-HIER [3, 8] [3, 10] 177 
+HierFFVsRandom1: RL-FF-HIER [5, 5] [7, 11] 289 
+HierFFVsRandom1: RL-FF-HIER [3, 9] [3, 11] 135 
