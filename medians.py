@@ -13,10 +13,12 @@ csv_filesRanVsRan = ["csvFolder/RanVsRan/results{}.csv".format(i) for i in range
 
 
 # csv_filesRanVsEur = ["csvFolder/RanVsEur/results{}.csv".format(i) for i in range(1, 11)]
-# csv_filesGnnHierVsEur = ["csvFolder/GnnHierVsEur/results{}.csv".format(i) for i in range(1, 11)]
+# csv_filesHierGnnVsEur = ["csvFolder/HierGnnVsEur/results{}.csv".format(i) for i in range(1, 11)]
 # csv_filesHierFFVsEur = ["csvFolder/HierFFVsEur/results{}.csv".format(i) for i in range(1, 11)]
 # csv_filesOrchGnnVsEur = ["csvFolder/OrchGnnVsEur/results{}.csv".format(i) for i in range(1, 11)]
 # csv_filesOrchFFVsEur = ["csvFolder/OrchFFVsEur/results{}.csv".format(i) for i in range(1, 11)]
+# csv_filesEurVsEur = ["csvFolder/EurVsEur/results{}.csv".format(i) for i in range(1, 11)]
+
 
 def getAllfirstElements(row_index, column_index, csv_files):
     first_elements = []
@@ -97,6 +99,8 @@ def plot_experiment_results(mean_array, q1_array, q3_array, name):
     plt.title('Trend of values ​​with quartile range')
     plt.legend(fontsize="7", loc='lower left', bbox_to_anchor=(1, 0.5))
 
+# ##########################################################################################################################################################
+
 EurVsRan = []
 HierGnnVsRan = []
 HierFFVsRan = []
@@ -133,4 +137,43 @@ plot_experiment_results(riassumi(calculateRowMeans(EurVsRan), resumeValue), rias
 plot_experiment_results(riassumi(calculateRowMeans(RanVsRan), resumeValue), riassumi(calculateFirstQuartiles(RanVsRan), resumeValue), riassumi(calculateThirdQuartiles(RanVsRan), resumeValue), "Random")
 
 plt.show()
+
+# ##########################################################################################################################################################
+
+# EurVsEur = []
+# HierGnnVsEur = []
+# HierFFVsEur = []
+# OrchGnnVsEur = []
+# OrchFFVsEur = []
+# RanVsEur = []
+
+
+# for row in range(1, 301):
+#     # print(row)
+#     x = getAllfirstElements(row, 0, csv_filesEurVsEur)
+#     y = getAllfirstElements(row, 0, csv_filesHierGnnVsEur)
+#     z = getAllfirstElements(row, 0, csv_filesHierFFVsEur)
+#     w = getAllfirstElements(row, 0, csv_filesOrchGnnVsEur)
+#     a = getAllfirstElements(row, 0, csv_filesOrchFFVsEur)
+#     b = getAllfirstElements(row, 0, csv_filesRanVsEur)
+
+#     # y = getAllfirstElements(row, 0, csv_files)
+
+#     EurVsEur.append(x)
+#     HierGnnVsEur.append(y)
+#     HierFFVsEur.append(z)
+#     OrchGnnVsEur.append(w)
+#     OrchFFVsEur.append(a)
+#     RanVsEur.append(b)
+
+# resumeValue = 10
+
+# plot_experiment_results(riassumi(calculateRowMeans(OrchFFVsEur), resumeValue), riassumi(calculateFirstQuartiles(OrchFFVsEur), resumeValue), riassumi(calculateThirdQuartiles(OrchFFVsEur), resumeValue), "OrchestratorFF")
+# plot_experiment_results(riassumi(calculateRowMeans(HierGnnVsEur), resumeValue), riassumi(calculateFirstQuartiles(HierGnnVsEur), resumeValue), riassumi(calculateThirdQuartiles(HierGnnVsEur), resumeValue), "HiearchicalGnn")
+# plot_experiment_results(riassumi(calculateRowMeans(HierFFVsEur), resumeValue), riassumi(calculateFirstQuartiles(HierFFVsEur), resumeValue), riassumi(calculateThirdQuartiles(HierFFVsEur), resumeValue), "HiearchicalFF")
+# plot_experiment_results(riassumi(calculateRowMeans(OrchGnnVsEur), resumeValue), riassumi(calculateFirstQuartiles(OrchGnnVsEur), resumeValue), riassumi(calculateThirdQuartiles(OrchGnnVsEur), resumeValue), "OrchestratorGnn")
+# plot_experiment_results(riassumi(calculateRowMeans(EurVsEur), resumeValue), riassumi(calculateFirstQuartiles(EurVsEur), resumeValue), riassumi(calculateThirdQuartiles(EurVsEur), resumeValue), "Euristic")
+# plot_experiment_results(riassumi(calculateRowMeans(RanVsEur), resumeValue), riassumi(calculateFirstQuartiles(RanVsEur), resumeValue), riassumi(calculateThirdQuartiles(RanVsEur), resumeValue), "Random")
+
 # plt.show()
+
