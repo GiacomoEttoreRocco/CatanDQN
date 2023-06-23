@@ -14,7 +14,6 @@ def doGame(agent1, agent2, path1, path2):
         agent2 = agent2.loadWeights(path2)
     return gameCtrl.playTurnamentGame()
 
-
 rlStrategyFfHier = ReinforcementLearningStrategyFfHier()
 randomPlayer = RandomPlayer()
 
