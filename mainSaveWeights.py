@@ -56,7 +56,7 @@ if __name__ == '__main__':
         withGraphics = False # True    
         idEpisode = 0
         gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
-        for seed in range(1, 6):
+        for seed in range(1, 10):
             winrates = [0,0]
             # print("Starting. Eps should be 1: ", .getEps()) # questo 
             print("Starting. Eps should be 1: ", rlStrategyFfHier.getEps()) # questo 
