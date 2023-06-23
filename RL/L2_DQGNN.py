@@ -151,4 +151,9 @@ class DQGNN(nn.Module):
     output = self.OutLayers(output)
     return output
   
+  def save_weights(self, filepath):
+    torch.save(self.state_dict(), filepath)
+
+  def load_weights(self, filepath):
+    self.load_state_dict(torch.load(filepath))
 

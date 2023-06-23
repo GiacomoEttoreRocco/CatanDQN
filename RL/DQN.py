@@ -120,5 +120,11 @@ class DQN(nn.Module):
         x = F.relu(self.layer1(x))
         x = F.relu(self.layer2(x))
         return self.layer3(x)
+    
+    def save_weights(self, filepath):
+        torch.save(self.state_dict(), filepath)
+
+    def load_weights(self, filepath):
+         self.load_state_dict(torch.load(filepath))
   
 
