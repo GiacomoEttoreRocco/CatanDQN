@@ -7,9 +7,9 @@ from RL.DQGNN import DQGNNagent
 import random
 
 class ReinforcementLearningStrategyGnn(StrategyEuristic):
-    def __init__(self): # diventerà un singleton
+    def __init__(self, eps): # diventerà un singleton
         # print("RL STRATEGY CONSTRUCTOR")
-        self.macroDQN = DQGNNagent(11, 10) # macro rete decisionale
+        self.macroDQN = DQGNNagent(11, 10, eps) # macro rete decisionale
         # self.eps = self.macroDQN.EPS
 
     def name(self):

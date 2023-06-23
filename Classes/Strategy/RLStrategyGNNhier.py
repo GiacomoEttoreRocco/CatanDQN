@@ -9,15 +9,13 @@ import random
 from RL.L2_DQGNN import L2DQGNNagent
 
 class RLStrategyGnnHierarchical(StrategyEuristic):
-    def __init__(self): # diventerà un singleton
-        self.macroDQN = DQGNNagent(11, 10) # macro rete decisionale
+    def __init__(self, eps): # diventerà un singleton
+        self.macroDQN = DQGNNagent(11, 10, eps) # macro rete decisionale
 
-        self.streetDQN = L2DQGNNagent("street", 11, 72)
-        self.colonyDQN = L2DQGNNagent("colonies", 11, 54)
+        self.streetDQN = L2DQGNNagent("street", 11, 72, eps)
+        self.colonyDQN = L2DQGNNagent("colonies", 11, 54, eps)
 
-        self.tradeDQN = L2DQGNNagent("trades", 11, 20)
-
-        # self.initialColonyDQN = DQGNNagent(11, 54)
+        self.tradeDQN = L2DQGNNagent("trades", 11, 20, eps)
 
     def name(self):
         return "RL-GNN-HIER"

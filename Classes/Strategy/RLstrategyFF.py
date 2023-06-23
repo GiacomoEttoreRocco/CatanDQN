@@ -8,10 +8,10 @@ from RL.DQN import DQNagent
 import random
 
 class ReinforcementLearningStrategyFf(StrategyEuristic):
-    def __init__(self): 
+    def __init__(self, eps): 
         # print("RL STRATEGY CONSTRUCTOR")
 
-        self.macroDQN = DQNagent(54*11 + 72 + 9, 10) 
+        self.macroDQN = DQNagent(54*11 + 72 + 9, 10, eps) 
 
     def name(self):
         return "RL-FF"

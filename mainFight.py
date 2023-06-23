@@ -20,8 +20,8 @@ def doGame(gameCtrl, agent1, agent2, path1, path2):
         agent2 = agent2.loadWeights(path2)
     return gameCtrl.playTurnamentGame()
 
-rlStrategyFfHier = ReinforcementLearningStrategyFfHier()
-randomPlayer = RandomPlayer()
+rlStrategyFfHier = ReinforcementLearningStrategyFfHier(0)
+randomPlayer = RandomPlayer(0)
 
 # va settata epsilon a 1!!!!!!!!
 
@@ -31,8 +31,8 @@ gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpis
 for i in range(0, 5):
     res = doGame(rlStrategyFfHier, randomPlayer, "Weights/HierFFVsRan/weights"+str(1), "")
     # append_to_text_file("Torneo.txt", "HierFFVsRandom", res)
-    rlStrategyFfHier = ReinforcementLearningStrategyFfHier()
-    randomPlayer = RandomPlayer()
+    rlStrategyFfHier = ReinforcementLearningStrategyFfHier(0)
+    randomPlayer = RandomPlayer(0)
     strategies = [rlStrategyFfHier, randomPlayer] 
     gameCtrl.reset(strategies)
 

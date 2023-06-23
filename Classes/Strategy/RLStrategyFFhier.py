@@ -10,12 +10,12 @@ import random
 from RL.L2_DQN import L2DQNagent
 
 class ReinforcementLearningStrategyFfHier(StrategyEuristic):
-    def __init__(self):
-        self.macroDQN = DQNagent(54*11 + 72 + 9, 10) 
+    def __init__(self, eps):
+        self.macroDQN = DQNagent(54*11 + 72 + 9, 10, eps) 
         
-        self.streetDQN = L2DQNagent("street", 54*11 + 72 + 9, 72)
-        self.colonyDQN = L2DQNagent("colonies", 54*11 + 72 + 9, 54)
-        self.tradeDQN = L2DQNagent("trades", 54*11 + 72 + 9, 20)
+        self.streetDQN = L2DQNagent("street", 54*11 + 72 + 9, 72, eps)
+        self.colonyDQN = L2DQNagent("colonies", 54*11 + 72 + 9, 54, eps)
+        self.tradeDQN = L2DQNagent("trades", 54*11 + 72 + 9, 20, eps)
 
     def name(self):
         return "RL-FF-HIER"
