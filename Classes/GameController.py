@@ -232,7 +232,7 @@ class GameController:
         saved = False
         while True:
             if(self.game.actualTurn > 1000):
-                return self.game.dummy, pointsAt100, pointsAtFinal
+                return "DUMMY", pointsAt100, pointsAtFinal
             if(self.game.actualTurn < self.game.nplayers*2):
                 playerTurn = self.game.players[reverseTurnOffSet[self.game.actualTurn]] 
                 self.decisionManager(playerTurn)
