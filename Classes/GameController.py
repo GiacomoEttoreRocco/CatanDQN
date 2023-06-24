@@ -61,7 +61,7 @@ class GameController:
 
         print("RIGA 62 GAME CONTROLLER, lunghezza strada più lunga: ", self.game.longestStreetLength)
         print("Riga 63, lunghezza strada giocatore ", player.id, ": ",  player.longestStreet())
-        time.sleep(5)
+        # time.sleep(5)
 
         rlFlag = "RL" in player.strategy.name() and not onlyPassTurn
 
