@@ -75,7 +75,7 @@ class DQGNNagent():
             return
         
         # print("RIGA 77 DQGNN: ", len(self.memory))
-        print("optimizing...")
+        # print("optimizing...")
         transitions = self.memory.sample(self.BATCH_SIZE)
         batch = Transition(*zip(*transitions)) 
         graph_batch = Batch.from_data_list(batch.graph)

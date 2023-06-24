@@ -79,11 +79,6 @@ if __name__ == '__main__':
     outFor = 11
     inFor = 10
 
-
-    # agent1 = ReinforcementLearningStrategyFfHier(1)
-    # agent2 = RandomPlayer()
-    # nameOfTheFolder = "HierFFVsRan"
-
     trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), RandomPlayer(), "HierFFVsRan")
     trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), EuristicPlayer(), "HierFFVsEur")
 
