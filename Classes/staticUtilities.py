@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import csv
 from Classes import Board
+from Classes.MoveTypes import *
+from Command import commands
 
 def availableResourcesForColony(resDict):
     return resDict["wood"] >= 1 and resDict["clay"] >= 1 and resDict["sheep"] >= 1 and resDict["crop"] >= 1
@@ -274,7 +276,6 @@ def tradesToId(trade):
         return 2
     if(trade[0] == "wood" and trade[1] == "iron"):
         return 3
-    
     if(trade[0] == "clay" and trade[1] == "wood"):
         return 4
     if(trade[0] == "clay" and trade[1] == "crop"):
@@ -309,3 +310,48 @@ def tradesToId(trade):
         return 19
 
 
+def getActionId(command):
+    if(command == commands.DiscardResourceCommand):
+        return ForcedMoveTypes.DiscardResource
+    
+    elif(command == commands.UseRobberCommand):
+        return ForcedMoveTypes.UseRobber
+    
+    elif(command == commands.FirstChoiseCommand):
+        return InitialMoveTypes.InitialFirstChoice
+
+    elif(command == commands.PlaceInitialStreetCommand):
+        return InitialMoveTypes.InitialStreetChoice
+    
+    elif(command == commands.SecondChoiseCommand):
+        return InitialMoveTypes.InitialSecondChoice
+    
+    elif(command == commands.PassTurnCommand):
+        return TurnMoveTypes.PassTurn
+    
+    elif(command == commands.BuyDevCardCommand):
+        return TurnMoveTypes.BuyDevCard
+    
+    elif(command == commands.PlaceStreetCommand):
+        return TurnMoveTypes.PlaceStreet
+    
+    elif(command == commands.PlaceColonyCommand):
+        return TurnMoveTypes.PlaceColony
+    
+    elif(command == commands.PlaceCityCommand):
+        return TurnMoveTypes.PlaceCity 
+    
+    elif(command == commands.TradeBankCommand):
+        return TurnMoveTypes.TradeBank 
+    
+    elif(command == commands.UseKnightCommand):
+        return TurnMoveTypes.UseKnight 
+    
+    elif(command == commands.UseMonopolyCardCommand):
+        return TurnMoveTypes.UseMonopolyCard  
+    
+    elif(command == commands.UseRoadBuildingCardCommand):
+        return TurnMoveTypes.UseRoadBuildingCard 
+    
+    elif(command == commands.UseYearOfPlentyCardCommand):
+        return TurnMoveTypes.UseYearOfPlentyCard 

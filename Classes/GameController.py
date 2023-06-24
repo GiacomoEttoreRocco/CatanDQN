@@ -11,7 +11,7 @@ from Classes.Strategy.RLStrategyGNN import ReinforcementLearningStrategyGnn
 from Classes.Strategy.RLStrategyFF import ReinforcementLearningStrategyFf
 
 from Classes.Strategy.Strategy import Strategy
-from Classes.staticUtilities import tradesToId
+from Classes.staticUtilities import getActionId, tradesToId
 from Command import commands
 import Graphics.GameView as GameView
 import AI.Gnn as Gnn
@@ -58,6 +58,7 @@ class GameController:
 
     def executeWithDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
         # prevPoints = player._victoryPoints
+        actionId = getActionId(action)
         if(actionId.value == 2 or actionId.value == -6 or actionId.value == 8):
             print("RIGA 62 GAME CONTROLLER, lunghezza strada più lunga: ", self.game.longestStreetLength)
             print("Riga 63, lunghezza strada giocatore ", player.id, ": ",  player.longestStreet())
@@ -69,10 +70,10 @@ class GameController:
             if("GNN" in player.strategy.name()):
                 previousGraph = Board.Board().boardStateGraph(player)
                 previousGlob = player.globalFeaturesToTensor()
-                actionId = player.strategy.getActionId(action)
+                actionId = getActionId(action)
             else:
                 previousState = self.game.getTotalState(player)
-                actionId = player.strategy.getActionId(action)
+                actionId = getActionId(action)
 
         self.game.ctr.execute(action(player, thingNeeded))
         # player.reward = player._victoryPoints - prevPoints
