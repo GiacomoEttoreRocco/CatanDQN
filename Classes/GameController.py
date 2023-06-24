@@ -56,6 +56,15 @@ class GameController:
             player.strategy = strategy
             player.reset()
 
+    def resetAndResetStrategies(self, newStrat):
+        c.Board.Board().reset()
+        c.Bank.Bank().reset()
+        self.game.reset()
+        self.playerStrategies = newStrat
+        for player, strategy in zip(self.game.players, self.playerStrategies):
+            player.strategy = strategy
+            player.reset()
+
     def executeWithDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
 
         rlFlag = "RL" in player.strategy.name() and not onlyPassTurn
