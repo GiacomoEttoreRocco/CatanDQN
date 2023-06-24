@@ -58,14 +58,14 @@ def trainAndSaveWeights(outFor, inFor, agent1, agent2, nameOfTheFolder):
         saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/"+nameOfTheFolder+"/results"+str(seed)+".csv")
         for i in range(0, inFor):
             finalPoints = gameCtrl.playGameForTraining()
-            print(finalPoints[0], end='.', flush = True)
+            print(finalPoints[0], end=' ', flush = True)
             saveInCsv(finalPoints, "csvFolder/"+nameOfTheFolder+"/results"+str(seed)+".csv")
             if(finalPoints[0] > finalPoints[1]):
                 winrates[0]+=1
             else:
                 winrates[1]+=1
             gameCtrl.reset()
-        print("Winrates: ", winrates)
+        # print("Winrates: ", winrates)
         print("Definitely updated, final eps: ", agent1.getEps(), flush = True)
         agent1.saveWeights("Weights/"+nameOfTheFolder+"/weights"+str(seed))
         agent1.__init__(1)
@@ -75,9 +75,8 @@ def trainAndSaveWeights(outFor, inFor, agent1, agent2, nameOfTheFolder):
 
 if __name__ == '__main__':
         
-
-    outFor = 11
-    inFor = 10
+    outFor = 5
+    inFor = 500
 
     trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), RandomPlayer(), "HierFFVsRan")
     trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), EuristicPlayer(), "HierFFVsEur")
