@@ -135,9 +135,13 @@ class GameController:
             if(actionId.value > 0 and "GNN" in player.strategy.name()):
                 player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, player.reward, graph, glob)
                 if("HIER" in player.strategy.name()):
-                    if(actionId.value == 2):
+                    if(actionId.value == 2 or actionId.value == -6 or actionId.value == 8):
+                        if(actionId.value != 2):
+                            print("Riga 140 GameCtrl. Hier, fai un fischio", actionId.value)
                         player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player.reward, graph, glob)
-                    if(actionId.value == 3):
+                    if(actionId.value == 3 or actionId.value == -3 or actionId.value == -2):
+                        if(actionId.value != 3):
+                            print("Riga 144 GameCtrl, Hier, fai un fischio", actionId.value)
                         player.strategy.colonyDQN.saveInMemory(previousGraph, previousGlob, Board.Board().places.index(thingNeeded), player.reward, graph, glob)
                     if(actionId.value == 5): 
                         player.strategy.tradeDQN.saveInMemory(previousGraph, previousGlob, tradesToId(thingNeeded), player.reward, graph, glob)
@@ -145,9 +149,13 @@ class GameController:
             elif(actionId.value > 0):
                 player.strategy.macroDQN.saveInMemory(previousState, actionId.value, player.reward, self.game.getTotalState(player))
                 if("HIER" in player.strategy.name()):
-                    if(actionId.value == 2):
+                    if(actionId.value == 2 or actionId.value == -6 or actionId.value == 8):
+                        if(actionId.value != 2):
+                            print("Riga 154 GameCtrl, macro, fai un fischio", actionId.value)
                         player.strategy.streetDQN.saveInMemory(previousState, list(Board.Board().edges.keys()).index(thingNeeded), player.reward, self.game.getTotalState(player))
-                    if(actionId.value == 3):
+                    if(actionId.value == 3 or actionId.value == -3 or actionId.value == -2):
+                        if(actionId.value != 3):
+                            print("Riga 154 GameCtrl, macro, fai un fischio", actionId.value)
                         player.strategy.colonyDQN.saveInMemory(previousState, Board.Board().places.index(thingNeeded), player.reward, self.game.getTotalState(player))
                     if(actionId.value == 5): 
                         player.strategy.tradeDQN.saveInMemory(previousState, tradesToId(thingNeeded), player.reward, self.game.getTotalState(player))
