@@ -58,10 +58,10 @@ class GameController:
 
     def executeWithDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
         # prevPoints = player._victoryPoints
-
-        print("RIGA 62 GAME CONTROLLER, lunghezza strada più lunga: ", self.game.longestStreetLength)
-        print("Riga 63, lunghezza strada giocatore ", player.id, ": ",  player.longestStreet())
-        # time.sleep(5)
+        if(actionId.value == 2 or actionId.value == -6 or actionId.value == 8):
+            print("RIGA 62 GAME CONTROLLER, lunghezza strada più lunga: ", self.game.longestStreetLength)
+            print("Riga 63, lunghezza strada giocatore ", player.id, ": ",  player.longestStreet())
+            time.sleep(3)
 
         rlFlag = "RL" in player.strategy.name() and not onlyPassTurn
 
