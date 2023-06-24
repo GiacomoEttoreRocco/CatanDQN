@@ -70,8 +70,6 @@ H_GNN1_self.loadWeights("Weights/HierGnnVsHierGnn/weights"+str(1))
 # H_GNN2_self = ReinforcementLearningStrategyGnnHier(0)
 # H_GNN2_self.loadWeights("Weights/HierGnnVsHierGnn/weights"+str(2))
 
-
-
 # blueAgents = [H_FF1_blue, H_FF2_blue, H_GNN1_blue, H_GNN2_blue, O_FF1_blue, O_FF2_blue, O_GNN1_blue, O_GNN2_blue]
 # greenAgents = [H_FF1_green, H_FF2_green, H_GNN1_green, H_GNN2_green, O_FF1_green, O_FF2_green, O_GNN1_green, O_GNN2_green]
 

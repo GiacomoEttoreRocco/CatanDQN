@@ -1,4 +1,5 @@
 import os
+import time
 import pygame
 import pygame_gui
 import pandas as pd
@@ -94,6 +95,8 @@ class GameController:
                         # if(actionId.value != 2):
                         #     print("Riga 140 GameCtrl. Hier, fai un fischio", actionId.value)
                         player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player.reward, graph, glob)
+                        # print("RIGA 97 GAME CONTROLLER: ", self.game.longest(player))
+                        # time.sleep(5)
                     if(actionId.value == 3 or actionId.value == -3 or actionId.value == -2):
                         # if(actionId.value != 3):
                         #     print("Riga 144 GameCtrl, Hier, fai un fischio", actionId.value)
