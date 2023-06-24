@@ -75,80 +75,89 @@ class Game:
                 max = p.usedKnights 
                 belonger = p
         return belonger
+    
+    # def longestStreetPlayer(self):
+    #     maxLength = max([self.longest(self.longestStreetOwner), 4])
+    #     if(maxLength > 4):
+    #         belonger = self.longestStreetOwner
+    #     else:
+    #         belonger = self.dummy
+    #     for p in self.players:
+    #         if(p.id != self.longestStreetOwner.id):
+    #             actual = self.longest(p)
+    #             if(maxLength < actual):
+    #                 maxLength = actual
+    #                 belonger = p
+    #     return belonger, maxLength
 
+    # def longest(self, player):
+    #     max = 0
+    #     visited = set()
+    #     for tail in self.findLeaves(player):
+    #         #self.order = 0
+    #         length, tmpVisited = self.explorePlace(player, tail, [])
+    #         visited.update(tmpVisited)
+    #         if max<length:
+    #             max = length
+
+    #     for edge in player.ownedStreets:
+    #         if edge not in visited:
+    #             p1, p2 = edge
+    #             length1, tmpVisited1 = self.explorePlace(player, p1, [])
+    #             length2, tmpVisited2 = self.explorePlace(player, p2, []) # for fun
+    #             visited.update(tmpVisited1)
+    #             visited.update(tmpVisited2)
+    #             if max < length1:
+    #                 max = length1
+    #             elif max < length2:
+    #                 max = length2
+    #     return max - 1 
+        
+    # def explorePlace(self, player, place, visited):
+    #     max = 0
+    #     tmpVisited = list.copy(visited)
+    #     outVisited = list.copy(visited)
+    #     for adjPlace in self.connectedPlacesToPlace(player, place):
+    #         edge = tuple(sorted([place, adjPlace]))
+    #         if edge not in tmpVisited:
+    #             tmpVisited.append(edge)
+    #             length, v = self.explorePlace(player, adjPlace, tmpVisited)
+    #             outVisited.extend(v)
+    #             if(max<length):
+    #                 max = length
+    #     return max + 1, outVisited
+
+    # def findLeaves(self, player):
+    #     toRet = set()
+    #     for edge in player.ownedStreets:
+    #         p1, p2 = edge
+    #         if self.isLeaf(player, p1):
+    #             toRet.add(p1)
+    #         if self.isLeaf(player, p2):
+    #             toRet.add(p2)
+    #     return toRet
+
+    # def connectedPlacesToPlace(self, player, place):
+    #     toRet = []
+    #     if Board.Board().places[place].owner in (0, player.id):
+    #         for adjPlace in Board.Board().graph.listOfAdj[place]:
+    #             edge = tuple(sorted([place, adjPlace]))
+    #             if(Board.Board().edges[edge] == player.id):
+    #                 toRet.append(adjPlace)
+    #     return toRet   
+
+    # def isLeaf(self, player, place): #  Per il Jack del futuro: non è errato, richiede un po' di ragionamento
+    #     return len(self.connectedPlacesToPlace(player, place))==1 or len(self.connectedPlacesToPlace(player, place))==3 # se == 3 allora si trova in un punto ciclico.
+    
     def longestStreetPlayer(self):
-        maxLength = max([self.longest(self.longestStreetOwner), 4])
-        if(maxLength > 4):
-            belonger = self.longestStreetOwner
-        else:
-            belonger = self.dummy
+        maxLength = max([self.longestStreetLength, 4])
         for p in self.players:
-            if(p.id != self.longestStreetOwner.id):
-                actual = self.longest(p)
-                if(maxLength < actual):
-                    maxLength = actual
-                    belonger = p
+            if(p.longestStreet() > maxLength):
+                belonger = p
+                maxLength = p.longestStreet()
+                self.longestStreetLength = maxLength
         return belonger, maxLength
 
-    def longest(self, player):
-        max = 0
-        visited = set()
-        for tail in self.findLeaves(player):
-            #self.order = 0
-            length, tmpVisited = self.explorePlace(player, tail, [])
-            visited.update(tmpVisited)
-            if max<length:
-                max = length
-
-        for edge in player.ownedStreets:
-            if edge not in visited:
-                p1, p2 = edge
-                length1, tmpVisited1 = self.explorePlace(player, p1, [])
-                length2, tmpVisited2 = self.explorePlace(player, p2, []) # for fun
-                visited.update(tmpVisited1)
-                visited.update(tmpVisited2)
-                if max < length1:
-                    max = length1
-                elif max < length2:
-                    max = length2
-        return max - 1 
-        
-    def explorePlace(self, player, place, visited):
-        max = 0
-        tmpVisited = list.copy(visited)
-        outVisited = list.copy(visited)
-        for adjPlace in self.connectedPlacesToPlace(player, place):
-            edge = tuple(sorted([place, adjPlace]))
-            if edge not in tmpVisited:
-                tmpVisited.append(edge)
-                length, v = self.explorePlace(player, adjPlace, tmpVisited)
-                outVisited.extend(v)
-                if(max<length):
-                    max = length
-        return max + 1, outVisited
-
-    def findLeaves(self, player):
-        toRet = set()
-        for edge in player.ownedStreets:
-            p1, p2 = edge
-            if self.isLeaf(player, p1):
-                toRet.add(p1)
-            if self.isLeaf(player, p2):
-                toRet.add(p2)
-        return toRet
-
-    def isLeaf(self, player, place): #  Per il Jack del futuro: non è errato, richiede un po' di ragionamento
-        return len(self.connectedPlacesToPlace(player, place))==1 or len(self.connectedPlacesToPlace(player, place))==3 # se == 3 allora si trova in un punto ciclico.
-    
-    def connectedPlacesToPlace(self, player, place):
-        toRet = []
-        if Board.Board().places[place].owner in (0, player.id):
-            for adjPlace in Board.Board().graph.listOfAdj[place]:
-                edge = tuple(sorted([place, adjPlace]))
-                if(Board.Board().edges[edge] == player.id):
-                    toRet.append(adjPlace)
-        return toRet   
-    
     def getTotalState(self, player):
         boardState = Board.Board().boardStateTensor(player)
         playerState = player.globalStateTensor()

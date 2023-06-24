@@ -584,7 +584,7 @@ class PlaceStreetCommand:
         self.actions.append(PlayerSpendResourceCommand(self.player, "wood"))
         self.actions.append(PlayerSpendResourceCommand(self.player, "clay"))
 
-        self.actions.append(PlaceInitialStreetCommand(self.player, self.edge))
+        self.actions.append(PlaceFreeStreetCommand(self.player, self.edge))
         self.actions.append(CheckLongestStreetCommand(self.player.game))
         for action in self.actions:
             action.execute()

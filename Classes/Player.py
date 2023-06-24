@@ -299,3 +299,56 @@ class Player:
     
     def victoryPointsModification(self, points):
         self._victoryPoints += points
+
+    def connectedPlacesToPlace(self, place):
+        streetCounter = 0
+        for street in self.ownedStreets:
+            if(place in street):
+                streetCounter+=1
+        return streetCounter
+
+    def isLeaf(self, place): #  Per il Jack del futuro: non è errato, richiede un po' di ragionamento
+        return self.connectedPlacesToPlace(place)==1 or self.connectedPlacesToPlace(place)==3 # se == 3 allora si trova in un punto ciclico.
+    
+    def findLeaves(self):
+        leaves = []
+        for edge in self.ownedStreets:
+            p1, p2 = edge
+            if self.isLeaf(p1) and p1 not in leaves:
+                leaves.append(p1)
+            if self.isLeaf(p2) and p2 not in leaves:
+                leaves.append(p2)
+        return leaves
+    
+    def longestStreetStartingFrom(self, place, starting):
+        if(starting):
+            for edge in self.ownedStreets:
+                edge.visited = 0
+        maxLength = 0
+        toCheck = []
+        for edge in self.ownedStreets:
+            if(place in edge and edge.visted == 0):
+                toCheck.append(edge)
+
+        for edge in toCheck:
+            p1, p2 = edge
+            if(p1 != place):
+                length = self.longestStreetStartingFrom(p1, False)
+            elif(p2 != place):
+                length = self.longestStreetStartingFrom(p2, False)
+
+            if(length < maxLength):
+                maxLength = length
+
+        return 1 + maxLength
+
+    def longestStreet(self):
+        leaves = self.findLeaves()
+        maxLength = 0
+        for leaf in leaves:
+            length = self.longestStreetStartingFrom(leaf, True)
+            if(length > maxLength):
+                maxLength = length
+        return maxLength
+
+

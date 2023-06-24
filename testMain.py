@@ -62,10 +62,10 @@ O_GNN1_blue.loadWeights("Weights/OrchGnnVsEur/weights"+str(1))
 # O_GNN2_green.loadWeights("Weights/OrchGnnVsRan/weights"+str(2))
 
 EURISTIC_PLAYER = EuristicPlayer()
-# RANDOM_PLAYER = RandomPlayer()
+RANDOM_PLAYER = RandomPlayer()
 
-H_GNN1_self = ReinforcementLearningStrategyGnnHier(0)
-H_GNN1_self.loadWeights("Weights/HierGnnVsHierGnn/weights"+str(1))
+# H_GNN1_self = ReinforcementLearningStrategyGnnHier(0)
+# H_GNN1_self.loadWeights("Weights/HierGnnVsHierGnn/weights"+str(1))
 
 # H_GNN2_self = ReinforcementLearningStrategyGnnHier(0)
 # H_GNN2_self.loadWeights("Weights/HierGnnVsHierGnn/weights"+str(2))
@@ -80,7 +80,7 @@ H_GNN1_self.loadWeights("Weights/HierGnnVsHierGnn/weights"+str(1))
 withGraphics = True
 
 # otherAgents = [EURISTIC_PLAYER, RANDOM_PLAYER, H_FF2_blue, H_GNN1_blue, H_GNN2_blue, O_FF1_blue, O_FF2_blue, O_GNN1_blue, O_GNN2_blue, H_FF1_green, H_FF2_green, H_GNN1_green, H_GNN2_green, O_FF1_green, O_FF2_green, O_GNN1_green, O_GNN2_green]
-examAgent = H_GNN1_self
+examAgent = RandomPlayer()
 against = EURISTIC_PLAYER
 strategies = [examAgent, against] 
 gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
