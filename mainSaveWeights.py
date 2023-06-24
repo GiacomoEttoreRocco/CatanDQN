@@ -54,7 +54,7 @@ def trainAndSaveWeights(outFor, inFor, agent1, agent2, nameOfTheFolder):
     gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
     for seed in range(1, outFor):
         winrates = [0,0]
-        print("\nStarting. Eps should be 1: ", agent1.getEps(), "\n") 
+        # print("\nStarting. Eps should be 1: ", agent1.getEps(), "\n") 
         saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/"+nameOfTheFolder+"/results"+str(seed)+".csv")
         for i in range(0, inFor):
             finalPoints = gameCtrl.playGameForTraining()
@@ -66,8 +66,8 @@ def trainAndSaveWeights(outFor, inFor, agent1, agent2, nameOfTheFolder):
                 winrates[1]+=1
             gameCtrl.reset()
         # print("Winrates: ", winrates)
-        print("\nDefinitely updated, final eps: ", agent1.getEps(), flush = True)
-        agent1.saveWeights("Weights/"+nameOfTheFolder+"/weights"+str(seed))
+        # print("\nDefinitely updated, final eps: ", agent1.getEps(), flush = True)
+        # agent1.saveWeights("Weights/"+nameOfTheFolder+"/weights"+str(seed))
         agent1.__init__(1)
         # rlStrategyFfHier = ReinforcementLearningStrategyFfHier(1)
         strategies = [agent1, agent2] 
@@ -78,17 +78,17 @@ if __name__ == '__main__':
     outFor = 5
     inFor = 500
 
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), RandomPlayer(), "HierFFVsRan")
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), EuristicPlayer(), "HierFFVsEur")
+    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), RandomPlayer(), "HierFFVsRan")
+    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), EuristicPlayer(), "HierFFVsEur")
 
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFf(1), RandomPlayer(), "OrchFFVsRan")
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFf(1), EuristicPlayer(), "OrchFFVsEur")
+    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFf(1), RandomPlayer(), "OrchFFVsRan")
+    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFf(1), EuristicPlayer(), "OrchFFVsEur")
 
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(1), RandomPlayer(), "HierGnnVsRan")
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(1), EuristicPlayer(), "HierGnnVsEur")
+    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(1), RandomPlayer(), "HierGnnVsRan")
+    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(1), EuristicPlayer(), "HierGnnVsEur")
 
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnn(1), RandomPlayer(), "OrchGnnVsRan")
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnn(1), EuristicPlayer(), "OrchGnnVsEur")
+    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnn(1), RandomPlayer(), "OrchGnnVsRan")
+    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnn(1), EuristicPlayer(), "OrchGnnVsEur")
 
     trainAndSaveWeights(outFor, inFor, RandomPlayer(), RandomPlayer(), "RanVsRan")
     trainAndSaveWeights(outFor, inFor, EuristicPlayer(), RandomPlayer(), "EurVsRan")
