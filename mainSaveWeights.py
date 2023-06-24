@@ -54,7 +54,7 @@ def trainAndSaveWeights(outFor, inFor, agent1, agent2, nameOfTheFolder):
     gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
     for seed in range(1, outFor):
         winrates = [0,0]
-        print("Starting. Eps should be 1: ", agent1.getEps()) 
+        print("\nStarting. Eps should be 1: ", agent1.getEps(), "\n") 
         saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/"+nameOfTheFolder+"/results"+str(seed)+".csv")
         for i in range(0, inFor):
             finalPoints = gameCtrl.playGameForTraining()
@@ -66,7 +66,7 @@ def trainAndSaveWeights(outFor, inFor, agent1, agent2, nameOfTheFolder):
                 winrates[1]+=1
             gameCtrl.reset()
         # print("Winrates: ", winrates)
-        print("Definitely updated, final eps: ", agent1.getEps(), flush = True)
+        print("\nDefinitely updated, final eps: ", agent1.getEps(), flush = True)
         agent1.saveWeights("Weights/"+nameOfTheFolder+"/weights"+str(seed))
         agent1.__init__(1)
         # rlStrategyFfHier = ReinforcementLearningStrategyFfHier(1)
