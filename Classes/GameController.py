@@ -57,12 +57,6 @@ class GameController:
             player.reset()
 
     def executeWithDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
-        # prevPoints = player._victoryPoints
-        actionId = getActionId(action)
-        if(actionId.value == 2 or actionId.value == -6 or actionId.value == 8):
-            print("RIGA 62 GAME CONTROLLER, lunghezza strada più lunga: ", self.game.longestStreetLength)
-            print("Riga 63, lunghezza strada giocatore ", player.id, ": ",  player.longestStreet())
-            # time.sleep(3)
 
         rlFlag = "RL" in player.strategy.name() and not onlyPassTurn
 
@@ -76,6 +70,12 @@ class GameController:
                 actionId = getActionId(action)
 
         self.game.ctr.execute(action(player, thingNeeded))
+##################
+        # actionId = getActionId(action)
+        # if(actionId.value == 2 or actionId.value == -6 or actionId.value == 8):
+        #     print("RIGA 62 GAME CONTROLLER, lunghezza strada più lunga: ", self.game.longestStreetLength)
+        #     print("Riga 63, lunghezza strada giocatore ", player.id, ": ",  player.longestStreet())
+##################
         # player.reward = player._victoryPoints - prevPoints
         player.reward = player._victoryPoints/self.game.actualTurn
 

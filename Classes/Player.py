@@ -330,15 +330,15 @@ class Player:
     def pathStartingFrom(self, place, path):
         maxLength = len(path)
         longestPath = path.copy()
-        newPath = path.copy()
         length = 0
         for edge in self.ownedStreets:
             p1, p2 = edge
-            if(place in edge and edge not in path):
+            if(place in edge and (edge not in path)):
+                newPath = path.copy()
                 if(p1 == place):
                     newPath.append(edge)
                     newPath, length = self.pathStartingFrom(p2, newPath)
-                else:
+                elif(p2 == place):
                     newPath.append(edge)
                     newPath, length = self.pathStartingFrom(p1, newPath)
                 if(length > maxLength):
@@ -352,10 +352,9 @@ class Player:
         maxLength = 0
         for leaf in leaves:
             longestPath, length = self.pathStartingFrom(leaf, [])
-            print(leaf)
             if(length > maxLength):
                 maxLength = length
-        print("Riga 355 player ", self.id, "longestPath: ", longestPath)
+        # print("Riga 355 player ", self.id, "longestPath: ", longestPath, "Lunghezza: ", maxLength)
         return maxLength
 
 

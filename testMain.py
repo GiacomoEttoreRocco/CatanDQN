@@ -83,7 +83,7 @@ withGraphics = True
 examAgent = RandomPlayer()
 against = EURISTIC_PLAYER
 strategies = [examAgent, against] 
-gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=False)
+gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
 gameCtrl.reset() 
 res = gameCtrl.playTurnamentGame()
 
