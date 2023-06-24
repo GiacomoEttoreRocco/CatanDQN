@@ -452,6 +452,7 @@ if __name__ == '__main__':
     for i in range(0, 3000):
         finalPoints = gameCtrl.playGameForTraining()
         print(finalPoints[0], end='.', flush = True)
+        # print("RIGA 456 mainSaveW: ", len(rlStrategyGnnHier1.macroDQN.memory))
         saveInCsv(finalPoints, "csvFolder/HierGnnVsHierGnn/results"+str(1)+".csv")
         if(finalPoints[0] > finalPoints[1]):
             winrates[0]+=1

@@ -14,7 +14,7 @@ class L2DQNagent():
     def __init__(self, name, nInputs, nOutputs, eps, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cpu")) -> None:
         # print("DQNgent CONSTRUCTOR")
         self.name = name # per ora non serve a un cazzo, serve in caso di debug
-        self.BATCH_SIZE = 16 
+        self.BATCH_SIZE = 64 # 16 
         self.GAMMA = 0.99
         self.EPS = eps
         self.TAU = 0.005 

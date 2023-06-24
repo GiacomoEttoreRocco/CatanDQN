@@ -13,7 +13,7 @@ class DQNagent():
     # def __init__(self, nInputs, nOutputs, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")) -> None:
     def __init__(self, nInputs, nOutputs, eps, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cpu")) -> None:
         # print("DQNgent CONSTRUCTOR")
-        self.BATCH_SIZE = 16 
+        self.BATCH_SIZE = 64 # 16 
         self.GAMMA = 0.99
         self.EPS = eps
         self.TAU = 0.005 

@@ -55,52 +55,6 @@ class GameController:
             player.strategy = strategy
             player.reset()
 
-    # def executeWithDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
-    #     prevPoints = player._victoryPoints
-
-    #     rlFlag = "RL" in player.strategy.name() and not onlyPassTurn
-
-    #     if(rlFlag): 
-    #         if("GNN" in player.strategy.name()):
-    #             previousGraph = Board.Board().boardStateGraph(player)
-    #             previousGlob = player.globalFeaturesToTensor()
-    #             actionId = player.strategy.getActionId(action)
-    #         else:
-    #             previousState = self.game.getTotalState(player)
-    #             actionId = player.strategy.getActionId(action)
-
-    #     self.game.ctr.execute(action(player, thingNeeded))
-    #     player.reward = player._victoryPoints - prevPoints
-
-    #     if(player._victoryPoints >= 10):
-    #         print("winning reward added")
-    #         player.reward = 100
-
-    #     if(rlFlag): 
-    #         graph = Board.Board().boardStateGraph(player)
-    #         glob = player.globalFeaturesToTensor()
-    #         # print("Riga 72, game controller: ", player.reward)
-
-    #         if(actionId.value > 0 and "GNN" in player.strategy.name()):
-    #             player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, player._victoryPoints, graph, glob)
-    #             if("HIER" in player.strategy.name()):
-    #                 if(actionId.value == 2):
-    #                     player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player._victoryPoints, graph, glob)
-    #                 if(actionId.value == 3):
-    #                     player.strategy.colonyDQN.saveInMemory(previousGraph, previousGlob, Board.Board().places.index(thingNeeded), player._victoryPoints, graph, glob)
-    #                 if(actionId.value == 5): 
-    #                     player.strategy.tradeDQN.saveInMemory(previousGraph, previousGlob, tradesToId(thingNeeded), player._victoryPoints, graph, glob)
-                       
-    #         elif(actionId.value > 0):
-    #             player.strategy.macroDQN.saveInMemory(previousState, actionId.value, player._victoryPoints, self.game.getTotalState(player))
-    #             if("HIER" in player.strategy.name()):
-    #                 if(actionId.value == 2):
-    #                     player.strategy.streetDQN.saveInMemory(previousState, list(Board.Board().edges.keys()).index(thingNeeded), player._victoryPoints, self.game.getTotalState(player))
-    #                 if(actionId.value == 3):
-    #                     player.strategy.colonyDQN.saveInMemory(previousState, Board.Board().places.index(thingNeeded), player._victoryPoints, self.game.getTotalState(player))
-    #                 if(actionId.value == 5): 
-    #                     player.strategy.tradeDQN.saveInMemory(previousState, tradesToId(thingNeeded), player._victoryPoints, self.game.getTotalState(player))
-
     def executeWithDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
         # prevPoints = player._victoryPoints
 

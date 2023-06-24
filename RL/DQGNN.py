@@ -13,7 +13,7 @@ class DQGNNagent():
     # def __init__(self, nInputs, nOutputs, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")) -> None:
     def __init__(self, nInputs, nOutputs, eps, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cpu")) -> None:
         # print("DQGNNAgent CONSTRUCTOR")
-        self.BATCH_SIZE = 16 # 64 # 256
+        self.BATCH_SIZE = 64 # 16  # 256
         self.GAMMA = 0.99
         self.EPS = eps
         self.TAU = 0.005 # 0.005
@@ -73,6 +73,8 @@ class DQGNNagent():
     def optimize_model(self):
         if len(self.memory) < self.BATCH_SIZE:
             return
+        
+        # print("RIGA 77 DQGNN: ", len(self.memory))
         # print("optimizing...")
         transitions = self.memory.sample(self.BATCH_SIZE)
         batch = Transition(*zip(*transitions)) 

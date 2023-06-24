@@ -15,7 +15,7 @@ class L2DQGNNagent():
         # print("DQGNNAgent CONSTRUCTOR")
         self.name = name
 
-        self.BATCH_SIZE = 16 # 64 # 256
+        self.BATCH_SIZE = 64 #16 # 256
         self.GAMMA = 0.99
         self.EPS = eps
         self.TAU = 0.05 # 0.005
