@@ -320,22 +320,24 @@ class Player:
                 leaves.append(p2)
         return leaves
     
-    def longestStreetStartingFrom(self, place, starting):
+    def longestStreetStartingFrom(self, place, starting, visited = []):
         if(starting):
+            visited = []
             for edge in self.ownedStreets:
-                edge.visited = 0
+                visited.append(edge)
         maxLength = 0
         toCheck = []
         for edge in self.ownedStreets:
-            if(place in edge and edge.visted == 0):
+            if(place in edge and edge not in visited):
                 toCheck.append(edge)
+                visited.append(edge)
 
         for edge in toCheck:
             p1, p2 = edge
             if(p1 != place):
-                length = self.longestStreetStartingFrom(p1, False)
+                length = self.longestStreetStartingFrom(p1, False, visited)
             elif(p2 != place):
-                length = self.longestStreetStartingFrom(p2, False)
+                length = self.longestStreetStartingFrom(p2, False, visited)
 
             if(length < maxLength):
                 maxLength = length
