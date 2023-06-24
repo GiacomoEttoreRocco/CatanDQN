@@ -62,7 +62,7 @@ class GameController:
         if(actionId.value == 2 or actionId.value == -6 or actionId.value == 8):
             print("RIGA 62 GAME CONTROLLER, lunghezza strada più lunga: ", self.game.longestStreetLength)
             print("Riga 63, lunghezza strada giocatore ", player.id, ": ",  player.longestStreet())
-            time.sleep(3)
+            # time.sleep(3)
 
         rlFlag = "RL" in player.strategy.name() and not onlyPassTurn
 
@@ -142,7 +142,7 @@ class GameController:
                     self.game.ctr.redo()
                 elif(event.ui_element == self.view.doButton):
                     action, thingNeeded, onlyPassTurn = player.bestAction()
-                    print("Riga 123 game controller: ", action)
+                    # print("Riga 123 game controller: ", action)
                     self.executeWithDeltaReward(player, action, thingNeeded, onlyPassTurn) 
                 elif(event.ui_element == self.view.stack.scroll_bar.bottom_button):
                     self.view.stack.scroll_bar.set_scroll_from_start_percentage(self.view.stack.scroll_bar.start_percentage+0.1)

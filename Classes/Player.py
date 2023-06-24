@@ -300,55 +300,62 @@ class Player:
     def victoryPointsModification(self, points):
         self._victoryPoints += points
 
-    def connectedPlacesToPlace(self, place):
+    def isLeaf(self, place): #  Per il Jack del futuro: non è errato, richiede un po' di ragionamento
         streetCounter = 0
         for street in self.ownedStreets:
             if(place in street):
                 streetCounter+=1
-        return streetCounter
-
-    def isLeaf(self, place): #  Per il Jack del futuro: non è errato, richiede un po' di ragionamento
-        return self.connectedPlacesToPlace(place)==1 or self.connectedPlacesToPlace(place)==3 # se == 3 allora si trova in un punto ciclico.
+        if(streetCounter == 1):
+            return True
+        return False
     
-    def findLeaves(self):
-        leaves = []
+    def isTriple(self, place):
+        streetCounter = 0
+        for street in self.ownedStreets:
+            if(place in street):
+                streetCounter+=1
+        if(streetCounter == 3):
+            return True
+    
+    def findStartingPoints(self):
+        startingPoints = []
         for edge in self.ownedStreets:
             p1, p2 = edge
-            if self.isLeaf(p1) and p1 not in leaves:
-                leaves.append(p1)
-            if self.isLeaf(p2) and p2 not in leaves:
-                leaves.append(p2)
-        return leaves
+            if (self.isLeaf(p1) or self.isTriple(p1)) and p1 not in startingPoints:
+                startingPoints.append(p1)
+            if (self.isLeaf(p2) or self.isTriple(p2)) and p2 not in startingPoints:
+                startingPoints.append(p2)
+        return startingPoints
     
-    def longestStreetStartingFrom(self, place, starting, visited):
-        if(starting):
-            visited = []
-        maxLength = 0
-        toCheck = []
+    def pathStartingFrom(self, place, path):
+        maxLength = len(path)
+        longestPath = path.copy()
+        newPath = path.copy()
+        length = 0
         for edge in self.ownedStreets:
-            if(place in edge and edge not in visited):
-                toCheck.append(edge)
-                visited.append(edge)
-
-        for edge in toCheck:
             p1, p2 = edge
-            if(p1 != place):
-                length = self.longestStreetStartingFrom(p1, False, visited)
-            elif(p2 != place):
-                length = self.longestStreetStartingFrom(p2, False, visited)
-
-            if(length > maxLength):
-                maxLength = length
-
-        return 1 + maxLength
+            if(place in edge and edge not in path):
+                if(p1 == place):
+                    newPath.append(edge)
+                    newPath, length = self.pathStartingFrom(p2, newPath)
+                else:
+                    newPath.append(edge)
+                    newPath, length = self.pathStartingFrom(p1, newPath)
+                if(length > maxLength):
+                    maxLength = length
+                    longestPath = newPath.copy()
+        return longestPath, len(longestPath)
 
     def longestStreet(self):
-        leaves = self.findLeaves()
+        leaves = self.findStartingPoints()
+        # print("Riga 342 player, player id ", self.id, "number of owned streets: ", len(self.ownedStreets))
         maxLength = 0
         for leaf in leaves:
-            length = self.longestStreetStartingFrom(leaf, True, [])
+            longestPath, length = self.pathStartingFrom(leaf, [])
+            print(leaf)
             if(length > maxLength):
                 maxLength = length
+        print("Riga 355 player ", self.id, "longestPath: ", longestPath)
         return maxLength
 
 
