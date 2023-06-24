@@ -151,7 +151,7 @@ class Game:
     
     def longestStreetPlayer(self):
         maxLength = max([self.longestStreetLength, 4])
-        belonger = self.longestStreetPlayer()
+        belonger = self.longestStreetOwner
         for p in self.players:
             if(p.longestStreet() > maxLength):
                 belonger = p
