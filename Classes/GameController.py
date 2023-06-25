@@ -241,6 +241,7 @@ class GameController:
                             toReturn.append(player._victoryPoints)
                         if("RL" in player.strategy.name()):
                             player.strategy.epsDecay()
+                            print("("+str(player._victoryPoints), end=')', flush = True)
                     return toReturn
                 
                 if(self.game.actualTurn == 120): 
@@ -248,8 +249,8 @@ class GameController:
                     for player in self.game.players:
                         if(len(toReturn) < 2):
                             toReturn.append(player._victoryPoints)
-                        if("RL" in player.strategy.name()):
-                            print("("+str(player._victoryPoints), end=')', flush = True)
+                        # if("RL" in player.strategy.name()):
+                        #     print("("+str(player._victoryPoints), end=')', flush = True)
                             
 
                 
