@@ -309,7 +309,6 @@ def tradesToId(trade):
     if(trade[0] == "iron" and trade[1] == "sheep"):
         return 19
 
-
 def getActionId(command):
     if(command == commands.DiscardResourceCommand):
         return ForcedMoveTypes.DiscardResource

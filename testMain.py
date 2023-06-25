@@ -80,10 +80,10 @@ RANDOM_PLAYER = RandomPlayer()
 withGraphics = True
 
 # otherAgents = [EURISTIC_PLAYER, RANDOM_PLAYER, H_FF2_blue, H_GNN1_blue, H_GNN2_blue, O_FF1_blue, O_FF2_blue, O_GNN1_blue, O_GNN2_blue, H_FF1_green, H_FF2_green, H_GNN1_green, H_GNN2_green, O_FF1_green, O_FF2_green, O_GNN1_green, O_GNN2_green]
-examAgent = RandomPlayer()
-against = EURISTIC_PLAYER
+examAgent = O_GNN1_blue
+against = RandomPlayer()
 strategies = [examAgent, against] 
 gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
 gameCtrl.reset() 
 res = gameCtrl.playTurnamentGame()
-
+print(res)

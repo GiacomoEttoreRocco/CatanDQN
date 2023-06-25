@@ -129,7 +129,7 @@ class Player:
             availableActions.append(commands.UseKnightCommand)    
         if(self.monopolyCard >= 1 and not turnCardUsed):
             availableActions.append(commands.UseMonopolyCardCommand)
-        if(self.roadBuildingCard >= 1 and not turnCardUsed and self.nStreets < 14):
+        if(self.roadBuildingCard >= 1 and not turnCardUsed and self.nStreets < 14 and len(self.calculatePossibleStreets()) >= 2):
             availableActions.append(commands.UseRoadBuildingCardCommand)
         if(self.yearOfPlentyCard >= 1 and not turnCardUsed):
             availableActions.append(commands.UseYearOfPlentyCardCommand)
@@ -155,7 +155,7 @@ class Player:
             availableActions.append(TurnMoveTypes.UseKnight.value)
         if(self.monopolyCard >= 1 and not self.turnCardUsed):
             availableActions.append(TurnMoveTypes.UseMonopolyCard.value) 
-        if(self.roadBuildingCard >= 1 and not self.turnCardUsed and self.nStreets < 14):
+        if(self.roadBuildingCard >= 1 and not self.turnCardUsed and self.nStreets < 14 and len(self.calculatePossibleStreets()) >= 2):
             availableActions.append(TurnMoveTypes.UseRoadBuildingCard.value)
         if(self.yearOfPlentyCard >= 1 and not self.turnCardUsed):
             availableActions.append(TurnMoveTypes.UseYearOfPlentyCard.value)
