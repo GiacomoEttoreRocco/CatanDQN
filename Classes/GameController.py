@@ -128,7 +128,7 @@ class GameController:
                         player.strategy.tradeDQN.saveInMemory(previousState, tradesToId(thingNeeded), reward, self.game.getTotalState(player))
             # if("HIER" in player.strategy.name()):
         if(actionId.value == -1 or actionId.value == -3):
-                print("initial street")
+                # print("initial street")
                 comm, thingN = player.strategy.chooseParameters(commands.PlaceInitialStreetCommand, player)
                 self.executeWithDeltaReward(player, comm, thingN , onlyPassTurn)
 
