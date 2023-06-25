@@ -100,14 +100,14 @@ class GameController:
                     player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, reward, graph, glob)
                 if("HIER" in player.strategy.name()):
                     if(actionId.value == 2 or actionId.value == -6 or actionId.value == 8):
-                        # if(actionId.value != 2):
-                        #     print("Riga 140 GameCtrl. Hier, fai un fischio", actionId.value)
+                        if(actionId.value != 2):
+                            print("Initial choise STREET saved", actionId.value)
                         player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), reward, graph, glob)
                         # print("RIGA 97 GAME CONTROLLER: ", self.game.longest(player))
                         # time.sleep(5)
-                    if(actionId.value == 3 or actionId.value == -3 or actionId.value == -2):
-                        # if(actionId.value != 3):
-                        #     print("Riga 144 GameCtrl, Hier, fai un fischio", actionId.value)
+                    if(actionId.value == 3 or actionId.value == -3 or actionId.value == -1):
+                        if(actionId.value != 3):
+                            print("Initial choise COLONY saved.", actionId.value)
                         player.strategy.colonyDQN.saveInMemory(previousGraph, previousGlob, Board.Board().places.index(thingNeeded), reward, graph, glob)
                     if(actionId.value == 5): 
                         player.strategy.tradeDQN.saveInMemory(previousGraph, previousGlob, tradesToId(thingNeeded), reward, graph, glob)
