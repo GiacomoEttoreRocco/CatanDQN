@@ -219,7 +219,9 @@ class GameController:
     lastId = 2
     # idEpisode = 0
 
-    def playGameForTraining(self):    
+    def playGameForTraining(self):   
+        toReturn = []
+
         if(self.withGraphics):
             GameView.GameView.setupAndDisplayBoard(self.view)
             GameView.GameView.setupPlaces(self.view)
@@ -234,8 +236,6 @@ class GameController:
                 playerTurn = self.game.players[self.game.actualTurn%self.game.nplayers]
                 self.decisionManager(playerTurn)
                 if(playerTurn._victoryPoints >= 10 or self.game.actualTurn >= 1000): 
-                    if(len(toReturn) < 2):
-                        toReturn = []
                     for player in self.game.players:
                         if(len(toReturn) < 2):
                             toReturn.append(player._victoryPoints)
@@ -245,7 +245,6 @@ class GameController:
                     return toReturn
                 
                 if(self.game.actualTurn == 120): 
-                    toReturn = []
                     for player in self.game.players:
                         if(len(toReturn) < 2):
                             toReturn.append(player._victoryPoints)
