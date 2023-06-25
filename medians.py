@@ -4,12 +4,14 @@ import numpy as np
 import csv
 import statistics
 
-csv_filesEurVsRan = ["csvFolder/EurVsRan/results{}.csv".format(i) for i in range(1, 11)]
-csv_filesHierGnnVsRan = ["csvFolder/HierGnnVsRan/results{}.csv".format(i) for i in range(1, 11)]
-csv_filesHierFFVsRan = ["csvFolder/HierFFVsRan/results{}.csv".format(i) for i in range(1, 10)]
-csv_filesOrchGnnVsRan = ["csvFolder/OrchGnnVsRan/results{}.csv".format(i) for i in range(1, 11)]
-csv_filesOrchFFVsRan = ["csvFolder/OrchFFVsRan/results{}.csv".format(i) for i in range(1, 11)]
-csv_filesRanVsRan = ["csvFolder/RanVsRan/results{}.csv".format(i) for i in range(1, 11)]
+number_of_runs = 5
+
+csv_filesEurVsRan = ["csvFolder/EurVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
+csv_filesHierGnnVsRan = ["csvFolder/HierGnnVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
+csv_filesHierFFVsRan = ["csvFolder/HierFFVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
+csv_filesOrchGnnVsRan = ["csvFolder/OrchGnnVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
+csv_filesOrchFFVsRan = ["csvFolder/OrchFFVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
+csv_filesRanVsRan = ["csvFolder/RanVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
 
 
 # csv_filesRanVsEur = ["csvFolder/RanVsEur/results{}.csv".format(i) for i in range(1, 11)]

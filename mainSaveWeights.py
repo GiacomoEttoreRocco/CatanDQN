@@ -54,7 +54,7 @@ def trainAndSaveWeights(outFor, inFor, agent1, agent2, nameOfTheFolder):
     gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
     for seed in range(1, outFor):
         winrates = [0,0]
-        # print("\nStarting. Eps should be 1: ", agent1.getEps(), "\n") 
+        print("\nStarting. Eps should be 1: ", agent1.getEps(), "\n") 
         saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/"+nameOfTheFolder+"/results"+str(seed)+".csv")
         for i in range(0, inFor):
             finalPoints = gameCtrl.playGameForTraining()
@@ -66,9 +66,32 @@ def trainAndSaveWeights(outFor, inFor, agent1, agent2, nameOfTheFolder):
                 winrates[1]+=1
             gameCtrl.reset()
         # print("Winrates: ", winrates)
-        # print("\nDefinitely updated, final eps: ", agent1.getEps(), flush = True)
-        # agent1.saveWeights("Weights/"+nameOfTheFolder+"/weights"+str(seed))
+        print("\nDefinitely updated, final eps: ", agent1.getEps(), flush = True)
+        agent1.saveWeights("Weights/"+nameOfTheFolder+"/weights"+str(seed))
         agent1.__init__(1)
+        # rlStrategyFfHier = ReinforcementLearningStrategyFfHier(1)
+        strategies = [agent1, agent2] 
+        gameCtrl.resetAndResetStrategies(strategies)
+
+
+def randomAndEuristic(outFor, inFor, agent1, agent2, nameOfTheFolder):
+    strategies = [agent1, agent2] #, rEuristic]
+    withGraphics = False # True    
+    idEpisode = 0
+    gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
+    for seed in range(1, outFor):
+        winrates = [0,0]
+        saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/"+nameOfTheFolder+"/results"+str(seed)+".csv")
+        for i in range(0, inFor):
+            finalPoints = gameCtrl.playGameForTraining()
+            print(finalPoints[0], end=' ', flush = True)
+            saveInCsv(finalPoints, "csvFolder/"+nameOfTheFolder+"/results"+str(seed)+".csv")
+            if(finalPoints[0] > finalPoints[1]):
+                winrates[0]+=1
+            else:
+                winrates[1]+=1
+            gameCtrl.reset()
+        # print("Winrates: ", winrates)
         # rlStrategyFfHier = ReinforcementLearningStrategyFfHier(1)
         strategies = [agent1, agent2] 
         gameCtrl.resetAndResetStrategies(strategies)
@@ -90,9 +113,9 @@ if __name__ == '__main__':
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnn(1), RandomPlayer(), "OrchGnnVsRan")
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnn(1), EuristicPlayer(), "OrchGnnVsEur")
 
-    trainAndSaveWeights(outFor, inFor, RandomPlayer(), RandomPlayer(), "RanVsRan")
-    trainAndSaveWeights(outFor, inFor, EuristicPlayer(), RandomPlayer(), "EurVsRan")
+    randomAndEuristic(outFor, inFor, RandomPlayer(), RandomPlayer(), "RanVsRan")
+    randomAndEuristic(outFor, inFor, EuristicPlayer(), RandomPlayer(), "EurVsRan")
 
-    trainAndSaveWeights(outFor, inFor, EuristicPlayer(), EuristicPlayer(), "EurVsEur")
-    trainAndSaveWeights(outFor, inFor, RandomPlayer(), EuristicPlayer(), "RanVsEur")
+    randomAndEuristic(outFor, inFor, EuristicPlayer(), EuristicPlayer(), "EurVsEur")
+    randomAndEuristic(outFor, inFor, RandomPlayer(), EuristicPlayer(), "RanVsEur")
 
