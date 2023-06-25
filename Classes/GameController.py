@@ -234,7 +234,8 @@ class GameController:
                 playerTurn = self.game.players[self.game.actualTurn%self.game.nplayers]
                 self.decisionManager(playerTurn)
                 if(playerTurn._victoryPoints >= 10 or self.game.actualTurn >= 1000): 
-                    toReturn = []
+                    if(len(toReturn) < 2):
+                        toReturn = []
                     for player in self.game.players:
                         if(len(toReturn) < 2):
                             toReturn.append(player._victoryPoints)
