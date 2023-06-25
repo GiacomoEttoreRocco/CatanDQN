@@ -352,6 +352,7 @@ class PassTurnCommand:
 class PlaceFreeStreetCommand:
     player: Player
     edge: tuple()
+    
     def execute(self):
         Board.Board().edges[self.edge] = self.player.id
         self.player.nStreets+=1
@@ -371,15 +372,22 @@ class PlaceFreeStreetCommand:
 class PlaceInitialStreetCommand:
     player: Player
     edge: tuple()
+    actions: list[Action] = field(default_factory=list)
+
     def execute(self):
         Board.Board().edges[self.edge] = self.player.id
         self.player.nStreets+=1
         self.player.ownedStreets.append(self.edge)
+        tmp = DefaultPassTurnCommand(self.player)
+        self.actions.append(tmp)
+        tmp.execute()
 
     def undo(self):
         Board.Board().edges[self.edge] = 0
         self.player.nStreets-=1
         del self.player.ownedStreets[-1]
+        for action in reversed(self.actions):
+            action.undo()
 
     def redo(self):
         self.execute()
@@ -481,14 +489,14 @@ class FirstChoiseCommand:
         self.actions.append(tmp)
         tmp.execute()
         # print("Res: ", self.player.strategy.chooseParameters(PlaceInitialStreetCommand, self.player))
-        _, edgeChoosen = self.player.strategy.chooseParameters(PlaceInitialStreetCommand, self.player)
+        # _, edgeChoosen = self.player.strategy.chooseParameters(PlaceInitialStreetCommand, self.player)
         # print("475 commands: ",edgeChoosen)
-        tmp = PlaceInitialStreetCommand(self.player, edgeChoosen)
-        self.actions.append(tmp)
-        tmp.execute()
-        tmp = DefaultPassTurnCommand(self.player)
-        self.actions.append(tmp)
-        tmp.execute()        
+        # tmp = PlaceInitialStreetCommand(self.player, edgeChoosen)
+        # self.actions.append(tmp)
+        # tmp.execute()
+        # tmp = DefaultPassTurnCommand(self.player)
+        # self.actions.append(tmp)
+        # tmp.execute()        
         
     def undo(self):
         for action in reversed(self.actions):
@@ -511,14 +519,14 @@ class SecondChoiseCommand:
     def execute(self):
         tmp = PlaceSecondColonyCommand(self.player, self.placeChoosen)
         self.actions.append(tmp)
-        tmp.execute()
-        _, edgeChoosen = self.player.strategy.chooseParameters(PlaceInitialStreetCommand, self.player)
-        tmp = PlaceInitialStreetCommand(self.player, edgeChoosen)
-        self.actions.append(tmp)
-        tmp.execute()
-        tmp = DefaultPassTurnCommand(self.player)
-        self.actions.append(tmp)
-        tmp.execute()
+        # tmp.execute()
+        # _, edgeChoosen = self.player.strategy.chooseParameters(PlaceInitialStreetCommand, self.player)
+        # tmp = PlaceInitialStreetCommand(self.player, edgeChoosen)
+        # self.actions.append(tmp)
+        # tmp.execute()
+        # tmp = DefaultPassTurnCommand(self.player)
+        # self.actions.append(tmp)
+        # tmp.execute()
         
     def undo(self):
         for action in reversed(self.actions):
