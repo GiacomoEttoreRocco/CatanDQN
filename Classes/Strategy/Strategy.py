@@ -50,7 +50,7 @@ class Strategy:
             #             candidateEdge = edge
             #     return max, candidateEdge
 
-            # if(action == commands.PlaceInitialColonyCommand or action == commands.FirstChoiseCommand or action == commands. or action == commands.PlaceSecondColonyCommand):
+            # if(action == commands.PlaceInitialColonyCommand or action == commands.d or action == commands. or action == commands.PlaceSecondColonyCommand):
             #     possibleColony = player.calculatePossibleInitialColony()
             #     candidateColony = None
             #     max = -1

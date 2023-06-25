@@ -59,8 +59,6 @@ class ReinforcementLearningStrategyGnnHier(StrategyEuristic):
             return commands.DiscardResourceCommand, self.euristicDiscardResource(player)
         
         elif(action == commands.PlaceInitialColonyCommand):
-            # print("InitialFIRSTChoice")
-            # return commands.FirstChoiseCommand, self.euristicInitialFirstMove(player), None
             return commands.PlaceInitialColonyCommand, self.DQNPlaceInitialColony(player), None
 
         elif(action == commands.PlaceInitialStreetCommand):

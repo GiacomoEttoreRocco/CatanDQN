@@ -12,9 +12,9 @@
 
 #     def bestAction(self, player):
 #         if(player.game.actualTurn<player.game.nplayers):
-#             actions = [commands.FirstChoiseCommand]
+#             actions = [commands.]
 #         elif(player.game.actualTurn<player.game.nplayers*2):
-#             actions = [commands.SecondChoiseCommand]
+#             actions = [commands.]
 #         else:
 #             actions = player.availableActions(player.turnCardUsed)
 #         max = -1
