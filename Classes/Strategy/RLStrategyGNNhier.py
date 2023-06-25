@@ -65,7 +65,7 @@ class ReinforcementLearningStrategyGnnHier(StrategyEuristic):
 
         elif(action == commands.PlaceInitialStreetCommand):
             # print("Initial STREET Choice")
-            print("quack")
+            # print("quack")
             return commands.PlaceInitialStreetCommand, self.DQNPlaceInitialStreet(player)
 
         elif(action == commands.SecondChoiseCommand):
@@ -127,14 +127,11 @@ class ReinforcementLearningStrategyGnnHier(StrategyEuristic):
         return list(Board.Board().edges.keys())[bestStreet]
     
     def DQNPlaceInitialStreet(self, player):
-        # print("Specialized street")
-        # availableStreets = player.calculatePossibleStreets()
         availableStreetsId = [list(Board.Board().edges.keys()).index(edge) for edge in player.calculatePossibleInitialStreets()]
 
         graph = Board.Board().boardStateGraph(player)
         glob = player.globalFeaturesToTensor()
         bestStreet = self.streetDQN.step(graph, glob, availableStreetsId, self.macroDQN)
-        # print(bestStreet)
         return list(Board.Board().edges.keys())[bestStreet]
     
     def DQNPlaceColony(self, player):
