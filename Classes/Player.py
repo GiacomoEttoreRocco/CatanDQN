@@ -39,7 +39,6 @@ class Player:
         self.resources = {"wood" : 0, "clay" : 0, "crop": 0, "sheep": 0, "iron": 0}
         self.ownedHarbors = []
         # for RL stuff
-        self.reward = 0
 
     def __eq__(self, other):
         return self.id == other.id

@@ -85,52 +85,46 @@ class GameController:
         #     print("RIGA 62 GAME CONTROLLER, lunghezza strada più lunga: ", self.game.longestStreetLength)
         #     print("Riga 63, lunghezza strada giocatore ", player.id, ": ",  player.longestStreet())
 ##################
-        # player.reward = player._victoryPoints - prevPoints
-        player.reward = player._victoryPoints/self.game.actualTurn
+        reward = player._victoryPoints
 
         if(player._victoryPoints >= 10):
-            # print("winning reward added")
-            player.reward = 100
-
-        if(player._victoryPoints == 2 and self.game.actualTurn > 50):
-            # print("penality reward added")
-            player.reward = -1
+            reward = reward*2
 
         if(rlFlag): 
             graph = Board.Board().boardStateGraph(player)
             glob = player.globalFeaturesToTensor()
-            # print("Riga 72, game controller: ", player.reward)
+            # print("Riga 72, game controller: ", reward)
 
             if("GNN" in player.strategy.name()):
                 if(actionId.value > 0):
-                    player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, player.reward, graph, glob)
+                    player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, reward, graph, glob)
                 if("HIER" in player.strategy.name()):
                     if(actionId.value == 2 or actionId.value == -6 or actionId.value == 8):
                         # if(actionId.value != 2):
                         #     print("Riga 140 GameCtrl. Hier, fai un fischio", actionId.value)
-                        player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player.reward, graph, glob)
+                        player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), reward, graph, glob)
                         # print("RIGA 97 GAME CONTROLLER: ", self.game.longest(player))
                         # time.sleep(5)
                     if(actionId.value == 3 or actionId.value == -3 or actionId.value == -2):
                         # if(actionId.value != 3):
                         #     print("Riga 144 GameCtrl, Hier, fai un fischio", actionId.value)
-                        player.strategy.colonyDQN.saveInMemory(previousGraph, previousGlob, Board.Board().places.index(thingNeeded), player.reward, graph, glob)
+                        player.strategy.colonyDQN.saveInMemory(previousGraph, previousGlob, Board.Board().places.index(thingNeeded), reward, graph, glob)
                     if(actionId.value == 5): 
-                        player.strategy.tradeDQN.saveInMemory(previousGraph, previousGlob, tradesToId(thingNeeded), player.reward, graph, glob)
+                        player.strategy.tradeDQN.saveInMemory(previousGraph, previousGlob, tradesToId(thingNeeded), reward, graph, glob)
             else:
                 if(actionId.value > 0):
-                    player.strategy.macroDQN.saveInMemory(previousState, actionId.value, player.reward, self.game.getTotalState(player))
+                    player.strategy.macroDQN.saveInMemory(previousState, actionId.value, reward, self.game.getTotalState(player))
                 if("HIER" in player.strategy.name()):
                     if(actionId.value == 2 or actionId.value == -6 or actionId.value == 8):
                         # if(actionId.value != 2):
                         #     print("Riga 154 GameCtrl, macro, fai un fischio", actionId.value)
-                        player.strategy.streetDQN.saveInMemory(previousState, list(Board.Board().edges.keys()).index(thingNeeded), player.reward, self.game.getTotalState(player))
+                        player.strategy.streetDQN.saveInMemory(previousState, list(Board.Board().edges.keys()).index(thingNeeded), reward, self.game.getTotalState(player))
                     if(actionId.value == 3 or actionId.value == -3 or actionId.value == -2):
                         # if(actionId.value != 3):
                         #     print("Riga 158 GameCtrl, macro, fai un fischio", actionId.value)
-                        player.strategy.colonyDQN.saveInMemory(previousState, Board.Board().places.index(thingNeeded), player.reward, self.game.getTotalState(player))
+                        player.strategy.colonyDQN.saveInMemory(previousState, Board.Board().places.index(thingNeeded), reward, self.game.getTotalState(player))
                     if(actionId.value == 5): 
-                        player.strategy.tradeDQN.saveInMemory(previousState, tradesToId(thingNeeded), player.reward, self.game.getTotalState(player))
+                        player.strategy.tradeDQN.saveInMemory(previousState, tradesToId(thingNeeded), reward, self.game.getTotalState(player))
 
                 
     def decisionManagerGUI(self, player):
