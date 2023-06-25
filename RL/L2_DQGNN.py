@@ -18,7 +18,7 @@ class L2DQGNNagent():
         self.BATCH_SIZE = 64 #16 # 256
         self.GAMMA = 0.99
         self.EPS = eps
-        self.TAU = 0.05 # 0.005
+        self.TAU = 0.005 # 0.005
         self.LearningRate = 1e-3
         self.device = device
 
@@ -31,7 +31,7 @@ class L2DQGNNagent():
         self.memory = ReplayMemory(1000)
 
         # self.decay = 0.997
-        self.decay = 0.998
+        self.decay = 0.999
 
 
     def epsDecay(self):
