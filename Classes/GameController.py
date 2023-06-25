@@ -66,18 +66,16 @@ class GameController:
             player.reset()
 
     def executeWithDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
-        print("RIGA 69 GAMECONTROLLER ", action)
-
+        # print("RIGA 69 GAMECONTROLLER ", action)
+        actionId = getActionId(action)
         rlFlag = "RL" in player.strategy.name() and not onlyPassTurn
 
         if(rlFlag): 
             if("GNN" in player.strategy.name()):
                 previousGraph = Board.Board().boardStateGraph(player)
                 previousGlob = player.globalFeaturesToTensor()
-                actionId = getActionId(action)
             else:
                 previousState = self.game.getTotalState(player)
-                actionId = getActionId(action)
 
         self.game.ctr.execute(action(player, thingNeeded))
 
@@ -101,13 +99,14 @@ class GameController:
                 if(actionId.value > 0):
                     player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, reward, graph, glob)
                 if("HIER" in player.strategy.name()):
-                    if(actionId.value == 2 or actionId.value == -6 or actionId.value == 8):
-                        if(actionId.value != 2):
-                            print("Initial choise STREET saved", actionId.value)
+                    if(actionId.value == 2 or actionId.value == -6 or actionId.value == -2 or actionId.value == 8):
+                        # print("Ma arrivi qua")
+                        # if(actionId.value != 2):
+                            # print("Initial choise STREET saved", actionId.value)
                         player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), reward, graph, glob)
                         # print("RIGA 97 GAME CONTROLLER: ", self.game.longest(player))
                         # time.sleep(5)
-                    if(actionId.value == 3 or actionId.value == -3 or actionId.value == -1):
+                    if(actionId.value == 3 or actionId.value == -3 or actionId.value == -1): 
                         # if(actionId.value != 3):
                         #     print("Initial choise COLONY saved.", actionId.value)
                         player.strategy.colonyDQN.saveInMemory(previousGraph, previousGlob, Board.Board().places.index(thingNeeded), reward, graph, glob)
