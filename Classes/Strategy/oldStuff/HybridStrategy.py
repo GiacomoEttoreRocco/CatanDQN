@@ -12,9 +12,9 @@
     
 #     def bestAction(self, player):
 #         if(player.game.actualTurn<player.game.nplayers):
-#             actions = [commands.FirstChoiseCommand]
+#             actions = [commands.]
 #         elif(player.game.actualTurn<player.game.nplayers*2):
-#             actions = [commands.SecondChoiseCommand]
+#             actions = [commands.]
 #         else:
 #             actions = player.availableActions(player.turnCardUsed)
 #         max = -1
@@ -34,7 +34,7 @@
     
 #     def actionValue(self, player, action, thingNeeded = None):
 #         ctr = controller.ActionController()
-#         if(action == commands.FirstChoiseCommand or action == commands.SecondChoiseCommand or action == commands.PlaceInitialStreetCommand or action == commands.PlaceInitialColonyCommand or action == commands.PlaceSecondColonyCommand):
+#         if(action == commands. or action == commands.d or action == commands.PlaceInitialStreetCommand or action == commands.PlaceInitialColonyCommand or action == commands.PlaceSecondColonyCommand):
 #             ctr.execute(action(player, thingNeeded)) 
 #             # toRet = Gnn.Gnn().evaluatePositionForPlayer(player)
 #             toRet = Gnn().evaluatePositionForPlayer(player)

@@ -30,17 +30,17 @@ class StrategyEuristic:
             # print("Discarding resource")
             return commands.DiscardResourceCommand, self.euristicDiscardResource(player)
         
-        elif(action == commands.FirstChoiseCommand):
+        elif(action == commands.PlaceInitialColonyCommand):
             # print("InitialFIRSTChoice")
-            return commands.FirstChoiseCommand, self.euristicInitialFirstMove(player), None
+            return commands.PlaceInitialColonyCommand, self.euristicInitialFirstMove(player), None
         
         elif(action == commands.PlaceInitialStreetCommand):
             # print("Initial STREET Choice")
             return commands.PlaceInitialStreetCommand, self.euristicPlaceInitialStreet(player)
 
-        elif(action == commands.SecondChoiseCommand):
+        elif(action == commands.PlaceSecondColonyCommand):
             # print("Initial SECOND choice")
-            return commands.SecondChoiseCommand, self.euristicInitialSecondMove(player), None
+            return commands.PlaceSecondColonyCommand, self.euristicInitialSecondMove(player), None
         
         elif(action == commands.PassTurnCommand):
             # print("Pass turn")

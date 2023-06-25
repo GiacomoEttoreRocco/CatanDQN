@@ -30,17 +30,17 @@ class StrategyRandom:
             # print("Discarding resource")
             return commands.DiscardResourceCommand, self.randomicDiscardResource(player)
         
-        elif(action == commands.FirstChoiseCommand):
+        elif(action == commands.PlaceInitialColonyCommand):
             # print("InitialFIRSTChoice")
-            return commands.FirstChoiseCommand, self.randomicInitialFirstMove(player), None
+            return commands.PlaceInitialColonyCommand, self.randomicInitialFirstMove(player), None
         
         elif(action == commands.PlaceInitialStreetCommand):
             # print("Initial STREET Choice")
             return commands.PlaceInitialStreetCommand, self.randomicPlaceInitialStreet(player)
 
-        elif(action == commands.SecondChoiseCommand):
+        elif(action == commands.PlaceSecondColonyCommand):
             # print("Initial SECOND choice")
-            return commands.SecondChoiseCommand, self.randomicInitialSecondMove(player), None
+            return commands.PlaceSecondColonyCommand, self.randomicInitialSecondMove(player), None
         
         elif(action == commands.PassTurnCommand):
             # print("Pass turn")

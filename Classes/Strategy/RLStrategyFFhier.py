@@ -31,9 +31,9 @@ class ReinforcementLearningStrategyFfHier(StrategyEuristic):
 
     def bestAction(self, player):  #, previousReward):
         if(player.game.actualTurn<player.game.nplayers):
-            return self.chooseParameters(commands.FirstChoiseCommand, player)
+            return self.chooseParameters(commands.PlaceInitialColonyCommand, player)
         elif(player.game.actualTurn<player.game.nplayers*2):
-            return self.chooseParameters(commands.SecondChoiseCommand, player)
+            return self.chooseParameters(commands.PlaceSecondColonyCommand, player)
         else:
             # graph = Board.Board().boardStateGraph(player)
             boardFeatures = Board.Board().boardStateTensor(player).unsqueeze(dim=0)
@@ -68,19 +68,15 @@ class ReinforcementLearningStrategyFfHier(StrategyEuristic):
             # print("Discarding resource")
             return commands.DiscardResourceCommand, self.euristicDiscardResource(player)
         
-        elif(action == commands.FirstChoiseCommand):
-            # print("InitialFIRSTChoice")
-            # return commands.FirstChoiseCommand, self.euristicInitialFirstMove(player), None
-            return commands.FirstChoiseCommand, self.DQNFFPlaceInitialColony(player), None
+        elif(action == commands.PlaceInitialColonyCommand):
+            return commands.PlaceInitialColonyCommand, self.DQNFFPlaceInitialColony(player), None
 
         elif(action == commands.PlaceInitialStreetCommand):
             # print("Initial STREET Choice")
             return commands.PlaceInitialStreetCommand, self.DQNFFPlaceInitialStreet(player)
 
-        elif(action == commands.SecondChoiseCommand):
-            # print("Initial SECOND choice")
-            # return commands.SecondChoiseCommand, self.euristicInitialSecondMove(player), None
-            return commands.SecondChoiseCommand, self.DQNFFPlaceInitialColony(player), None
+        elif(action == commands.PlaceSecondColonyCommand):
+            return commands.PlaceSecondColonyCommand, self.DQNFFPlaceInitialColony(player), None
         
         elif(action == commands.PassTurnCommand):
             # print("Pass turn")

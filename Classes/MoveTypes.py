@@ -32,11 +32,11 @@ def idToCommand(id):
     elif id == -4:
         return commands.DiscardResourceCommand
     elif id == -3:
-        return commands.FirstChoiseCommand
+        return commands.PlaceInitialColonyCommand
     elif id == -2:
         return commands.PlaceInitialStreetCommand
     elif id == -1:
-        return commands.SecondChoiseCommand
+        return commands.PlaceSecondColonyCommand
     elif id == 0:
         return commands.PassTurnCommand
     elif id == 1:

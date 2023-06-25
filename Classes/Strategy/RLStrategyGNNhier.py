@@ -32,9 +32,9 @@ class ReinforcementLearningStrategyGnnHier(StrategyEuristic):
 
     def bestAction(self, player):  #, previousReward):
         if(player.game.actualTurn<player.game.nplayers):
-            return self.chooseParameters(commands.FirstChoiseCommand, player)
+            return self.chooseParameters(commands.PlaceInitialColonyCommand, player)
         elif(player.game.actualTurn<player.game.nplayers*2):
-            return self.chooseParameters(commands.SecondChoiseCommand, player)
+            return self.chooseParameters(commands.PlaceSecondColonyCommand, player)
         else:
             graph = Board.Board().boardStateGraph(player)
             glob = player.globalFeaturesToTensor()
@@ -58,20 +58,18 @@ class ReinforcementLearningStrategyGnnHier(StrategyEuristic):
             # print("Discarding resource")
             return commands.DiscardResourceCommand, self.euristicDiscardResource(player)
         
-        elif(action == commands.FirstChoiseCommand):
+        elif(action == commands.PlaceInitialColonyCommand):
             # print("InitialFIRSTChoice")
             # return commands.FirstChoiseCommand, self.euristicInitialFirstMove(player), None
-            return commands.FirstChoiseCommand, self.DQNPlaceInitialColony(player), None
+            return commands.PlaceInitialColonyCommand, self.DQNPlaceInitialColony(player), None
 
         elif(action == commands.PlaceInitialStreetCommand):
             # print("Initial STREET Choice")
             # print("quack")
             return commands.PlaceInitialStreetCommand, self.DQNPlaceInitialStreet(player)
 
-        elif(action == commands.SecondChoiseCommand):
-            # print("Initial SECOND choice")
-            # return commands.SecondChoiseCommand, self.euristicInitialSecondMove(player), None
-            return commands.SecondChoiseCommand, self.DQNPlaceInitialColony(player), None
+        elif(action == commands.PlaceSecondColonyCommand):
+            return commands.PlaceSecondColonyCommand, self.DQNPlaceInitialColony(player), None
         
         elif(action == commands.PassTurnCommand):
             # print("Pass turn")

@@ -82,7 +82,7 @@ HGNN_3000.loadWeights("Weights/HighTrainedHierGnn/weights0-3000")
 examAgent = HGNN_3000
 against = RandomPlayer()
 strategies = [examAgent, against] 
-gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
+gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=False)
 gameCtrl.reset() 
 res = gameCtrl.playTurnamentGame()
 print(res)

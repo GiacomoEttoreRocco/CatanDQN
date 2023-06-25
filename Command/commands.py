@@ -477,68 +477,6 @@ class PlaceSecondColonyCommand:
         for action in self.actions:
             s+=f'\n\t{action}'
         return s
-    
-@dataclass
-class FirstChoiseCommand:
-    player: Player
-    placeChoosen: cg.Place
-    actions: list[Action] = field(default_factory=list)
-
-    def execute(self):
-        tmp = PlaceInitialColonyCommand(self.player, self.placeChoosen)
-        self.actions.append(tmp)
-        tmp.execute()
-        # print("Res: ", self.player.strategy.chooseParameters(PlaceInitialStreetCommand, self.player))
-        # _, edgeChoosen = self.player.strategy.chooseParameters(PlaceInitialStreetCommand, self.player)
-        # print("475 commands: ",edgeChoosen)
-        # tmp = PlaceInitialStreetCommand(self.player, edgeChoosen)
-        # self.actions.append(tmp)
-        # tmp.execute()
-        # tmp = DefaultPassTurnCommand(self.player)
-        # self.actions.append(tmp)
-        # tmp.execute()        
-        
-    def undo(self):
-        for action in reversed(self.actions):
-            action.undo()
-    def redo(self):
-        for action in self.actions:
-            action.redo()
-    def __repr__(self) -> str:
-        s = f'{self.__class__.__name__}'
-        for action in self.actions:
-            s+=f'\n\t{action}'
-        return s
-
-@dataclass
-class SecondChoiseCommand:
-    player: Player
-    placeChoosen: cg.Place
-    actions: list[Action] = field(default_factory=list)
-
-    def execute(self):
-        tmp = PlaceSecondColonyCommand(self.player, self.placeChoosen)
-        self.actions.append(tmp)
-        # tmp.execute()
-        # _, edgeChoosen = self.player.strategy.chooseParameters(PlaceInitialStreetCommand, self.player)
-        # tmp = PlaceInitialStreetCommand(self.player, edgeChoosen)
-        # self.actions.append(tmp)
-        # tmp.execute()
-        # tmp = DefaultPassTurnCommand(self.player)
-        # self.actions.append(tmp)
-        # tmp.execute()
-        
-    def undo(self):
-        for action in reversed(self.actions):
-            action.undo()
-    def redo(self):
-        for action in self.actions:
-            action.redo()
-    def __repr__(self) -> str:
-        s = f'{self.__class__.__name__}'
-        for action in self.actions:
-            s+=f'\n\t{action}'
-        return s
 
 @dataclass
 class CheckLongestStreetCommand:

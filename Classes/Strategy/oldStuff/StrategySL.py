@@ -51,7 +51,7 @@
 #                         # print(edge)
 #                 return max, candidateEdge
 
-#             if(action == commands.PlaceInitialColonyCommand or action == commands.FirstChoiseCommand or action == commands.SecondChoiseCommand or action == commands.PlaceSecondColonyCommand):
+#             if(action == commands.PlaceInitialColonyCommand or action == commands.FirstChoiseCommand or action == commands. or action == commands.PlaceSecondColonyCommand):
 #                 possibleColony = player.calculatePossibleInitialColonies()
 #                 candidateColony = None
 #                 max = -1

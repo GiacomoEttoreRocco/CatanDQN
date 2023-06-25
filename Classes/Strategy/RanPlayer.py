@@ -11,9 +11,9 @@ class RandomPlayer(StrategyRandom):
 
     def bestAction(self, player):  #, previousReward):
         if(player.game.actualTurn<player.game.nplayers):
-            return self.chooseParameters(commands.FirstChoiseCommand, player)
+            return self.chooseParameters(commands.PlaceInitialColonyCommand, player)
         elif(player.game.actualTurn<player.game.nplayers*2):
-            return self.chooseParameters(commands.SecondChoiseCommand, player)
+            return self.chooseParameters(commands.PlaceSecondColonyCommand, player)
         else:
             idActions = player.availableTurnActionsId()
             if(len(idActions) == 1 and idActions[0] == 0):

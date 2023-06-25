@@ -25,9 +25,9 @@ class ReinforcementLearningStrategyFf(StrategyEuristic):
 
     def bestAction(self, player):  #, previousReward):
         if(player.game.actualTurn<player.game.nplayers):
-            return self.chooseParameters(commands.FirstChoiseCommand, player)
+            return self.chooseParameters(commands.PlaceInitialColonyCommand, player)
         elif(player.game.actualTurn<player.game.nplayers*2):
-            return self.chooseParameters(commands.SecondChoiseCommand, player)
+            return self.chooseParameters(commands.PlaceSecondColonyCommand, player)
         else:
             # graph = Board.Board().boardStateGraph(player)
             boardFeatures = Board.Board().boardStateTensor(player).unsqueeze(dim=0)

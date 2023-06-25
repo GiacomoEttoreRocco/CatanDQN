@@ -66,6 +66,7 @@ class GameController:
             player.reset()
 
     def executeWithDeltaReward(self, player, action, thingNeeded, onlyPassTurn):
+        print("RIGA 69 GAMECONTROLLER ", action)
 
         rlFlag = "RL" in player.strategy.name() and not onlyPassTurn
 
@@ -126,10 +127,11 @@ class GameController:
                         player.strategy.colonyDQN.saveInMemory(previousState, Board.Board().places.index(thingNeeded), reward, self.game.getTotalState(player))
                     if(actionId.value == 5): 
                         player.strategy.tradeDQN.saveInMemory(previousState, tradesToId(thingNeeded), reward, self.game.getTotalState(player))
-            if("HIER" in player.strategy.name()):
-                if(actionId.value == -1 or actionId.value == -3):
-                        comm, thingN = player.strategy.chooseParameters(commands.PlaceInitialStreetCommand, player)
-                        self.executeWithDeltaReward(player, comm, thingN , onlyPassTurn)
+            # if("HIER" in player.strategy.name()):
+        if(actionId.value == -1 or actionId.value == -3):
+                print("initial street")
+                comm, thingN = player.strategy.chooseParameters(commands.PlaceInitialStreetCommand, player)
+                self.executeWithDeltaReward(player, comm, thingN , onlyPassTurn)
 
                 
     def decisionManagerGUI(self, player):
