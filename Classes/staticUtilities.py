@@ -316,14 +316,14 @@ def getActionId(command):
     elif(command == commands.UseRobberCommand):
         return ForcedMoveTypes.UseRobber
     
-    elif(command == commands.FirstChoiseCommand):
-        return InitialMoveTypes.InitialFirstChoice
+    elif(command == commands.PlaceInitialColonyCommand):
+        return InitialMoveTypes.InitialFirstColony
 
     elif(command == commands.PlaceInitialStreetCommand):
         return InitialMoveTypes.InitialStreetChoice
     
-    elif(command == commands.SecondChoiseCommand):
-        return InitialMoveTypes.InitialSecondChoice
+    elif(command == commands.PlaceSecondColonyCommand):
+        return InitialMoveTypes.InitialSecondColony
     
     elif(command == commands.PassTurnCommand):
         return TurnMoveTypes.PassTurn
