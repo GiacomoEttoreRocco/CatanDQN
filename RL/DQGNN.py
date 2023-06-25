@@ -133,6 +133,7 @@ class DQGNN(nn.Module):
     self.OutLayers = nn.Sequential(
         nn.Linear(54*4+globInputDim, 128),
         nn.ReLU(inplace=True),
+        nn.Dropout(p=0.2),
         nn.Linear(128, 128),
         nn.ReLU(inplace=True),
         nn.Linear(128, nActions)
