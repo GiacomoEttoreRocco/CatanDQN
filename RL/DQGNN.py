@@ -118,6 +118,7 @@ class DQGNN(nn.Module):
     self.Gnn = Sequential('x, edge_index, edge_attr', [
         (GraphConv(gnnInputDim, gnnHiddenDim), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True),
         (GraphConv(gnnHiddenDim, 4), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True), # (GCNConv(gnnHiddenDim, gnnOutputDim), 'x, edge_index, edge_attr -> x'), # nn.ReLU(inplace=True)
+        nn.Dropout(p=0.2) 
     ])
     
     self.GlobalLayers = nn.Sequential(
