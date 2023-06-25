@@ -67,7 +67,7 @@ def trainAndSaveWeights(outFor, inFor, agent1, agent2, nameOfTheFolder):
             gameCtrl.reset()
             if(i%100 == 0 and i!=0):
                 print("\nEps until now: ", agent1.getEps(), "\n")
-            if(1%1000 == 0 and i!=0):
+            if(i%1000 == 0 and i!=0):
                 agent1.saveWeights("Weights/"+nameOfTheFolder+"/weights"+str(seed)+"-"+str(i))
 
         # print("Winrates: ", winrates)
