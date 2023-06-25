@@ -98,8 +98,8 @@ def randomAndEuristic(outFor, inFor, agent1, agent2, nameOfTheFolder):
 
 if __name__ == '__main__':
         
-    outFor = 5
-    inFor = 500
+    outFor = 1
+    inFor = 2000
 
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), RandomPlayer(), "HierFFVsRan")
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), EuristicPlayer(), "HierFFVsEur")
@@ -107,8 +107,8 @@ if __name__ == '__main__':
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFf(1), RandomPlayer(), "OrchFFVsRan")
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFf(1), EuristicPlayer(), "OrchFFVsEur")
 
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(1), RandomPlayer(), "HierGnnVsRan")
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(1), EuristicPlayer(), "HierGnnVsEur")
+    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(1), RandomPlayer(), "HighTriainedHierGnn")
+    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(1), EuristicPlayer(), "HierGnnVsEur")
 
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnn(1), RandomPlayer(), "OrchGnnVsRan")
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnn(1), EuristicPlayer(), "OrchGnnVsEur")
@@ -119,3 +119,4 @@ if __name__ == '__main__':
     # randomAndEuristic(outFor, inFor, EuristicPlayer(), EuristicPlayer(), "EurVsEur")
     # randomAndEuristic(outFor, inFor, RandomPlayer(), EuristicPlayer(), "RanVsEur")
 
+# HighTriainedHierGnn
