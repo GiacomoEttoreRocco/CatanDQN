@@ -86,7 +86,9 @@ class L2DQNagent():
 
         with torch.no_grad():
             # expected_state_action_values = self.GAMMA * (self.target_net.forward(next_state).max(1)[0]* fatherDQN.target_net.forward(next_state).max(1)[0]) + reward_batch
-            expected_state_action_values = self.GAMMA * (self.target_net.forward(next_state).max(1)[0] + fatherDQN.target_net.forward(next_state).max(1)[0])/2 + reward_batch
+            # expected_state_action_values = self.GAMMA * (self.target_net.forward(next_state).max(1)[0] + fatherDQN.target_net.forward(next_state).max(1)[0])/2 + reward_batch
+            expected_state_action_values = self.GAMMA * fatherDQN.target_net.forward(next_state).max(1)[0] + reward_batch
+
             # print("Dimensione di expected_state_action_values:", expected_state_action_values.size()) # 16 x 16 
 
         state_action_values = self.policy_net.forward(state_batch).gather(1, action_batch)

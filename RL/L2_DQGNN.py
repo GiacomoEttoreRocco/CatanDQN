@@ -91,7 +91,9 @@ class L2DQGNNagent():
             # expected_state_action_values = self.GAMMA * (self.target_net.forward(next_graph, next_glob).max(1)[0]) + reward_batch
 
             # expected_state_action_values = self.GAMMA * (self.target_net.forward(next_graph, next_glob).max(1)[0] * fatherDQN.target_net.forward(next_graph, next_glob).max(1)[0]) + reward_batch
-            expected_state_action_values = self.GAMMA * (self.target_net.forward(next_graph, next_glob).max(1)[0] + fatherDQN.target_net.forward(next_graph, next_glob).max(1)[0])/2 + reward_batch
+            # expected_state_action_values = self.GAMMA * (self.target_net.forward(next_graph, next_glob).max(1)[0] + fatherDQN.target_net.forward(next_graph, next_glob).max(1)[0])/2 + reward_batch
+            expected_state_action_values = self.GAMMA * fatherDQN.target_net.forward(next_graph, next_glob).max(1)[0] + reward_batch
+
 
 
             ############################# Qui bisogna usare la target net sua o del DQN di livello superiore?
