@@ -131,14 +131,6 @@ class GameController:
         if(not self.speed and self.withGraphics):
             event = pygame.event.wait()
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                # if(event.ui_element == self.view.pureButton):
-                #     player.strategy = PureStrategy()
-                # elif(event.ui_element == self.view.priorityButton):
-                #     player.strategy = PriorityStrategy()
-                # elif(event.ui_element == self.view.hybridButton):
-                #     player.strategy = HybridStrategy()
-                # elif(event.ui_element == self.view.rlButton):
-                #     player.strategy = ReinforcementLearningStrategy()
                 if(event.ui_element == self.view.undoButton):
                     self.game.ctr.undo()
                 elif(event.ui_element == self.view.redoButton):
