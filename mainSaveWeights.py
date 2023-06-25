@@ -101,7 +101,7 @@ def randomAndEuristic(outFor, inFor, agent1, agent2, nameOfTheFolder):
 if __name__ == '__main__':
         
     outFor = 1
-    inFor = 2000
+    inFor = 2500
 
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), RandomPlayer(), "HierFFVsRan")
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), EuristicPlayer(), "HierFFVsEur")
