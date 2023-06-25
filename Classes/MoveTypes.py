@@ -20,9 +20,9 @@ class ForcedMoveTypes(Enum): # se sono forced non ha senso farle valutare dal DQ
     DiscardResource = -4
 
 class InitialMoveTypes(Enum): # idem
-    InitialFirstChoice = -3
+    InitialFirstColony = -3
     InitialStreetChoice = -2
-    InitialSecondChoice = -1
+    InitialSecondColony = -1
 
 def idToCommand(id):
     if id == -6:

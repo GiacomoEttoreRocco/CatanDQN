@@ -79,6 +79,7 @@ class GameController:
                 actionId = getActionId(action)
 
         self.game.ctr.execute(action(player, thingNeeded))
+
 ##################
         # actionId = getActionId(action)
         # if(actionId.value == 2 or actionId.value == -6 or actionId.value == 8):
@@ -106,8 +107,8 @@ class GameController:
                         # print("RIGA 97 GAME CONTROLLER: ", self.game.longest(player))
                         # time.sleep(5)
                     if(actionId.value == 3 or actionId.value == -3 or actionId.value == -1):
-                        if(actionId.value != 3):
-                            print("Initial choise COLONY saved.", actionId.value)
+                        # if(actionId.value != 3):
+                        #     print("Initial choise COLONY saved.", actionId.value)
                         player.strategy.colonyDQN.saveInMemory(previousGraph, previousGlob, Board.Board().places.index(thingNeeded), reward, graph, glob)
                     if(actionId.value == 5): 
                         player.strategy.tradeDQN.saveInMemory(previousGraph, previousGlob, tradesToId(thingNeeded), reward, graph, glob)
