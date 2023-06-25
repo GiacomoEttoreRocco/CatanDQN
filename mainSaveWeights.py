@@ -65,11 +65,14 @@ def trainAndSaveWeights(outFor, inFor, agent1, agent2, nameOfTheFolder):
             else:
                 winrates[1]+=1
             gameCtrl.reset()
-            if(i%100 == 0):
+            if(i%100 == 0 and i!=0):
                 print("\nEps until now: ", agent1.getEps(), "\n")
+            if(1%1000 == 0 and i!=0):
+                agent1.saveWeights("Weights/"+nameOfTheFolder+"/weights"+str(seed)+"-"+str(i))
+
         # print("Winrates: ", winrates)
         print("\nDefinitely updated, final eps: ", agent1.getEps(), flush = True)
-        agent1.saveWeights("Weights/"+nameOfTheFolder+"/weights"+str(seed))
+        agent1.saveWeights("Weights/"+nameOfTheFolder+"/weights"+str(seed)+"-3000")
         agent1.__init__(1)
         # rlStrategyFfHier = ReinforcementLearningStrategyFfHier(1)
         strategies = [agent1, agent2] 
@@ -101,7 +104,7 @@ def randomAndEuristic(outFor, inFor, agent1, agent2, nameOfTheFolder):
 if __name__ == '__main__':
         
     outFor = 1
-    inFor = 2500
+    inFor = 3000
 
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), RandomPlayer(), "HierFFVsRan")
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), EuristicPlayer(), "HierFFVsEur")
