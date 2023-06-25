@@ -65,7 +65,7 @@ def trainAndSaveWeights(outFor, inFor, agent1, agent2, nameOfTheFolder):
             else:
                 winrates[1]+=1
             gameCtrl.reset()
-            if(inFor%100 == 0):
+            if(i%100 == 0):
                 print("\nEps until now: ", agent1.getEps(), "\n")
         # print("Winrates: ", winrates)
         print("\nDefinitely updated, final eps: ", agent1.getEps(), flush = True)
