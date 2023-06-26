@@ -4,21 +4,21 @@ import numpy as np
 import csv
 import statistics
 
-number_of_runs = 5
+# number_of_runs = 5
 
-csv_filesEurVsRan = ["csvFolder/EurVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
-csv_filesHierGnnVsRan = ["csvFolder/HierGnnVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
-csv_filesHierFFVsRan = ["csvFolder/HierFFVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
-csv_filesOrchGnnVsRan = ["csvFolder/OrchGnnVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
-csv_filesOrchFFVsRan = ["csvFolder/OrchFFVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
-csv_filesRanVsRan = ["csvFolder/RanVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
+# csv_filesEurVsRan = ["csvFolder/EurVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
+# csv_filesHierGnnVsRan = ["csvFolder/HierGnnVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
+# csv_filesHierFFVsRan = ["csvFolder/HierFFVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
+# csv_filesOrchGnnVsRan = ["csvFolder/OrchGnnVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
+# csv_filesOrchFFVsRan = ["csvFolder/OrchFFVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
+# csv_filesRanVsRan = ["csvFolder/RanVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
 
-csv_filesEurVsEur = ["csvFolder/EurVsEur/results{}.csv".format(i) for i in range(1, number_of_runs)]
-csv_filesHierGnnVsEur = ["csvFolder/HierGnnVsEur/results{}.csv".format(i) for i in range(1, number_of_runs)]
-csv_filesHierFFVsEur = ["csvFolder/HierFFVsEur/results{}.csv".format(i) for i in range(1, number_of_runs)]
-csv_filesOrchGnnVsEur = ["csvFolder/OrchGnnVsEur/results{}.csv".format(i) for i in range(1, number_of_runs)]
-csv_filesOrchFFVsEur = ["csvFolder/OrchFFVsEur/results{}.csv".format(i) for i in range(1, number_of_runs)]
-csv_filesRanVsEur = ["csvFolder/RanVsEur/results{}.csv".format(i) for i in range(1, number_of_runs)]
+# csv_filesEurVsEur = ["csvFolder/EurVsEur/results{}.csv".format(i) for i in range(1, number_of_runs)]
+# csv_filesHierGnnVsEur = ["csvFolder/HierGnnVsEur/results{}.csv".format(i) for i in range(1, number_of_runs)]
+# csv_filesHierFFVsEur = ["csvFolder/HierFFVsEur/results{}.csv".format(i) for i in range(1, number_of_runs)]
+# csv_filesOrchGnnVsEur = ["csvFolder/OrchGnnVsEur/results{}.csv".format(i) for i in range(1, number_of_runs)]
+# csv_filesOrchFFVsEur = ["csvFolder/OrchFFVsEur/results{}.csv".format(i) for i in range(1, number_of_runs)]
+# csv_filesRanVsEur = ["csvFolder/RanVsEur/results{}.csv".format(i) for i in range(1, number_of_runs)]
 
 
 # csv_filesRanVsEur = ["csvFolder/RanVsEur/results{}.csv".format(i) for i in range(1, 11)]
@@ -188,13 +188,13 @@ def plot_experiment_results(mean_array, q1_array, q3_array, name):
 # csv_fileHigh = ["csvFolder/HighTrainedHierFF/results2.csv"]
 resumeValue = 50
 htFF = []
-csv_filesHighTrainedHierFF = ["csvFolder/HighTrainedHierFF/results{}.csv".format(i) for i in range(0, 5)]
+csv_filesHighTrainedHierFF = ["csvFolder/HierFF/results{}.csv".format(i) for i in range(0, 5)]
 
-for row in range(1, 3000):
+for row in range(1, 4000):
      x = getAllfirstElements(row, 0, csv_filesHighTrainedHierFF)
      htFF.append(x)
      
-plot_experiment_results(riassumi(calculateRowMeans(htFF), resumeValue), riassumi(calculateFirstQuartiles(htFF), resumeValue), riassumi(calculateThirdQuartiles(htFF), resumeValue), "OrchestratorFF")
+plot_experiment_results(riassumi(calculateRowMeans(htFF), resumeValue), riassumi(calculateFirstQuartiles(htFF), resumeValue), riassumi(calculateThirdQuartiles(htFF), resumeValue), "...")
 
 
 # with open("csvFolder/HighTrainedHierFF/results1.csv", 'r') as file:
