@@ -187,14 +187,24 @@ def plot_experiment_results(mean_array, q1_array, q3_array, name):
 # plt.show()
 # csv_fileHigh = ["csvFolder/HighTrainedHierFF/results2.csv"]
 resumeValue = 50
-htFF = []
-csv_filesHighTrainedHierFF = ["csvFolder/HierFF/results{}.csv".format(i) for i in range(0, 5)]
+hierValues = []
+ranValues = []
+csv_filesHierFF = ["csvFolder/HierFF/results{}.csv".format(i) for i in range(0, 5)]
+csv_filesRan = ["csvFolder/Ran/results{}.csv".format(i) for i in range(0, 5)]
+
+#     b = getAllfirstElements(row, 0, csv_filesRanVsEur)
+
 
 for row in range(1, 4000):
-     x = getAllfirstElements(row, 0, csv_filesHighTrainedHierFF)
-     htFF.append(x)
+     ran = getAllfirstElements(row, 0, csv_filesRan)
+     hff = getAllfirstElements(row, 0, csv_filesHierFF)
+     hierValues.append(hff)
+     ranValues.append(ran)
+
      
-plot_experiment_results(riassumi(calculateRowMeans(htFF), resumeValue), riassumi(calculateFirstQuartiles(htFF), resumeValue), riassumi(calculateThirdQuartiles(htFF), resumeValue), "...")
+plot_experiment_results(riassumi(calculateRowMeans(hierValues), resumeValue), riassumi(calculateFirstQuartiles(hierValues), resumeValue), riassumi(calculateThirdQuartiles(hierValues), resumeValue), "...")
+plot_experiment_results(riassumi(calculateRowMeans(ranValues), resumeValue), riassumi(calculateFirstQuartiles(ranValues), resumeValue), riassumi(calculateThirdQuartiles(ranValues), resumeValue), "...")
+
 
 
 # with open("csvFolder/HighTrainedHierFF/results1.csv", 'r') as file:
