@@ -88,7 +88,7 @@ class GameController:
         reward = player._victoryPoints
 
         if(player._victoryPoints >= 10):
-            reward = 20#reward*2
+            reward = 20 #reward*2
 
         if(rlFlag): 
             graph = Board.Board().boardStateGraph(player)
@@ -120,7 +120,7 @@ class GameController:
                         # if(actionId.value != 2):
                         #     print("Riga 154 GameCtrl, macro, fai un fischio", actionId.value)
                         player.strategy.streetDQN.saveInMemory(previousState, list(Board.Board().edges.keys()).index(thingNeeded), reward, self.game.getTotalState(player))
-                    if(actionId.value == 3 or actionId.value == -3 or actionId.value == -2):
+                    if(actionId.value == 3 or actionId.value == -3 or actionId.value == -1):
                         # if(actionId.value != 3):
                         #     print("Riga 158 GameCtrl, macro, fai un fischio", actionId.value)
                         player.strategy.colonyDQN.saveInMemory(previousState, Board.Board().places.index(thingNeeded), reward, self.game.getTotalState(player))

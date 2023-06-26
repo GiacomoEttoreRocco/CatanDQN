@@ -129,9 +129,9 @@ class ReinforcementLearningStrategyFfHier(StrategyEuristic):
     def DQNFFPlaceInitialStreet(self, player):
         availableStreetsId = [list(Board.Board().edges.keys()).index(edge) for edge in player.calculatePossibleInitialStreets()]
 
-        graph = Board.Board().boardStateGraph(player)
-        glob = player.globalFeaturesToTensor()
-        bestStreet = self.streetDQN.step(graph, glob, availableStreetsId, self.macroDQN)
+        state = player.game.getTotalState(player)
+
+        bestStreet = self.streetDQN.step(state, availableStreetsId, self.macroDQN)
         return list(Board.Board().edges.keys())[bestStreet]
     
     def DQNFFPlaceColony(self, player):
