@@ -84,7 +84,7 @@ def randomAndEuristic(outFor, inFor, agent1, agent2, nameOfTheFolder):
     withGraphics = False # True    
     idEpisode = 0
     gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
-    for seed in range(1, outFor):
+    for seed in range(0, 1):
         winrates = [0,0]
         saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/"+nameOfTheFolder+"/results"+str(seed)+".csv")
         for i in range(0, inFor):
@@ -107,7 +107,7 @@ if __name__ == '__main__':
     inFor = 4000
 
     randomAndEuristic(outFor, inFor, RandomPlayer(), RandomPlayer(), "Ran")
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(2), RandomPlayer(), "HierGnn")
+    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(2), RandomPlayer(), "HierGnn")
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(2), RandomPlayer(), "HierFF")
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnn(2), RandomPlayer(), "OrchGnn")
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFf(2), RandomPlayer(), "OrchFF")
+    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnn(2), RandomPlayer(), "OrchGnn")
+    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFf(2), RandomPlayer(), "OrchFF")
