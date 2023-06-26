@@ -109,6 +109,7 @@ if __name__ == '__main__':
     inFor = 2000
 
     randomAndEuristic(outFor, inFor, RandomPlayer(), RandomPlayer(), "Ran")
+    
     trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(2), RandomPlayer(), "HierGnn")
     trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier_mod(2), RandomPlayer(), "HierGnn_mod")
 
