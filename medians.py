@@ -100,10 +100,10 @@ def calculateThirdQuartiles(matrix):
 
 def plot_experiment_results(mean_array, q1_array, q3_array, name):
     x = np.arange(1, len(mean_array) + 1)
-    plt.ylim(2, 11)
+    plt.ylim(4, 8)
     plt.plot(x, mean_array, label='Mean ' + name)
     plt.fill_between(x, q1_array, q3_array, alpha=0.2, label='Quartile interval')
-    plt.xlabel('Mean of every 10 episodes (total number of episodes = 300)')
+    plt.xlabel('Mean of every 10 episodes (total number of episodes = 3000)')
     plt.ylabel('Mean points at turn 100*')
     plt.title('Trend of values ​​with quartile range')
     plt.legend(fontsize="7", loc='lower left', bbox_to_anchor=(1, 0.5))
@@ -185,27 +185,39 @@ def plot_experiment_results(mean_array, q1_array, q3_array, name):
 # plot_experiment_results(riassumi(calculateRowMeans(RanVsEur), resumeValue), riassumi(calculateFirstQuartiles(RanVsEur), resumeValue), riassumi(calculateThirdQuartiles(RanVsEur), resumeValue), "Random")
 
 # plt.show()
-csv_fileHigh = ["csvFolder/HighTrainedHierFF/results1.csv"]
+# csv_fileHigh = ["csvFolder/HighTrainedHierFF/results2.csv"]
+resumeValue = 50
+htFF = []
+csv_filesHighTrainedHierFF = ["csvFolder/HighTrainedHierFF/results{}.csv".format(i) for i in range(0, 5)]
 
-with open("csvFolder/HighTrainedHierFF/results1.csv", 'r') as file:
-    # Leggi il file CSV
-    reader = csv.reader(file)
-    
-    # Salta la prima riga del file
-    next(reader)
-    
-    # Inizializza una lista vuota per la prima colonna
-    high = []
-    
-    # Itera sulle righe del file CSV
-    for row in reader:
-        # Aggiungi il valore della prima colonna come float alla lista
-        high.append(float(row[0]))
-resumeValue = 10
+for row in range(1, 3000):
+     x = getAllfirstElements(row, 0, csv_filesHighTrainedHierFF)
+     htFF.append(x)
+     
+plot_experiment_results(riassumi(calculateRowMeans(htFF), resumeValue), riassumi(calculateFirstQuartiles(htFF), resumeValue), riassumi(calculateThirdQuartiles(htFF), resumeValue), "OrchestratorFF")
 
-print(high)
 
-plt.plot(riassumi(high, 100))
+# with open("csvFolder/HighTrainedHierFF/results1.csv", 'r') as file:
+#     # Leggi il file CSV
+#     reader = csv.reader(file)
+    
+#     # Salta la prima riga del file
+#     next(reader)
+    
+#     # Inizializza una lista vuota per la prima colonna
+#     high = []
+    
+#     # Itera sulle righe del file CSV
+#     for row in reader:
+#         # Aggiungi il valore della prima colonna come float alla lista
+#         high.append(float(row[0]))
+# resumeValue = 10
+
+# print(high)
+# plt.yticks([5,6,7,8])
+# plt.ylim(5, 8)
+# plt.yticks(np.arange(5, 9, 0.5))
+# plt.plot(riassumi(high, 100))
 
 # plot_experiment_results(riassumi(calculateRowMeans(high), resumeValue), riassumi(calculateFirstQuartiles(high), resumeValue), riassumi(calculateThirdQuartiles(high), resumeValue), "high")
 
