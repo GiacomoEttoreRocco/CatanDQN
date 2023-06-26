@@ -9,7 +9,7 @@ from Classes.MoveTypes import TurnMoveTypes
 #f
 Transition = namedtuple('Transition', ('graph', 'glob', 'action', 'reward', 'next_graph', 'next_glob'))
 
-class L2DQGNNagent():
+class L2DQGNNagent_mod():
     # def __init__(self, nInputs, nOutputs, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")) -> None:
     def __init__(self, name, nInputs, nOutputs, eps, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cpu")) -> None:
         # print("DQGNNAgent CONSTRUCTOR")
@@ -88,9 +88,9 @@ class L2DQGNNagent():
         next_graph = Batch.from_data_list(batch.next_graph)
         next_glob = torch.cat(batch.next_glob)
         with torch.no_grad():
-            expected_state_action_values = self.GAMMA * (self.target_net.forward(next_graph, next_glob).max(1)[0]) + reward_batch
+            # expected_state_action_values = self.GAMMA * (self.target_net.forward(next_graph, next_glob).max(1)[0]) + reward_batch
 
-            # expected_state_action_values = self.GAMMA * (self.target_net.forward(next_graph, next_glob).max(1)[0] * fatherDQN.target_net.forward(next_graph, next_glob).max(1)[0]) + reward_batch
+            expected_state_action_values = self.GAMMA * (self.target_net.forward(next_graph, next_glob).max(1)[0] * fatherDQN.target_net.forward(next_graph, next_glob).max(1)[0]) + reward_batch
             # expected_state_action_values = self.GAMMA * (self.target_net.forward(next_graph, next_glob).max(1)[0] + fatherDQN.target_net.forward(next_graph, next_glob).max(1)[0])/2 + reward_batch
             # expected_state_action_values = self.GAMMA * fatherDQN.target_net.forward(next_graph, next_glob).max(1)[0] + reward_batch
 

@@ -98,12 +98,12 @@ def calculateThirdQuartiles(matrix):
     row_quartiles = np.percentile(matrix, q=75, axis=1)
     return row_quartiles
 
-def plot_experiment_results(mean_array, q1_array, q3_array, name):
+def plot_experiment_results(mean_array, q1_array, q3_array, name, resumeValue):
     x = np.arange(1, len(mean_array) + 1)
     plt.ylim(4, 8)
     plt.plot(x, mean_array, label='Mean ' + name)
     plt.fill_between(x, q1_array, q3_array, alpha=0.2, label='Quartile interval')
-    plt.xlabel('Mean of every 10 episodes (total number of episodes = 3000)')
+    plt.xlabel('Mean of every '+str(resumeValue)+ ' episodes (total number of episodes = 3000)')
     plt.ylabel('Mean points at turn 100*')
     plt.title('Trend of values ​​with quartile range')
     plt.legend(fontsize="7", loc='lower left', bbox_to_anchor=(1, 0.5))
@@ -189,8 +189,10 @@ def plot_experiment_results(mean_array, q1_array, q3_array, name):
 resumeValue = 50
 hierValues = []
 ranValues = []
+modGnnValues = []
 csv_filesHierFF = ["csvFolder/HierFF/results{}.csv".format(i) for i in range(0, 5)]
 csv_filesRan = ["csvFolder/Ran/results{}.csv".format(i) for i in range(0, 5)]
+csv_filesHierGnn_mod = ["csvFolder/HierGnn_mod/results{}.csv".format(i) for i in range(0, 5)]
 
 #     b = getAllfirstElements(row, 0, csv_filesRanVsEur)
 
@@ -198,13 +200,14 @@ csv_filesRan = ["csvFolder/Ran/results{}.csv".format(i) for i in range(0, 5)]
 for row in range(1, 4000):
      ran = getAllfirstElements(row, 0, csv_filesRan)
      hff = getAllfirstElements(row, 0, csv_filesHierFF)
+     modGnn = getAllfirstElements(row, 0, csv_filesHierGnn_mod)
      hierValues.append(hff)
      ranValues.append(ran)
-
+     modGnnValues.append(modGnn)
      
-plot_experiment_results(riassumi(calculateRowMeans(hierValues), resumeValue), riassumi(calculateFirstQuartiles(hierValues), resumeValue), riassumi(calculateThirdQuartiles(hierValues), resumeValue), "...")
-plot_experiment_results(riassumi(calculateRowMeans(ranValues), resumeValue), riassumi(calculateFirstQuartiles(ranValues), resumeValue), riassumi(calculateThirdQuartiles(ranValues), resumeValue), "...")
-
+plot_experiment_results(riassumi(calculateRowMeans(hierValues), resumeValue), riassumi(calculateFirstQuartiles(hierValues), resumeValue), riassumi(calculateThirdQuartiles(hierValues), resumeValue), "HierFF", resumeValue)
+plot_experiment_results(riassumi(calculateRowMeans(ranValues), resumeValue), riassumi(calculateFirstQuartiles(ranValues), resumeValue), riassumi(calculateThirdQuartiles(ranValues), resumeValue), "Random",  resumeValue)
+plot_experiment_results(riassumi(calculateRowMeans(modGnnValues), resumeValue), riassumi(calculateFirstQuartiles(modGnnValues), resumeValue), riassumi(calculateThirdQuartiles(modGnnValues), resumeValue), "HierGnnMod",  resumeValue)
 
 
 # with open("csvFolder/HighTrainedHierFF/results1.csv", 'r') as file:
