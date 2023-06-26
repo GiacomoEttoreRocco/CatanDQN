@@ -9,7 +9,7 @@ import random
 
 from RL.L2_DQN_mod import L2DQNagent_mod
 
-class ReinforcementLearningStrategyFfHier(StrategyEuristic):
+class ReinforcementLearningStrategyFfHier_mod(StrategyEuristic):
     def __init__(self, eps):
         self.macroDQN = DQNagent(54*11 + 72 + 9, 10, eps) 
         

@@ -29,7 +29,7 @@ class Board:
                         "victory_point","victory_point","victory_point","victory_point","victory_point","victory_point","victory_point","victory_point",
                         "year_of_plenty","year_of_plenty","monopoly","monopoly", "road_building","road_building"]
             #   SHUFFLE DECK
-            seed = random.choice([1,3,4,5,6])
+            seed = random.choice([10,20,30,40])
             np.random.seed(seed)
             
             cls.deck = np.random.permutation(cls.deck)
