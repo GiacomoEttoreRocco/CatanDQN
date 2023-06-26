@@ -26,7 +26,7 @@ class DQGNNagent():
         self.optimizer = torch.optim.AdamW(self.policy_net.parameters(), lr=self.LearningRate)
         self.memory = ReplayMemory(1000)
 
-        self.decay = 0.999
+        self.decay = 0.998
         # self.decay = 0.999
 
 
