@@ -185,9 +185,9 @@ def plot_experiment_results(mean_array, q1_array, q3_array, name):
 # plot_experiment_results(riassumi(calculateRowMeans(RanVsEur), resumeValue), riassumi(calculateFirstQuartiles(RanVsEur), resumeValue), riassumi(calculateThirdQuartiles(RanVsEur), resumeValue), "Random")
 
 # plt.show()
-csv_fileHigh = ["csvFolder/HighTrainedHierGnn/results0.csv"]
+csv_fileHigh = ["csvFolder/HighTrainedHierFF/results1.csv"]
 
-with open("csvFolder/HighTrainedHierGnn/results0.csv", 'r') as file:
+with open("csvFolder/HighTrainedHierFF/results1.csv", 'r') as file:
     # Leggi il file CSV
     reader = csv.reader(file)
     
