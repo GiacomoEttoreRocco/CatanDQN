@@ -106,9 +106,9 @@ if __name__ == '__main__':
     outFor = 5 # SETTA ANCHE L'INIZIO, FACCIAMO SOLO CONTRO I RANDOM
     inFor = 4000
 
-    ## trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(2), RandomPlayer(), "HierFFVsRan")
-    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFf(2), RandomPlayer(), "OrchFFVsRan")
-    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(2), RandomPlayer(), "HighTrainedHierGnn")
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(2), RandomPlayer(), "HighTrainedHierFF")
-    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnn(2), RandomPlayer(), "OrchGnnVsRan")
-    # randomAndEuristic(outFor, inFor, RandomPlayer(), RandomPlayer(), "RanVsRan")
+    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(2), RandomPlayer(), "HierGnn")
+    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(2), RandomPlayer(), "HierFF")
+    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnn(2), RandomPlayer(), "OrchGnn")
+    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFf(2), RandomPlayer(), "OrchFF")
+
+    randomAndEuristic(outFor, inFor, RandomPlayer(), RandomPlayer(), "Ran")
