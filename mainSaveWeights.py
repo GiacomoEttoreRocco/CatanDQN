@@ -72,7 +72,7 @@ def trainAndSaveWeights(outFor, inFor, agent1, agent2, nameOfTheFolder):
 
         # print("Winrates: ", winrates)
         print("\nDefinitely updated, final eps: ", agent1.getEps(), flush = True)
-        agent1.saveWeights("Weights/"+nameOfTheFolder+"/weights"+str(seed)+"-3000")
+        agent1.saveWeights("Weights/"+nameOfTheFolder+"/weights"+str(seed)+"-4000")
         agent1.__init__(1)
         # rlStrategyFfHier = ReinforcementLearningStrategyFfHier(1)
         strategies = [agent1, agent2] 
@@ -112,7 +112,9 @@ if __name__ == '__main__':
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFf(1), RandomPlayer(), "OrchFFVsRan")
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFf(1), EuristicPlayer(), "OrchFFVsEur")
 
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(2), RandomPlayer(), "HighTrainedHierGnn")
+    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(2), RandomPlayer(), "HighTrainedHierGnn")
+    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(2), RandomPlayer(), "HighTrainedHierFF")
+
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(1), EuristicPlayer(), "HierGnnVsEur")
 
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnn(1), RandomPlayer(), "OrchGnnVsRan")
