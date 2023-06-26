@@ -205,7 +205,7 @@ resumeValue = 10
 
 print(high)
 
-plt.plot(riassumi(high, 50))
+plt.plot(riassumi(high, 100))
 
 # plot_experiment_results(riassumi(calculateRowMeans(high), resumeValue), riassumi(calculateFirstQuartiles(high), resumeValue), riassumi(calculateThirdQuartiles(high), resumeValue), "high")
 

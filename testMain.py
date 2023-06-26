@@ -79,7 +79,7 @@ HGNN_3000 = ReinforcementLearningStrategyGnnHier(0)
 HGNN_3000.loadWeights("Weights/HighTrainedHierGnn/weights0-3000")
 
 # otherAgents = [EURISTIC_PLAYER, RANDOM_PLAYER, H_FF2_blue, H_GNN1_blue, H_GNN2_blue, O_FF1_blue, O_FF2_blue, O_GNN1_blue, O_GNN2_blue, H_FF1_green, H_FF2_green, H_GNN1_green, H_GNN2_green, O_FF1_green, O_FF2_green, O_GNN1_green, O_GNN2_green]
-examAgent = HGNN_3000
+examAgent = HGNN_4000
 against = RandomPlayer()
 strategies = [examAgent, against] 
 gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
