@@ -129,7 +129,7 @@ class SevenOnDicesCommand:
             half = int(pyr.resourceCount()/2)
             if(pyr.resourceCount() >= 7):
                 for _ in range(0, half):
-                    _, resource = pyr.strategy.chooseParameters(DiscardResourceCommand, self.player)
+                    _, resource = pyr.strategy.chooseParameters(DiscardResourceCommand, pyr)
                     tmp = DiscardResourceCommand(pyr, resource)
                     tmp.execute()
                     self.actions.append(tmp)
@@ -527,7 +527,7 @@ class PlaceStreetCommand:
     actions: list[Action] = field(default_factory=list)
 
     def execute(self):
-        print("530")
+        # print("530")
         self.actions.append(PlayerSpendResourceCommand(self.player, "wood"))
         self.actions.append(PlayerSpendResourceCommand(self.player, "clay"))
 
@@ -555,7 +555,7 @@ class PlaceColonyCommand:
     actions: list[Action] = field(default_factory=list)
 
     def execute(self):
-        print("558")
+        # print("558")
         self.actions.extend([PlayerSpendResourceCommand(self.player, "wood"), 
                                 PlayerSpendResourceCommand(self.player, "clay"), 
                                 PlayerSpendResourceCommand(self.player, "crop"), 
@@ -585,7 +585,7 @@ class PlaceCityCommand:
     actions: list[Action] = field(default_factory=list)
 
     def execute(self):
-        print("588")
+        # print("588")
 
         self.actions.extend([PlayerSpendResourceCommand(self.player, "iron"),
                                 PlayerSpendResourceCommand(self.player, "iron"),
@@ -616,7 +616,7 @@ class BuyDevCardCommand:
     actions: list[Action] = field(default_factory=list)
 
     def execute(self):
-        print("619")
+        # print("619")
 
         self.actions.extend([PlayerSpendResourceCommand(self.player, "iron"),
                                         PlayerSpendResourceCommand(self.player, "crop"),
@@ -693,8 +693,8 @@ class DiscardResourceCommand:
     playerSpendResource: PlayerSpendResourceCommand = None
 
     def execute(self):
-        print("696")
-
+        # print("696")
+        # print(self.player.resources)
         self.playerSpendResource = PlayerSpendResourceCommand(self.player, self.resource)
         self.playerSpendResource.execute()
 
@@ -841,7 +841,7 @@ class TradeBankCommand:
         # print("Riga 884 commands: ", toTake, toGive)
         # print("Riga 885 commands, resource to ask: ", Bank.Bank().resourceToAsk(self.player, toGive))
         self.actions.append(BankGiveResourceCommand(self.player, toTake))
-        print("844")
+        # print("844")
 
         self.actions.extend([PlayerSpendResourceCommand(self.player, toGive) for _ in range(0, Bank.Bank().resourceToAsk(self.player, toGive))])
         for action in self.actions:
