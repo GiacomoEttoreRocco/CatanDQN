@@ -187,28 +187,71 @@ def plot_experiment_results(mean_array, q1_array, q3_array, name, resumeValue):
 # plt.show()
 # csv_fileHigh = ["csvFolder/HighTrainedHierFF/results2.csv"]
 resumeValue = 50
-hierValues = []
+
+hierFFValues = []
+hierFFValues_mod = []
+
 ranValues = []
-modGnnValues = []
+
+hierGnnValues = []
+hierGnnValues_mod = []
+
+orchGnnValues = []
+orchFFValues = []
+
+
 csv_filesHierFF = ["csvFolder/HierFF/results{}.csv".format(i) for i in range(0, 5)]
+csv_filesHierFF_mod = ["csvFolder/HierFF_mod/results{}.csv".format(i) for i in range(0, 5)]
+
 csv_filesRan = ["csvFolder/Ran/results{}.csv".format(i) for i in range(0, 5)]
+
+csv_filesHierGnn = ["csvFolder/HierGnn/results{}.csv".format(i) for i in range(0, 5)]
 csv_filesHierGnn_mod = ["csvFolder/HierGnn_mod/results{}.csv".format(i) for i in range(0, 5)]
+
+csv_filesOrchFF = ["csvFolder/OrchFF/results{}.csv".format(i) for i in range(0, 5)]
+csv_filesOrchGnn = ["csvFolder/OrchGnn/results{}.csv".format(i) for i in range(0, 5)]
+
+
+
 
 #     b = getAllfirstElements(row, 0, csv_filesRanVsEur)
 
 
-for row in range(1, 4000):
+for row in range(1, 2000):
      ran = getAllfirstElements(row, 0, csv_filesRan)
-     hff = getAllfirstElements(row, 0, csv_filesHierFF)
-     modGnn = getAllfirstElements(row, 0, csv_filesHierGnn_mod)
-     hierValues.append(hff)
-     ranValues.append(ran)
-     modGnnValues.append(modGnn)
-     
-plot_experiment_results(riassumi(calculateRowMeans(hierValues), resumeValue), riassumi(calculateFirstQuartiles(hierValues), resumeValue), riassumi(calculateThirdQuartiles(hierValues), resumeValue), "HierFF", resumeValue)
-plot_experiment_results(riassumi(calculateRowMeans(ranValues), resumeValue), riassumi(calculateFirstQuartiles(ranValues), resumeValue), riassumi(calculateThirdQuartiles(ranValues), resumeValue), "Random",  resumeValue)
-plot_experiment_results(riassumi(calculateRowMeans(modGnnValues), resumeValue), riassumi(calculateFirstQuartiles(modGnnValues), resumeValue), riassumi(calculateThirdQuartiles(modGnnValues), resumeValue), "HierGnnMod",  resumeValue)
 
+     hff = getAllfirstElements(row, 0, csv_filesHierFF)
+     modFf = getAllfirstElements(row, 0, csv_filesHierFF_mod)
+
+     hgnn = getAllfirstElements(row, 0, csv_filesHierGnn)
+     modGnn = getAllfirstElements(row, 0, csv_filesHierGnn_mod)
+
+     off = getAllfirstElements(row, 0, csv_filesOrchFF)
+     ognn = getAllfirstElements(row, 0, csv_filesOrchGnn)
+
+     hierFFValues.append(hff)
+     hierFFValues_mod.append(modFf)
+
+     ranValues.append(ran)
+
+     hierGnnValues.append(hgnn)
+     hierGnnValues_mod.append(modGnn)
+
+     orchFFValues.append(off)
+     orchGnnValues.append(ognn)
+
+
+plot_experiment_results(riassumi(calculateRowMeans(ranValues), resumeValue), riassumi(calculateFirstQuartiles(ranValues), resumeValue), riassumi(calculateThirdQuartiles(ranValues), resumeValue), "Random",  resumeValue)
+     
+plot_experiment_results(riassumi(calculateRowMeans(hierFFValues), resumeValue), riassumi(calculateFirstQuartiles(hierFFValues), resumeValue), riassumi(calculateThirdQuartiles(hierFFValues), resumeValue), "HierFF", resumeValue)
+# plot_experiment_results(riassumi(calculateRowMeans(hierFFValues_mod), resumeValue), riassumi(calculateFirstQuartiles(hierFFValues_mod), resumeValue), riassumi(calculateThirdQuartiles(hierFFValues_mod), resumeValue), "HierFF_mod", resumeValue)
+
+plot_experiment_results(riassumi(calculateRowMeans(hierGnnValues), resumeValue), riassumi(calculateFirstQuartiles(hierGnnValues), resumeValue), riassumi(calculateThirdQuartiles(hierGnnValues), resumeValue), "HierGnn",  resumeValue)
+# plot_experiment_results(riassumi(calculateRowMeans(hierGnnValues_mod), resumeValue), riassumi(calculateFirstQuartiles(hierGnnValues_mod), resumeValue), riassumi(calculateThirdQuartiles(hierGnnValues_mod), resumeValue), "HierGnn_mod",  resumeValue)
+
+
+plot_experiment_results(riassumi(calculateRowMeans(orchFFValues), resumeValue), riassumi(calculateFirstQuartiles(orchFFValues), resumeValue), riassumi(calculateThirdQuartiles(orchFFValues), resumeValue), "OrchFF",  resumeValue)
+plot_experiment_results(riassumi(calculateRowMeans(orchGnnValues), resumeValue), riassumi(calculateFirstQuartiles(orchGnnValues), resumeValue), riassumi(calculateThirdQuartiles(orchGnnValues), resumeValue), "OrchGnn",  resumeValue)
 
 # with open("csvFolder/HighTrainedHierFF/results1.csv", 'r') as file:
 #     # Leggi il file CSV
