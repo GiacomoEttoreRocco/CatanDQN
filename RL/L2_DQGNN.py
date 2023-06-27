@@ -52,10 +52,10 @@ class L2DQGNNagent():
             action = self.greedyAction(graph, glob, availableMoves)
         return action
     
-    def step(self, graph, glob, availableMoves, fatherDQN):   
+    def step(self, graph, glob, availableMoves):   
         action = self.selectMove(graph, glob, availableMoves) 
         if(self.EPS > 0.005):
-            self.optimize_model(fatherDQN)
+            self.optimize_model()
             # self.optimize_model()
             self.softUpdate()
         return action
@@ -75,7 +75,7 @@ class L2DQGNNagent():
         random_action = random.choice(availableMoves)
         return random_action
 
-    def optimize_model(self, fatherDQN):
+    def optimize_model(self):
         if len(self.memory) < self.BATCH_SIZE:
             return
         # print("optimizing... "+ self.name)
