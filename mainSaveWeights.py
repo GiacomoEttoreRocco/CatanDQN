@@ -105,7 +105,7 @@ def randomAndEuristic(outFor, inFor, agent1, agent2, nameOfTheFolder):
 
 if __name__ == '__main__':
         
-    outFor = 5 # SETTA ANCHE L'INIZIO, FACCIAMO SOLO CONTRO I RANDOM
+    outFor = 3 # SETTA ANCHE L'INIZIO, FACCIAMO SOLO CONTRO I RANDOM
     inFor = 4000
 
     randomAndEuristic(outFor, inFor, RandomPlayer(), RandomPlayer(), "Ran")
