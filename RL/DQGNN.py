@@ -140,7 +140,7 @@ class DQGNN(nn.Module):
   def forward(self, graph, glob):
     embeds = self.Gnn(graph.x, edge_index=graph.edge_index, edge_attr=graph.edge_attr)
     embeds = torch.reshape(embeds, (graph.num_graphs, 54 * 4))
-    glob = self.GlobalLayers(glob)
+    glob = self.GlobalLayers(glob).unsqueeze(0)
     output = torch.cat([embeds, glob], dim=-1)
     output = self.OutLayers(output)
     return output

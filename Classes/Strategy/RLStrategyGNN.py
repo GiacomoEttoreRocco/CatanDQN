@@ -29,7 +29,7 @@ class ReinforcementLearningStrategyGnn(StrategyEuristic):
             return self.chooseParameters(commands.PlaceSecondColonyCommand, player)
         else:
             graph = Board.Board().boardStateGraph(player)
-            glob = player.globalFeaturesToTensor()
+            glob = player.globalStateTensor()
             # RICORDATI CHE VANNO GESTITE LE FORCED MOVES, in futuro.
             idActions = player.availableTurnActionsId()
             if(len(idActions) == 1 and idActions[0] == 0):

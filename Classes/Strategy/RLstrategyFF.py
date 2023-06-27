@@ -31,7 +31,7 @@ class ReinforcementLearningStrategyFf(StrategyEuristic):
         else:
             # graph = Board.Board().boardStateGraph(player)
             boardFeatures = Board.Board().boardStateTensor(player).unsqueeze(dim=0)
-            glob = player.globalFeaturesToTensor()
+            glob = player.globalStateTensor()
             # print("Riga 38, RLSFF: ", boardFeatures.unsqueeze(0))
             # print("Riga 38, RLSFF: ", glob)
             # print("Dimensioni di boardFeatures:", boardFeatures.size())

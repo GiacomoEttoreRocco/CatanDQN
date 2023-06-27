@@ -98,7 +98,7 @@
 
 #     def evaluatePositionForPlayer(cls, player):
 #         graph = Batch.from_data_list([Data(x=Board.Board().placesToTensor(player), edge_index=Board.Board().hardEdgeIndex, edge_attr=Board.Board().edgesToTensor(player)).to(cls.device)])
-#         glob = player.globalFeaturesToTensor()
+#         glob = player.globalStateTensor()
 #         return cls.model(graph, glob, isTrain=False).item()
 
 #     def saveWeights(cls, weights):

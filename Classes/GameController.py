@@ -73,7 +73,7 @@ class GameController:
         if(rlFlag): 
             if("GNN" in player.strategy.name()):
                 previousGraph = Board.Board().boardStateGraph(player)
-                previousGlob = player.globalFeaturesToTensor()
+                previousGlob = player.globalStateTensor()
             else:
                 previousState = self.game.getTotalState(player)
 
@@ -92,7 +92,7 @@ class GameController:
 
         if(rlFlag): 
             graph = Board.Board().boardStateGraph(player)
-            glob = player.globalFeaturesToTensor()
+            glob = player.globalStateTensor()
             # print("Riga 72, game controller: ", reward)
 
             if("GNN" in player.strategy.name()):

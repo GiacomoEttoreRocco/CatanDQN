@@ -37,7 +37,7 @@ class ReinforcementLearningStrategyGnnHier(StrategyEuristic):
             return self.chooseParameters(commands.PlaceSecondColonyCommand, player)
         else:
             graph = Board.Board().boardStateGraph(player)
-            glob = player.globalFeaturesToTensor()
+            glob = player.globalStateTensor()
             # RICORDATI CHE VANNO GESTITE LE FORCED MOVES, in futuro.
             idActions = player.availableTurnActionsId()
             if(len(idActions) == 1 and idActions[0] == 0):
@@ -117,7 +117,7 @@ class ReinforcementLearningStrategyGnnHier(StrategyEuristic):
         availableStreetsId = [list(Board.Board().edges.keys()).index(edge) for edge in player.calculatePossibleStreets()]
 
         graph = Board.Board().boardStateGraph(player)
-        glob = player.globalFeaturesToTensor()
+        glob = player.globalStateTensor()
         bestStreet = self.streetDQN.step(graph, glob, availableStreetsId)
         # print(bestStreet)
         return list(Board.Board().edges.keys())[bestStreet]
@@ -126,7 +126,7 @@ class ReinforcementLearningStrategyGnnHier(StrategyEuristic):
         availableStreetsId = [list(Board.Board().edges.keys()).index(edge) for edge in player.calculatePossibleInitialStreets()]
 
         graph = Board.Board().boardStateGraph(player)
-        glob = player.globalFeaturesToTensor()
+        glob = player.globalStateTensor()
         bestStreet = self.streetDQN.step(graph, glob, availableStreetsId)
         return list(Board.Board().edges.keys())[bestStreet]
     
@@ -135,7 +135,7 @@ class ReinforcementLearningStrategyGnnHier(StrategyEuristic):
         possibleColoniesId = [Board.Board().places.index(place) for place in player.calculatePossibleColonies()]
 
         graph = Board.Board().boardStateGraph(player)
-        glob = player.globalFeaturesToTensor()
+        glob = player.globalStateTensor()
         choosenColony = self.colonyDQN.step(graph, glob, possibleColoniesId)
         # print(choosenColony)
         return Board.Board().places[choosenColony]
@@ -144,7 +144,7 @@ class ReinforcementLearningStrategyGnnHier(StrategyEuristic):
         # print("Specialized initial colony placed.")
         possibleColoniesId = [Board.Board().places.index(place) for place in player.calculatePossibleInitialColonies()]
         graph = Board.Board().boardStateGraph(player)
-        glob = player.globalFeaturesToTensor()
+        glob = player.globalStateTensor()
         choosenColony = self.colonyDQN.step(graph, glob, possibleColoniesId)
         # print(choosenColony)
         return Board.Board().places[choosenColony]
@@ -157,7 +157,7 @@ class ReinforcementLearningStrategyGnnHier(StrategyEuristic):
             tradesIds.append(tradesToId(trade))
 
         graph = Board.Board().boardStateGraph(player)
-        glob = player.globalFeaturesToTensor()
+        glob = player.globalStateTensor()
 
         choosenTrade = self.tradeDQN.step(graph, glob, tradesIds)
         return idToTrade(choosenTrade)

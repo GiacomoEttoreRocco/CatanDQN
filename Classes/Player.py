@@ -264,23 +264,29 @@ class Player:
         # print("Steal: ",resourceTaken, "from player ", self.id, "which has ", self.resources[resourceTaken])
         return resourceTaken
 
-    # def globalFeaturesToDict(self):
-    #     return {'player_id': self.id,'victory_points': self._victoryPoints, 'cards_bought': self.boughtCards, 'last_robber_user': int(self.lastRobberUser),
-    #             'used_knights': self.usedKnights, 'crop': self.resources["crop"], 'iron': self.resources["iron"],
-    #             'wood': self.resources["wood"], 'clay': self.resources["clay"], 'sheep': self.resources["sheep"], 'winner':None}
-    
-    def globalFeaturesToTensor(self):
-        return torch.tensor([[
-            self._victoryPoints,
-            self.boughtCards,
-            int(self.lastRobberUser),
-            self.usedKnights,
-            self.resources["crop"],
-            self.resources["iron"],
-            self.resources["wood"],
-            self.resources["clay"],
-            self.resources["sheep"],
-        ]], dtype=torch.float)
+    # def globalStateTensor(self):
+
+    #     myCrop = self.resources["crop"]
+    #     myIron = self.resources["iron"]
+    #     myWood = self.resources["wood"]
+    #     myClay = self.resources["clay"]
+    #     mySheep = self.resources["sheep"]
+
+    #     tensor = torch.tensor([[
+    #         self._victoryPoints,
+    #         self.boughtCards,
+    #         int(self.lastRobberUser),
+    #         self.usedKnights,
+    #         myCrop,
+    #         myIron,
+    #         myWood,
+    #         myClay,
+    #         mySheep,
+    #     ]], dtype=torch.float)
+
+    #     print(Bank.Bank().totalResourceOut() - (myCrop + myIron + myWood + myClay + mySheep))
+
+    #     return tensor
     
     def globalStateTensor(self):
         myCrop = self.resources["crop"]
