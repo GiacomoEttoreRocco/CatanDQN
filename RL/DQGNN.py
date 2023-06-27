@@ -19,8 +19,8 @@ class DQGNNagent():
         self.TAU = 0.005 # 0.005
         self.LearningRate = 1e-3
         self.device = device
-        self.policy_net = DQGNN(nInputs, 4, 1, 9, nOutputs).to(device)
-        self.target_net = DQGNN(nInputs, 4, 1, 9, nOutputs).to(device)
+        self.policy_net = DQGNN(nInputs, 4, 4, 9, nOutputs).to(device)
+        self.target_net = DQGNN(nInputs, 4, 4, 9, nOutputs).to(device)
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.criterion = criterion
         self.optimizer = torch.optim.AdamW(self.policy_net.parameters(), lr=self.LearningRate)
@@ -137,7 +137,7 @@ class DQGNN(nn.Module):
         nn.Linear(128, nActions)
     )
   
-  def forward(self, graph, glob, gnnOutputDim=1):
+  def forward(self, graph, glob, gnnOutputDim=4):
     embeds = self.Gnn(graph.x, edge_index=graph.edge_index, edge_attr=graph.edge_attr)
     embeds = torch.reshape(embeds, (graph.num_graphs, 54 * gnnOutputDim))
     glob = self.GlobalLayers(glob)
