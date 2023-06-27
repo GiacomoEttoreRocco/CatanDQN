@@ -87,8 +87,11 @@ class GameController:
 ##################
         reward = player._victoryPoints
 
-        if(player._victoryPoints >= 10):
+        if(player._victoryPoints >= 15):
             reward = 100 #
+
+        if(self.game.actualTurn > 120):
+            reward = reward * ((0.99)**(self.game.actualTurn-120))
 
         if(rlFlag): 
             graph = Board.Board().boardStateGraph(player)
@@ -191,11 +194,12 @@ class GameController:
             else:
                 playerTurn = self.game.players[self.game.actualTurn%self.game.nplayers]
                 self.decisionManager(playerTurn)
-                if(playerTurn._victoryPoints >= 10): # max length
+                if(playerTurn._victoryPoints >= 15): # max length
                     print(f'Winner: {playerTurn.id}, Agent: {playerTurn.strategy.name()}\n')
                     # self.plotVictoryPoints(playerTurn._victoryPoints, playerTurn.id)
                     return playerTurn
                 if(self.game.actualTurn > 1000):
+                    print("ah")
                     return playerTurn
             # self.plotVictoryPoints(playerTurn._victoryPoints, playerTurn.id)
             #################################################################
@@ -233,7 +237,8 @@ class GameController:
             else:
                 playerTurn = self.game.players[self.game.actualTurn%self.game.nplayers]
                 self.decisionManager(playerTurn)
-                if(playerTurn._victoryPoints >= 10 or self.game.actualTurn >= 1000): 
+                # if(playerTurn._victoryPoints >= 10 or self.game.actualTurn >= 1000): 
+                if(playerTurn._victoryPoints >= 15 or self.game.actualTurn >= 1000): 
                     for player in self.game.players:
                         if(len(toReturn) < 2):
                             toReturn.append(player._victoryPoints)
