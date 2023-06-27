@@ -39,6 +39,7 @@ class Game:
         self.longestStreetLength = 4
         self.tmpVisitedEdges = []
         self.dices = [self.rollDice() for _ in range(1200)]
+        print(self.dices)
         self.actualTurn = 0
         self.currentTurnPlayer = None
 
