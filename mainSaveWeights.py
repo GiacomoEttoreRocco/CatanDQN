@@ -109,7 +109,7 @@ if __name__ == '__main__':
     inFor = 1000
 
     trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(1), RandomPlayer(), "HierGnn")
-    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), RandomPlayer(), "HierFF")
+    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), RandomPlayer(), "HierFF")
 
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier_mod(1), RandomPlayer(), "HierGnn_mod")
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier_mod(1), RandomPlayer(), "HierFF_mod")
