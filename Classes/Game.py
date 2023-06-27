@@ -42,17 +42,6 @@ class Game:
         self.actualTurn = 0
         self.currentTurnPlayer = None
 
-    def dice_production(self, number):
-        for tile in Board.Board().tiles:
-            if tile.number == number and tile != Board.Board().robberTile:
-                for p in tile.associatedPlaces:
-                    if(Board.Board().places[p].owner != 0):
-                        if(Board.Board().places[p].isColony):
-                            Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
-                        elif(Board.Board().places[p].isCity):
-                            Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
-                            Bank.Bank().giveResource(self.players[Board.Board().places[p].owner-1], tile.resource)
-
     def rollDice(self): 
         return random.randint(1,6) + random.randint(1,6)    
 

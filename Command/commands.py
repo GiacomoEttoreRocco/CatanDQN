@@ -170,7 +170,7 @@ class RemoveResourceToPlayer:
     resource: str
     unduable: bool = True
     def execute(self):
-        # assert self.player.resources[self.resource]>0, f"Player {self.player.id} can't EXECUTE this action becouse it has not {self.resource}"
+        assert self.player.resources[self.resource]>0, f"Player {self.player.id} can't EXECUTE this action becouse it has not {self.resource}"
         # print("Riga 174, commands: ", self.resource)
         if(self.resource != None and self.player.resources[self.resource] > 0):
             self.player.resources[self.resource] -= 1
@@ -252,6 +252,7 @@ class PlayerSpendResourceCommand:
     actions: list[Action] = field(default_factory=list)
 
     def execute(self):
+        # print("Riga 255 command ....................................")
         self.actions.append(RemoveResourceToPlayer(self.player, self.resource))
         self.actions.append(AddResourceToBank(self.resource))
         for action in self.actions:
@@ -526,7 +527,7 @@ class PlaceStreetCommand:
     actions: list[Action] = field(default_factory=list)
 
     def execute(self):
-
+        print("530")
         self.actions.append(PlayerSpendResourceCommand(self.player, "wood"))
         self.actions.append(PlayerSpendResourceCommand(self.player, "clay"))
 
@@ -554,6 +555,7 @@ class PlaceColonyCommand:
     actions: list[Action] = field(default_factory=list)
 
     def execute(self):
+        print("558")
         self.actions.extend([PlayerSpendResourceCommand(self.player, "wood"), 
                                 PlayerSpendResourceCommand(self.player, "clay"), 
                                 PlayerSpendResourceCommand(self.player, "crop"), 
@@ -583,6 +585,8 @@ class PlaceCityCommand:
     actions: list[Action] = field(default_factory=list)
 
     def execute(self):
+        print("588")
+
         self.actions.extend([PlayerSpendResourceCommand(self.player, "iron"),
                                 PlayerSpendResourceCommand(self.player, "iron"),
                                 PlayerSpendResourceCommand(self.player, "iron"),
@@ -612,6 +616,8 @@ class BuyDevCardCommand:
     actions: list[Action] = field(default_factory=list)
 
     def execute(self):
+        print("619")
+
         self.actions.extend([PlayerSpendResourceCommand(self.player, "iron"),
                                         PlayerSpendResourceCommand(self.player, "crop"),
                                         PlayerSpendResourceCommand(self.player, "sheep")])
@@ -687,6 +693,8 @@ class DiscardResourceCommand:
     playerSpendResource: PlayerSpendResourceCommand = None
 
     def execute(self):
+        print("696")
+
         self.playerSpendResource = PlayerSpendResourceCommand(self.player, self.resource)
         self.playerSpendResource.execute()
 
@@ -724,6 +732,7 @@ class StealResourceCommand:
     def execute(self):
         if self.chosenPlayer is not None and self.takenResource is not None:
             self.actions.append(AddResourceToPlayer(self.player, self.takenResource))
+            # print("Riga 729 command ....................................")
             self.actions.append(RemoveResourceToPlayer(self.chosenPlayer, self.takenResource))
         for action in self.actions:
             action.execute()
@@ -832,6 +841,8 @@ class TradeBankCommand:
         # print("Riga 884 commands: ", toTake, toGive)
         # print("Riga 885 commands, resource to ask: ", Bank.Bank().resourceToAsk(self.player, toGive))
         self.actions.append(BankGiveResourceCommand(self.player, toTake))
+        print("844")
+
         self.actions.extend([PlayerSpendResourceCommand(self.player, toGive) for _ in range(0, Bank.Bank().resourceToAsk(self.player, toGive))])
         for action in self.actions:
             action.execute()
@@ -857,6 +868,7 @@ class UseMonopolyCardCommand:
         self.player.monopolyCard -= 1
         for p in self.player.game.players:
             if p != self.player:
+                # print("Riga 863 command ....................................")
                 self.actions.extend([RemoveResourceToPlayer(p, self.resource) for _ in range(p.resources[self.resource])])
                 self.actions.extend([AddResourceToPlayer(self.player, self.resource) for _ in range(p.resources[self.resource])])
         for action in self.actions:
