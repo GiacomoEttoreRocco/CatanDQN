@@ -105,17 +105,17 @@ def randomAndEuristic(outFor, inFor, agent1, agent2, nameOfTheFolder):
 
 if __name__ == '__main__':
         
-    outFor = 3 # SETTA ANCHE L'INIZIO, FACCIAMO SOLO CONTRO I RANDOM
-    inFor = 4000
+    outFor = 5 # SETTA ANCHE L'INIZIO, FACCIAMO SOLO CONTRO I RANDOM
+    inFor = 1000
 
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(2), RandomPlayer(), "HierFF")
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(2), RandomPlayer(), "HierGnn")
-    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier_mod(2), RandomPlayer(), "HierGnn_mod") # fattp.
+    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), RandomPlayer(), "HierFF")
+    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(1), RandomPlayer(), "HierGnn")
+    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier_mod(1), RandomPlayer(), "HierGnn_mod")
 
-    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier_mod(2), RandomPlayer(), "HierFF_mod")
+    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier_mod(1), RandomPlayer(), "HierFF_mod")
 
-    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnn(2), RandomPlayer(), "OrchGnn")
-    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFf(2), RandomPlayer(), "OrchFF")
+    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnn(1), RandomPlayer(), "OrchGnn")
+    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFf(1), RandomPlayer(), "OrchFF")
 
     randomAndEuristic(outFor, inFor, RandomPlayer(), RandomPlayer(), "Ran")
 
