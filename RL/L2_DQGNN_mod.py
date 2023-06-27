@@ -22,8 +22,8 @@ class L2DQGNNagent_mod():
         self.LearningRate = 1e-3
         self.device = device
 
-        self.policy_net = DQGNN(nInputs, 8, 4, 9, nOutputs).to(device)
-        self.target_net = DQGNN(nInputs, 8, 4, 9, nOutputs).to(device)
+        self.policy_net = DQGNN(nInputs, 4, 1, 9, nOutputs).to(device)
+        self.target_net = DQGNN(nInputs, 4, 1, 9, nOutputs).to(device)
 
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.criterion = criterion
@@ -125,7 +125,7 @@ class DQGNN(nn.Module):
 
     self.Gnn = Sequential('x, edge_index, edge_attr', [
         (GraphConv(gnnInputDim, gnnHiddenDim), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True),
-        (GraphConv(gnnHiddenDim, 4), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True), # (GCNConv(gnnHiddenDim, gnnOutputDim), 'x, edge_index, edge_attr -> x'), # nn.ReLU(inplace=True)
+        (GraphConv(gnnHiddenDim, gnnOutputDim), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True), # (GCNConv(gnnHiddenDim, gnnOutputDim), 'x, edge_index, edge_attr -> x'), # nn.ReLU(inplace=True)
     ])
     
     self.GlobalLayers = nn.Sequential(
@@ -138,16 +138,16 @@ class DQGNN(nn.Module):
     )
 
     self.OutLayers = nn.Sequential(
-        nn.Linear(54*4+globInputDim, 128),
+        nn.Linear(54*gnnOutputDim+globInputDim, 128),
         nn.ReLU(inplace=True),
         nn.Linear(128, 128),
         nn.ReLU(inplace=True),
         nn.Linear(128, nActions)
     )
   
-  def forward(self, graph, glob):
+  def forward(self, graph, glob, gnnOutputDim=1):
     embeds = self.Gnn(graph.x, edge_index=graph.edge_index, edge_attr=graph.edge_attr)
-    embeds = torch.reshape(embeds, (graph.num_graphs, 54 * 4))
+    embeds = torch.reshape(embeds, (graph.num_graphs, 54 * gnnOutputDim))
     glob = self.GlobalLayers(glob)
     output = torch.cat([embeds, glob], dim=-1)
     output = self.OutLayers(output)

@@ -91,7 +91,7 @@ class GameController:
             reward = 100 #
 
         if(self.game.actualTurn > 120):
-            reward = reward * ((0.99)**(self.game.actualTurn-120))
+            reward = reward * ((0.99)**(self.game.actualTurn+120))
 
         if(rlFlag): 
             graph = Board.Board().boardStateGraph(player)
