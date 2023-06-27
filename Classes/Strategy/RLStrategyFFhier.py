@@ -123,7 +123,7 @@ class ReinforcementLearningStrategyFfHier(StrategyEuristic):
     def DQNFFPlaceStreet(self, player):
         availableStreetsId = [list(Board.Board().edges.keys()).index(edge) for edge in player.calculatePossibleStreets()]
         state = player.game.getTotalState(player)
-        bestStreet = self.streetDQN.step(state, availableStreetsId, self.macroDQN)
+        bestStreet = self.streetDQN.step(state, availableStreetsId)
         return list(Board.Board().edges.keys())[bestStreet]
     
     def DQNFFPlaceInitialStreet(self, player):
@@ -131,19 +131,19 @@ class ReinforcementLearningStrategyFfHier(StrategyEuristic):
 
         state = player.game.getTotalState(player)
 
-        bestStreet = self.streetDQN.step(state, availableStreetsId, self.macroDQN)
+        bestStreet = self.streetDQN.step(state, availableStreetsId)
         return list(Board.Board().edges.keys())[bestStreet]
     
     def DQNFFPlaceColony(self, player):
         possibleColoniesId = [Board.Board().places.index(place) for place in player.calculatePossibleColonies()]
         state = player.game.getTotalState(player)
-        choosenColony = self.colonyDQN.step(state, possibleColoniesId, self.macroDQN)
+        choosenColony = self.colonyDQN.step(state, possibleColoniesId)
         return Board.Board().places[choosenColony]
     
     def DQNFFPlaceInitialColony(self, player):
         possibleColoniesId = [Board.Board().places.index(place) for place in player.calculatePossibleInitialColonies()]
         state = player.game.getTotalState(player)
-        choosenColony = self.colonyDQN.step(state, possibleColoniesId, self.macroDQN)
+        choosenColony = self.colonyDQN.step(state, possibleColoniesId)
         return Board.Board().places[choosenColony]
     
     def DQNFFTradeBank(self, player):
@@ -152,7 +152,7 @@ class ReinforcementLearningStrategyFfHier(StrategyEuristic):
         for trade in trades:
             tradesIds.append(tradesToId(trade))
         state = player.game.getTotalState(player)
-        choosenTrade = self.tradeDQN.step(state, tradesIds, self.macroDQN)
+        choosenTrade = self.tradeDQN.step(state, tradesIds)
         return idToTrade(choosenTrade)
     
     def saveWeights(self, filepath):

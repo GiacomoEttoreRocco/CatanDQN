@@ -108,13 +108,14 @@ if __name__ == '__main__':
     outFor = 3 # SETTA ANCHE L'INIZIO, FACCIAMO SOLO CONTRO I RANDOM
     inFor = 4000
 
-    randomAndEuristic(outFor, inFor, RandomPlayer(), RandomPlayer(), "Ran")
-
+    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(2), RandomPlayer(), "HierFF")
     trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(2), RandomPlayer(), "HierGnn")
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier_mod(2), RandomPlayer(), "HierGnn_mod") # fattp.
 
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(2), RandomPlayer(), "HierFF")
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier_mod(2), RandomPlayer(), "HierFF_mod")
 
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnn(2), RandomPlayer(), "OrchGnn")
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFf(2), RandomPlayer(), "OrchFF")
+
+    randomAndEuristic(outFor, inFor, RandomPlayer(), RandomPlayer(), "Ran")
+

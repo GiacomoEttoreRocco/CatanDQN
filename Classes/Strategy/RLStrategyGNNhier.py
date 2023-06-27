@@ -118,7 +118,7 @@ class ReinforcementLearningStrategyGnnHier(StrategyEuristic):
 
         graph = Board.Board().boardStateGraph(player)
         glob = player.globalFeaturesToTensor()
-        bestStreet = self.streetDQN.step(graph, glob, availableStreetsId, self.macroDQN)
+        bestStreet = self.streetDQN.step(graph, glob, availableStreetsId)
         # print(bestStreet)
         return list(Board.Board().edges.keys())[bestStreet]
     
@@ -127,7 +127,7 @@ class ReinforcementLearningStrategyGnnHier(StrategyEuristic):
 
         graph = Board.Board().boardStateGraph(player)
         glob = player.globalFeaturesToTensor()
-        bestStreet = self.streetDQN.step(graph, glob, availableStreetsId, self.macroDQN)
+        bestStreet = self.streetDQN.step(graph, glob, availableStreetsId)
         return list(Board.Board().edges.keys())[bestStreet]
     
     def DQNPlaceColony(self, player):
@@ -136,7 +136,7 @@ class ReinforcementLearningStrategyGnnHier(StrategyEuristic):
 
         graph = Board.Board().boardStateGraph(player)
         glob = player.globalFeaturesToTensor()
-        choosenColony = self.colonyDQN.step(graph, glob, possibleColoniesId, self.macroDQN)
+        choosenColony = self.colonyDQN.step(graph, glob, possibleColoniesId)
         # print(choosenColony)
         return Board.Board().places[choosenColony]
     
@@ -145,7 +145,7 @@ class ReinforcementLearningStrategyGnnHier(StrategyEuristic):
         possibleColoniesId = [Board.Board().places.index(place) for place in player.calculatePossibleInitialColonies()]
         graph = Board.Board().boardStateGraph(player)
         glob = player.globalFeaturesToTensor()
-        choosenColony = self.colonyDQN.step(graph, glob, possibleColoniesId, self.macroDQN)
+        choosenColony = self.colonyDQN.step(graph, glob, possibleColoniesId)
         # print(choosenColony)
         return Board.Board().places[choosenColony]
     
@@ -159,7 +159,7 @@ class ReinforcementLearningStrategyGnnHier(StrategyEuristic):
         graph = Board.Board().boardStateGraph(player)
         glob = player.globalFeaturesToTensor()
 
-        choosenTrade = self.tradeDQN.step(graph, glob, tradesIds, self.macroDQN)
+        choosenTrade = self.tradeDQN.step(graph, glob, tradesIds)
         return idToTrade(choosenTrade)
     
     def saveWeights(self, filepath):
