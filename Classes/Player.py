@@ -285,7 +285,6 @@ class Player:
     #     ]], dtype=torch.float)
 
     #     print(Bank.Bank().totalResourceOut() - (myCrop + myIron + myWood + myClay + mySheep))
-
     #     return tensor
     
     def globalStateTensor(self):
@@ -295,8 +294,10 @@ class Player:
         myClay = self.resources["clay"]
         mySheep = self.resources["sheep"]
         totResOthers = Bank.Bank().totalResourceOut() - (myCrop + myIron + myWood + myClay + mySheep)
-
-        tensor = torch.Tensor([self._victoryPoints, self.boughtCards, self.usedKnights, myCrop, myIron, myWood, myClay, mySheep, totResOthers])
+        if("FF" in self.strategy.name()):
+            tensor = torch.Tensor([self._victoryPoints, self.boughtCards, self.usedKnights, myCrop, myIron, myWood, myClay, mySheep, totResOthers])
+        else: 
+            tensor = torch.Tensor([[self._victoryPoints, self.boughtCards, self.usedKnights, myCrop, myIron, myWood, myClay, mySheep, totResOthers]])
         return tensor
     
     def bestAction(self):

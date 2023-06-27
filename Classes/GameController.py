@@ -88,7 +88,7 @@ class GameController:
         reward = player._victoryPoints
 
         if(player._victoryPoints >= 10):
-            reward = 10 #
+            reward = 20 #
 
         if(rlFlag): 
             graph = Board.Board().boardStateGraph(player)
