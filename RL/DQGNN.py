@@ -19,8 +19,8 @@ class DQGNNagent():
         self.TAU = 0.005 # 0.005
         self.LearningRate = 1e-3
         self.device = device
-        self.policy_net = DQGNN(nInputs, 4, 4, 9, nOutputs).to(device)
-        self.target_net = DQGNN(nInputs, 4, 4, 9, nOutputs).to(device)
+        self.policy_net = DQGNN(nInputs, 8, 4, 9, nOutputs).to(device)
+        self.target_net = DQGNN(nInputs, 8, 4, 9, nOutputs).to(device)
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.criterion = criterion
         self.optimizer = torch.optim.AdamW(self.policy_net.parameters(), lr=self.LearningRate)
