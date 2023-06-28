@@ -294,10 +294,7 @@ class Player:
         myClay = self.resources["clay"]
         mySheep = self.resources["sheep"]
         totResOthers = Bank.Bank().totalResourceOut() - (myCrop + myIron + myWood + myClay + mySheep)
-        if("FF" in self.strategy.name()):
-            tensor = torch.Tensor([self._victoryPoints, self.boughtCards, self.usedKnights, myCrop, myIron, myWood, myClay, mySheep, totResOthers])
-        else: 
-            tensor = torch.Tensor([[self._victoryPoints, self.boughtCards, self.usedKnights, myCrop, myIron, myWood, myClay, mySheep, totResOthers]])
+        tensor = torch.tensor([[self._victoryPoints, self.boughtCards, self.usedKnights, myCrop, myIron, myWood, myClay, mySheep, totResOthers]], dtype=torch.float)
         return tensor
     
     def bestAction(self):
