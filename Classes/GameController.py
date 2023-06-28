@@ -87,11 +87,11 @@ class GameController:
 ##################
         reward = player._victoryPoints
 
-        # if(player._victoryPoints >= 15):
-        #     reward = 20 #
+        if(player._victoryPoints >= 15):
+            reward = 20 #
 
-            # if(self.game.actualTurn > 120):
-        reward = reward * ((0.99)**(self.game.actualTurn-120)) # this was magic
+        if(self.game.actualTurn > 120):
+            reward = reward * ((0.99)**(self.game.actualTurn-120)) # this was magic
 
         if(rlFlag): 
             graph = Board.Board().boardStateGraph(player)
