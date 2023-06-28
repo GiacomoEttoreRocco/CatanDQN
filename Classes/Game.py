@@ -153,9 +153,7 @@ class Game:
 
     def getTotalState(self, player):
         boardState = Board.Board().boardStateTensor(player)
-        playerState = player.globalStateTensor()
-        # print(boardState.size())
-        # print(playerState.size())
+        playerState = player.globalStateTensor().squeeze()
         state = torch.cat((boardState, playerState), dim=0).unsqueeze(0)
         # print(state.size())
         return state

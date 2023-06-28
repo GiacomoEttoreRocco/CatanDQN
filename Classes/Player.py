@@ -263,29 +263,6 @@ class Player:
         resourceTaken = resourcesOfPlayer[randomTake]
         # print("Steal: ",resourceTaken, "from player ", self.id, "which has ", self.resources[resourceTaken])
         return resourceTaken
-
-    # def globalStateTensor(self):
-
-    #     myCrop = self.resources["crop"]
-    #     myIron = self.resources["iron"]
-    #     myWood = self.resources["wood"]
-    #     myClay = self.resources["clay"]
-    #     mySheep = self.resources["sheep"]
-
-    #     tensor = torch.tensor([[
-    #         self._victoryPoints,
-    #         self.boughtCards,
-    #         int(self.lastRobberUser),
-    #         self.usedKnights,
-    #         myCrop,
-    #         myIron,
-    #         myWood,
-    #         myClay,
-    #         mySheep,
-    #     ]], dtype=torch.float)
-
-    #     print(Bank.Bank().totalResourceOut() - (myCrop + myIron + myWood + myClay + mySheep))
-    #     return tensor
     
     def globalStateTensor(self):
         myCrop = self.resources["crop"]

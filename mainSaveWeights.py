@@ -17,33 +17,6 @@ from Classes.Strategy.RanPlayer import RandomPlayer
 from Classes.Strategy.StrategyRandom import StrategyRandom
 from Classes.staticUtilities import plotCsvColumns, plotCsvColumnsWithHeaders, plotWinners2, saveInCsv
 
-# def training(playerStrategies, iterationProcessIndex, iterations, numberOfTrainingGames, numberOfValidationGames):
-#     winners = [0.0] * len(playerStrategies)
-#     print(f'Starting training: {iterationProcessIndex}')
-#     for iteration in range(iterations):
-#         print('Iteration: ', iteration+1, "/", iterations)
-#         allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})
-#         np.random.shuffle(playerStrategies)
-#         for numGame in range(numberOfTrainingGames): 
-#             print('game: ', numGame+1, "/", numberOfTrainingGames) 
-#             game = c.GameController.GameController(playerStrategies=playerStrategies)
-#             winner = game.playGameWithGraphic()
-#             winners[winner.id-1]+=1
-#             allGames = pd.concat([allGames, game.total], ignore_index=True)
-#         print("Length of total moves of allGames: ", len(allGames))
-#         # printWinners(winners)
-#         allGames.to_json("./json/training_game.json")
-#         allGames = pd.DataFrame(data={'places': [], 'edges':[], 'globals':[]})   
-#         for numGame in range(numberOfValidationGames): 
-#             print('game: ', numGame+1, "/", numberOfValidationGames) 
-#             game = c.GameController.GameController(playerStrategies=playerStrategies)
-#             winner = game.playGameWithGraphic()
-#             winners[winner.id-1]+=1
-#             allGames = pd.concat([allGames, game.total], ignore_index=True)
-
-#         print("Length of total moves of allGames: ", len(allGames))
-#         allGames.to_json("./json/testing_game.json")
-
 def writeOnCsv(i, winners):
     with open('results.csv', 'a') as f:
         writer = csv.writer(f)
