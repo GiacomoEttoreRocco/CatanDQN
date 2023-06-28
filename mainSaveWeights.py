@@ -86,8 +86,8 @@ if __name__ == '__main__':
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier_mod(1), RandomPlayer(), "HierGnn_mod")
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier_mod(1), RandomPlayer(), "HierFF_mod")
 
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnn(1), RandomPlayer(), "OrchGnn")
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFf(1), RandomPlayer(), "OrchFF")
+    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnn(1), RandomPlayer(), "OrchGnn")
+    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFf(1), RandomPlayer(), "OrchFF")
 
     # randomAndEuristic(outFor, inFor, RandomPlayer(), RandomPlayer(), "Ran")
 
