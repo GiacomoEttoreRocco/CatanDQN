@@ -88,7 +88,7 @@ class GameController:
         reward = player._victoryPoints
 
         if(player._victoryPoints >= 15):
-            reward = 20 #
+            reward = 100 #
 
         if(self.game.actualTurn > 120):
             reward = reward * ((0.99)**(self.game.actualTurn-120)) # this was magic

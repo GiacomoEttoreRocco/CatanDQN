@@ -1,7 +1,6 @@
 from matplotlib import pyplot as plt
 import pygame
 import Classes as c
-# from AI.Gnn import Gnn
 import pandas as pd
 import numpy as np
 import csv
