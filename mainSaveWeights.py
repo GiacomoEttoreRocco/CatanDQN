@@ -80,10 +80,8 @@ if __name__ == '__main__':
     outFor = 1 # SETTA ANCHE L'INIZIO, FACCIAMO SOLO CONTRO I RANDOM
     inFor = 1000
 
-    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(1), RandomPlayer(), "HierGnn")
-    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), RandomPlayer(), "HierFF")
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), RandomPlayer(), "longTrainFF")
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(1), RandomPlayer(), "longTrainGnn")
+    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(1), RandomPlayer(), "HierGnn")
+    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), RandomPlayer(), "HierFF")
 
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier_mod(1), RandomPlayer(), "HierGnn_mod")
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier_mod(1), RandomPlayer(), "HierFF_mod")
@@ -92,4 +90,8 @@ if __name__ == '__main__':
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFf(1), RandomPlayer(), "OrchFF")
 
     # randomAndEuristic(outFor, inFor, RandomPlayer(), RandomPlayer(), "Ran")
+
+
+    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), RandomPlayer(), "longTrainFF")
+    # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(1), RandomPlayer(), "longTrainGnn")
 
