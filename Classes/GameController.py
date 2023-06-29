@@ -104,7 +104,7 @@ class GameController:
                 if("HIER" in player.strategy.name()):
                     if(actionId.value == 2 or actionId.value == -6 or actionId.value == -2 or actionId.value == 8):
                         # player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), reward, graph, glob)
-                        player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), reward + player.longestStreet(), graph, glob)
+                        player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player.longestStreet(), graph, glob)
 
                     if(actionId.value == 3 or actionId.value == -3 or actionId.value == -1): 
                         player.strategy.colonyDQN.saveInMemory(previousGraph, previousGlob, Board.Board().places.index(thingNeeded), reward, graph, glob)
@@ -114,9 +114,9 @@ class GameController:
                 if(actionId.value > 0):
                     player.strategy.macroDQN.saveInMemory(previousState, actionId.value, reward, self.game.getTotalState(player))
                 if("HIER" in player.strategy.name()):
-                    if(actionId.value == 2 or actionId.value == -6 or actionId.value == 8):
+                    if(actionId.value == 2 or actionId.value == -6 or actionId.value == -2 or actionId.value == 8):
                         # player.strategy.streetDQN.saveInMemory(previousState, list(Board.Board().edges.keys()).index(thingNeeded), reward, self.game.getTotalState(player))
-                        player.strategy.streetDQN.saveInMemory(previousState, list(Board.Board().edges.keys()).index(thingNeeded), reward + player.longestStreet(), self.game.getTotalState(player))
+                        player.strategy.streetDQN.saveInMemory(previousState, list(Board.Board().edges.keys()).index(thingNeeded), player.longestStreet(), self.game.getTotalState(player))
 
                     if(actionId.value == 3 or actionId.value == -3 or actionId.value == -1):
                         player.strategy.colonyDQN.saveInMemory(previousState, Board.Board().places.index(thingNeeded), reward, self.game.getTotalState(player))
