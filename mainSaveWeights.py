@@ -26,7 +26,7 @@ def trainAndSaveWeights(outFor, inFor, agent1, agent2, nameOfTheFolder):
     withGraphics = False # True    
     idEpisode = 0
     gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = idEpisode, withGraphics=withGraphics, speed=True)
-    for seed in range(0, outFor):
+    for seed in range(1, outFor):
         winrates = [0,0]
         print("\nStarting. Eps should be 1: ", agent1.getEps(), "\n") 
         saveInCsv([strategies[0].name(), strategies[1].name()], "csvFolder/"+nameOfTheFolder+"/results"+str(seed)+".csv")
@@ -77,7 +77,7 @@ def randomAndEuristic(outFor, inFor, agent1, agent2, nameOfTheFolder):
 
 if __name__ == '__main__':
         
-    outFor = 2 # SETTA ANCHE L'INIZIO, FACCIAMO SOLO CONTRO I RANDOM
+    outFor = 3 # SETTA ANCHE L'INIZIO, FACCIAMO SOLO CONTRO I RANDOM
     inFor = 1000
 
     trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(1), RandomPlayer(), "HierGnn")
