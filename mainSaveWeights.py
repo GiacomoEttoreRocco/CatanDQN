@@ -5,13 +5,11 @@ import pandas as pd
 import numpy as np
 import csv
 from Classes.Strategy.RLStrategyFFhier import ReinforcementLearningStrategyFfHier
-from Classes.Strategy.RLStrategyFFhier_mod import ReinforcementLearningStrategyFfHier_mod
 from Classes.Strategy.RLStrategyGNN import ReinforcementLearningStrategyGnn
 from Classes.Strategy.RLStrategyFF import ReinforcementLearningStrategyFf
 import time
 from Classes.Strategy.RLStrategyGNNhier import ReinforcementLearningStrategyGnnHier
 from Classes.Strategy.EurPlayer import EuristicPlayer
-from Classes.Strategy.RLStrategyGNNhier_mod import ReinforcementLearningStrategyGnnHier_mod
 from Classes.Strategy.RLStrategyRGCN import ReinforcementLearningStrategyRgcn
 from Classes.Strategy.RLStrategyRGCNhier import ReinforcementLearningStrategyRgcnHier
 from Classes.Strategy.RanPlayer import RandomPlayer
