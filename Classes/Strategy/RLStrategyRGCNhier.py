@@ -6,6 +6,7 @@ from Command import commands, controller
 from RL.DQGNN import DQGNNagent
 import random
 from RL.DQRGCN import DQRGCNagent
+from RL.L2_DQRGCN import L2DQRGCNagent
 
 
 class ReinforcementLearningStrategyRgcnHier(StrategyEuristic):
