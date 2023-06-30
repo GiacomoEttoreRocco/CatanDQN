@@ -132,6 +132,6 @@ if __name__ == '__main__':
 
     agent1.loadWeights("Weights/HierFF/weights0-4000")
 
-    selfTrainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), RandomPlayer(), "selfHFF_sub")
+    selfTrainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), "selfHFF_sub")
 
 
