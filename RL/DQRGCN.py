@@ -10,7 +10,7 @@ from Classes.MoveTypes import TurnMoveTypes
 #f
 Transition = namedtuple('Transition', ('graph', 'glob', 'action', 'reward', 'next_graph', 'next_glob'))
 
-class DQGNNagent():
+class DQRGCNagent():
     # def __init__(self, nInputs, nOutputs, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")) -> None:
     def __init__(self, nInputs, nOutputs, eps, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cpu")) -> None:
         # print("DQGNNAgent CONSTRUCTOR")
@@ -116,17 +116,12 @@ class DQGNN(nn.Module):
   def __init__(self, gnnInputDim, gnnHiddenDim, gnnOutputDim, globInputDim, nActions):
     super().__init__()
 
-    # self.Gnn = Sequential('x, edge_index, edge_attr', [
-    #     (GraphConv(gnnInputDim, gnnHiddenDim), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True),
-    #     (GraphConv(gnnHiddenDim, gnnOutputDim), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True), 
-    # ])
-
-    self.Gnn = nn.Sequential(
-        RGCNConv(gnnInputDim, gnnHiddenDim, 3),
+    self.Gnn = Sequential('x, edge_index, edge_attr', [
+        (RGCNConv(gnnInputDim, gnnHiddenDim, 3), 'x, edge_index, edge_attr -> x'),
         nn.ReLU(inplace=True),
-        RGCNConv(gnnHiddenDim, gnnOutputDim, 3),
-        nn.ReLU(inplace=True)
-    )
+        (RGCNConv(gnnHiddenDim, gnnOutputDim, 3), 'x, edge_index, edge_attr -> x'),
+        nn.ReLU(inplace=True),
+    ])
 
     self.GlobalLayers = nn.Sequential(
         nn.Linear(globInputDim, 8),
@@ -153,14 +148,6 @@ class DQGNN(nn.Module):
     output = self.OutLayers(output)
     return output
   
-  def forward(self, x, edge_index, edge_attr, global_input):
-    x = self.Gnn(x, edge_index, edge_attr)
-    x = x.view(x.size(0), -1)
-    global_output = self.GlobalLayers(global_input)
-    concatenated = torch.cat([x, global_output], dim=1)
-    output = self.OutLayers(concatenated)
-    return output
-
   def save_weights(self, filepath):
     torch.save(self.state_dict(), filepath)
 
