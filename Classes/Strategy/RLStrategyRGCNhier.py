@@ -12,10 +12,8 @@ from RL.L2_DQRGCN import L2DQRGCNagent
 class ReinforcementLearningStrategyRgcnHier(StrategyEuristic):
     def __init__(self, eps): # diventerà un singleton
         self.macroDQN = DQRGCNagent(11, 10, eps) # macro rete decisionale
-
         self.streetDQN = L2DQRGCNagent("street", 11, 72, eps)
         self.colonyDQN = L2DQRGCNagent("colonies", 11, 54, eps)
-
         self.tradeDQN = L2DQRGCNagent("trades", 11, 20, eps)
 
     def name(self):
