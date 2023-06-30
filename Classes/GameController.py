@@ -103,8 +103,8 @@ class GameController:
                     player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, reward, graph, glob)
                 if("HIER" in player.strategy.name()):
                     if(actionId.value == 2 or actionId.value == -6 or actionId.value == -2 or actionId.value == 8):
-                        player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), reward, graph, glob)
-                        # player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player.longestStreet(), graph, glob)
+                        # player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), reward, graph, glob)
+                        player.strategy.streetDQN.saveInMemory(previousGraph, previousGlob, list(Board.Board().edges.keys()).index(thingNeeded), player.longestStreet(), graph, glob)
 
                     if(actionId.value == 3 or actionId.value == -3 or actionId.value == -1): 
                         player.strategy.colonyDQN.saveInMemory(previousGraph, previousGlob, Board.Board().places.index(thingNeeded), reward, graph, glob)

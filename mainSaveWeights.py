@@ -77,10 +77,10 @@ def randomAndEuristic(outFor, inFor, agent1, agent2, nameOfTheFolder):
 
 if __name__ == '__main__':
         
-    outFor = 1 # SETTA ANCHE L'INIZIO, FACCIAMO SOLO CONTRO I RANDOM
+    outFor = 3 # SETTA ANCHE L'INIZIO, FACCIAMO SOLO CONTRO I RANDOM
     inFor = 1000
 
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyRgcnHier(1), RandomPlayer(), "HierRGCN")
+    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyRgcnHier(1), RandomPlayer(), "HierRGCN_sub")
     
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(1), RandomPlayer(), "HierGnn")
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), RandomPlayer(), "HierFF")
