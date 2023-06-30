@@ -2,6 +2,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from collections import deque, namedtuple
 from torch_geometric.nn import GCNConv, GraphConv, Sequential, global_mean_pool
+from torch_geometric.nn import RGCNConv
 import torch
 import random
 from torch_geometric.data import Data, Batch #aggiunto di recente, forse da togliere
@@ -9,28 +10,24 @@ from Classes.MoveTypes import TurnMoveTypes
 #f
 Transition = namedtuple('Transition', ('graph', 'glob', 'action', 'reward', 'next_graph', 'next_glob'))
 
-class L2DQGNNagent_mod():
+class DQGNNagent():
     # def __init__(self, nInputs, nOutputs, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")) -> None:
-    def __init__(self, name, nInputs, nOutputs, eps, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cpu")) -> None:
+    def __init__(self, nInputs, nOutputs, eps, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cpu")) -> None:
         # print("DQGNNAgent CONSTRUCTOR")
-        self.name = name
-
-        self.BATCH_SIZE = 64 #16 # 256
+        self.BATCH_SIZE = 64 # 16  # 256
         self.GAMMA = 0.99
         self.EPS = eps
         self.TAU = 0.005 # 0.005
         self.LearningRate = 1e-3
         self.device = device
-
-        self.policy_net = DQGNN(nInputs, 4, 4, 9, nOutputs).to(device)
-        self.target_net = DQGNN(nInputs, 4, 4, 9, nOutputs).to(device)
-
+        self.policy_net = DQGNN(nInputs, 8, 4, 9, nOutputs).to(device)
+        self.target_net = DQGNN(nInputs, 8, 4, 9, nOutputs).to(device)
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.criterion = criterion
         self.optimizer = torch.optim.AdamW(self.policy_net.parameters(), lr=self.LearningRate)
         self.memory = ReplayMemory(1000)
 
-        # self.decay = 0.997
+        # self.decay = 0.998
         self.decay = 0.996
 
 
@@ -52,11 +49,10 @@ class L2DQGNNagent_mod():
             action = self.greedyAction(graph, glob, availableMoves)
         return action
     
-    def step(self, graph, glob, availableMoves, fatherDQN):   
+    def step(self, graph, glob, availableMoves):   
         action = self.selectMove(graph, glob, availableMoves) 
         if(self.EPS > 0.005):
-            self.optimize_model(fatherDQN)
-            # self.optimize_model()
+            self.optimize_model()
             self.softUpdate()
         return action
 
@@ -75,10 +71,12 @@ class L2DQGNNagent_mod():
         random_action = random.choice(availableMoves)
         return random_action
 
-    def optimize_model(self, fatherDQN):
+    def optimize_model(self):
         if len(self.memory) < self.BATCH_SIZE:
             return
-        # print("optimizing... "+ self.name)
+        
+        # print("RIGA 77 DQGNN: ", len(self.memory))
+        # print("optimizing...")
         transitions = self.memory.sample(self.BATCH_SIZE)
         batch = Transition(*zip(*transitions)) 
         graph_batch = Batch.from_data_list(batch.graph)
@@ -88,12 +86,7 @@ class L2DQGNNagent_mod():
         next_graph = Batch.from_data_list(batch.next_graph)
         next_glob = torch.cat(batch.next_glob)
         with torch.no_grad():
-            # expected_state_action_values = self.GAMMA * (self.target_net.forward(next_graph, next_glob).max(1)[0]) + reward_batch
-
-            expected_state_action_values = self.GAMMA * (self.target_net.forward(next_graph, next_glob).max(1)[0] * fatherDQN.target_net.forward(next_graph, next_glob).max(1)[0]) + reward_batch
-            # expected_state_action_values = self.GAMMA * (self.target_net.forward(next_graph, next_glob).max(1)[0] + fatherDQN.target_net.forward(next_graph, next_glob).max(1)[0])/2 + reward_batch
-            # expected_state_action_values = self.GAMMA * fatherDQN.target_net.forward(next_graph, next_glob).max(1)[0] + reward_batch
-            ############################# Qui bisogna usare la target net sua o del DQN di livello superiore?
+            expected_state_action_values = self.GAMMA * self.target_net.forward(next_graph, next_glob).max(1)[0] + reward_batch
         state_action_values = self.policy_net.forward(graph_batch, glob_batch)
         state_action_values = state_action_values.gather(1, action_batch.unsqueeze(1))
         self.optimizer.zero_grad()
@@ -123,11 +116,18 @@ class DQGNN(nn.Module):
   def __init__(self, gnnInputDim, gnnHiddenDim, gnnOutputDim, globInputDim, nActions):
     super().__init__()
 
-    self.Gnn = Sequential('x, edge_index, edge_attr', [
-        (GraphConv(gnnInputDim, gnnHiddenDim), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True),
-        (GraphConv(gnnHiddenDim, gnnOutputDim), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True),
-    ])
-    
+    # self.Gnn = Sequential('x, edge_index, edge_attr', [
+    #     (GraphConv(gnnInputDim, gnnHiddenDim), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True),
+    #     (GraphConv(gnnHiddenDim, gnnOutputDim), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True), 
+    # ])
+
+    self.Gnn = nn.Sequential(
+        RGCNConv(gnnInputDim, gnnHiddenDim, 3),
+        nn.ReLU(inplace=True),
+        RGCNConv(gnnHiddenDim, gnnOutputDim, 3),
+        nn.ReLU(inplace=True)
+    )
+
     self.GlobalLayers = nn.Sequential(
         nn.Linear(globInputDim, 8),
         nn.ReLU(inplace=True),
@@ -153,9 +153,18 @@ class DQGNN(nn.Module):
     output = self.OutLayers(output)
     return output
   
+  def forward(self, x, edge_index, edge_attr, global_input):
+    x = self.Gnn(x, edge_index, edge_attr)
+    x = x.view(x.size(0), -1)
+    global_output = self.GlobalLayers(global_input)
+    concatenated = torch.cat([x, global_output], dim=1)
+    output = self.OutLayers(concatenated)
+    return output
+
   def save_weights(self, filepath):
     torch.save(self.state_dict(), filepath)
 
   def load_weights(self, filepath):
     self.load_state_dict(torch.load(filepath))
+  
 
