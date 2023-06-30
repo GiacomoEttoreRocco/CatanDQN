@@ -6,6 +6,7 @@ import torch
 import random
 from torch_geometric.data import Data, Batch #aggiunto di recente, forse da togliere
 from Classes.MoveTypes import TurnMoveTypes
+from RL.DQN import DQN
 #f
 Transition = namedtuple('Transition', ('state', 'action', 'reward', 'next_state'))
 
@@ -114,22 +115,5 @@ class ReplayMemory():
         return random.sample(self.memory, batch_size)
     def __len__(self):
         return len(self.memory)
-
-class DQN(nn.Module):
-    def __init__(self, observationLenght, n_actions):
-        super(DQN, self).__init__()
-        self.layer1 = nn.Linear(observationLenght, 128)
-        self.layer2 = nn.Linear(128, 128)
-        self.layer3 = nn.Linear(128, n_actions)
-    def forward(self, x):
-        x = F.relu(self.layer1(x))
-        x = F.relu(self.layer2(x))
-        return self.layer3(x)
-    
-    def save_weights(self, filepath):
-        torch.save(self.state_dict(), filepath)
-
-    def load_weights(self, filepath):
-        self.load_state_dict(torch.load(filepath))
   
 

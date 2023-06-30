@@ -6,31 +6,34 @@ import torch
 import random
 from torch_geometric.data import Data, Batch #aggiunto di recente, forse da togliere
 from Classes.MoveTypes import TurnMoveTypes
-from RL.DQN import DQN
+from RL.DQRGCN import DQRGCN
 #f
-Transition = namedtuple('Transition', ('state', 'action', 'reward', 'next_state'))
+Transition = namedtuple('Transition', ('graph', 'glob', 'action', 'reward', 'next_graph', 'next_glob'))
 
-class L2DQNagent():
+class L2DQGNNagent():
     # def __init__(self, nInputs, nOutputs, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")) -> None:
     def __init__(self, name, nInputs, nOutputs, eps, criterion = torch.nn.SmoothL1Loss(), device = torch.device("cpu")) -> None:
-        # print("DQNgent CONSTRUCTOR")
-        self.name = name # per ora non serve a un cazzo, serve in caso di debug
-        self.BATCH_SIZE = 64 # 16 
+        # print("DQGNNAgent CONSTRUCTOR")
+        self.name = name
+
+        self.BATCH_SIZE = 64 #16 # 256
         self.GAMMA = 0.99
         self.EPS = eps
-        self.TAU = 0.005 
+        self.TAU = 0.005 # 0.005
         self.LearningRate = 1e-3
         self.device = device
 
-        self.policy_net = DQN(nInputs, nOutputs).to(device) # 54*11+72
-        self.target_net = DQN(nInputs, nOutputs).to(device)
+        self.policy_net = DQRGCN(nInputs, 8, 4, 9, nOutputs).to(device)
+        self.target_net = DQRGCN(nInputs, 8, 4, 9, nOutputs).to(device)
 
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.criterion = criterion
         self.optimizer = torch.optim.AdamW(self.policy_net.parameters(), lr=self.LearningRate)
         self.memory = ReplayMemory(1000)
 
+        # self.decay = 0.997
         self.decay = 0.996
+
 
     def epsDecay(self):
         self.EPS = self.EPS * self.decay
@@ -38,60 +41,57 @@ class L2DQNagent():
         if(self.EPS < 0.0001):
             self.EPS = 0
 
-    def saveInMemory(self, state, action, reward, nextState): # qui è da inserire una transition
+    def saveInMemory(self, graph, glob, action, reward, nextGraph, nextGlob): # qui è da inserire una transition
         if(reward != None):
-            self.memory.push(state, torch.tensor([action]), torch.tensor([reward]), nextState)
+            self.memory.push(graph, glob, torch.tensor([action]), torch.tensor([reward]), nextGraph, nextGlob)
 
-    def selectMove(self, state, availableMoves):
+    def selectMove(self, graph, glob, availableMoves):
         sample = random.random()
         if sample < self.EPS:
             action = self.explorationAction(availableMoves)
         else:
-            action = self.greedyAction(state, availableMoves)
+            action = self.greedyAction(graph, glob, availableMoves)
         return action
     
-    def step(self, state, availableMoves):   
-        action = self.selectMove(state, availableMoves) 
+    def step(self, graph, glob, availableMoves):   
+        action = self.selectMove(graph, glob, availableMoves) 
         if(self.EPS > 0.005):
             self.optimize_model()
+            # self.optimize_model()
             self.softUpdate()
         return action
 
-    def greedyAction(self, state, availableMoves):
+    def greedyAction(self, graph, glob, availableMoves):
         with torch.no_grad():
-            q_values = self.policy_net.forward(state) 
+            q_values = self.policy_net.forward(graph, glob) 
             valid_q_values = q_values[0][availableMoves]  
+            # print("Print riga 62 DQGNN, valid_q_values: ", valid_q_values)
             max_q_value, max_index = valid_q_values.max(0) 
             action = availableMoves[max_index.item()]  
+        # print("Greedy move!")
         return action
 
     def explorationAction(self, availableMoves):
+        # print("Available moves: ", availableMoves)
         random_action = random.choice(availableMoves)
         return random_action
 
     def optimize_model(self):
-        # print("optimizing")
         if len(self.memory) < self.BATCH_SIZE:
             return
+        # print("optimizing... "+ self.name)
         transitions = self.memory.sample(self.BATCH_SIZE)
         batch = Transition(*zip(*transitions)) 
-        state_batch = torch.cat(batch.state)
-        # print("Riga 76, DQN: ", state_batch.size())
-        reward_batch = torch.cat(batch.reward)  # prendi tutti i rewards
-        # print("Riga 78, DQN: ", reward_batch.size())
-        action_batch = torch.cat(batch.action)  # prendi tutte le actions
-        # print("Riga 80, DQN: ", action_batch.unsqueeze(1).size())
-        action_batch = action_batch.unsqueeze(1)
-
-        next_state = torch.cat(batch.next_state)
-
+        graph_batch = Batch.from_data_list(batch.graph)
+        glob_batch = torch.cat(batch.glob)
+        reward_batch = torch.cat(batch.reward) # prendi tutti i rewards
+        action_batch = torch.cat(batch.action) # prendi tutte le actions
+        next_graph = Batch.from_data_list(batch.next_graph)
+        next_glob = torch.cat(batch.next_glob)
         with torch.no_grad():
-            expected_state_action_values = self.GAMMA * self.target_net.forward(next_state).max(1)[0] + reward_batch
-
-
-            # print("Dimensione di expected_state_action_values:", expected_state_action_values.size()) # 16 x 16 
-
-        state_action_values = self.policy_net.forward(state_batch).gather(1, action_batch)
+            expected_state_action_values = self.GAMMA * (self.target_net.forward(next_graph, next_glob).max(1)[0]) + reward_batch
+        state_action_values = self.policy_net.forward(graph_batch, glob_batch)
+        state_action_values = state_action_values.gather(1, action_batch.unsqueeze(1))
         self.optimizer.zero_grad()
         loss = self.criterion(state_action_values, expected_state_action_values.unsqueeze(1))
         loss.backward()
@@ -115,5 +115,4 @@ class ReplayMemory():
     def __len__(self):
         return len(self.memory)
 
-  
 

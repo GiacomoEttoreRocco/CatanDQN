@@ -6,6 +6,7 @@ import torch
 import random
 from torch_geometric.data import Data, Batch #aggiunto di recente, forse da togliere
 from Classes.MoveTypes import TurnMoveTypes
+from RL.DQGNN import DQGNN
 #f
 Transition = namedtuple('Transition', ('graph', 'glob', 'action', 'reward', 'next_graph', 'next_glob'))
 
@@ -118,44 +119,4 @@ class ReplayMemory():
         return random.sample(self.memory, batch_size)
     def __len__(self):
         return len(self.memory)
-
-class DQGNN(nn.Module):
-  def __init__(self, gnnInputDim, gnnHiddenDim, gnnOutputDim, globInputDim, nActions):
-    super().__init__()
-
-    self.Gnn = Sequential('x, edge_index, edge_attr', [
-        (GraphConv(gnnInputDim, gnnHiddenDim), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True),
-        (GraphConv(gnnHiddenDim, gnnOutputDim), 'x, edge_index, edge_attr -> x'), nn.ReLU(inplace=True),
-    ])
-    
-    self.GlobalLayers = nn.Sequential(
-        nn.Linear(globInputDim, 8),
-        nn.ReLU(inplace=True),
-        nn.Linear(8, 8),
-        nn.ReLU(inplace=True),
-        nn.Linear(8, globInputDim),
-        nn.ReLU(inplace=True)
-    )
-
-    self.OutLayers = nn.Sequential(
-        nn.Linear(54*gnnOutputDim+globInputDim, 128),
-        nn.ReLU(inplace=True),
-        nn.Linear(128, 128),
-        nn.ReLU(inplace=True),
-        nn.Linear(128, nActions)
-    )
-  
-  def forward(self, graph, glob, gnnOutputDim=4):
-    embeds = self.Gnn(graph.x, edge_index=graph.edge_index, edge_attr=graph.edge_attr)
-    embeds = torch.reshape(embeds, (graph.num_graphs, 54 * gnnOutputDim))
-    glob = self.GlobalLayers(glob)
-    output = torch.cat([embeds, glob], dim=-1)
-    output = self.OutLayers(output)
-    return output
-  
-  def save_weights(self, filepath):
-    torch.save(self.state_dict(), filepath)
-
-  def load_weights(self, filepath):
-    self.load_state_dict(torch.load(filepath))
 
