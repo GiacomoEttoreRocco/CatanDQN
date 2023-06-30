@@ -13,6 +13,7 @@ from Classes.Strategy.RLStrategyGNNhier import ReinforcementLearningStrategyGnnH
 from Classes.Strategy.EurPlayer import EuristicPlayer
 from Classes.Strategy.RLStrategyGNNhier_mod import ReinforcementLearningStrategyGnnHier_mod
 from Classes.Strategy.RLStrategyRGCN import ReinforcementLearningStrategyRgcn
+from Classes.Strategy.RLStrategyRGCNhier import ReinforcementLearningStrategyRgcnHier
 from Classes.Strategy.RanPlayer import RandomPlayer
 from Classes.Strategy.StrategyRandom import StrategyRandom
 from Classes.staticUtilities import plotCsvColumns, plotCsvColumnsWithHeaders, plotWinners2, saveInCsv
@@ -81,8 +82,8 @@ if __name__ == '__main__':
     outFor = 3 # SETTA ANCHE L'INIZIO, FACCIAMO SOLO CONTRO I RANDOM
     inFor = 1000
 
-    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyRgcn(1), RandomPlayer(), "RGCN")
-
+    trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyRgcnHier(1), RandomPlayer(), "HierRGCN")
+    
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(1), RandomPlayer(), "HierGnn")
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), RandomPlayer(), "HierFF")
 
