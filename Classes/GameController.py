@@ -71,7 +71,7 @@ class GameController:
         rlFlag = "RL" in player.strategy.name() and not onlyPassTurn
 
         if(rlFlag): 
-            if("GNN" in player.strategy.name()):
+            if("GNN" in player.strategy.name() or "GCN" in player.strategy.name()):
                 previousGraph = Board.Board().boardStateGraph(player)
                 previousGlob = player.globalStateTensor()
             else:
@@ -98,7 +98,7 @@ class GameController:
             glob = player.globalStateTensor()
             # print("Riga 72, game controller: ", reward)
 
-            if("GNN" in player.strategy.name()):
+            if("GNN" in player.strategy.name() or "GCN" in player.strategy.name()):
                 if(actionId.value > 0):
                     player.strategy.macroDQN.saveInMemory(previousGraph, previousGlob, actionId.value, reward, graph, glob)
                 if("HIER" in player.strategy.name()):

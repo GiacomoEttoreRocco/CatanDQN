@@ -15,7 +15,7 @@ class ReinforcementLearningStrategyRgcn(StrategyEuristic):
         # self.eps = self.macroDQN.EPS
 
     def name(self):
-        return "RL-GNN"
+        return "RL-GCN"
     
     def getEps(self):
         return self.macroDQN.EPS

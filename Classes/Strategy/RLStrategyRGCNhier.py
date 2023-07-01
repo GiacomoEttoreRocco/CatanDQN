@@ -17,7 +17,7 @@ class ReinforcementLearningStrategyRgcnHier(StrategyEuristic):
         self.tradeDQN = L2DQRGCNagent("trades", 11, 20, eps)
 
     def name(self):
-        return "RL-GNN-HIER"
+        return "RL-GCN-HIER"
     
     def getEps(self):
         return self.macroDQN.EPS #, self.streetDQN.EPS

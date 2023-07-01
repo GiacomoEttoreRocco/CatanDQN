@@ -40,29 +40,33 @@ HRGCN_sub.loadWeights("Weights/HierRGCN_sub/weights0-4000")
 randomPlayer = RandomPlayer()
 
 allAgents = [selfHff_sub, HFF_sub, HFF, OFF, HGNN, HGNN_sub, OGNN, HRGCN, HRGCN_sub, randomPlayer]
+allAgents = [HFF_sub, HFF, OFF, HGNN, HGNN_sub, OGNN, HRGCN, HRGCN_sub, randomPlayer]
 
-a1 = None
+
+a1 = selfHff_sub
 a2 = None
 
-counterA1 = 0
-counterA2 = 0
+for a2 in allAgents:
+    strategies = [a1, a2] 
+    counterA1 = 0
+    gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
+    for i in range(0,5):
+        gameCtrl.reset() 
+        res = gameCtrl.playTurnamentGame()
+        # print(res[0])
+        if(res[0] == a1.name()):
+            counterA1 += 1
 
-strategies = [a1, a2] 
-gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
-for i in range(0,5):
-    gameCtrl.reset() 
-    res = gameCtrl.playTurnamentGame()
-    # print(res[0])
-    if(res[0] == a1.name()):
-        counterA1 += 1
-strategies = [a1, a2] 
-gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
-for i in range(0,5):
-    gameCtrl.reset() 
-    res = gameCtrl.playTurnamentGame()
-    # print(res[0])
-    if(res[0] == a1.name()):
-        counterA1 += 1
+    strategies = [a2, a1] 
+    gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
+    for i in range(0,5):
+        gameCtrl.reset() 
+        res = gameCtrl.playTurnamentGame()
+        # print(res[0])
+        if(res[0] == a1.name()):
+            counterA1 += 1
+
+print(counterA1)
 
 
 

@@ -4,30 +4,6 @@ import numpy as np
 import csv
 import statistics
 
-# number_of_runs = 5
-
-# csv_filesEurVsRan = ["csvFolder/EurVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
-# csv_filesHierGnnVsRan = ["csvFolder/HierGnnVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
-# csv_filesHierFFVsRan = ["csvFolder/HierFFVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
-# csv_filesOrchGnnVsRan = ["csvFolder/OrchGnnVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
-# csv_filesOrchFFVsRan = ["csvFolder/OrchFFVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
-# csv_filesRanVsRan = ["csvFolder/RanVsRan/results{}.csv".format(i) for i in range(1, number_of_runs)]
-
-# csv_filesEurVsEur = ["csvFolder/EurVsEur/results{}.csv".format(i) for i in range(1, number_of_runs)]
-# csv_filesHierGnnVsEur = ["csvFolder/HierGnnVsEur/results{}.csv".format(i) for i in range(1, number_of_runs)]
-# csv_filesHierFFVsEur = ["csvFolder/HierFFVsEur/results{}.csv".format(i) for i in range(1, number_of_runs)]
-# csv_filesOrchGnnVsEur = ["csvFolder/OrchGnnVsEur/results{}.csv".format(i) for i in range(1, number_of_runs)]
-# csv_filesOrchFFVsEur = ["csvFolder/OrchFFVsEur/results{}.csv".format(i) for i in range(1, number_of_runs)]
-# csv_filesRanVsEur = ["csvFolder/RanVsEur/results{}.csv".format(i) for i in range(1, number_of_runs)]
-
-
-# csv_filesRanVsEur = ["csvFolder/RanVsEur/results{}.csv".format(i) for i in range(1, 11)]
-# csv_filesHierGnnVsEur = ["csvFolder/HierGnnVsEur/results{}.csv".format(i) for i in range(1, 11)]
-# csv_filesHierFFVsEur = ["csvFolder/HierFFVsEur/results{}.csv".format(i) for i in range(1, 11)]
-# csv_filesOrchGnnVsEur = ["csvFolder/OrchGnnVsEur/results{}.csv".format(i) for i in range(1, 11)]
-# csv_filesOrchFFVsEur = ["csvFolder/OrchFFVsEur/results{}.csv".format(i) for i in range(1, 11)]
-# csv_filesEurVsEur = ["csvFolder/EurVsEur/results{}.csv".format(i) for i in range(1, 11)]
-
 
 def getAllfirstElements(row_index, column_index, csv_files):
     first_elements = []
