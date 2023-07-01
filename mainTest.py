@@ -8,18 +8,10 @@ from Classes.Strategy.RLStrategyRGCNhier import ReinforcementLearningStrategyRgc
 from Classes.Strategy.RanPlayer import RandomPlayer
 import Classes as c
 
-# EURISTIC_PLAYER = EuristicPlayer()
-RANDOM_PLAYER = RandomPlayer()
-
 withGraphics = False
 
-# HFF.loadWeights("Weights/HierFF/weights0-4000")
-# HFF.loadWeights("Weights/selfHFF_sub/weights0-4000")
-# HFF.loadWeights("Weights_without_subgoal/HierFF/weights0-4000")
-# HFF.loadWeights("Weights/HierGnn/weights0-4000")
-
-selfHff_sbu = ReinforcementLearningStrategyFfHier(0)
-selfHff_sbu.loadWeights("Weights/selfHFF_sub/weights0-4000")
+selfHff_sub = ReinforcementLearningStrategyFfHier(0)
+selfHff_sub.loadWeights("Weights/selfHFF_sub/weights0-4000")
 
 HFF_sub = ReinforcementLearningStrategyFfHier(0)
 HFF_sub.loadWeights("Weights/HierFF/weights0-4000")
@@ -45,36 +37,32 @@ HRGCN.loadWeights("Weights/HierRGCN/weights0-4000")
 HRGCN_sub = ReinforcementLearningStrategyRgcnHier(0)
 HRGCN_sub.loadWeights("Weights/HierRGCN_sub/weights0-4000")
 
-examAgent = HFF
-against = RandomPlayer()
-counter = 0
-strategies = [examAgent, against] 
-gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
-for i in range(0,5):
-    gameCtrl.reset() 
-    res = gameCtrl.playTurnamentGame()
-    # print(res[0])
-    if(res[0] == examAgent.name()):
-        counter += 1
-strategies = [against, examAgent] 
-gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
-for i in range(0,5):
-    gameCtrl.reset() 
-    res = gameCtrl.playTurnamentGame()
-    # print(res[0])
-    if(res[0] == examAgent.name()):
-        counter += 1
-print(counter)
+randomPlayer = RandomPlayer()
 
-print("temp")
-# RESULTS:
-# DQN slef FF/FF* = 8-2
-# DQN FF/FF* = 9-1
-# DQN FF/FF = 7-3
-# DQN RGCN/RGCN = 5-5
-# DQN GCN/GCN = 8-2
-# DQN RGCN/RGCN* = 3-7
-# DQN GCN/GCN* = 3-7
-# DQN GCN/RAN
-# DQN FF/RAN
-# RAN/RAN
+allAgents = [selfHff_sub, HFF_sub, HFF, OFF, HGNN, HGNN_sub, OGNN, HRGCN, HRGCN_sub, randomPlayer]
+
+a1 = None
+a2 = None
+
+counterA1 = 0
+counterA2 = 0
+
+strategies = [a1, a2] 
+gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
+for i in range(0,5):
+    gameCtrl.reset() 
+    res = gameCtrl.playTurnamentGame()
+    # print(res[0])
+    if(res[0] == a1.name()):
+        counterA1 += 1
+strategies = [a1, a2] 
+gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
+for i in range(0,5):
+    gameCtrl.reset() 
+    res = gameCtrl.playTurnamentGame()
+    # print(res[0])
+    if(res[0] == a1.name()):
+        counterA1 += 1
+
+
+
