@@ -128,10 +128,10 @@ if __name__ == '__main__':
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), RandomPlayer(), "longTrainFF")
     # trainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyGnnHier(1), RandomPlayer(), "longTrainGnn")
 
-    agent1 = ReinforcementLearningStrategyFfHier(1)
+    # agent1 = ReinforcementLearningStrategyFfHier(1)
 
-    agent1.loadWeights("Weights/HierFF/weights0-4000")
+    # agent1.loadWeights("Weights/HierFF/weights0-4000")
 
-    selfTrainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), "selfHFF_sub")
+    # selfTrainAndSaveWeights(outFor, inFor, ReinforcementLearningStrategyFfHier(1), "selfHFF_sub")
 
 
