@@ -41,7 +41,7 @@ randomPlayer = RandomPlayer()
 
 allAgents = [selfHff_sub, HFF_sub, HFF, OFF, HGNN_sub, HGNN, OGNN, randomPlayer, HRGCN, HRGCN_sub]
 
-a1 = HRGCN_sub
+a1 = selfHff_sub
 
 for a2 in allAgents:
     strategies = [a1, a2] 
