@@ -39,16 +39,15 @@ HRGCN_sub.loadWeights("Weights/HierRGCN_sub/weights0-4000")
 
 randomPlayer = RandomPlayer()
 
-allAgents = [selfHff_sub, HFF_sub, HFF, OFF, HGNN, HGNN_sub, OGNN, HRGCN, HRGCN_sub, randomPlayer]
-allAgents = [HFF_sub, HFF, OFF, HGNN, HGNN_sub, OGNN, HRGCN, HRGCN_sub, randomPlayer]
+allAgents = [selfHff_sub, HFF_sub, HFF, OFF, HGNN_sub, HGNN, OGNN, randomPlayer, HRGCN, HRGCN_sub]
 
-
-a1 = selfHff_sub
-a2 = None
+a1 = HRGCN_sub
 
 for a2 in allAgents:
     strategies = [a1, a2] 
     counterA1 = 0
+    counterA2 = 0
+
     gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
     for i in range(0,5):
         gameCtrl.reset() 
@@ -56,17 +55,10 @@ for a2 in allAgents:
         # print(res[0])
         if(res[0] == a1.name()):
             counterA1 += 1
+        else: counterA2 += 1
 
-    strategies = [a2, a1] 
-    gameCtrl = c.GameController.GameController(playerStrategies = strategies, idEpisode = 0, withGraphics=withGraphics, speed=True)
-    for i in range(0,5):
-        gameCtrl.reset() 
-        res = gameCtrl.playTurnamentGame()
-        # print(res[0])
-        if(res[0] == a1.name()):
-            counterA1 += 1
+    print(a1.name(), "-", a2.name(), ": ", counterA1, " ", counterA2)
 
-print(counterA1)
 
 
 
