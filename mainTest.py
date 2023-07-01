@@ -65,6 +65,8 @@ for i in range(0,5):
     if(res[0] == examAgent.name()):
         counter += 1
 print(counter)
+
+print("temp")
 # RESULTS:
 # DQN slef FF/FF* = 8-2
 # DQN FF/FF* = 9-1
