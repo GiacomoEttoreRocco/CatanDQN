@@ -8,7 +8,7 @@ from Classes.Strategy.RLStrategyRGCNhier import ReinforcementLearningStrategyRgc
 from Classes.Strategy.RanPlayer import RandomPlayer
 import Classes as c
 
-withGraphics = False
+withGraphics = True
 
 selfHff_sub = ReinforcementLearningStrategyFfHier(0)
 selfHff_sub.loadWeights("Weights/selfHFF_sub/weights2-4000")

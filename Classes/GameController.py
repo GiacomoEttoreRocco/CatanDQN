@@ -271,6 +271,7 @@ class GameController:
                     for player in self.game.players:
                         pointsAt100.append(player._victoryPoints)
                 if(playerTurn._victoryPoints >= 15):
+                    # time.sleep(1000)
                     for player in self.game.players:
                         pointsAtFinal.append(player._victoryPoints)
                     return playerTurn.strategy.name(), pointsAt100, pointsAtFinal
