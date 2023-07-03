@@ -11,7 +11,7 @@ import Classes as c
 withGraphics = False
 
 selfHff_sub = ReinforcementLearningStrategyFfHier(0)
-selfHff_sub.loadWeights("Weights/selfHFF_sub/weights0-4000")
+selfHff_sub.loadWeights("Weights/selfHFF_sub/weights2-4000")
 
 HFF_sub = ReinforcementLearningStrategyFfHier(0)
 HFF_sub.loadWeights("Weights/HierFF/weights0-4000")
@@ -39,9 +39,10 @@ HRGCN_sub.loadWeights("Weights/HierRGCN_sub/weights0-4000")
 
 randomPlayer = RandomPlayer()
 
-allAgents = [selfHff_sub, HFF_sub, HFF, OFF, HGNN_sub, HGNN, OGNN, randomPlayer, HRGCN, HRGCN_sub]
+allAgents = [selfHff_sub, HFF_sub, HFF, OFF, HGNN_sub, HGNN, OGNN, HRGCN, HRGCN_sub, randomPlayer]
 
-a1 = selfHff_sub
+# a1 = selfHff_sub
+a1 = HFF_sub
 
 for a2 in allAgents:
     strategies = [a1, a2] 
