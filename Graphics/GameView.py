@@ -22,10 +22,11 @@ class GameView:
         self.game = game
         self.controller = controller
         windowSize = self.width, self.height
-        self.playerColorDict = {0: pygame.Color('grey'), 1: pygame.Color('red'), 2: pygame.Color('yellow'),
-                           3: pygame.Color('blueviolet'), 4:  pygame.Color('blue')}
-        self.tileColorDict = {"clay": (188, 74, 60), "iron": (128, 128, 128), "crop": pygame.Color('orange'), "wood": (0, 153, 0),
-                         "sheep": (51, 255, 51), "desert": (245, 222, 179) }
+        # Improved color palette - more vibrant and distinct
+        self.playerColorDict = {0: pygame.Color('grey'), 1: pygame.Color('#E74C3C'), 2: pygame.Color('#F1C40F'),
+                           3: pygame.Color('#9B59B6'), 4:  pygame.Color('#3498DB')}
+        self.tileColorDict = {"clay": (205, 92, 92), "iron": (169, 169, 169), "crop": (255, 200, 87), "wood": (34, 139, 34),
+                         "sheep": (144, 238, 144), "desert": (244, 164, 96) }
         self.imgDict = {"clay": "imgs/clay.png", "iron": "imgs/iron.png", "crop": "imgs/crop.png", "wood": "imgs/wood.png",
                    "sheep": "imgs/sheep.png", "desert": "imgs/desert.png", "2:1 wood": "imgs/harbors/21wood.png", 
                    "2:1 crop":"imgs/harbors/21crop.png", "2:1 sheep" : "imgs/harbors/21sheep.png", "2:1 iron":"imgs/harbors/21iron.png", 
@@ -117,11 +118,9 @@ class GameView:
 
     def blit(self, player, x, y):
         playerBox = pygame.Rect(x-self.height//200, y-self.height//200, self.height//6.7, self.height//2.5)
-        # if self.game.currentTurnPlayer == player:
-        #     self.screen.fill(self.bgScoreColorHighlited, playerBox)
-        # else:
-        #     self.screen.fill(self.bgScoreColor, playerBox)
+        # Improved player box with rounded corners
         self.screen.fill(self.bgScoreColor, playerBox)
+        pygame.draw.rect(self.screen, pygame.Color('#555555'), playerBox, 1, border_radius=5)
 
         self.screen.blit(self.points[player.id-1], (x, y)) # 5,5
         self.screen.blit(self.pointsCards[player.id-1], (x, y+self.height//18.2))
@@ -139,7 +138,10 @@ class GameView:
     def setupAndDisplayBoard(self, bg = True):
         self.graphicTileList = [] # recently added
         if(bg):
-            pygame.draw.rect(self.screen, pygame.Color('cadetblue1'),(0, 0, self.gameWidth, self.height))
+            # Ocean gradient background - darker blue to lighter
+            for y in range(self.height):
+                color_value = int(135 + (y / self.height) * 35)  # 135-170 range
+                pygame.draw.line(self.screen, pygame.Color(70, color_value, 180), (0, y), (self.gameWidth, y))
         hex_i = 0
         for boardtile in Board.Board().tiles:
             hexCoords = self.getHexCoords(hex_i)
@@ -165,10 +167,16 @@ class GameView:
         self.drawNumberCircle(graphicTile)
 
     def drawNumberCircle(self, graphicTile):
-        tileNumberText = self.font_resourceSmaller.render(str(graphicTile.number), False, pygame.Color("black"))
         if graphicTile.resource != 'desert':
-            pygame.draw.circle(self.screen, pygame.Color("black"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+(self.height//40)), self.height//37, self.gameWidth==0)
-            pygame.draw.circle(self.screen, pygame.Color("white"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+(self.height//40)), self.height//43, self.gameWidth==0)
+            # Highlight high-probability numbers (6 and 8) with red
+            numberColor = pygame.Color("#C0392B") if graphicTile.number in [6, 8] else pygame.Color("black")
+            tileNumberText = self.font_resourceSmaller.render(str(graphicTile.number), True, numberColor)
+
+            # Anti-aliased circles with shadow effect
+            pygame.draw.circle(self.screen, pygame.Color("#333333"), (graphicTile.pixelCenter.x+2, graphicTile.pixelCenter.y+(self.height//40)+2), self.height//37)
+            pygame.draw.circle(self.screen, pygame.Color("#2C3E50"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+(self.height//40)), self.height//37)
+            pygame.draw.circle(self.screen, pygame.Color("#ECF0F1"), (graphicTile.pixelCenter.x, graphicTile.pixelCenter.y+(self.height//40)), self.height//43)
+
             if(graphicTile.number >= 10):
                 self.screen.blit(tileNumberText, (graphicTile.pixelCenter.x-self.height//50, graphicTile.pixelCenter.y))
             else:
@@ -276,9 +284,9 @@ class GameView:
     def drawStreet(self, edge, color):
         startPos = edge[0]
         endPos = edge[1]
-        # print("gamveView, 279:", startPos)
-        pygame.draw.line(self.screen, pygame.Color("Black"), self.graphicPlaceList[startPos].coords, self.graphicPlaceList[endPos].coords, self.height//50)
-        pygame.draw.line(self.screen, color, self.graphicPlaceList[startPos].coords, self.graphicPlaceList[endPos].coords, self.height//100)
+        # Draw roads with shadow for depth
+        pygame.draw.line(self.screen, pygame.Color("#222222"), self.graphicPlaceList[startPos].coords, self.graphicPlaceList[endPos].coords, self.height//45)
+        pygame.draw.line(self.screen, color, self.graphicPlaceList[startPos].coords, self.graphicPlaceList[endPos].coords, self.height//60)
 
     def checkAndDrawPlaces(self):
         for gplace, place in zip(self.graphicPlaceList, Board.Board().places):

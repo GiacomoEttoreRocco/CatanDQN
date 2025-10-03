@@ -28,10 +28,7 @@ class Board:
             cls.deck = ["knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight","knight",
                         "victory_point","victory_point","victory_point","victory_point","victory_point","victory_point","victory_point","victory_point",
                         "year_of_plenty","year_of_plenty","monopoly","monopoly", "road_building","road_building"]
-            #   SHUFFLE DECK
-            seed = random.choice([10,20,30,40])
-            np.random.seed(seed)
-            
+            #   SHUFFLE DECK - Randomized each game for better generalization
             cls.deck = np.random.permutation(cls.deck)
             cls.graph = CatanGraph.CatanGraph()
             cls.tiles = cls.graph.tiles
